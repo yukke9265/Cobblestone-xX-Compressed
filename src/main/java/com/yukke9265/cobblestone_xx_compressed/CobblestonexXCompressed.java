@@ -86,6 +86,10 @@ public class CobblestonexXCompressed {
                 for (ModItems.TierCobblestoneGem tier : ModItems.TierCobblestoneGem.values()) {
                     output.accept(tier.getItem().get());
                 }
+                output.accept(ModItems.AQUAMARINE_SHARD.get());
+                output.accept(ModItems.TOPAZ_SHARD.get());
+                output.accept(ModItems.RUBY_SHARD.get());
+                output.accept(ModItems.SAPPHIRE_SHARD.get());
                 output.accept(ModItems.COBBLESTONE_DUST.get());
                 for (ModItems.TierCobblestoneDust tier : ModItems.TierCobblestoneDust.values()) {
                     output.accept(tier.getItem().get());

@@ -134,7 +134,7 @@
               "function": "minecraft:explosion_decay"
             }
           ],
-          "name": "minecraft:redstone"
+          "name": "cobblestonexxcompressed:ruby_shard"
         }
       ],
       "rolls": 1.0

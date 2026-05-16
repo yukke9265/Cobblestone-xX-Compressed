@@ -42,6 +42,10 @@ public class ModEnglishLanguageProvider extends LanguageProvider {
         for (ModItems.TierCobblestoneGem tier : ModItems.TierCobblestoneGem.values()) {
             addItem(tier.getItem(), tier.getEnglishDisplayName());
         }
+        addItem(ModItems.AQUAMARINE_SHARD, "Aquamarine Shard");
+        addItem(ModItems.TOPAZ_SHARD, "Topaz Shard");
+        addItem(ModItems.RUBY_SHARD, "Ruby Shard");
+        addItem(ModItems.SAPPHIRE_SHARD, "Sapphire Shard");
 
         addItem(ModItems.COBBLESTONE_DUST, "Cobblestone Dust");
         for (ModItems.TierCobblestoneDust tier : ModItems.TierCobblestoneDust.values()) {
@@ -165,7 +169,7 @@ public class ModEnglishLanguageProvider extends LanguageProvider {
         add("gui.cobblestonexxcompressed.automation.back", "Back");
         add("gui.cobblestonexxcompressed.automation.left", "Left");
         add("gui.cobblestonexxcompressed.automation.right", "Right");
-        add("gui.cobblestonexxcompressed.cobblestone_power", "Cobblestone Power");
+        add("gui.cobblestonexxcompressed.cobblestone_power", "CP");
         add("gui.cobblestonexxcompressed.fe_energy", "FE Energy");
         add("gui.cobblestonexxcompressed.convert_fe_rate", "Convert FE");
         add("gui.cobblestonexxcompressed.output_fe_rate", "Output FE");

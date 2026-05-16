@@ -40,6 +40,11 @@ public class ModItemModelProvider extends ItemModelProvider {
             registerCobblestoneGemItemModel(tier.getItem());
         }
 
+        registerShardItemModel(ModItems.AQUAMARINE_SHARD);
+        registerShardItemModel(ModItems.TOPAZ_SHARD);
+        registerShardItemModel(ModItems.RUBY_SHARD);
+        registerShardItemModel(ModItems.SAPPHIRE_SHARD);
+
         registerCobblestoneDustItemModel(ModItems.COBBLESTONE_DUST);
 
         for (ModItems.TierCobblestoneDust tier : ModItems.TierCobblestoneDust.values()) {
@@ -137,6 +142,10 @@ public class ModItemModelProvider extends ItemModelProvider {
 
     private void registerCobblestoneGemItemModel(DeferredItem<Item> item) {
         registerGeneratedItemModel(item, "cobblestone_gem");
+    }
+
+    private void registerShardItemModel(DeferredItem<Item> item) {
+        registerGeneratedItemModel(item, "shard");
     }
 
     private void registerCobblestoneDustItemModel(DeferredItem<Item> item) {

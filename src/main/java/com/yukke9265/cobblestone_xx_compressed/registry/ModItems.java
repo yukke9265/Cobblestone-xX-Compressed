@@ -368,6 +368,18 @@ public class ModItems {
     public static final DeferredItem<Item> COBBLESTONE_GEM =
         ITEMS.registerSimpleItem("cobblestone_gem", createCobblestoneGemProperties());
 
+    public static final DeferredItem<Item> AQUAMARINE_SHARD =
+        ITEMS.registerSimpleItem("aquamarine_shard", createCobblestoneGemProperties());
+
+    public static final DeferredItem<Item> TOPAZ_SHARD =
+        ITEMS.registerSimpleItem("topaz_shard", createCobblestoneGemProperties());
+
+    public static final DeferredItem<Item> RUBY_SHARD =
+        ITEMS.registerSimpleItem("ruby_shard", createCobblestoneGemProperties());
+
+    public static final DeferredItem<Item> SAPPHIRE_SHARD =
+        ITEMS.registerSimpleItem("sapphire_shard", createCobblestoneGemProperties());
+
     public static final DeferredItem<Item> COBBLESTONE_DUST =
         ITEMS.registerSimpleItem("cobblestone_dust", createCobblestoneDustProperties());
 
