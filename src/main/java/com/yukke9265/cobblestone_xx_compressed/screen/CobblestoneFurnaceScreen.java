@@ -146,6 +146,12 @@ public class CobblestoneFurnaceScreen extends BaseScreen<CobblestoneFurnaceMenu>
             .withStyle(mode.createLabelComponent().getStyle());
     }
 
+    private Component createAutomationHoverLabel(AutomationSide side) {
+        return Component.translatable(this.getAutomationSideTranslationKey(side))
+            .append(Component.literal(": "))
+            .append(this.menu.getAutomationMode(side).createLabelComponent());
+    }
+
     private String getAutomationSideTranslationKey(AutomationSide side) {
         return switch (side) {
             case DOWN -> "gui.cobblestonexxcompressed.automation.down";
@@ -210,11 +216,18 @@ public class CobblestoneFurnaceScreen extends BaseScreen<CobblestoneFurnaceMenu>
         guiGraphics.drawString(this.font, this.playerInventoryTitle, this.inventoryLabelX, this.inventoryLabelY, 0x404040, false);
 
         int legendX = 0 - AUTOMATION_PANEL_X_OFFSET - AUTOMATION_BUTTON_WIDTH;
-        int legendY = AUTOMATION_PANEL_Y;
+        int legendY = AUTOMATION_PANEL_Y - AUTOMATION_LEGEND_LINE_HEIGHT;
         guiGraphics.drawString(this.font, Component.literal("Off").withStyle(AutomationMode.DISABLED.createLabelComponent().getStyle()), legendX, legendY + AUTOMATION_LEGEND_LINE_HEIGHT, 0x404040, false);
         guiGraphics.drawString(this.font, Component.literal("Input").withStyle(AutomationMode.INPUT.createLabelComponent().getStyle()), legendX + 28, legendY + AUTOMATION_LEGEND_LINE_HEIGHT, 0x404040, false);
         guiGraphics.drawString(this.font, Component.literal("Output").withStyle(AutomationMode.OUTPUT.createLabelComponent().getStyle()), legendX, legendY + AUTOMATION_LEGEND_LINE_HEIGHT * 2, 0x404040, false);
         guiGraphics.drawString(this.font, Component.literal("In/Out").withStyle(AutomationMode.IN_OUT.createLabelComponent().getStyle()), legendX + 28, legendY + AUTOMATION_LEGEND_LINE_HEIGHT * 2, 0x404040, false);
+    }
+
+    @Override
+    protected void renderHoverLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        for (AutomationSide side : AUTOMATION_SIDES) {
+            this.renderButtonHoverLabel(guiGraphics, mouseX, mouseY, this.automationButtons[side.getIndex()], this.createAutomationHoverLabel(side));
+        }
     }
 
     @Override

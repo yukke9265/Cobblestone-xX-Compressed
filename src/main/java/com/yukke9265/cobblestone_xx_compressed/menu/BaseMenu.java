@@ -17,6 +17,8 @@ public class BaseMenu extends AbstractContainerMenu {
     protected static final int AUTOMATION_BUTTON_ID_BASE = 100;
     protected static final int AUTO_EXPORT_BUTTON_ID = 200;
     protected static final int FLUID_AUTOMATION_BUTTON_ID_BASE = 300;
+    protected static final int FLUID_INDICATOR_BUTTON_ID = 400;
+    protected static final int FLUID_INDICATOR_SHIFT_BUTTON_ID = 401;
 
     // 共通の基底メニュークラスです。全てのメニューはこれを継承します。
     public BaseMenu(MenuType<?> menuType, int containerId) {
@@ -82,6 +84,22 @@ public class BaseMenu extends AbstractContainerMenu {
 
         blockEntity.toggleAutoExportEnabled();
         return true;
+    }
+
+    protected final int getFluidIndicatorButtonId() {
+        return FLUID_INDICATOR_BUTTON_ID;
+    }
+
+    protected final boolean isFluidIndicatorButtonId(int buttonId) {
+        return buttonId == FLUID_INDICATOR_BUTTON_ID;
+    }
+
+    protected final int getFluidIndicatorShiftButtonId() {
+        return FLUID_INDICATOR_SHIFT_BUTTON_ID;
+    }
+
+    protected final boolean isFluidIndicatorShiftButtonId(int buttonId) {
+        return buttonId == FLUID_INDICATOR_SHIFT_BUTTON_ID;
     }
 
     protected final long getLongFromData(ContainerData data, int lowerIndex) {

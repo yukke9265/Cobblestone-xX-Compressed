@@ -7,9 +7,11 @@ import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneTankMenu;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.neoforged.neoforge.fluids.FluidStack;
 
 public class CobblestoneTankScreen extends BaseScreen<CobblestoneTankMenu> {
@@ -32,9 +34,13 @@ public class CobblestoneTankScreen extends BaseScreen<CobblestoneTankMenu> {
     private static final int OUTPUT_SLOT_X = 132;
     private static final int MACHINE_SLOT_Y = 17;
     private static final int FLUID_INDICATOR_X = INPUT_SLOT_X + 22;
-    private static final int FLUID_INDICATOR_Y = MACHINE_SLOT_Y + 5;
+    private static final int FLUID_INDICATOR_Y = MACHINE_SLOT_Y + 3;
     private static final int FLUID_INDICATOR_WIDTH = OUTPUT_SLOT_X - INPUT_SLOT_X - 26;
-    private static final int FLUID_INDICATOR_HEIGHT = 8;
+    private static final int FLUID_INDICATOR_HEIGHT = 12;
+    private static final int FLUID_INDICATOR_HOVER_X = INPUT_SLOT_X + 18;
+    private static final int FLUID_INDICATOR_HOVER_Y = MACHINE_SLOT_Y - 2;
+    private static final int FLUID_INDICATOR_HOVER_WIDTH = OUTPUT_SLOT_X - INPUT_SLOT_X - 18;
+    private static final int FLUID_INDICATOR_HOVER_HEIGHT = 20;
     private static final int FLUID_INDICATOR_BORDER_COLOR = 0xFF404040;
     private static final int FLUID_INDICATOR_BACKGROUND_COLOR = 0xFF101010;
     private static final int FLUID_INDICATOR_FILL_COLOR = 0xFF3B8BFF;
@@ -138,6 +144,14 @@ public class CobblestoneTankScreen extends BaseScreen<CobblestoneTankMenu> {
             .withStyle(mode.createLabelComponent().getStyle());
     }
 
+    private Component createAutomationHoverLabel(Component categoryLabel, AutomationSide side, AutomationMode mode) {
+        return categoryLabel.copy()
+            .append(Component.literal(" / "))
+            .append(Component.translatable(this.getAutomationSideTranslationKey(side)))
+            .append(Component.literal(": "))
+            .append(mode.createLabelComponent());
+    }
+
     private String getAutomationSideTranslationKey(AutomationSide side) {
         return switch (side) {
             case DOWN -> "gui.cobblestonexxcompressed.automation.down";
@@ -175,13 +189,14 @@ public class CobblestoneTankScreen extends BaseScreen<CobblestoneTankMenu> {
         long storedFluidAmount = this.menu.getStoredFluidAmount();
         long maxFluidAmount = this.menu.getMaxFluidAmount();
         if (maxFluidAmount > 0L && storedFluidAmount > 0L) {
+            int fluidIndicatorFillColor = this.getFluidIndicatorFillColor();
             int filledWidth = (int) Math.max(1L, Math.round(storedFluidAmount / (double) maxFluidAmount * FLUID_INDICATOR_WIDTH));
             guiGraphics.fill(
                 x + FLUID_INDICATOR_X,
                 y + FLUID_INDICATOR_Y,
                 x + FLUID_INDICATOR_X + filledWidth,
                 y + FLUID_INDICATOR_Y + FLUID_INDICATOR_HEIGHT,
-                FLUID_INDICATOR_FILL_COLOR
+                fluidIndicatorFillColor
             );
         }
     }
@@ -212,16 +227,70 @@ public class CobblestoneTankScreen extends BaseScreen<CobblestoneTankMenu> {
     }
 
     @Override
-    protected void renderTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        super.renderTooltip(guiGraphics, mouseX, mouseY);
-
-        if (this.isHovering(FLUID_INDICATOR_X, FLUID_INDICATOR_Y, FLUID_INDICATOR_WIDTH, FLUID_INDICATOR_HEIGHT, mouseX, mouseY)) {
-            FluidStack displayedFluid = this.menu.getDisplayedFluid();
-            Component fluidName = displayedFluid.isEmpty()
-                ? Component.translatable("gui.cobblestonexxcompressed.empty")
-                : displayedFluid.getHoverName();
-            Component fluidAmount = Component.literal(this.menu.getStoredFluidAmount() + " / " + this.menu.getMaxFluidAmount() + " mB");
-            guiGraphics.renderTooltip(this.font, java.util.List.of(fluidName, fluidAmount), java.util.Optional.empty(), mouseX, mouseY);
+    protected void renderHoverLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        for (AutomationSide side : AUTOMATION_SIDES) {
+            int index = side.getIndex();
+            this.renderButtonHoverLabel(
+                guiGraphics,
+                mouseX,
+                mouseY,
+                this.itemAutomationButtons[index],
+                this.createAutomationHoverLabel(Component.translatable("gui.cobblestonexxcompressed.item"), side, this.menu.getItemAutomationMode(side))
+            );
+            this.renderButtonHoverLabel(
+                guiGraphics,
+                mouseX,
+                mouseY,
+                this.fluidAutomationButtons[index],
+                this.createAutomationHoverLabel(Component.translatable("gui.cobblestonexxcompressed.fluid"), side, this.menu.getFluidAutomationMode(side))
+            );
         }
+        if (this.isMouseOverFluidIndicator(mouseX, mouseY)) {
+            this.renderFluidHoverLabel(guiGraphics, mouseX, mouseY);
+        }
+    }
+
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        if (button == 0 && this.isMouseOverFluidIndicator((int) mouseX, (int) mouseY)) {
+            int buttonId = Screen.hasShiftDown()
+                ? this.menu.getFluidInteractionShiftButtonId()
+                : this.menu.getFluidInteractionButtonId();
+            this.sendMenuButtonClick(buttonId);
+            return true;
+        }
+
+        return super.mouseClicked(mouseX, mouseY, button);
+    }
+
+    private boolean isMouseOverFluidIndicator(int mouseX, int mouseY) {
+        int hoverLeft = this.leftPos + FLUID_INDICATOR_HOVER_X;
+        int hoverTop = this.topPos + FLUID_INDICATOR_HOVER_Y;
+        int hoverRight = hoverLeft + FLUID_INDICATOR_HOVER_WIDTH;
+        int hoverBottom = hoverTop + FLUID_INDICATOR_HOVER_HEIGHT;
+        return mouseX >= hoverLeft && mouseX < hoverRight && mouseY >= hoverTop && mouseY < hoverBottom;
+    }
+
+    private int getFluidIndicatorFillColor() {
+        FluidStack displayedFluid = this.menu.getDisplayedFluid();
+        if (displayedFluid.isEmpty()) {
+            return FLUID_INDICATOR_FILL_COLOR;
+        }
+
+        // 液体ごとの見た目に寄せるため、クライアント拡張が返す tint 色をそのまま使います。
+        int tintColor = IClientFluidTypeExtensions.of(displayedFluid.getFluid()).getTintColor(displayedFluid);
+        return tintColor | 0xFF000000;
+    }
+
+    private void renderFluidHoverLabel(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        FluidStack displayedFluid = this.menu.getDisplayedFluid();
+        Component label = displayedFluid.isEmpty()
+            ? Component.translatable("gui.cobblestonexxcompressed.empty")
+            : displayedFluid.getHoverName();
+
+        Component amount = Component.literal(" (" + this.menu.getStoredFluidAmount() + " / " + this.menu.getMaxFluidAmount() + " mB)");
+        Component text = label.copy().append(amount);
+
+        this.renderHoverLabel(guiGraphics, mouseX, mouseY, text);
     }
 }

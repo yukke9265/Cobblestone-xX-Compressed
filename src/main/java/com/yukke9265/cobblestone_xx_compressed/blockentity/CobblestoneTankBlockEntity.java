@@ -236,6 +236,17 @@ public class CobblestoneTankBlockEntity extends BaseBlockEntity implements MenuP
         return this.storedFluid.copyWithAmount((int) Math.min(this.storedFluidAmount, Integer.MAX_VALUE));
     }
 
+    public boolean handleFluidIndicatorClick(Player player, boolean processAll) {
+        ItemStack carriedStack = player.containerMenu.getCarried();
+        if (this.tryProcessPlayerFluidContainer(player, carriedStack, true, processAll)) {
+            return true;
+        }
+
+        int selectedSlot = player.getInventory().selected;
+        ItemStack selectedStack = player.getInventory().getItem(selectedSlot);
+        return this.tryProcessPlayerFluidContainer(player, selectedStack, false, processAll);
+    }
+
     public ItemStackHandler getItemStackHandler() {
         return this.itemStackHandler;
     }
@@ -308,14 +319,153 @@ public class CobblestoneTankBlockEntity extends BaseBlockEntity implements MenuP
         }
 
         IFluidHandlerItem fluidHandlerItem = optionalHandler.get();
-        if (this.tryDrainContainerIntoTank(inputStack, fluidHandlerItem)) {
+        if (this.tryDrainContainerIntoTank(inputStack, fluidHandlerItem, true)) {
             return;
         }
 
-        this.tryFillContainerFromTank(inputStack, fluidHandlerItem);
+        this.tryFillContainerFromTank(inputStack, fluidHandlerItem, true);
     }
 
-    private boolean tryDrainContainerIntoTank(ItemStack originalInputStack, IFluidHandlerItem fluidHandlerItem) {
+    private boolean tryProcessPlayerFluidContainer(Player player, ItemStack sourceStack, boolean carriedStack, boolean processAll) {
+        if (sourceStack.isEmpty() || !CobblestoneTankBlockEntity.isFluidContainerItem(sourceStack)) {
+            return false;
+        }
+
+        ItemStack singleContainer = sourceStack.copy();
+        singleContainer.setCount(1);
+
+        Optional<IFluidHandlerItem> optionalHandler = FluidUtil.getFluidHandler(singleContainer);
+        if (optionalHandler.isEmpty()) {
+            return false;
+        }
+
+        IFluidHandlerItem fluidHandlerItem = optionalHandler.get();
+        ItemStack processedContainer = this.tryDrainPlayerContainer(fluidHandlerItem, processAll);
+        if (processedContainer.isEmpty()) {
+            processedContainer = this.tryFillPlayerContainer(fluidHandlerItem, processAll);
+        }
+
+        if (processedContainer.isEmpty()) {
+            return false;
+        }
+
+        this.replaceProcessedPlayerContainer(player, sourceStack, processedContainer, carriedStack);
+        return true;
+    }
+
+    private ItemStack tryDrainPlayerContainer(IFluidHandlerItem fluidHandlerItem, boolean processAll) {
+        int transferredAmount = 0;
+        while (true) {
+            int stepTransferredAmount = this.drainFluidHandlerIntoTank(fluidHandlerItem);
+            if (stepTransferredAmount <= 0) {
+                break;
+            }
+
+            transferredAmount += stepTransferredAmount;
+            if (!processAll) {
+                break;
+            }
+        }
+
+        if (transferredAmount <= 0) {
+            return ItemStack.EMPTY;
+        }
+
+        return fluidHandlerItem.getContainer().copy();
+    }
+
+    private ItemStack tryFillPlayerContainer(IFluidHandlerItem fluidHandlerItem, boolean processAll) {
+        int transferredAmount = 0;
+        while (true) {
+            int stepTransferredAmount = this.fillFluidHandlerFromTank(fluidHandlerItem);
+            if (stepTransferredAmount <= 0) {
+                break;
+            }
+
+            transferredAmount += stepTransferredAmount;
+            if (!processAll) {
+                break;
+            }
+        }
+
+        if (transferredAmount <= 0) {
+            return ItemStack.EMPTY;
+        }
+
+        return fluidHandlerItem.getContainer().copy();
+    }
+
+    private void replaceProcessedPlayerContainer(Player player, ItemStack sourceStack, ItemStack processedContainer, boolean carriedStack) {
+        if (sourceStack.getCount() == 1) {
+            if (carriedStack) {
+                player.containerMenu.setCarried(processedContainer);
+            } else {
+                player.getInventory().setItem(player.getInventory().selected, processedContainer);
+            }
+            return;
+        }
+
+        sourceStack.shrink(1);
+        if (!player.getInventory().add(processedContainer)) {
+            player.drop(processedContainer, false);
+        }
+    }
+
+    private boolean tryDrainContainerIntoTank(ItemStack originalInputStack, IFluidHandlerItem fluidHandlerItem, boolean processAll) {
+        int transferredAmount = 0;
+        while (true) {
+            int stepTransferredAmount = this.drainFluidHandlerIntoTank(fluidHandlerItem);
+            if (stepTransferredAmount <= 0) {
+                break;
+            }
+
+            transferredAmount += stepTransferredAmount;
+            if (!processAll) {
+                break;
+            }
+        }
+
+        if (transferredAmount <= 0) {
+            return false;
+        }
+
+        ItemStack processedContainer = fluidHandlerItem.getContainer().copy();
+        if (!this.canMoveProcessedContainer(processedContainer)) {
+            return false;
+        }
+
+        this.finishContainerProcessing(originalInputStack, processedContainer);
+        return true;
+    }
+
+    private boolean tryFillContainerFromTank(ItemStack originalInputStack, IFluidHandlerItem fluidHandlerItem, boolean processAll) {
+        int transferredAmount = 0;
+        while (true) {
+            int stepTransferredAmount = this.fillFluidHandlerFromTank(fluidHandlerItem);
+            if (stepTransferredAmount <= 0) {
+                break;
+            }
+
+            transferredAmount += stepTransferredAmount;
+            if (!processAll) {
+                break;
+            }
+        }
+
+        if (transferredAmount <= 0) {
+            return false;
+        }
+
+        ItemStack processedContainer = fluidHandlerItem.getContainer().copy();
+        if (!this.canMoveProcessedContainer(processedContainer)) {
+            return false;
+        }
+
+        this.finishContainerProcessing(originalInputStack, processedContainer);
+        return true;
+    }
+
+    private int drainFluidHandlerIntoTank(IFluidHandlerItem fluidHandlerItem) {
         for (int tankIndex = 0; tankIndex < fluidHandlerItem.getTanks(); tankIndex++) {
             FluidStack fluidInItem = fluidHandlerItem.getFluidInTank(tankIndex);
             if (fluidInItem.isEmpty()) {
@@ -332,38 +482,26 @@ public class CobblestoneTankBlockEntity extends BaseBlockEntity implements MenuP
                 continue;
             }
 
-            ItemStack processedContainer = fluidHandlerItem.getContainer().copy();
-            if (!this.canMoveProcessedContainer(processedContainer)) {
-                return false;
-            }
-
             this.fillInternal(drainedFluid, IFluidHandler.FluidAction.EXECUTE);
-            this.finishContainerProcessing(originalInputStack, processedContainer);
-            return true;
+            return drainedFluid.getAmount();
         }
 
-        return false;
+        return 0;
     }
 
-    private boolean tryFillContainerFromTank(ItemStack originalInputStack, IFluidHandlerItem fluidHandlerItem) {
+    private int fillFluidHandlerFromTank(IFluidHandlerItem fluidHandlerItem) {
         if (this.storedFluid.isEmpty() || this.storedFluidAmount <= 0L) {
-            return false;
+            return 0;
         }
 
         FluidStack availableFluid = this.storedFluid.copyWithAmount((int) Math.min(this.storedFluidAmount, Integer.MAX_VALUE));
         int filledAmount = fluidHandlerItem.fill(availableFluid, IFluidHandler.FluidAction.EXECUTE);
         if (filledAmount <= 0) {
-            return false;
-        }
-
-        ItemStack processedContainer = fluidHandlerItem.getContainer().copy();
-        if (!this.canMoveProcessedContainer(processedContainer)) {
-            return false;
+            return 0;
         }
 
         this.drainInternal(filledAmount, IFluidHandler.FluidAction.EXECUTE);
-        this.finishContainerProcessing(originalInputStack, processedContainer);
-        return true;
+        return filledAmount;
     }
 
     private boolean canMoveProcessedContainer(ItemStack processedContainer) {

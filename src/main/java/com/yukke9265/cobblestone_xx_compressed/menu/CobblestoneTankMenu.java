@@ -116,6 +116,14 @@ public class CobblestoneTankMenu extends BaseMenu {
         return this.getAutoExportToggleButtonId();
     }
 
+    public int getFluidInteractionButtonId() {
+        return super.getFluidIndicatorButtonId();
+    }
+
+    public int getFluidInteractionShiftButtonId() {
+        return super.getFluidIndicatorShiftButtonId();
+    }
+
     @Override
     public boolean clickMenuButton(Player player, int id) {
         if (this.isAutomationButtonId(id)) {
@@ -126,6 +134,14 @@ public class CobblestoneTankMenu extends BaseMenu {
         if (this.isFluidAutomationButtonId(id)) {
             this.tankBlockEntity.cycleFluidAutomationMode(this.getFluidAutomationIndexFromButtonId(id), TANK_FLUID_AUTOMATION_MODES);
             return true;
+        }
+
+        if (this.isFluidIndicatorButtonId(id)) {
+            return this.tankBlockEntity.handleFluidIndicatorClick(player, false);
+        }
+
+        if (this.isFluidIndicatorShiftButtonId(id)) {
+            return this.tankBlockEntity.handleFluidIndicatorClick(player, true);
         }
 
         return this.handleAutoExportButtonClick(this.tankBlockEntity, id);
