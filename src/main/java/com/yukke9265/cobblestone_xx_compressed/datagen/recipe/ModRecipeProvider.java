@@ -209,6 +209,7 @@ public class ModRecipeProvider extends RecipeProvider {
         buildCompressedCobblestoneSingularityRecipes(output);
         buildCobblestoneGeneratorRecipes(output);
         buildCobblestoneMachineCasingRecipes(output);
+        buildCobblestoneTankRecipes(output);
         buildGemRecipes(output);
         buildCobblestoneRodRecipes(output);
         buildCobblestoneMotorRecipes(output);
@@ -517,6 +518,33 @@ public class ModRecipeProvider extends RecipeProvider {
                 .define('G', recipe.centerGem)
                 .unlockedBy("has_" + recipe.recipeName, has(recipe.centerGem))
                 .save(output, modRecipeId(recipe.recipeName));
+        }
+    }
+
+    private void buildCobblestoneTankRecipes(RecipeOutput output) {
+        // Cobblestone Tank は中央にガラス、外周に同じ tier の圧縮丸石を 8 個並べるだけのシンプルなレシピです。
+        // tier 版も enum 名をそろえてあるので、対応する圧縮丸石とタンクをそのまま引き当てられます。
+        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ModBlocks.COBBLESTONE_TANK.get())
+            .pattern("CCC")
+            .pattern("CGC")
+            .pattern("CCC")
+            .define('C', ModBlocks.COMPRESSED_COBBLESTONE.get())
+            .define('G', Items.GLASS)
+            .unlockedBy("has_cobblestone_tank_material", has(ModBlocks.COMPRESSED_COBBLESTONE.get()))
+            .save(output, modRecipeId("cobblestone_tank"));
+
+        for (ModBlocks.TierCobblestoneTank tier : ModBlocks.TierCobblestoneTank.values()) {
+            ItemLike compressedCobblestone = ModBlocks.TierCompressedCobblestone.valueOf(tier.name()).getBlock().get();
+            ItemLike result = ModItems.TierCobblestoneTankItem.valueOf(tier.name()).getItem().get();
+
+            ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, result)
+                .pattern("CCC")
+                .pattern("CGC")
+                .pattern("CCC")
+                .define('C', compressedCobblestone)
+                .define('G', Items.GLASS)
+                .unlockedBy("has_" + tier.getRegistryName(), has(compressedCobblestone))
+                .save(output, modRecipeId(tier.getRegistryName()));
         }
     }
 

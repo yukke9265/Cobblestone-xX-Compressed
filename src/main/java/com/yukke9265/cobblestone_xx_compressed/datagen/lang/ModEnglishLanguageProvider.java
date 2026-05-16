@@ -133,6 +133,11 @@ public class ModEnglishLanguageProvider extends LanguageProvider {
             addBlock(tier.getBlock(), tier.getEnglishDisplayName());
         }
 
+        addBlock(ModBlocks.COBBLESTONE_TANK, "Cobblestone Tank");
+        for (ModBlocks.TierCobblestoneTank tier : ModBlocks.TierCobblestoneTank.values()) {
+            addBlock(tier.getBlock(), tier.getEnglishDisplayName());
+        }
+
         addBlock(ModBlocks.COBBLESTONE_FURNACE, "Cobblestone Furnace");
         addBlock(ModBlocks.COBBLESTONE_POWERED_FURNACE, "Cobblestone Powered Furnace");
         addBlock(ModBlocks.COBBLESTONE_CRUSHER, "Cobblestone Crusher");
@@ -159,6 +164,10 @@ public class ModEnglishLanguageProvider extends LanguageProvider {
         add("gui.cobblestonexxcompressed.automation.left", "Left");
         add("gui.cobblestonexxcompressed.automation.right", "Right");
         add("gui.cobblestonexxcompressed.cobblestone_power", "Cobblestone Power");
+        add("gui.cobblestonexxcompressed.fluid", "Fluid");
+        add("gui.cobblestonexxcompressed.item", "Item");
+        add("gui.cobblestonexxcompressed.fluid_amount", "Fluid Amount");
+        add("gui.cobblestonexxcompressed.empty", "Empty");
         add("gui.cobblestonexxcompressed.auto_export", "Auto Export");
     }
 }

@@ -7,6 +7,7 @@ import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneFEGeneratorMenu;
 import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneFurnaceMenu;
 import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneMixerMenu;
 import com.yukke9265.cobblestone_xx_compressed.menu.CobblestonePoweredFurnaceMenu;
+import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneTankMenu;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.inventory.MenuType;
@@ -52,5 +53,11 @@ public class ModMenuType {
         MENU_TYPES.register(
             "cobblestone_mixer_menu",
             () -> IMenuTypeExtension.create(CobblestoneMixerMenu::new)
+        );
+
+    public static final Supplier<MenuType<CobblestoneTankMenu>> COBBLESTONE_TANK_MENU =
+        MENU_TYPES.register(
+            "cobblestone_tank_menu",
+            () -> IMenuTypeExtension.create(CobblestoneTankMenu::new)
         );
 }

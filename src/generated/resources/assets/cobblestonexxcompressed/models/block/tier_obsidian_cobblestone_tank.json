@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "cobblestonexxcompressed:block/cobblestone_tank/tier_obsidian_cobblestone_tank"
+  }
+}

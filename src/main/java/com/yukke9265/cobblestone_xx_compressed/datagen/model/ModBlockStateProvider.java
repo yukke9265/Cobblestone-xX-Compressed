@@ -34,6 +34,12 @@ public class ModBlockStateProvider extends BlockStateProvider {
             registerCobblestoneMachineCasingBlock(tier.getBlock().get(), tier.getRegistryName(), tier.getRegistryName());
         }
 
+        registerCobblestoneTankBlock(ModBlocks.COBBLESTONE_TANK.get(), "cobblestone_tank", "cobblestone_tank");
+
+        for (ModBlocks.TierCobblestoneTank tier : ModBlocks.TierCobblestoneTank.values()) {
+            registerCobblestoneTankBlock(tier.getBlock().get(), tier.getRegistryName(), tier.getRegistryName());
+        }
+
         for (ModBlocks.TierCobblestoneGenerator generatorVariant : ModBlocks.TierCobblestoneGenerator.values()) {
             registerCobblestoneGeneratorBlock(generatorVariant);
         }
@@ -53,6 +59,14 @@ public class ModBlockStateProvider extends BlockStateProvider {
         String textureName
     ) {
         registerCubeAllBlock(block, "cobblestone_machine_casing", modelName, textureName);
+    }
+
+    private void registerCobblestoneTankBlock(
+        net.minecraft.world.level.block.Block block,
+        String modelName,
+        String textureName
+    ) {
+        registerCubeAllBlock(block, "cobblestone_tank", modelName, textureName);
     }
 
     private void registerCobblestoneGeneratorBlock(ModBlocks.TierCobblestoneGenerator generatorVariant) {

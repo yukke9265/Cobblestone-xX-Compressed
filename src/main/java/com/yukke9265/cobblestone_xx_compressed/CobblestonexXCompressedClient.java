@@ -6,6 +6,7 @@ import com.yukke9265.cobblestone_xx_compressed.screen.CobblestoneCentrifugeScree
 import com.yukke9265.cobblestone_xx_compressed.screen.CobblestoneFEGeneratorScreen;
 import com.yukke9265.cobblestone_xx_compressed.screen.CobblestoneMixerScreen;
 import com.yukke9265.cobblestone_xx_compressed.screen.CobblestonePoweredFurnaceScreen;
+import com.yukke9265.cobblestone_xx_compressed.screen.CobblestoneTankScreen;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModMenuType;
 
 import net.minecraft.client.Minecraft;
@@ -47,5 +48,6 @@ public class CobblestonexXCompressedClient {
         event.register(ModMenuType.COBBLESTONE_FE_GENERATOR_MENU.get(), CobblestoneFEGeneratorScreen::new);
         event.register(ModMenuType.COBBLESTONE_CENTRIFUGE_MENU.get(), CobblestoneCentrifugeScreen::new);
         event.register(ModMenuType.COBBLESTONE_MIXER_MENU.get(), CobblestoneMixerScreen::new);
+        event.register(ModMenuType.COBBLESTONE_TANK_MENU.get(), CobblestoneTankScreen::new);
     }
 }

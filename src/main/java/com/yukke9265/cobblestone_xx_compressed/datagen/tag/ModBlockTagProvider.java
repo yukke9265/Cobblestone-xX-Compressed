@@ -25,6 +25,7 @@ public class ModBlockTagProvider extends BlockTagsProvider {
             .add(ModBlocks.COMPRESSED_COBBLESTONE.get())
             .add(ModBlocks.COMPRESSED_STONE.get())
             .add(ModBlocks.COBBLESTONE_MACHINE_CASING.get())
+            .add(ModBlocks.COBBLESTONE_TANK.get())
             .add(ModBlocks.COBBLESTONE_FURNACE.get())
             .add(ModBlocks.COBBLESTONE_CRUSHER.get())
             .add(ModBlocks.COBBLESTONE_CENTRIFUGE.get())
@@ -43,6 +44,10 @@ public class ModBlockTagProvider extends BlockTagsProvider {
         }
 
         for (ModBlocks.TierCobblestoneMachineCasing tier : ModBlocks.TierCobblestoneMachineCasing.values()) {
+            this.tag(BlockTags.MINEABLE_WITH_PICKAXE).add(tier.getBlock().get());
+        }
+
+        for (ModBlocks.TierCobblestoneTank tier : ModBlocks.TierCobblestoneTank.values()) {
             this.tag(BlockTags.MINEABLE_WITH_PICKAXE).add(tier.getBlock().get());
         }
     }

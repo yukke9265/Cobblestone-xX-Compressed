@@ -8,6 +8,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
@@ -22,6 +24,14 @@ public class BaseBlockEntity extends BlockEntity {
         AutomationMode.INPUT,
         AutomationMode.INPUT,
         AutomationMode.INPUT
+    };
+    private final AutomationMode[] fluidAutomationModes = new AutomationMode[] {
+        AutomationMode.DISABLED,
+        AutomationMode.DISABLED,
+        AutomationMode.DISABLED,
+        AutomationMode.DISABLED,
+        AutomationMode.DISABLED,
+        AutomationMode.DISABLED
     };
     private boolean autoExportEnabled;
 
@@ -66,6 +76,26 @@ public class BaseBlockEntity extends BlockEntity {
         return this.getAutomationMode(automationSide).getId();
     }
 
+    public AutomationMode getFluidAutomationMode(int index) {
+        if (index < 0 || index >= AUTOMATION_FACE_COUNT) {
+            throw new IllegalArgumentException("不明な液体自動搬出入設定 index です: " + index);
+        }
+
+        return this.fluidAutomationModes[index];
+    }
+
+    public int getFluidAutomationModeId(int index) {
+        return this.getFluidAutomationMode(index).getId();
+    }
+
+    public AutomationMode getFluidAutomationMode(AutomationSide automationSide) {
+        return this.getFluidAutomationMode(automationSide.getIndex());
+    }
+
+    public int getFluidAutomationModeId(AutomationSide automationSide) {
+        return this.getFluidAutomationMode(automationSide).getId();
+    }
+
     public void cycleAutomationMode(int index) {
         AutomationMode nextMode = this.getAutomationMode(index).next();
         this.setAutomationMode(index, nextMode);
@@ -90,6 +120,30 @@ public class BaseBlockEntity extends BlockEntity {
         this.setAutomationMode(index, allowedModes[nextAllowedIndex]);
     }
 
+    public void cycleFluidAutomationMode(int index) {
+        AutomationMode nextMode = this.getFluidAutomationMode(index).next();
+        this.setFluidAutomationMode(index, nextMode);
+    }
+
+    public void cycleFluidAutomationMode(int index, AutomationMode[] allowedModes) {
+        if (allowedModes == null || allowedModes.length == 0) {
+            throw new IllegalArgumentException("allowedModes が空です");
+        }
+
+        AutomationMode currentMode = this.getFluidAutomationMode(index);
+        int currentAllowedIndex = 0;
+
+        for (int modeIndex = 0; modeIndex < allowedModes.length; modeIndex++) {
+            if (allowedModes[modeIndex] == currentMode) {
+                currentAllowedIndex = modeIndex;
+                break;
+            }
+        }
+
+        int nextAllowedIndex = (currentAllowedIndex + 1) % allowedModes.length;
+        this.setFluidAutomationMode(index, allowedModes[nextAllowedIndex]);
+    }
+
     public void setAutomationMode(int index, AutomationMode mode) {
         if (index < 0 || index >= AUTOMATION_FACE_COUNT) {
             throw new IllegalArgumentException("不明な自動搬出入設定 index です: " + index);
@@ -100,10 +154,22 @@ public class BaseBlockEntity extends BlockEntity {
         this.setChanged();
     }
 
+    public void setFluidAutomationMode(int index, AutomationMode mode) {
+        if (index < 0 || index >= AUTOMATION_FACE_COUNT) {
+            throw new IllegalArgumentException("不明な液体自動搬出入設定 index です: " + index);
+        }
+
+        this.fluidAutomationModes[index] = mode;
+        this.setChanged();
+    }
+
     protected void saveAutomationModes(CompoundTag tag) {
         for (AutomationSide automationSide : AutomationSide.values()) {
             String key = automationSide.getSerializedName() + "AutomationMode";
             tag.putInt(key, this.getAutomationModeId(automationSide));
+
+            String fluidKey = automationSide.getSerializedName() + "FluidAutomationMode";
+            tag.putInt(fluidKey, this.getFluidAutomationModeId(automationSide));
         }
 
         tag.putBoolean("autoExportEnabled", this.autoExportEnabled);
@@ -113,6 +179,9 @@ public class BaseBlockEntity extends BlockEntity {
         for (AutomationSide automationSide : AutomationSide.values()) {
             String key = automationSide.getSerializedName() + "AutomationMode";
             this.setAutomationMode(automationSide.getIndex(), AutomationMode.fromId(tag.getInt(key)));
+
+            String fluidKey = automationSide.getSerializedName() + "FluidAutomationMode";
+            this.setFluidAutomationMode(automationSide.getIndex(), AutomationMode.fromId(tag.getInt(fluidKey)));
         }
 
         this.setAutoExportEnabled(tag.getBoolean("autoExportEnabled"));
@@ -152,6 +221,50 @@ public class BaseBlockEntity extends BlockEntity {
             }
 
             remainingStack = ItemHandlerHelper.insertItem(targetHandler, remainingStack, false);
+        }
+
+        return remainingStack;
+    }
+
+    protected FluidStack pushFluidToConfiguredSides(FluidStack stack, AutomationMode... targetModes) {
+        if (!this.autoExportEnabled || stack.isEmpty()) {
+            return stack;
+        }
+
+        Level currentLevel = this.level;
+        if (currentLevel == null) {
+            return stack;
+        }
+
+        BlockState currentState = this.getBlockState();
+        FluidStack remainingStack = stack.copy();
+
+        for (Direction direction : Direction.values()) {
+            if (remainingStack.isEmpty()) {
+                break;
+            }
+
+            AutomationSide automationSide = AutomationSide.fromWorldSide(direction, currentState);
+            AutomationMode currentMode = this.getFluidAutomationMode(automationSide);
+            if (!this.matchesAnyAutomationMode(currentMode, targetModes)) {
+                continue;
+            }
+
+            IFluidHandler targetHandler = currentLevel.getCapability(
+                Capabilities.FluidHandler.BLOCK,
+                this.worldPosition.relative(direction),
+                direction.getOpposite()
+            );
+            if (targetHandler == null) {
+                continue;
+            }
+
+            int filledAmount = targetHandler.fill(remainingStack, IFluidHandler.FluidAction.EXECUTE);
+            if (filledAmount <= 0) {
+                continue;
+            }
+
+            remainingStack.shrink(filledAmount);
         }
 
         return remainingStack;

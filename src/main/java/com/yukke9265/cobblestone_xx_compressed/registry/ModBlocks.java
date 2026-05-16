@@ -10,6 +10,7 @@ import com.yukke9265.cobblestone_xx_compressed.block.CobblestoneFEGeneratorBlock
 import com.yukke9265.cobblestone_xx_compressed.block.CobblestoneFurnaceBlock;
 import com.yukke9265.cobblestone_xx_compressed.block.CobblestoneMixerBlock;
 import com.yukke9265.cobblestone_xx_compressed.block.CobblestonePoweredFurnaceBlock;
+import com.yukke9265.cobblestone_xx_compressed.block.CobblestoneTankBlock;
 
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
@@ -21,6 +22,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 public class ModBlocks {
     public static final DeferredRegister.Blocks BLOCKS = 
         DeferredRegister.createBlocks(CobblestonexXCompressed.MODID);
+    public static final long BASE_COBBLESTONE_TANK_CAPACITY = 8_000L;
 
     // 圧縮丸石の tier 一覧です。
     // 登録名と表示名をここにまとめておくと、block 登録、item 登録、datagen を同じ順番で回せます。
@@ -137,6 +139,54 @@ public class ModBlocks {
 
         public String getEnglishDisplayName() {
             return this.englishDisplayName;
+        }
+
+        public DeferredBlock<Block> getBlock() {
+            return this.block;
+        }
+
+        private void setBlock(DeferredBlock<Block> block) {
+            this.block = block;
+        }
+    }
+
+    // Cobblestone Tank は通常版 8,000 mB を起点に、
+    // tier が 1 段上がるごとに容量を 8 倍へ増やします。
+    public enum TierCobblestoneTank {
+        COPPER("tier_copper_cobblestone_tank", "Copper Cobblestone Tank", 1),
+        IRON("tier_iron_cobblestone_tank", "Iron Cobblestone Tank", 2),
+        GOLD("tier_gold_cobblestone_tank", "Gold Cobblestone Tank", 3),
+        AMETHYST("tier_amethyst_cobblestone_tank", "Amethyst Cobblestone Tank", 4),
+        AQUAMARINE("tier_aquamarine_cobblestone_tank", "Aquamarine Cobblestone Tank", 5),
+        TOPAZ("tier_topaz_cobblestone_tank", "Topaz Cobblestone Tank", 6),
+        RUBY("tier_ruby_cobblestone_tank", "Ruby Cobblestone Tank", 7),
+        SAPPHIRE("tier_sapphire_cobblestone_tank", "Sapphire Cobblestone Tank", 8),
+        DIAMOND("tier_diamond_cobblestone_tank", "Diamond Cobblestone Tank", 9),
+        EMERALD("tier_emerald_cobblestone_tank", "Emerald Cobblestone Tank", 10),
+        NETHERITE("tier_netherite_cobblestone_tank", "Netherite Cobblestone Tank", 11),
+        OBSIDIAN("tier_obsidian_cobblestone_tank", "Obsidian Cobblestone Tank", 12);
+
+        private final String registryName;
+        private final String englishDisplayName;
+        private final long capacity;
+        private DeferredBlock<Block> block;
+
+        TierCobblestoneTank(String registryName, String englishDisplayName, int tierLevel) {
+            this.registryName = registryName;
+            this.englishDisplayName = englishDisplayName;
+            this.capacity = calculateCobblestoneTankCapacity(tierLevel);
+        }
+
+        public String getRegistryName() {
+            return this.registryName;
+        }
+
+        public String getEnglishDisplayName() {
+            return this.englishDisplayName;
+        }
+
+        public long getCapacity() {
+            return this.capacity;
         }
 
         public DeferredBlock<Block> getBlock() {
@@ -343,6 +393,27 @@ public class ModBlocks {
         return BLOCKS.register(name, () -> new Block(createCobblestoneMachineCasingProperties()));
     }
 
+    private static long calculateCobblestoneTankCapacity(int tierLevel) {
+        long capacity = BASE_COBBLESTONE_TANK_CAPACITY;
+        for (int index = 0; index < tierLevel; index++) {
+            capacity *= 8L;
+        }
+
+        return capacity;
+    }
+
+    private static BlockBehaviour.Properties createCobblestoneTankProperties() {
+        return BlockBehaviour.Properties
+            .of()
+            .mapColor(MapColor.STONE)
+            .strength(0.5F)
+            .sound(SoundType.STONE);
+    }
+
+    private static DeferredBlock<Block> registerCobblestoneTank(String name, long capacity) {
+        return BLOCKS.register(name, () -> new CobblestoneTankBlock(createCobblestoneTankProperties(), capacity));
+    }
+
     private static BlockBehaviour.Properties createCobblestoneGeneratorProperties() {
         return BlockBehaviour.Properties
             .of()
@@ -367,6 +438,9 @@ public class ModBlocks {
     public static final DeferredBlock<Block> COBBLESTONE_MACHINE_CASING =
         registerCobblestoneMachineCasing("cobblestone_machine_casing");
 
+    public static final DeferredBlock<Block> COBBLESTONE_TANK =
+        registerCobblestoneTank("cobblestone_tank", BASE_COBBLESTONE_TANK_CAPACITY);
+
     static {
         for (TierCompressedCobblestone tier : TierCompressedCobblestone.values()) {
             tier.setBlock(registerCompressedCobblestone(tier.getRegistryName()));
@@ -382,6 +456,12 @@ public class ModBlocks {
     static {
         for (TierCobblestoneMachineCasing tier : TierCobblestoneMachineCasing.values()) {
             tier.setBlock(registerCobblestoneMachineCasing(tier.getRegistryName()));
+        }
+    }
+
+    static {
+        for (TierCobblestoneTank tier : TierCobblestoneTank.values()) {
+            tier.setBlock(registerCobblestoneTank(tier.getRegistryName(), tier.getCapacity()));
         }
     }
 

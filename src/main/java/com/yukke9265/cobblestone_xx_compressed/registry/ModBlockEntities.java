@@ -10,6 +10,7 @@ import com.yukke9265.cobblestone_xx_compressed.blockentity.CobblestoneFEGenerato
 import com.yukke9265.cobblestone_xx_compressed.blockentity.CobblestoneFurnaceBlockEntity;
 import com.yukke9265.cobblestone_xx_compressed.blockentity.CobblestoneMixerBlockEntity;
 import com.yukke9265.cobblestone_xx_compressed.blockentity.CobblestonePoweredFurnaceBlockEntity;
+import com.yukke9265.cobblestone_xx_compressed.blockentity.CobblestoneTankBlockEntity;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.block.Block;
@@ -89,12 +90,34 @@ public class ModBlockEntities {
             ).build(null)
         );
 
+    public static final Supplier<BlockEntityType<CobblestoneTankBlockEntity>> COBBLESTONE_TANK_BLOCK_ENTITY =
+        BLOCK_ENTITY_TYPES.register(
+            "cobblestone_tank",
+            () -> BlockEntityType.Builder.of(
+                (pos, state) -> new CobblestoneTankBlockEntity(pos, state),
+                getCobblestoneTankBlocks()
+            ).build(null)
+        );
+
     private static Block[] getCobblestoneGeneratorBlocks() {
         Block[] blocks = new Block[ModBlocks.TierCobblestoneGenerator.values().length];
         int index = 0;
 
         for (ModBlocks.TierCobblestoneGenerator generatorVariant : ModBlocks.TierCobblestoneGenerator.values()) {
             blocks[index] = generatorVariant.getBlock().get();
+            index++;
+        }
+
+        return blocks;
+    }
+
+    private static Block[] getCobblestoneTankBlocks() {
+        Block[] blocks = new Block[ModBlocks.TierCobblestoneTank.values().length + 1];
+        blocks[0] = ModBlocks.COBBLESTONE_TANK.get();
+
+        int index = 1;
+        for (ModBlocks.TierCobblestoneTank tier : ModBlocks.TierCobblestoneTank.values()) {
+            blocks[index] = tier.getBlock().get();
             index++;
         }
 

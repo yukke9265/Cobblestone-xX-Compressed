@@ -55,6 +55,7 @@ public class ModBlockLootTableProvider implements DataProvider {
         futures.add(DataProvider.saveStable(cache, createSimpleSelfDropLoot("cobblestone_mixer"), rootPath.resolve("cobblestone_mixer.json")));
         futures.add(DataProvider.saveStable(cache, createSimpleSelfDropLoot("compressed_cobblestone"), rootPath.resolve("compressed_cobblestone.json")));
         futures.add(DataProvider.saveStable(cache, createSimpleSelfDropLoot("cobblestone_machine_casing"), rootPath.resolve("cobblestone_machine_casing.json")));
+        futures.add(DataProvider.saveStable(cache, createSimpleSelfDropLoot("cobblestone_tank"), rootPath.resolve("cobblestone_tank.json")));
 
         for (ModBlocks.TierCobblestoneGenerator generatorVariant : ModBlocks.TierCobblestoneGenerator.values()) {
             String name = generatorVariant.getRegistryName();
@@ -67,6 +68,11 @@ public class ModBlockLootTableProvider implements DataProvider {
         }
 
         for (ModBlocks.TierCobblestoneMachineCasing tier : ModBlocks.TierCobblestoneMachineCasing.values()) {
+            String name = tier.getRegistryName();
+            futures.add(DataProvider.saveStable(cache, createSimpleSelfDropLoot(name), rootPath.resolve(name + ".json")));
+        }
+
+        for (ModBlocks.TierCobblestoneTank tier : ModBlocks.TierCobblestoneTank.values()) {
             String name = tier.getRegistryName();
             futures.add(DataProvider.saveStable(cache, createSimpleSelfDropLoot(name), rootPath.resolve(name + ".json")));
         }

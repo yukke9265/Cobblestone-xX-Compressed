@@ -16,6 +16,7 @@ import net.minecraft.world.entity.player.Player;
 public class BaseMenu extends AbstractContainerMenu {
     protected static final int AUTOMATION_BUTTON_ID_BASE = 100;
     protected static final int AUTO_EXPORT_BUTTON_ID = 200;
+    protected static final int FLUID_AUTOMATION_BUTTON_ID_BASE = 300;
 
     // 共通の基底メニュークラスです。全てのメニューはこれを継承します。
     public BaseMenu(MenuType<?> menuType, int containerId) {
@@ -35,12 +36,34 @@ public class BaseMenu extends AbstractContainerMenu {
         return buttonId - AUTOMATION_BUTTON_ID_BASE;
     }
 
+    protected final int getFluidAutomationButtonId(int automationIndex) {
+        return FLUID_AUTOMATION_BUTTON_ID_BASE + automationIndex;
+    }
+
+    protected final boolean isFluidAutomationButtonId(int buttonId) {
+        return buttonId >= FLUID_AUTOMATION_BUTTON_ID_BASE
+            && buttonId < FLUID_AUTOMATION_BUTTON_ID_BASE + BaseBlockEntity.AUTOMATION_FACE_COUNT;
+    }
+
+    protected final int getFluidAutomationIndexFromButtonId(int buttonId) {
+        return buttonId - FLUID_AUTOMATION_BUTTON_ID_BASE;
+    }
+
     protected final boolean handleAutomationButtonClick(BaseBlockEntity blockEntity, int buttonId) {
         if (!this.isAutomationButtonId(buttonId)) {
             return false;
         }
 
         blockEntity.cycleAutomationMode(this.getAutomationIndexFromButtonId(buttonId));
+        return true;
+    }
+
+    protected final boolean handleFluidAutomationButtonClick(BaseBlockEntity blockEntity, int buttonId) {
+        if (!this.isFluidAutomationButtonId(buttonId)) {
+            return false;
+        }
+
+        blockEntity.cycleFluidAutomationMode(this.getFluidAutomationIndexFromButtonId(buttonId));
         return true;
     }
 

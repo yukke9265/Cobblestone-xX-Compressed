@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "C": {
+      "item": "cobblestonexxcompressed:tier_copper_compressed_cobblestone"
+    },
+    "G": {
+      "item": "minecraft:glass"
+    }
+  },
+  "pattern": [
+    "CCC",
+    "CGC",
+    "CCC"
+  ],
+  "result": {
+    "count": 1,
+    "id": "cobblestonexxcompressed:tier_copper_cobblestone_tank"
+  }
+}

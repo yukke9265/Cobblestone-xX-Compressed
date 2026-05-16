@@ -42,3 +42,4 @@ repo/
 ### Local Debug Logs ###
 runData-debug.log
 runData-debug-after-fix.log
+run-data/logs/**

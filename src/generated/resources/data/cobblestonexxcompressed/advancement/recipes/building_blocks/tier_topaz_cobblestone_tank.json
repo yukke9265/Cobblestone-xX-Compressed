@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "cobblestonexxcompressed:tier_topaz_cobblestone_tank"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "has_tier_topaz_cobblestone_tank": {
+      "conditions": {
+        "items": [
+          {
+            "items": "cobblestonexxcompressed:tier_topaz_compressed_cobblestone"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_tier_topaz_cobblestone_tank"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "cobblestonexxcompressed:tier_topaz_cobblestone_tank"
+    ]
+  }
+}

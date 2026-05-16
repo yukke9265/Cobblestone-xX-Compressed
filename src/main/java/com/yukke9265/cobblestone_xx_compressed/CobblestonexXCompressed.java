@@ -66,6 +66,10 @@ public class CobblestonexXCompressed {
                 for (ModItems.TierCobblestoneMachineCasingItem tier : ModItems.TierCobblestoneMachineCasingItem.values()) {
                     output.accept(tier.getItem().get());
                 }
+                output.accept(ModItems.COBBLESTONE_TANK_ITEM.get());
+                for (ModItems.TierCobblestoneTankItem tier : ModItems.TierCobblestoneTankItem.values()) {
+                    output.accept(tier.getItem().get());
+                }
                 output.accept(ModItems.COMPRESSED_COBBLESTONE_SINGULARITY_BIT.get());
                 for (ModItems.TierCompressedCobblestoneSingularityBit tier : ModItems.TierCompressedCobblestoneSingularityBit.values()) {
                     output.accept(tier.getItem().get());
@@ -256,6 +260,18 @@ public class CobblestonexXCompressed {
             Capabilities.ItemHandler.BLOCK,
             ModBlockEntities.COBBLESTONE_MIXER_BLOCK_ENTITY.get(),
             (blockEntity, side) -> blockEntity.getAutomationItemHandler(side)
+        );
+
+        event.registerBlockEntity(
+            Capabilities.ItemHandler.BLOCK,
+            ModBlockEntities.COBBLESTONE_TANK_BLOCK_ENTITY.get(),
+            (blockEntity, side) -> blockEntity.getAutomationItemHandler(side)
+        );
+
+        event.registerBlockEntity(
+            Capabilities.FluidHandler.BLOCK,
+            ModBlockEntities.COBBLESTONE_TANK_BLOCK_ENTITY.get(),
+            (blockEntity, side) -> blockEntity.getFluidHandler(side)
         );
 
         // Cobblestone Generator は GUI を持たず、1 出力スロットだけを全面出力で公開します。

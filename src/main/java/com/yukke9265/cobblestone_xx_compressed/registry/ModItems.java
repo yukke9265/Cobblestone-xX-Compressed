@@ -1151,6 +1151,9 @@ public class ModItems {
     public static final DeferredItem<BlockItem> COBBLESTONE_MACHINE_CASING_ITEM =
         registerCompressedCobblestoneBlockItem("cobblestone_machine_casing", ModBlocks.COBBLESTONE_MACHINE_CASING);
 
+    public static final DeferredItem<BlockItem> COBBLESTONE_TANK_ITEM =
+        registerCompressedCobblestoneBlockItem("cobblestone_tank", ModBlocks.COBBLESTONE_TANK);
+
     public enum TierCompressedCobblestoneItem {
         COPPER(ModBlocks.TierCompressedCobblestone.COPPER),
         IRON(ModBlocks.TierCompressedCobblestone.IRON),
@@ -1320,6 +1323,40 @@ public class ModItems {
         }
     }
 
+    public enum TierCobblestoneTankItem {
+        COPPER(ModBlocks.TierCobblestoneTank.COPPER),
+        IRON(ModBlocks.TierCobblestoneTank.IRON),
+        GOLD(ModBlocks.TierCobblestoneTank.GOLD),
+        AMETHYST(ModBlocks.TierCobblestoneTank.AMETHYST),
+        AQUAMARINE(ModBlocks.TierCobblestoneTank.AQUAMARINE),
+        TOPAZ(ModBlocks.TierCobblestoneTank.TOPAZ),
+        RUBY(ModBlocks.TierCobblestoneTank.RUBY),
+        SAPPHIRE(ModBlocks.TierCobblestoneTank.SAPPHIRE),
+        DIAMOND(ModBlocks.TierCobblestoneTank.DIAMOND),
+        EMERALD(ModBlocks.TierCobblestoneTank.EMERALD),
+        NETHERITE(ModBlocks.TierCobblestoneTank.NETHERITE),
+        OBSIDIAN(ModBlocks.TierCobblestoneTank.OBSIDIAN);
+
+        private final ModBlocks.TierCobblestoneTank blockTier;
+        private DeferredItem<BlockItem> item;
+
+        TierCobblestoneTankItem(ModBlocks.TierCobblestoneTank blockTier) {
+            this.blockTier = blockTier;
+        }
+
+        public DeferredItem<BlockItem> getItem() {
+            return this.item;
+        }
+
+        private void setItem(DeferredItem<BlockItem> item) {
+            this.item = item;
+        }
+
+        public ModBlocks.TierCobblestoneTank getBlockTier() {
+            return this.blockTier;
+        }
+    }
+
     static {
         for (TierCompressedCobblestoneItem tier : TierCompressedCobblestoneItem.values()) {
             tier.setItem(registerCompressedCobblestoneBlockItem(
@@ -1340,6 +1377,15 @@ public class ModItems {
 
     static {
         for (TierCobblestoneMachineCasingItem tier : TierCobblestoneMachineCasingItem.values()) {
+            tier.setItem(registerCompressedCobblestoneBlockItem(
+                tier.getBlockTier().getRegistryName(),
+                tier.getBlockTier().getBlock()
+            ));
+        }
+    }
+
+    static {
+        for (TierCobblestoneTankItem tier : TierCobblestoneTankItem.values()) {
             tier.setItem(registerCompressedCobblestoneBlockItem(
                 tier.getBlockTier().getRegistryName(),
                 tier.getBlockTier().getBlock()
