@@ -139,6 +139,7 @@ public class ModEnglishLanguageProvider extends LanguageProvider {
         }
 
         addBlock(ModBlocks.COBBLESTONE_FURNACE, "Cobblestone Furnace");
+        addBlock(ModBlocks.COBBLESTONE_FE_GENERATOR, "Cobblestone FE Generator");
         addBlock(ModBlocks.COBBLESTONE_POWERED_FURNACE, "Cobblestone Powered Furnace");
         addBlock(ModBlocks.COBBLESTONE_CRUSHER, "Cobblestone Crusher");
         addBlock(ModBlocks.COBBLESTONE_CENTRIFUGE, "Cobblestone Centrifuge");
@@ -164,11 +165,15 @@ public class ModEnglishLanguageProvider extends LanguageProvider {
         add("gui.cobblestonexxcompressed.automation.left", "Left");
         add("gui.cobblestonexxcompressed.automation.right", "Right");
         add("gui.cobblestonexxcompressed.cobblestone_power", "Cobblestone Power");
+        add("gui.cobblestonexxcompressed.fe_energy", "FE Energy");
+        add("gui.cobblestonexxcompressed.convert_fe_rate", "Convert FE");
+        add("gui.cobblestonexxcompressed.output_fe_rate", "Output FE");
         add("gui.cobblestonexxcompressed.fluid", "Fluid");
         add("gui.cobblestonexxcompressed.item", "Item");
         add("gui.cobblestonexxcompressed.fluid_amount", "Fluid Amount");
         add("gui.cobblestonexxcompressed.empty", "Empty");
         add("gui.cobblestonexxcompressed.auto_export", "Auto Export");
+        add("gui.cobblestonexxcompressed.start_stop", "Start/Stop");
         add("jei.cobblestonexxcompressed.compressed_stone_loot", "Compressed Stone Loot");
         add("jei.cobblestonexxcompressed.silk_touch", "Silk Touch");
         add("jei.cobblestonexxcompressed.no_silk_touch", "No Silk Touch");

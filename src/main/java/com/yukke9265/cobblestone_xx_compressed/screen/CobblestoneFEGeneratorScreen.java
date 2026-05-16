@@ -86,7 +86,7 @@ public class CobblestoneFEGeneratorScreen extends BaseScreen<CobblestoneFEGenera
         super.init();
 
         this.addRenderableWidget(
-            Button.builder(Component.literal("start/stop"), button -> this.onStartButtonPressed())
+            Button.builder(Component.translatable("gui.cobblestonexxcompressed.start_stop"), button -> this.onStartButtonPressed())
                 .bounds(
                     this.leftPos + this.imageWidth + START_BUTTON_X_OFFSET,
                     this.topPos + this.imageHeight - START_BUTTON_HEIGHT,
@@ -214,7 +214,7 @@ public class CobblestoneFEGeneratorScreen extends BaseScreen<CobblestoneFEGenera
             .append(String.valueOf(this.menu.getMaxCobblestonePower()));
         guiGraphics.drawString(this.font, cpLabel, CP_labelX, CP_labelY, 0x404040, false);
 
-        Component feLabel = Component.translatable("gui.cobblestonexxcompressed.rf_energy")
+        Component feLabel = Component.translatable("gui.cobblestonexxcompressed.fe_energy")
             .append(": ")
             .append(String.valueOf(this.menu.getStoredForgeEnergy()))
             .append(" / ")
