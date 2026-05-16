@@ -29,6 +29,7 @@ public class ModBlockTagProvider extends BlockTagsProvider {
             .add(ModBlocks.COBBLESTONE_FURNACE.get())
             .add(ModBlocks.COBBLESTONE_CRUSHER.get())
             .add(ModBlocks.COBBLESTONE_CENTRIFUGE.get())
+            .add(ModBlocks.COBBLESTONE_LASER_DRILL.get())
             .add(ModBlocks.COBBLESTONE_MIXER.get());
 
         for (ModBlocks.TierCobblestoneGenerator generatorVariant : ModBlocks.TierCobblestoneGenerator.values()) {

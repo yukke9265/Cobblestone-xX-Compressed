@@ -8,6 +8,7 @@ import com.yukke9265.cobblestone_xx_compressed.block.CobblestoneCrusherBlock;
 import com.yukke9265.cobblestone_xx_compressed.block.CobblestoneCentrifugeBlock;
 import com.yukke9265.cobblestone_xx_compressed.block.CobblestoneFEGeneratorBlock;
 import com.yukke9265.cobblestone_xx_compressed.block.CobblestoneFurnaceBlock;
+import com.yukke9265.cobblestone_xx_compressed.block.CobblestoneLaserDrillBlock;
 import com.yukke9265.cobblestone_xx_compressed.block.CobblestoneMixerBlock;
 import com.yukke9265.cobblestone_xx_compressed.block.CobblestonePoweredFurnaceBlock;
 import com.yukke9265.cobblestone_xx_compressed.block.CobblestoneTankBlock;
@@ -523,6 +524,18 @@ public class ModBlocks {
         BLOCKS.register(
             "cobblestone_centrifuge",
             () -> new CobblestoneCentrifugeBlock(
+                BlockBehaviour.Properties
+                    .of()
+                    .mapColor(MapColor.STONE)
+                    .strength(0.5F)
+                    .sound(SoundType.STONE)
+            )
+        );
+
+    public static final DeferredBlock<Block> COBBLESTONE_LASER_DRILL =
+        BLOCKS.register(
+            "cobblestone_laser_drill",
+            () -> new CobblestoneLaserDrillBlock(
                 BlockBehaviour.Properties
                     .of()
                     .mapColor(MapColor.STONE)

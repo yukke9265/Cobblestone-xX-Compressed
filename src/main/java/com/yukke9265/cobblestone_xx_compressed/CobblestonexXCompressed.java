@@ -133,6 +133,7 @@ public class CobblestonexXCompressed {
                 output.accept(ModItems.COBBLESTONE_CRUSHER_ITEM.get());
                 output.accept(ModItems.COBBLESTONE_FE_GENERATOR_ITEM.get());
                 output.accept(ModItems.COBBLESTONE_CENTRIFUGE_ITEM.get());
+                output.accept(ModItems.COBBLESTONE_LASER_DRILL_ITEM.get());
                 output.accept(ModItems.COBBLESTONE_MIXER_ITEM.get());
                 for (ModItems.TierCobblestoneGeneratorItem generatorItem : ModItems.TierCobblestoneGeneratorItem.values()) {
                     output.accept(generatorItem.getItem().get());
@@ -251,6 +252,14 @@ public class CobblestonexXCompressed {
         event.registerBlockEntity(
             Capabilities.ItemHandler.BLOCK,
             ModBlockEntities.COBBLESTONE_CENTRIFUGE_BLOCK_ENTITY.get(),
+            (blockEntity, side) -> blockEntity.getAutomationItemHandler(side)
+        );
+
+        // Cobblestone Laser Drill も入力 1 枠、CP 投入 1 枠、出力 2 枠を持ちます。
+        // Centrifuge と同じ面設定を使い、入力・出力・CP 搬入を外部自動化へ公開します。
+        event.registerBlockEntity(
+            Capabilities.ItemHandler.BLOCK,
+            ModBlockEntities.COBBLESTONE_LASER_DRILL_BLOCK_ENTITY.get(),
             (blockEntity, side) -> blockEntity.getAutomationItemHandler(side)
         );
 

@@ -12,17 +12,20 @@ import com.yukke9265.cobblestone_xx_compressed.jei.category.CompressedStoneLootR
 import com.yukke9265.cobblestone_xx_compressed.jei.category.CobblestoneCrusherRecipeCategory;
 import com.yukke9265.cobblestone_xx_compressed.jei.category.CobblestoneCentrifugeRecipeCategory;
 import com.yukke9265.cobblestone_xx_compressed.jei.category.CobblestoneFurnaceRecipeCategory;
+import com.yukke9265.cobblestone_xx_compressed.jei.category.CobblestoneLaserDrillRecipeCategory;
 import com.yukke9265.cobblestone_xx_compressed.jei.category.CobblestoneMixerRecipeCategory;
 import com.yukke9265.cobblestone_xx_compressed.jei.category.CobblestonePoweredFurnaceRecipeCategory;
 import com.yukke9265.cobblestone_xx_compressed.menu.BaseMenu;
 import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneCrusherMenu;
 import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneCentrifugeMenu;
 import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneFurnaceMenu;
+import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneLaserDrillMenu;
 import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneMixerMenu;
 import com.yukke9265.cobblestone_xx_compressed.menu.CobblestonePoweredFurnaceMenu;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneCrusherRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneCentrifugeRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneFurnaceRecipe;
+import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneLaserDrillRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneMixerRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestonePoweredFurnaceRecipe;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModBlocks;
@@ -80,6 +83,13 @@ public class ModJeiPlugin implements IModPlugin {
             CobblestoneCentrifugeRecipe.class
         );
 
+    public static final RecipeType<CobblestoneLaserDrillRecipe> COBBLESTONE_LASER_DRILL_RECIPE_TYPE =
+        RecipeType.create(
+            ModJeiIds.COBBLESTONE_LASER_DRILL.getNamespace(),
+            ModJeiIds.COBBLESTONE_LASER_DRILL.getPath(),
+            CobblestoneLaserDrillRecipe.class
+        );
+
     public static final RecipeType<CobblestoneMixerRecipe> COBBLESTONE_MIXER_RECIPE_TYPE =
         RecipeType.create(
             ModJeiIds.COBBLESTONE_MIXER.getNamespace(),
@@ -134,6 +144,16 @@ public class ModJeiPlugin implements IModPlugin {
             ModMenuType.COBBLESTONE_CENTRIFUGE_MENU
         );
 
+    private static final MachineJeiDefinition<CobblestoneLaserDrillRecipe, CobblestoneLaserDrillMenu> COBBLESTONE_LASER_DRILL_DEFINITION =
+        new MachineJeiDefinition<>(
+            ModJeiIds.COBBLESTONE_LASER_DRILL,
+            COBBLESTONE_LASER_DRILL_RECIPE_TYPE,
+            registration -> new CobblestoneLaserDrillRecipeCategory(registration.getJeiHelpers().getGuiHelper()),
+            () -> new ItemStack(ModBlocks.COBBLESTONE_LASER_DRILL.get()),
+            CobblestoneLaserDrillMenu.class,
+            ModMenuType.COBBLESTONE_LASER_DRILL_MENU
+        );
+
     private static final MachineJeiDefinition<CobblestoneMixerRecipe, CobblestoneMixerMenu> COBBLESTONE_MIXER_DEFINITION =
         new MachineJeiDefinition<>(
             ModJeiIds.COBBLESTONE_MIXER,
@@ -149,6 +169,7 @@ public class ModJeiPlugin implements IModPlugin {
         COBBLESTONE_POWERED_FURNACE_DEFINITION,
         COBBLESTONE_CRUSHER_DEFINITION,
         COBBLESTONE_CENTRIFUGE_DEFINITION,
+        COBBLESTONE_LASER_DRILL_DEFINITION,
         COBBLESTONE_MIXER_DEFINITION
     );
 
@@ -203,6 +224,13 @@ public class ModJeiPlugin implements IModPlugin {
             .map(RecipeHolder::value)
             .toList();
         registration.addRecipes(COBBLESTONE_CENTRIFUGE_DEFINITION.recipeType(), centrifugeRecipes);
+
+        List<CobblestoneLaserDrillRecipe> laserDrillRecipes = minecraft.level.getRecipeManager()
+            .getAllRecipesFor(ModRecipeTypes.COBBLESTONE_LASER_DRILL.get())
+            .stream()
+            .map(RecipeHolder::value)
+            .toList();
+        registration.addRecipes(COBBLESTONE_LASER_DRILL_DEFINITION.recipeType(), laserDrillRecipes);
 
         List<CobblestoneMixerRecipe> mixerRecipes = minecraft.level.getRecipeManager()
             .getAllRecipesFor(ModRecipeTypes.COBBLESTONE_MIXER.get())

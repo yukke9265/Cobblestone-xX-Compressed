@@ -1435,4 +1435,9 @@ public class ModItems {
         ModItems.ITEMS.registerSimpleBlockItem(
             "cobblestone_centrifuge",
             ModBlocks.COBBLESTONE_CENTRIFUGE);
+
+    public static final DeferredItem<BlockItem> COBBLESTONE_LASER_DRILL_ITEM =
+        ModItems.ITEMS.registerSimpleBlockItem(
+            "cobblestone_laser_drill",
+            ModBlocks.COBBLESTONE_LASER_DRILL);
 }

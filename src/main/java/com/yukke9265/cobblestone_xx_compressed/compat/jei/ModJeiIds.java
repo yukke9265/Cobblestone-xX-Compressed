@@ -19,6 +19,9 @@ public final class ModJeiIds {
     public static final ResourceLocation COBBLESTONE_CENTRIFUGE =
         ResourceLocation.fromNamespaceAndPath(CobblestonexXCompressed.MODID, "cobblestone_centrifuge");
 
+    public static final ResourceLocation COBBLESTONE_LASER_DRILL =
+        ResourceLocation.fromNamespaceAndPath(CobblestonexXCompressed.MODID, "cobblestone_laser_drill");
+
     public static final ResourceLocation COBBLESTONE_MIXER =
         ResourceLocation.fromNamespaceAndPath(CobblestonexXCompressed.MODID, "cobblestone_mixer");
 

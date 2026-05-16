@@ -8,6 +8,7 @@ import com.yukke9265.cobblestone_xx_compressed.blockentity.CobblestoneCrusherBlo
 import com.yukke9265.cobblestone_xx_compressed.blockentity.CobblestoneCentrifugeBlockEntity;
 import com.yukke9265.cobblestone_xx_compressed.blockentity.CobblestoneFEGeneratorBlockEntity;
 import com.yukke9265.cobblestone_xx_compressed.blockentity.CobblestoneFurnaceBlockEntity;
+import com.yukke9265.cobblestone_xx_compressed.blockentity.CobblestoneLaserDrillBlockEntity;
 import com.yukke9265.cobblestone_xx_compressed.blockentity.CobblestoneMixerBlockEntity;
 import com.yukke9265.cobblestone_xx_compressed.blockentity.CobblestonePoweredFurnaceBlockEntity;
 import com.yukke9265.cobblestone_xx_compressed.blockentity.CobblestoneTankBlockEntity;
@@ -63,6 +64,15 @@ public class ModBlockEntities {
             () -> BlockEntityType.Builder.of(
                 CobblestoneCentrifugeBlockEntity::new,
                 ModBlocks.COBBLESTONE_CENTRIFUGE.get()
+            ).build(null)
+        );
+
+    public static final Supplier<BlockEntityType<CobblestoneLaserDrillBlockEntity>> COBBLESTONE_LASER_DRILL_BLOCK_ENTITY =
+        BLOCK_ENTITY_TYPES.register(
+            "cobblestone_laser_drill",
+            () -> BlockEntityType.Builder.of(
+                CobblestoneLaserDrillBlockEntity::new,
+                ModBlocks.COBBLESTONE_LASER_DRILL.get()
             ).build(null)
         );
 

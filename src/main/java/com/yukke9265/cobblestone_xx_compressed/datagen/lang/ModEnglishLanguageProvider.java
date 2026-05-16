@@ -143,6 +143,7 @@ public class ModEnglishLanguageProvider extends LanguageProvider {
         addBlock(ModBlocks.COBBLESTONE_POWERED_FURNACE, "Cobblestone Powered Furnace");
         addBlock(ModBlocks.COBBLESTONE_CRUSHER, "Cobblestone Crusher");
         addBlock(ModBlocks.COBBLESTONE_CENTRIFUGE, "Cobblestone Centrifuge");
+        addBlock(ModBlocks.COBBLESTONE_LASER_DRILL, "Cobblestone Laser Drill");
         addBlock(ModBlocks.COBBLESTONE_MIXER, "Cobblestone Mixer");
 
         for (ModBlocks.TierCobblestoneGenerator generatorVariant : ModBlocks.TierCobblestoneGenerator.values()) {

@@ -6,6 +6,7 @@ import com.yukke9265.cobblestone_xx_compressed.CobblestonexXCompressed;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneCrusherRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneCentrifugeRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneFurnaceRecipe;
+import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneLaserDrillRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneMixerRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestonePoweredFurnaceRecipe;
 
@@ -28,6 +29,9 @@ public class ModRecipeTypes {
 
     public static final Supplier<RecipeType<CobblestoneCentrifugeRecipe>> COBBLESTONE_CENTRIFUGE =
         RECIPE_TYPES.register("cobblestone_centrifuge", RecipeType::simple);
+
+    public static final Supplier<RecipeType<CobblestoneLaserDrillRecipe>> COBBLESTONE_LASER_DRILL =
+        RECIPE_TYPES.register("cobblestone_laser_drill", RecipeType::simple);
 
     public static final Supplier<RecipeType<CobblestoneMixerRecipe>> COBBLESTONE_MIXER =
         RECIPE_TYPES.register("cobblestone_mixer", RecipeType::simple);

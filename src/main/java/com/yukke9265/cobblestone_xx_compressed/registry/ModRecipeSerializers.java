@@ -6,6 +6,7 @@ import com.yukke9265.cobblestone_xx_compressed.CobblestonexXCompressed;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneCrusherRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneCentrifugeRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneFurnaceRecipe;
+import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneLaserDrillRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneMixerRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestonePoweredFurnaceRecipe;
 
@@ -80,6 +81,22 @@ public class ModRecipeSerializers {
                 @Override
                 public StreamCodec<RegistryFriendlyByteBuf, CobblestoneCentrifugeRecipe> streamCodec() {
                     return CobblestoneCentrifugeRecipe.STREAM_CODEC;
+                }
+            }
+        );
+
+    public static final Supplier<RecipeSerializer<CobblestoneLaserDrillRecipe>> COBBLESTONE_LASER_DRILL =
+        RECIPE_SERIALIZERS.register(
+            "cobblestone_laser_drill",
+            () -> new RecipeSerializer<CobblestoneLaserDrillRecipe>() {
+                @Override
+                public MapCodec<CobblestoneLaserDrillRecipe> codec() {
+                    return CobblestoneLaserDrillRecipe.CODEC;
+                }
+
+                @Override
+                public StreamCodec<RegistryFriendlyByteBuf, CobblestoneLaserDrillRecipe> streamCodec() {
+                    return CobblestoneLaserDrillRecipe.STREAM_CODEC;
                 }
             }
         );
