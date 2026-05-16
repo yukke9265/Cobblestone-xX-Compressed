@@ -11,6 +11,7 @@ import com.yukke9265.cobblestone_xx_compressed.compat.jei.JeiRecipeTransferDefin
 import com.yukke9265.cobblestone_xx_compressed.compat.jei.ModJeiIds;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModBlocks;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModMenuType;
+import com.yukke9265.cobblestone_xx_compressed.util.MachineGuiLayouts;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -45,19 +46,6 @@ public class CobblestonePoweredFurnaceMenu extends BaseMenu {
     private static final int PLAYER_INVENTORY_ROWS = 3;
     private static final int HOTBAR_SLOT_COUNT = 9;
 
-    private static final int SLOT_SIZE = 18;
-    private static final int MACHINE_SLOT_Y = 31;
-    private static final int INPUT_SLOT_X = 56;
-    private static final int OUTPUT_SLOT_X = INPUT_SLOT_X + SLOT_SIZE + 35;
-    private static final int POWER_SLOT_X = 10;
-    private static final int POWER_SLOT_Y = 51;
-    private static final int ACCELERATION_SLOT_X = 176;
-    private static final int ACCELERATION_SLOT_Y = 12;
-    private static final int ENERGIZED_CUBE_SLOT_X = ACCELERATION_SLOT_X;
-    private static final int ENERGIZED_CUBE_SLOT_Y = ACCELERATION_SLOT_Y + SLOT_SIZE;
-    private static final int PLAYER_INVENTORY_START_X = 8;
-    private static final int PLAYER_INVENTORY_START_Y = 84;
-    private static final int HOTBAR_START_Y = 142;
     private static final int MACHINE_SLOT_COUNT = 5;
     private static final int PLAYER_INVENTORY_START_INDEX = MACHINE_SLOT_COUNT;
     private static final int PLAYER_INVENTORY_SLOT_COUNT = PLAYER_INVENTORY_ROWS * PLAYER_INVENTORY_COLUMNS;
@@ -264,27 +252,27 @@ public class CobblestonePoweredFurnaceMenu extends BaseMenu {
     private void addPoweredFurnaceSlots() {
         ItemStackHandler itemStackHandler = this.poweredFurnaceBlockEntity.getItemStackHandler();
 
-        this.addSlot(new SlotItemHandler(itemStackHandler, CobblestonePoweredFurnaceBlockEntity.INPUT_SLOT_INDEX, INPUT_SLOT_X, MACHINE_SLOT_Y));
+        this.addSlot(new SlotItemHandler(itemStackHandler, CobblestonePoweredFurnaceBlockEntity.INPUT_SLOT_INDEX, MachineGuiLayouts.PoweredMachine.INPUT_SLOT_X, MachineGuiLayouts.PoweredMachine.MACHINE_SLOT_Y));
         // CP 用の丸石スロットは crusher と同じ場所に置き、操作感をそろえます。
-        this.addSlot(new SlotItemHandler(itemStackHandler, CobblestonePoweredFurnaceBlockEntity.POWER_SLOT_INDEX, POWER_SLOT_X, POWER_SLOT_Y) {
+        this.addSlot(new SlotItemHandler(itemStackHandler, CobblestonePoweredFurnaceBlockEntity.POWER_SLOT_INDEX, MachineGuiLayouts.PoweredMachine.POWER_SLOT_X, MachineGuiLayouts.PoweredMachine.POWER_SLOT_Y) {
             @Override
             public boolean mayPlace(ItemStack stack) {
                 return CobblestonePoweredFurnaceBlockEntity.isCobblestonePowerItem(stack);
             }
         });
-        this.addSlot(new SlotItemHandler(itemStackHandler, CobblestonePoweredFurnaceBlockEntity.OUTPUT_SLOT_INDEX, OUTPUT_SLOT_X, MACHINE_SLOT_Y) {
+        this.addSlot(new SlotItemHandler(itemStackHandler, CobblestonePoweredFurnaceBlockEntity.OUTPUT_SLOT_INDEX, MachineGuiLayouts.PoweredMachine.OUTPUT_SLOT_X, MachineGuiLayouts.PoweredMachine.MACHINE_SLOT_Y) {
             @Override
             public boolean mayPlace(ItemStack stack) {
                 return false;
             }
         });
-        this.addSlot(new SlotItemHandler(itemStackHandler, CobblestonePoweredFurnaceBlockEntity.ACCELERATION_SLOT_INDEX, ACCELERATION_SLOT_X, ACCELERATION_SLOT_Y) {
+        this.addSlot(new SlotItemHandler(itemStackHandler, CobblestonePoweredFurnaceBlockEntity.ACCELERATION_SLOT_INDEX, MachineGuiLayouts.UPGRADE_SLOT_X, MachineGuiLayouts.ACCELERATION_SLOT_Y) {
             @Override
             public boolean mayPlace(ItemStack stack) {
                 return MachineUpgradeHelper.isAccelerationChip(stack);
             }
         });
-        this.addSlot(new SlotItemHandler(itemStackHandler, CobblestonePoweredFurnaceBlockEntity.ENERGIZED_CUBE_SLOT_INDEX, ENERGIZED_CUBE_SLOT_X, ENERGIZED_CUBE_SLOT_Y) {
+        this.addSlot(new SlotItemHandler(itemStackHandler, CobblestonePoweredFurnaceBlockEntity.ENERGIZED_CUBE_SLOT_INDEX, MachineGuiLayouts.UPGRADE_SLOT_X, MachineGuiLayouts.ENERGIZED_CUBE_SLOT_Y) {
             @Override
             public boolean mayPlace(ItemStack stack) {
                 return MachineUpgradeHelper.isEnergizedCube(stack);
@@ -296,8 +284,8 @@ public class CobblestonePoweredFurnaceMenu extends BaseMenu {
         for (int row = 0; row < PLAYER_INVENTORY_ROWS; row++) {
             for (int column = 0; column < PLAYER_INVENTORY_COLUMNS; column++) {
                 int slotIndex = column + row * PLAYER_INVENTORY_COLUMNS + PLAYER_INVENTORY_COLUMNS;
-                int x = PLAYER_INVENTORY_START_X + column * SLOT_SIZE;
-                int y = PLAYER_INVENTORY_START_Y + row * SLOT_SIZE;
+                int x = MachineGuiLayouts.PLAYER_INVENTORY_START_X + column * MachineGuiLayouts.SLOT_SIZE;
+                int y = MachineGuiLayouts.PLAYER_INVENTORY_START_Y + row * MachineGuiLayouts.SLOT_SIZE;
                 this.addSlot(new Slot(playerInventory, slotIndex, x, y));
             }
         }
@@ -305,8 +293,8 @@ public class CobblestonePoweredFurnaceMenu extends BaseMenu {
 
     private void addPlayerHotbarSlots(Inventory playerInventory) {
         for (int column = 0; column < PLAYER_INVENTORY_COLUMNS; column++) {
-            int x = PLAYER_INVENTORY_START_X + column * SLOT_SIZE;
-            this.addSlot(new Slot(playerInventory, column, x, HOTBAR_START_Y));
+            int x = MachineGuiLayouts.PLAYER_INVENTORY_START_X + column * MachineGuiLayouts.SLOT_SIZE;
+            this.addSlot(new Slot(playerInventory, column, x, MachineGuiLayouts.HOTBAR_START_Y));
         }
     }
 

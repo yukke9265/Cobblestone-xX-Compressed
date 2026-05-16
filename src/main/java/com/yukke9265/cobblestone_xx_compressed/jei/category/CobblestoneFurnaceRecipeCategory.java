@@ -1,19 +1,20 @@
 package com.yukke9265.cobblestone_xx_compressed.jei.category;
 
-import org.lwjgl.system.windows.INPUT;
-
 import com.yukke9265.cobblestone_xx_compressed.CobblestonexXCompressed;
 import com.yukke9265.cobblestone_xx_compressed.jei.ModJeiPlugin;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneFurnaceRecipe;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModBlocks;
+import com.yukke9265.cobblestone_xx_compressed.util.GuiPartRenderer;
 
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
+import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -30,6 +31,8 @@ public class CobblestoneFurnaceRecipeCategory implements IRecipeCategory<Cobbles
     private static final int INPUT_SLOT_Y = 19;
     private static final int OUTPUT_SLOT_X = 83;
     private static final int OUTPUT_SLOT_Y = INPUT_SLOT_Y;
+    private static final int PROGRESS_FRAME_X = 54;
+    private static final int PROGRESS_FRAME_Y = 19;
 
     private final IDrawable background;
     private final IDrawable icon;
@@ -67,5 +70,12 @@ public class CobblestoneFurnaceRecipeCategory implements IRecipeCategory<Cobbles
 
         builder.addSlot(RecipeIngredientRole.OUTPUT, OUTPUT_SLOT_X, OUTPUT_SLOT_Y)
             .addItemStack(recipe.getResult().copy());
+    }
+
+    @Override
+    public void draw(CobblestoneFurnaceRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
+        GuiPartRenderer.renderNormalSlot(guiGraphics, INPUT_SLOT_X, INPUT_SLOT_Y);
+        GuiPartRenderer.renderNormalSlot(guiGraphics, OUTPUT_SLOT_X, OUTPUT_SLOT_Y);
+        GuiPartRenderer.renderProgressFrame(guiGraphics, PROGRESS_FRAME_X, PROGRESS_FRAME_Y);
     }
 }

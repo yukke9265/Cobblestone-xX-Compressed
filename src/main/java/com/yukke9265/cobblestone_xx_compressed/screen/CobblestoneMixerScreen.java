@@ -8,6 +8,7 @@ import com.yukke9265.cobblestone_xx_compressed.blockentity.AutomationSide;
 import com.yukke9265.cobblestone_xx_compressed.compat.jei.JeiClickableAreaDefinition;
 import com.yukke9265.cobblestone_xx_compressed.compat.jei.ModJeiIds;
 import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneMixerMenu;
+import com.yukke9265.cobblestone_xx_compressed.util.MachineGuiLayouts;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -31,14 +32,14 @@ public class CobblestoneMixerScreen extends BaseScreen<CobblestoneMixerMenu> {
     private static final int AUTOMATION_BUTTON_SPACING = 18;
     private static final int AUTOMATION_LEGEND_LINE_HEIGHT = 10;
     private static final int AUTOMATION_LEGEND_SECOND_COLUMN_X = 30;
-    private static final int JEI_CLICK_AREA_X = 80;
-    private static final int JEI_CLICK_AREA_Y = 31;
+    private static final int JEI_CLICK_AREA_X = MachineGuiLayouts.Mixer.PROGRESS_BAR_X;
+    private static final int JEI_CLICK_AREA_Y = MachineGuiLayouts.Mixer.PROGRESS_BAR_Y;
     private static final int JEI_CLICK_AREA_WIDTH = 16;
     private static final int JEI_CLICK_AREA_HEIGHT = 16;
-    private static final int POWER_BAR_X = 36;
-    private static final int POWER_BAR_Y = 63;
-    private static final int POWER_BAR_WIDTH = 124;
-    private static final int POWER_BAR_HEIGHT = 8;
+    private static final int POWER_BAR_X = MachineGuiLayouts.Mixer.POWER_BAR_X;
+    private static final int POWER_BAR_Y = MachineGuiLayouts.Mixer.POWER_BAR_Y;
+    private static final int POWER_BAR_WIDTH = MachineGuiLayouts.Mixer.POWER_BAR_WIDTH;
+    private static final int POWER_BAR_HEIGHT = MachineGuiLayouts.Mixer.POWER_BAR_HEIGHT;
     private static final int POWER_BAR_BORDER_COLOR = 0xFF404040;
     private static final int POWER_BAR_BACKGROUND_COLOR = 0xFF111111;
     private static final int POWER_BAR_FILL_COLOR = 0xFFD6D6D6;
@@ -47,9 +48,6 @@ public class CobblestoneMixerScreen extends BaseScreen<CobblestoneMixerMenu> {
     private static final int START_BUTTON_X_OFFSET = 4;
     private static final int AUTO_EXPORT_BUTTON_WIDTH = 94;
     private static final int AUTO_EXPORT_BUTTON_HEIGHT = 20;
-    private static final int UPGRADE_SLOT_X = 176;
-    private static final int ACCELERATION_SLOT_Y = 12;
-    private static final int ENERGIZED_CUBE_SLOT_Y = 30;
     private static final Component ACCELERATION_TOOLTIP = Component.literal("acceleration_chip");
     private static final Component ENERGIZED_CUBE_TOOLTIP = Component.literal("energized_cube");
 
@@ -61,20 +59,20 @@ public class CobblestoneMixerScreen extends BaseScreen<CobblestoneMixerMenu> {
 
     private final Button[] automationButtons = new Button[AUTOMATION_SIDES.length];
     private Button autoExportButton;
-    private final int progressBarX = 80;
-    private final int progressBarY = 31;
-    private final int progressBarWidth = 16;
-    private final int progressBarHeight = 16;
+    private final int progressBarX = MachineGuiLayouts.Mixer.PROGRESS_BAR_X;
+    private final int progressBarY = MachineGuiLayouts.Mixer.PROGRESS_BAR_Y;
+    private final int progressBarWidth = MachineGuiLayouts.Mixer.PROGRESS_BAR_WIDTH;
+    private final int progressBarHeight = MachineGuiLayouts.Mixer.PROGRESS_BAR_HEIGHT;
 
     public CobblestoneMixerScreen(CobblestoneMixerMenu menu, Inventory inventory, Component title) {
         super(menu, inventory, title);
 
-        this.imageWidth = 176;
-        this.imageHeight = 166;
-        this.titleLabelX = 8;
-        this.titleLabelY = 6;
-        this.inventoryLabelX = 8;
-        this.inventoryLabelY = 72;
+        this.imageWidth = MachineGuiLayouts.STANDARD_IMAGE_WIDTH;
+        this.imageHeight = MachineGuiLayouts.STANDARD_IMAGE_HEIGHT;
+        this.titleLabelX = MachineGuiLayouts.STANDARD_TITLE_LABEL_X;
+        this.titleLabelY = MachineGuiLayouts.STANDARD_TITLE_LABEL_Y;
+        this.inventoryLabelX = MachineGuiLayouts.STANDARD_INVENTORY_LABEL_X;
+        this.inventoryLabelY = MachineGuiLayouts.STANDARD_INVENTORY_LABEL_Y;
     }
 
     @Override
@@ -180,9 +178,14 @@ public class CobblestoneMixerScreen extends BaseScreen<CobblestoneMixerMenu> {
         int x = this.leftPos;
         int y = this.topPos;
 
-        guiGraphics.blit(BACKGROUND_TEXTURE, x, y, 0, 0, this.imageWidth, this.imageHeight);
-        this.renderExternalSlotFrame(guiGraphics, x + UPGRADE_SLOT_X, y + ACCELERATION_SLOT_Y);
-        this.renderExternalSlotFrame(guiGraphics, x + UPGRADE_SLOT_X, y + ENERGIZED_CUBE_SLOT_Y);
+        this.renderBackgroundTexture(guiGraphics, BACKGROUND_TEXTURE, x, y, this.imageWidth, this.imageHeight);
+        this.renderCobblestoneSlotPart(guiGraphics, x + MachineGuiLayouts.Mixer.POWER_SLOT_X, y + MachineGuiLayouts.Mixer.POWER_SLOT_Y);
+        this.renderNormalSlotPart(guiGraphics, x + MachineGuiLayouts.Mixer.INPUT_SLOT_1_X, y + MachineGuiLayouts.Mixer.INPUT_SLOT_1_Y);
+        this.renderNormalSlotPart(guiGraphics, x + MachineGuiLayouts.Mixer.INPUT_SLOT_2_X, y + MachineGuiLayouts.Mixer.INPUT_SLOT_2_Y);
+        this.renderNormalSlotPart(guiGraphics, x + MachineGuiLayouts.Mixer.OUTPUT_SLOT_X, y + MachineGuiLayouts.Mixer.OUTPUT_SLOT_Y);
+        this.renderNormalSlotPart(guiGraphics, x + MachineGuiLayouts.UPGRADE_SLOT_X, y + MachineGuiLayouts.ACCELERATION_SLOT_Y);
+        this.renderNormalSlotPart(guiGraphics, x + MachineGuiLayouts.UPGRADE_SLOT_X, y + MachineGuiLayouts.ENERGIZED_CUBE_SLOT_Y);
+        this.renderProgressFramePart(guiGraphics, x + this.progressBarX, y + this.progressBarY);
 
         int progress = this.menu.getProgress();
         int maxProgress = this.menu.getMaxProgress();
@@ -246,8 +249,8 @@ public class CobblestoneMixerScreen extends BaseScreen<CobblestoneMixerMenu> {
     @Override
     protected void renderTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         super.renderTooltip(guiGraphics, mouseX, mouseY);
-        this.renderExternalSlotTooltip(guiGraphics, mouseX, mouseY, UPGRADE_SLOT_X, ACCELERATION_SLOT_Y, ACCELERATION_TOOLTIP);
-        this.renderExternalSlotTooltip(guiGraphics, mouseX, mouseY, UPGRADE_SLOT_X, ENERGIZED_CUBE_SLOT_Y, ENERGIZED_CUBE_TOOLTIP);
+        this.renderExternalSlotTooltip(guiGraphics, mouseX, mouseY, MachineGuiLayouts.UPGRADE_SLOT_X, MachineGuiLayouts.ACCELERATION_SLOT_Y, ACCELERATION_TOOLTIP);
+        this.renderExternalSlotTooltip(guiGraphics, mouseX, mouseY, MachineGuiLayouts.UPGRADE_SLOT_X, MachineGuiLayouts.ENERGIZED_CUBE_SLOT_Y, ENERGIZED_CUBE_TOOLTIP);
     }
 
     @Override

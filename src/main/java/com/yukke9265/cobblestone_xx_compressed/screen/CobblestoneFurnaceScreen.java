@@ -174,7 +174,10 @@ public class CobblestoneFurnaceScreen extends BaseScreen<CobblestoneFurnaceMenu>
         int y = this.topPos;// スクリーンの左上隅のY座標を取得します。
 
         // テクスチャを描画するためのコードを記述します。ここでは、BACKGROUND_TEXTURE 変数で指定されたテクスチャをスクリーンの背景として描画しています。
-        guiGraphics.blit(BACKGROUND_TEXTURE, x, y, 0, 0, this.imageWidth, this.imageHeight);
+        this.renderBackgroundTexture(guiGraphics, BACKGROUND_TEXTURE, x, y, this.imageWidth, this.imageHeight);
+        this.renderNormalSlotPart(guiGraphics, x + 56, y + 35);
+        this.renderNormalSlotPart(guiGraphics, x + 109, y + 35);
+        this.renderProgressFramePart(guiGraphics, x + this.progressBarX, y + this.progressBarY);
 
         //進行度バーの描画例（燃焼時間に応じてバーの長さを変える）
         int burnTime = this.menu.getBurnTime(); // メニューから燃焼時間を取得するメソッドを呼び出す（実装はメニュー側で行う必要があります）

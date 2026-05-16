@@ -48,6 +48,8 @@ public class CobblestoneFEGeneratorScreen extends BaseScreen<CobblestoneFEGenera
     private static final int FE_INDICATOR_Y = 11;
     private static final int FE_INDICATOR_WIDTH = 22;
     private static final int FE_INDICATOR_HEIGHT = 20;
+    private static final int COBBLESTONE_SLOT_X = 8;
+    private static final int COBBLESTONE_SLOT_Y = 16;
 
     private static final int CP_labelX = 28;
     private static final int CP_labelY = 50;
@@ -182,7 +184,8 @@ public class CobblestoneFEGeneratorScreen extends BaseScreen<CobblestoneFEGenera
         int x = this.leftPos;
         int y = this.topPos;
 
-        guiGraphics.blit(BACKGROUND_TEXTURE, x, y, 0, 0, this.imageWidth, this.imageHeight);
+        this.renderBackgroundTexture(guiGraphics, BACKGROUND_TEXTURE, x, y, this.imageWidth, this.imageHeight);
+        this.renderCobblestoneSlotPart(guiGraphics, x + COBBLESTONE_SLOT_X, y + COBBLESTONE_SLOT_Y);
         this.renderIndicator(guiGraphics, x + CP_INDICATOR_X, y + CP_INDICATOR_Y, CP_INDICATOR_WIDTH, CP_INDICATOR_HEIGHT,
             this.menu.getStoredCobblestonePower(), this.menu.getMaxCobblestonePower(), CP_INDICATOR_FILL_COLOR);
         this.renderIndicator(guiGraphics, x + FE_INDICATOR_X, y + FE_INDICATOR_Y, FE_INDICATOR_WIDTH, FE_INDICATOR_HEIGHT,

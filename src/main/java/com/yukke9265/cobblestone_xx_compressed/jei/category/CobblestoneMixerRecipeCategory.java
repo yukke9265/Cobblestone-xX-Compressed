@@ -2,12 +2,12 @@ package com.yukke9265.cobblestone_xx_compressed.jei.category;
 
 import java.util.List;
 
-import org.lwjgl.system.windows.INPUT;
-
 import com.yukke9265.cobblestone_xx_compressed.CobblestonexXCompressed;
 import com.yukke9265.cobblestone_xx_compressed.jei.ModJeiPlugin;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneMixerRecipe;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModBlocks;
+import com.yukke9265.cobblestone_xx_compressed.util.GuiPartRenderer;
+import com.yukke9265.cobblestone_xx_compressed.util.MachineGuiLayouts;
 
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
@@ -41,6 +41,8 @@ public class CobblestoneMixerRecipeCategory implements IRecipeCategory<Cobblesto
     private static final int INPUT_SLOT_2_Y = INPUT_SLOT_1_Y;
     private static final int OUTPUT_SLOT_X = INPUT_SLOT_2_X + SLOT_SIZE + 35;
     private static final int OUTPUT_SLOT_Y = INPUT_SLOT_1_Y;
+    private static final int PROGRESS_FRAME_X = MachineGuiLayouts.Mixer.PROGRESS_BAR_X - BACKGROUND_U;
+    private static final int PROGRESS_FRAME_Y = MachineGuiLayouts.Mixer.PROGRESS_BAR_Y - BACKGROUND_V;
 
     private static final int CPPt_LABEL_X = 8;
     private static final int CPPt_LABEL_Y = 2;
@@ -97,6 +99,11 @@ public class CobblestoneMixerRecipeCategory implements IRecipeCategory<Cobblesto
 
     @Override
     public void draw(CobblestoneMixerRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
+        GuiPartRenderer.renderCobblestoneSlot(guiGraphics, POWER_SLOT_X, POWER_SLOT_Y);
+        GuiPartRenderer.renderNormalSlot(guiGraphics, INPUT_SLOT_1_X, INPUT_SLOT_1_Y);
+        GuiPartRenderer.renderNormalSlot(guiGraphics, INPUT_SLOT_2_X, INPUT_SLOT_2_Y);
+        GuiPartRenderer.renderNormalSlot(guiGraphics, OUTPUT_SLOT_X, OUTPUT_SLOT_Y);
+        GuiPartRenderer.renderProgressFrame(guiGraphics, PROGRESS_FRAME_X, PROGRESS_FRAME_Y);
         guiGraphics.drawString(Minecraft.getInstance().font, recipe.getCobblestonePowerPerTick() + " CP/t", CPPt_LABEL_X, CPPt_LABEL_Y, 0x404040, false);
         guiGraphics.drawString(Minecraft.getInstance().font, recipe.getTotalCobblestonePower() + " total CP", TOTAL_CP_LABEL_X, TOTAL_CP_LABEL_Y, 0x404040, false);
     }

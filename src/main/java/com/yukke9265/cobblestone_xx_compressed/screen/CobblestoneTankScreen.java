@@ -32,6 +32,9 @@ public class CobblestoneTankScreen extends BaseScreen<CobblestoneTankMenu> {
     private static final int FLUID_GAUGE_Y = 17;
     private static final int FLUID_GAUGE_WIDTH = 16;
     private static final int FLUID_GAUGE_HEIGHT = 52;
+    private static final int INPUT_SLOT_X = 56;
+    private static final int OUTPUT_SLOT_X = 116;
+    private static final int MACHINE_SLOT_Y = 17;
     private static final int FLUID_GAUGE_BORDER_COLOR = 0xFF404040;
     private static final int FLUID_GAUGE_BACKGROUND_COLOR = 0xFF101010;
     private static final int FLUID_GAUGE_FILL_COLOR = 0xFF3B8BFF;
@@ -41,7 +44,7 @@ public class CobblestoneTankScreen extends BaseScreen<CobblestoneTankMenu> {
     private static final int AUTO_EXPORT_BUTTON_X_OFFSET = 4;
 
     private static final ResourceLocation BACKGROUND_TEXTURE =
-        ResourceLocation.fromNamespaceAndPath(CobblestonexXCompressed.MODID, "textures/gui/cobblestone_furnace.png");
+        ResourceLocation.fromNamespaceAndPath(CobblestonexXCompressed.MODID, "textures/gui/cobblestone_tank.png");
 
     private final Button[] itemAutomationButtons = new Button[AUTOMATION_SIDES.length];
     private final Button[] fluidAutomationButtons = new Button[AUTOMATION_SIDES.length];
@@ -148,7 +151,9 @@ public class CobblestoneTankScreen extends BaseScreen<CobblestoneTankMenu> {
         int x = this.leftPos;
         int y = this.topPos;
 
-        guiGraphics.blit(BACKGROUND_TEXTURE, x, y, 0, 0, this.imageWidth, this.imageHeight);
+        this.renderBackgroundTexture(guiGraphics, BACKGROUND_TEXTURE, x, y, this.imageWidth, this.imageHeight);
+        this.renderNormalSlotPart(guiGraphics, x + INPUT_SLOT_X, y + MACHINE_SLOT_Y);
+        this.renderNormalSlotPart(guiGraphics, x + OUTPUT_SLOT_X, y + MACHINE_SLOT_Y);
         guiGraphics.fill(x + FLUID_GAUGE_X - 1, y + FLUID_GAUGE_Y - 1, x + FLUID_GAUGE_X + FLUID_GAUGE_WIDTH + 1, y + FLUID_GAUGE_Y + FLUID_GAUGE_HEIGHT + 1, FLUID_GAUGE_BORDER_COLOR);
         guiGraphics.fill(x + FLUID_GAUGE_X, y + FLUID_GAUGE_Y, x + FLUID_GAUGE_X + FLUID_GAUGE_WIDTH, y + FLUID_GAUGE_Y + FLUID_GAUGE_HEIGHT, FLUID_GAUGE_BACKGROUND_COLOR);
 
