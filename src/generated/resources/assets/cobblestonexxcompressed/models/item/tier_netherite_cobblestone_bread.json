@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "cobblestonexxcompressed:item/cobblestone_bread/tier_netherite_cobblestone_bread"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "C": {
+      "item": "cobblestonexxcompressed:tier_topaz_compressed_cobblestone"
+    },
+    "G": {
+      "item": "cobblestonexxcompressed:tier_topaz_cobblestone_gem"
+    }
+  },
+  "pattern": [
+    "CCC",
+    "CGC",
+    "CCC"
+  ],
+  "result": {
+    "count": 1,
+    "id": "cobblestonexxcompressed:tier_ruby_compressed_cobblestone"
+  }
+}

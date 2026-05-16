@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "G": {
+      "item": "cobblestonexxcompressed:tier_obsidian_cobblestone_generator_m"
+    }
+  },
+  "pattern": [
+    "GGG",
+    "G G",
+    "GGG"
+  ],
+  "result": {
+    "count": 1,
+    "id": "cobblestonexxcompressed:tier_obsidian_cobblestone_generator_l"
+  }
+}

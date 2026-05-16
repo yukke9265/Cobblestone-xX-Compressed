@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "C": {
+      "item": "cobblestonexxcompressed:tier_aquamarine_compressed_cobblestone"
+    },
+    "G": {
+      "item": "cobblestonexxcompressed:tier_aquamarine_cobblestone_gem"
+    },
+    "S": {
+      "item": "cobblestonexxcompressed:tier_aquamarine_compressed_stone"
+    }
+  },
+  "pattern": [
+    "CSC",
+    "SGS",
+    "CSC"
+  ],
+  "result": {
+    "count": 1,
+    "id": "cobblestonexxcompressed:tier_aquamarine_cobblestone_machine_casing"
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "cobblestonexxcompressed:block/compressed_cobblestone/tier_netherite_compressed_cobblestone"
+  }
+}

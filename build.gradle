@@ -1,0 +1,228 @@
+plugins {
+    id 'java-library'
+    id 'maven-publish'
+    id 'net.neoforged.moddev' version '2.0.141'
+    id 'idea'
+}
+
+tasks.named('wrapper', Wrapper).configure {
+    // gradlew.properties を更新するたびに指定しなくて済むよう、wrapper の値をここで定義します。
+    // これを Wrapper.DistributionType.ALL にすると、Gradle の完全なソース一式をダウンロードし、
+    // Gradle のクラスやメソッドにカーソルを合わせたときにドキュメントを参照できるようになります。ただし、
+    // その分 Gradle のファイルサイズは大きくなります。ALL に切り替えた場合は、その後 wrapper タスクを 2 回実行してください。
+    // (`-all` になっているかは gradle/wrapper/gradle-wrapper.properties の distributionUrl で確認できます)
+    distributionType = Wrapper.DistributionType.BIN
+}
+
+version = mod_version
+group = mod_group_id
+
+sourceSets.main.resources {
+    // データ生成器が出力したリソースを含めます。
+    srcDir('src/generated/resources')
+
+    // 開発時のみ使うことが多いリソースを最終成果物から除外します
+    exclude("**/*.bbmodel") // BlockBench のプロジェクトファイル
+    exclude("src/generated/**/.cache") // datagen のキャッシュファイル
+}
+
+repositories {
+    // 下の依存関係で必要になる場合は、追加のリポジトリをここに定義します。
+    maven {
+        url = 'https://maven.blamejared.com'
+    }
+}
+
+base {
+    archivesName = mod_id
+}
+
+// Minecraft 1.21.1 の利用者向けには Java 21 が同梱されるため、mod も Java 21 を対象にします。
+java.toolchain.languageVersion = JavaLanguageVersion.of(21)
+
+neoForge {
+    // 使用する NeoForge のバージョンを指定します。
+    version = project.neo_version
+
+    parchment {
+        mappingsVersion = project.parchment_mappings_version
+        minecraftVersion = project.parchment_minecraft_version
+    }
+
+    // この行は任意です。Access Transformer は自動検出されます。
+    // accessTransformers = project.files('src/main/resources/META-INF/accesstransformer.cfg')
+
+    // 既定の実行構成です。
+    // 必要に応じて調整、削除、複製できます。
+    runs {
+        client {
+            client()
+
+            // GameTest を読み込む名前空間の一覧です。カンマ区切りで指定します。空ならすべての名前空間が対象です。
+            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+        }
+
+        server {
+            server()
+            programArgument '--nogui'
+            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+        }
+
+        // この実行構成は GameTestServer を起動し、登録済みの GameTest をすべて実行して終了します。
+        // 既定では GameTest が 1 つもないとサーバーはクラッシュします。
+        // GameTest システムはほかの実行構成でも /test コマンド経由で既定で有効です。
+        gameTestServer {
+            type = "gameTestServer"
+            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+        }
+
+        data {
+            data()
+
+            // runData は JSON 生成だけが目的なので、通常プレイ用の run ディレクトリを共有しません。
+            // 共有したままだと run/mods に入っている外部 mod まで datagen 起動時に読み込まれ、
+            // datagen 非対応の mod が初期化に失敗して runData 全体が止まることがあります。
+            // そのため、data 実行だけは専用ディレクトリへ分離して安定して再現できるようにします。
+            gameDirectory = project.file('run-data')
+
+            // データ生成対象の modid、生成先リソース、既存リソースの参照先を指定します。
+            programArguments.addAll '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
+        }
+
+        // 上に定義したすべての実行構成へ適用されます
+        configureEach {
+            // userdev 環境向けの推奨ログ設定です
+            // マーカーは必要に応じてカンマ区切りで追加・削除できます。
+            // "SCAN": mod スキャン用
+            // "REGISTRIES": レジストリイベント発火の確認用
+            // "REGISTRYDUMP": 全レジストリ内容の出力用
+            systemProperty 'forge.logging.markers', 'REGISTRIES'
+
+            // コンソール向けの推奨ログレベルです
+            // ここでさまざまなレベルを設定できます。
+            // 参考: https://stackoverflow.com/questions/2031163/when-to-use-the-different-log-levels
+            logLevel = org.slf4j.event.Level.DEBUG
+        }
+    }
+
+    mods {
+        // mod と source の対応付けを定義します
+        // どのソースがどの mod に属するかをゲームへ伝えるために使います
+        // 複数 mod を含むプロジェクトでは mod ごとに 1 つ定義します
+        "${mod_id}" {
+            sourceSet(sourceSets.main)
+        }
+    }
+}
+
+// localRuntime という依存関係設定を用意します。
+// これは runtimeOnly の代わりに使い、実行テスト時には必要だが
+// この mod に依存する側へは引き継がれない「任意」の依存関係を宣言できます。
+configurations {
+    runtimeClasspath.extendsFrom localRuntime
+}
+
+dependencies {
+    // JEI を使う任意 mod 依存の例です
+    // JEI API はコンパイル時に使い、完全な JEI 本体は実行時に使います
+    compileOnly "mezz.jei:jei-${minecraft_version}-common-api:${jei_version}"
+    compileOnly "mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}"
+    // 依存関係として公開しないため、完全版は runtimeOnly ではなく localRuntime に追加します
+    localRuntime "mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}"
+
+    // flat dir リポジトリを使って ./libs の mod jar を参照する依存関係の例です
+    // これは ./libs/coolmod-${mc_version}-${coolmod_version}.jar に対応します
+    // 検索時には group id は無視され、この例では "blank" になります
+    // implementation "blank:coolmod-${mc_version}:${coolmod_version}"
+
+    // ファイルをそのまま依存関係にする例です
+    // implementation files("libs/coolmod-${mc_version}-${coolmod_version}.jar")
+
+    // 同階層または子プロジェクトへの依存関係の例です
+    // implementation project(":myproject")
+
+    // 詳細:
+    // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
+    // http://www.gradle.org/docs/current/userguide/dependency_management.html
+}
+
+// このブロックでは、指定したリソース対象内の置換プロパティを展開します。
+// 必要なプロパティが不足しているとエラーになります。展開には Groovy の ${} 記法を使います。
+var generateModMetadata = tasks.register("generateModMetadata", ProcessResources) {
+    var replaceProperties = [
+            minecraft_version      : minecraft_version,
+            minecraft_version_range: minecraft_version_range,
+            neo_version            : neo_version,
+            loader_version_range   : loader_version_range,
+            mod_id                 : mod_id,
+            mod_name               : mod_name,
+            mod_license            : mod_license,
+            mod_version            : mod_version,
+    ]
+    inputs.properties replaceProperties
+    expand replaceProperties
+    from "src/main/templates"
+    into "build/generated/sources/modMetadata"
+}
+// generateModMetadata の出力をビルドの入力ディレクトリとして含めます
+// これは Gradle ビルド時と IDE 上の両方で機能します。
+sourceSets.main.resources.srcDir generateModMetadata
+// generateModMetadata を毎回手動実行しなくて済むよう、プロジェクト再読み込みのたびに実行します
+neoForge.ideSyncTask generateModMetadata
+
+// このワークスペースでは、VS Code / Java 側の起動時に bin/main が mod の実体として
+// 読まれている形跡があります。src/generated/resources のみへ JSON を置くと、
+// datagen の出力が bin/main へ入らず、lang や item model が見つからないことがあります。
+// そのため、Gradle 側で classes / processResources 実行後に generated resources を
+// bin/main へ同期して、IDE 起動時も同じ JSON を参照できるようにします。
+def syncIdeGeneratedResources = tasks.register('syncIdeGeneratedResources', Copy) {
+    from 'src/generated/resources'
+    into 'bin/main'
+}
+
+tasks.named('processResources').configure {
+    finalizedBy(syncIdeGeneratedResources)
+}
+
+tasks.named('classes').configure {
+    finalizedBy(syncIdeGeneratedResources)
+}
+
+// VS Code / Java の実行構成では bin/main 側の JSON が使われることがあるため、
+// 起動前に generated resources を同期しておきます。
+['runClient', 'runServer', 'runGameTestServer'].each { taskName ->
+    tasks.named(taskName).configure {
+        dependsOn(syncIdeGeneratedResources)
+    }
+}
+
+// runData の直後にも同期して、生成した最新 JSON をそのまま IDE 実行へ反映します。
+tasks.named('runData').configure {
+    finalizedBy(syncIdeGeneratedResources)
+}
+
+// maven-publish プラグインで公開できるようにする設定例です
+publishing {
+    publications {
+        register('mavenJava', MavenPublication) {
+            from components.java
+        }
+    }
+    repositories {
+        maven {
+            url "file://${project.projectDir}/repo"
+        }
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8' // Java コンパイルで UTF-8 文字セットを使います
+}
+
+// IDEA は依存関係の sources/javadoc jar を自動取得しなくなったため、明示的に有効化します。
+idea {
+    module {
+        downloadSources = true
+        downloadJavadoc = true
+    }
+}

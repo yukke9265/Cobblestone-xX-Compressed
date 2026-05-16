@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "particle": "cobblestonexxcompressed:block/cobblestone_mixer/cobblestone_mixer_top",
+    "down": "cobblestonexxcompressed:block/cobblestone_mixer/cobblestone_mixer_top",
+    "up": "cobblestonexxcompressed:block/cobblestone_mixer/cobblestone_mixer_top",
+    "north": "cobblestonexxcompressed:block/cobblestone_mixer/cobblestone_mixer_front_on",
+    "south": "cobblestonexxcompressed:block/cobblestone_mixer/cobblestone_mixer_side",
+    "west": "cobblestonexxcompressed:block/cobblestone_mixer/cobblestone_mixer_side",
+    "east": "cobblestonexxcompressed:block/cobblestone_mixer/cobblestone_mixer_side"
+  }
+}

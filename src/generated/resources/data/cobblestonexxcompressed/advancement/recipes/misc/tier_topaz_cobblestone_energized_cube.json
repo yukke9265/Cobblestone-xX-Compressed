@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "cobblestonexxcompressed:tier_topaz_cobblestone_energized_cube"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "has_tier_topaz_cobblestone_energized_cube": {
+      "conditions": {
+        "items": [
+          {
+            "items": "cobblestonexxcompressed:tier_topaz_cobblestone_processor"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_tier_topaz_cobblestone_energized_cube"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "cobblestonexxcompressed:tier_topaz_cobblestone_energized_cube"
+    ]
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "cobblestonexxcompressed:block/cobblestone_machine_casing/tier_diamond_cobblestone_machine_casing"
+  }
+}

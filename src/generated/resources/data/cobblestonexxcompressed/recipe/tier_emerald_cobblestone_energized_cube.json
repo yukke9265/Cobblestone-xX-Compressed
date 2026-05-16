@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "cobblestonexxcompressed:tier_emerald_compressed_cobblestone"
+    },
+    "B": {
+      "item": "cobblestonexxcompressed:tier_emerald_cobblestone_processor"
+    }
+  },
+  "pattern": [
+    "AAA",
+    "ABA",
+    "AAA"
+  ],
+  "result": {
+    "count": 1,
+    "id": "cobblestonexxcompressed:tier_emerald_cobblestone_energized_cube"
+  }
+}

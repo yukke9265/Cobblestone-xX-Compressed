@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "cobblestonexxcompressed:item/compressed_cobblestone_singularity_fragment/tier_obsidian_compressed_cobblestone_singularity_fragment"
+  }
+}

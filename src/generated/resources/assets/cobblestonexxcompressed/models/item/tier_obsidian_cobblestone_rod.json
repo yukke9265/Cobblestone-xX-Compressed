@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "cobblestonexxcompressed:item/cobblestone_rod/tier_obsidian_cobblestone_rod"
+  }
+}

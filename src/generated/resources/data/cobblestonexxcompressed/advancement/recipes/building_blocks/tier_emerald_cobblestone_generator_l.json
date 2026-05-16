@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "cobblestonexxcompressed:tier_emerald_cobblestone_generator_l"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "has_tier_emerald_cobblestone_generator_m": {
+      "conditions": {
+        "items": [
+          {
+            "items": "cobblestonexxcompressed:tier_emerald_cobblestone_generator_m"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_tier_emerald_cobblestone_generator_m"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "cobblestonexxcompressed:tier_emerald_cobblestone_generator_l"
+    ]
+  }
+}

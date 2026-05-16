@@ -1,0 +1,11 @@
+{
+  "type": "cobblestonexxcompressed:cobblestone_furnace",
+  "ingredient": {
+    "item": "cobblestonexxcompressed:tier_netherite_compressed_cobblestone"
+  },
+  "processing_time": 100,
+  "result": {
+    "count": 1,
+    "id": "cobblestonexxcompressed:tier_netherite_compressed_stone"
+  }
+}

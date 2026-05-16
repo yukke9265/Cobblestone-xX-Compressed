@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "G": {
+      "item": "cobblestonexxcompressed:cobblestone_gem"
+    },
+    "M": {
+      "item": "minecraft:gold_ingot"
+    }
+  },
+  "pattern": [
+    " M ",
+    "MGM",
+    " M "
+  ],
+  "result": {
+    "count": 1,
+    "id": "cobblestonexxcompressed:tier_gold_cobblestone_gem"
+  }
+}

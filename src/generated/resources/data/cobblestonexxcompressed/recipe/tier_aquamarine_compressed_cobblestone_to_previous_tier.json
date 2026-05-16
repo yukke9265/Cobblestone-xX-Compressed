@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    {
+      "item": "cobblestonexxcompressed:tier_aquamarine_compressed_cobblestone"
+    }
+  ],
+  "result": {
+    "count": 8,
+    "id": "cobblestonexxcompressed:tier_amethyst_compressed_cobblestone"
+  }
+}

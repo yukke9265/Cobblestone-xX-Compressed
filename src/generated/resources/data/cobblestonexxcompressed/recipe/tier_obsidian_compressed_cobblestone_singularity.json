@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "F": {
+      "item": "cobblestonexxcompressed:tier_obsidian_compressed_cobblestone_singularity_fragment"
+    }
+  },
+  "pattern": [
+    "FFF",
+    "F F",
+    "FFF"
+  ],
+  "result": {
+    "count": 1,
+    "id": "cobblestonexxcompressed:tier_obsidian_compressed_cobblestone_singularity"
+  }
+}

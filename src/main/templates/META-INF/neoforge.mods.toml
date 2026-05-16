@@ -1,0 +1,95 @@
+# これは neoforge.mods.toml のサンプルです。mod の読み込みに関する情報を定義します。
+# 必須項目 (#mandatory) がいくつかあり、そのほかに任意項目 (#optional) が多数あります。
+# 全体の形式は標準の TOML v0.5.0 です。
+# このファイルには TOML のリストがいくつか含まれています。
+# TOML 形式の詳細: https://github.com/toml-lang/toml
+
+# 読み込む mod ローダー種別の名前です。通常の FML @Mod mod では javafml になります。
+modLoader="javafml" #mandatory
+
+# この mod ローダーに対応するバージョン範囲です。通常の FML @Mod では FML のバージョンになり、現状は 2 です。
+loaderVersion="${loader_version_range}" #mandatory
+
+# mod のライセンスです。必須のメタデータであり、再配布条件の把握をしやすくします。
+# 選択肢は https://choosealicense.com/ を参照してください。All rights reserved が既定の著作権方針で、ここでも初期値です。
+license="${mod_license}"
+
+# この mod で問題が起きたときに案内する URL です
+#issueTrackerURL="https://change.me.to.your.issue.tracker.example.invalid/" #optional
+
+# mod の一覧です。ここにいくつ定義できるかは各 mod ローダー側で決まります。
+[[mods]] #mandatory
+
+# mod の modid です
+modId="${mod_id}" #mandatory
+
+# mod のバージョン番号です
+version="${mod_version}" #mandatory
+
+# mod の表示名です
+displayName="${mod_name}" #mandatory
+
+# この mod の更新確認に使う URL です。JSON 更新仕様は https://docs.neoforged.net/docs/misc/updatechecker/ を参照してください。
+#updateJSONURL="https://change.me.example.invalid/updates.json" #optional
+
+# mod UI に表示されるこの mod の「ホームページ」URL です
+#displayURL="https://change.me.to.your.mods.homepage.example.invalid/" #optional
+
+# 表示用ロゴを含むファイル名です。mod JAR のルートに置きます。
+#logoFile="examplemod.png" #optional
+
+# mod UI に表示されるテキスト項目です
+#credits="" #optional
+
+# mod UI に表示される作者名です (任意)
+authors="yukke9265"
+
+# mod の説明文です。複数行にできます。 (#mandatory)
+description='''
+all for cobblestone
+'''
+
+# [[mixins]] ブロックでは mixin 設定を FML に宣言し、読み込ませることができます。
+#[[mixins]]
+#config="${mod_id}.mixins.json"
+
+# [[accessTransformers]] ブロックでは AT ファイルの場所を宣言できます。
+# このブロックを省略すると、META-INF/accesstransformer.cfg から AT を読み込むフォールバックが試されます。
+#[[accessTransformers]]
+#file="META-INF/accesstransformer.cfg"
+
+# coremods の設定ファイルパスは変更できず、常に META-INF/coremods.json から読み込まれます。
+
+# 依存関係です。特定の modid への依存は . で表します。依存関係は任意です。
+[[dependencies.${mod_id}]] #optional
+    # 依存先の modid です
+    modId="neoforge" #mandatory
+    # 依存関係の種別です。"required"、"optional"、"incompatible"、"discouraged" のいずれかを指定できます。(大文字小文字は無視されます)
+    # 'required' は対象 mod が必須、'optional' は不要です
+    # 'incompatible' は対象 mod が存在するとゲームの読み込みを止め、'discouraged' は警告を表示します
+    type="required" #mandatory
+    # なぜ依存が必要なのか、またはなぜ非互換なのかを説明する任意項目です
+    # reason="..."
+    # 依存先のバージョン範囲です
+    versionRange="[${neo_version},)" #mandatory
+    # 依存先との読み込み順序関係です。
+    # BEFORE - この mod を依存先より先に読み込みます
+    # AFTER - この mod を依存先より後に読み込みます
+    ordering="NONE"
+    # この依存関係を適用するサイドです。BOTH、CLIENT、SERVER のいずれかです
+    side="BOTH"
+
+# もう 1 つの依存関係の例です
+[[dependencies.${mod_id}]]
+    modId="minecraft"
+    type="required"
+    # 現在の Minecraft バージョン以上かつ次のメジャーバージョン未満を表すバージョン範囲です
+    versionRange="${minecraft_version_range}"
+    ordering="NONE"
+    side="BOTH"
+
+# Features はゲーム実行環境の特定の性質で、必要条件として宣言したい場合に使います。この例では
+# mod が GL 3.2 以上を必要とすることを宣言しています。今後ほかの feature も追加されます。side を考慮するため、
+# これを宣言しても例えばサーバー側での mod 読み込みは妨げません。
+#[features.${mod_id}]
+#openGLVersion="[3.2,)"

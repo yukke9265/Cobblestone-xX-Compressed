@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "cobblestonexxcompressed:tier_netherite_cobblestone_acceleration_chip"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "has_tier_netherite_cobblestone_acceleration_chip": {
+      "conditions": {
+        "items": [
+          {
+            "items": "cobblestonexxcompressed:tier_netherite_cobblestone_motor"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_tier_netherite_cobblestone_acceleration_chip"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "cobblestonexxcompressed:tier_netherite_cobblestone_acceleration_chip"
+    ]
+  }
+}

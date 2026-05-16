@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "C": {
+      "item": "cobblestonexxcompressed:tier_aquamarine_compressed_cobblestone"
+    },
+    "S": {
+      "item": "cobblestonexxcompressed:tier_aquamarine_compressed_cobblestone_singularity"
+    }
+  },
+  "pattern": [
+    "CCC",
+    "CSC",
+    "CCC"
+  ],
+  "result": {
+    "count": 1,
+    "id": "cobblestonexxcompressed:tier_aquamarine_cobblestone_generator_s"
+  }
+}

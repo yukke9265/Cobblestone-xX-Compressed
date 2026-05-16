@@ -1,0 +1,22 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../1.21.1"
+		},
+		{
+			"path": "../Mekanism"
+		},
+		{
+			"path": "../Mekanism-Extras"
+		},
+		{
+			"path": "../Flux-Networks"
+		}
+	],
+	"settings": {
+		"java.compile.nullAnalysis.mode": "automatic"
+	}
+}

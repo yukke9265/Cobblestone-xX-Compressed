@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "C": {
+      "item": "cobblestonexxcompressed:compressed_cobblestone"
+    },
+    "G": {
+      "item": "cobblestonexxcompressed:cobblestone_gem"
+    },
+    "S": {
+      "item": "cobblestonexxcompressed:compressed_stone"
+    }
+  },
+  "pattern": [
+    "CSC",
+    "SGS",
+    "CSC"
+  ],
+  "result": {
+    "count": 1,
+    "id": "cobblestonexxcompressed:cobblestone_machine_casing"
+  }
+}

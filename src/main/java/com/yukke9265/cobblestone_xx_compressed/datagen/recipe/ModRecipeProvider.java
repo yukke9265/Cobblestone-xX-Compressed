@@ -1,0 +1,731 @@
+package com.yukke9265.cobblestone_xx_compressed.datagen.recipe;
+
+import java.util.concurrent.CompletableFuture;
+
+import com.yukke9265.cobblestone_xx_compressed.CobblestonexXCompressed;
+import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneCrusherRecipe;
+import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneFurnaceRecipe;
+import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneMixerRecipe;
+import com.yukke9265.cobblestone_xx_compressed.registry.ModBlocks;
+import com.yukke9265.cobblestone_xx_compressed.registry.ModItems;
+
+import net.minecraft.data.PackOutput;
+import net.minecraft.data.recipes.RecipeCategory;
+import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.data.recipes.RecipeProvider;
+import net.minecraft.data.recipes.ShapedRecipeBuilder;
+import net.minecraft.data.recipes.ShapelessRecipeBuilder;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.ItemLike;
+
+public class ModRecipeProvider extends RecipeProvider {
+    // gem のレシピは tier ごとに個別変更しやすいよう、
+    // 「出力先」と「その tier で使う素材」を 1 行ずつ定義しておきます。
+    // ここを見れば、どの gem が何から作られるかをすぐ追えます。
+    private static final GemRecipeDefinition[] GEM_RECIPES = new GemRecipeDefinition[] {
+        new GemRecipeDefinition("cobblestone_gem", Items.FLINT, ModItems.COBBLESTONE_GEM.get()),
+        new GemRecipeDefinition("tier_copper_cobblestone_gem", Items.COPPER_INGOT, ModItems.TIER_COPPER_COBBLESTONE_GEM.get()),
+        new GemRecipeDefinition("tier_iron_cobblestone_gem", Items.IRON_INGOT, ModItems.TIER_IRON_COBBLESTONE_GEM.get()),
+        new GemRecipeDefinition("tier_gold_cobblestone_gem", Items.GOLD_INGOT, ModItems.TIER_GOLD_COBBLESTONE_GEM.get()),
+        new GemRecipeDefinition("tier_amethyst_cobblestone_gem", Items.AMETHYST_SHARD, ModItems.TIER_AMETHYST_COBBLESTONE_GEM.get()),
+        new GemRecipeDefinition("tier_aquamarine_cobblestone_gem", Items.PRISMARINE_CRYSTALS, ModItems.TIER_AQUAMARINE_COBBLESTONE_GEM.get()),
+        new GemRecipeDefinition("tier_topaz_cobblestone_gem", Items.QUARTZ, ModItems.TIER_TOPAZ_COBBLESTONE_GEM.get()),
+        new GemRecipeDefinition("tier_ruby_cobblestone_gem", Items.REDSTONE, ModItems.TIER_RUBY_COBBLESTONE_GEM.get()),
+        new GemRecipeDefinition("tier_sapphire_cobblestone_gem", Items.LAPIS_LAZULI, ModItems.TIER_SAPPHIRE_COBBLESTONE_GEM.get()),
+        new GemRecipeDefinition("tier_diamond_cobblestone_gem", Items.DIAMOND, ModItems.TIER_DIAMOND_COBBLESTONE_GEM.get()),
+        new GemRecipeDefinition("tier_emerald_cobblestone_gem", Items.EMERALD, ModItems.TIER_EMERALD_COBBLESTONE_GEM.get()),
+        new GemRecipeDefinition("tier_netherite_cobblestone_gem", Items.NETHERITE_INGOT, ModItems.TIER_NETHERITE_COBBLESTONE_GEM.get()),
+        new GemRecipeDefinition("tier_obsidian_cobblestone_gem", Items.OBSIDIAN, ModItems.TIER_OBSIDIAN_COBBLESTONE_GEM.get())
+    };
+
+    // 圧縮丸石の upgrade レシピも 1 行ずつ並べます。
+    // 「前段階の圧縮丸石」と「中央に置く gem」と「出力ブロック」を分けておくと、
+    // 後から 1 tier だけ差し替える作業がかなり楽になります。
+    private static final CompressionRecipeDefinition[] COMPRESSED_COBBLESTONE_RECIPES = new CompressionRecipeDefinition[] {
+        new CompressionRecipeDefinition("tier_copper_compressed_cobblestone", ModBlocks.COMPRESSED_COBBLESTONE.get(), ModItems.COBBLESTONE_GEM.get(), ModBlocks.TierCompressedCobblestone.COPPER.getBlock().get()),
+        new CompressionRecipeDefinition("tier_iron_compressed_cobblestone", ModBlocks.TierCompressedCobblestone.COPPER.getBlock().get(), ModItems.TIER_COPPER_COBBLESTONE_GEM.get(), ModBlocks.TierCompressedCobblestone.IRON.getBlock().get()),
+        new CompressionRecipeDefinition("tier_gold_compressed_cobblestone", ModBlocks.TierCompressedCobblestone.IRON.getBlock().get(), ModItems.TIER_IRON_COBBLESTONE_GEM.get(), ModBlocks.TierCompressedCobblestone.GOLD.getBlock().get()),
+        new CompressionRecipeDefinition("tier_amethyst_compressed_cobblestone", ModBlocks.TierCompressedCobblestone.GOLD.getBlock().get(), ModItems.TIER_GOLD_COBBLESTONE_GEM.get(), ModBlocks.TierCompressedCobblestone.AMETHYST.getBlock().get()),
+        new CompressionRecipeDefinition("tier_aquamarine_compressed_cobblestone", ModBlocks.TierCompressedCobblestone.AMETHYST.getBlock().get(), ModItems.TIER_AMETHYST_COBBLESTONE_GEM.get(), ModBlocks.TierCompressedCobblestone.AQUAMARINE.getBlock().get()),
+        new CompressionRecipeDefinition("tier_topaz_compressed_cobblestone", ModBlocks.TierCompressedCobblestone.AQUAMARINE.getBlock().get(), ModItems.TIER_AQUAMARINE_COBBLESTONE_GEM.get(), ModBlocks.TierCompressedCobblestone.TOPAZ.getBlock().get()),
+        new CompressionRecipeDefinition("tier_ruby_compressed_cobblestone", ModBlocks.TierCompressedCobblestone.TOPAZ.getBlock().get(), ModItems.TIER_TOPAZ_COBBLESTONE_GEM.get(), ModBlocks.TierCompressedCobblestone.RUBY.getBlock().get()),
+        new CompressionRecipeDefinition("tier_sapphire_compressed_cobblestone", ModBlocks.TierCompressedCobblestone.RUBY.getBlock().get(), ModItems.TIER_RUBY_COBBLESTONE_GEM.get(), ModBlocks.TierCompressedCobblestone.SAPPHIRE.getBlock().get()),
+        new CompressionRecipeDefinition("tier_diamond_compressed_cobblestone", ModBlocks.TierCompressedCobblestone.SAPPHIRE.getBlock().get(), ModItems.TIER_SAPPHIRE_COBBLESTONE_GEM.get(), ModBlocks.TierCompressedCobblestone.DIAMOND.getBlock().get()),
+        new CompressionRecipeDefinition("tier_emerald_compressed_cobblestone", ModBlocks.TierCompressedCobblestone.DIAMOND.getBlock().get(), ModItems.TIER_DIAMOND_COBBLESTONE_GEM.get(), ModBlocks.TierCompressedCobblestone.EMERALD.getBlock().get()),
+        new CompressionRecipeDefinition("tier_netherite_compressed_cobblestone", ModBlocks.TierCompressedCobblestone.EMERALD.getBlock().get(), ModItems.TIER_EMERALD_COBBLESTONE_GEM.get(), ModBlocks.TierCompressedCobblestone.NETHERITE.getBlock().get()),
+        new CompressionRecipeDefinition("tier_obsidian_compressed_cobblestone", ModBlocks.TierCompressedCobblestone.NETHERITE.getBlock().get(), ModItems.TIER_NETHERITE_COBBLESTONE_GEM.get(), ModBlocks.TierCompressedCobblestone.OBSIDIAN.getBlock().get())
+    };
+
+    // 圧縮石への変換は、将来 tier ごとに個別時間や個別素材へ変えることを想定して、
+    // こちらも 1 レシピずつ独立した定義にします。
+    private static final MachineRecipeDefinition[] COMPRESSED_STONE_MACHINE_RECIPES = new MachineRecipeDefinition[] {
+        new MachineRecipeDefinition("compressed_cobblestone_to_compressed_stone", ModBlocks.COMPRESSED_COBBLESTONE.get(), ModBlocks.COMPRESSED_STONE.get(), 100),
+        new MachineRecipeDefinition("tier_copper_compressed_cobblestone_to_compressed_stone", ModBlocks.TierCompressedCobblestone.COPPER.getBlock().get(), ModBlocks.TierCompressedStone.COPPER.getBlock().get(), 100),
+        new MachineRecipeDefinition("tier_iron_compressed_cobblestone_to_compressed_stone", ModBlocks.TierCompressedCobblestone.IRON.getBlock().get(), ModBlocks.TierCompressedStone.IRON.getBlock().get(), 100),
+        new MachineRecipeDefinition("tier_gold_compressed_cobblestone_to_compressed_stone", ModBlocks.TierCompressedCobblestone.GOLD.getBlock().get(), ModBlocks.TierCompressedStone.GOLD.getBlock().get(), 100),
+        new MachineRecipeDefinition("tier_amethyst_compressed_cobblestone_to_compressed_stone", ModBlocks.TierCompressedCobblestone.AMETHYST.getBlock().get(), ModBlocks.TierCompressedStone.AMETHYST.getBlock().get(), 100),
+        new MachineRecipeDefinition("tier_aquamarine_compressed_cobblestone_to_compressed_stone", ModBlocks.TierCompressedCobblestone.AQUAMARINE.getBlock().get(), ModBlocks.TierCompressedStone.AQUAMARINE.getBlock().get(), 100),
+        new MachineRecipeDefinition("tier_topaz_compressed_cobblestone_to_compressed_stone", ModBlocks.TierCompressedCobblestone.TOPAZ.getBlock().get(), ModBlocks.TierCompressedStone.TOPAZ.getBlock().get(), 100),
+        new MachineRecipeDefinition("tier_ruby_compressed_cobblestone_to_compressed_stone", ModBlocks.TierCompressedCobblestone.RUBY.getBlock().get(), ModBlocks.TierCompressedStone.RUBY.getBlock().get(), 100),
+        new MachineRecipeDefinition("tier_sapphire_compressed_cobblestone_to_compressed_stone", ModBlocks.TierCompressedCobblestone.SAPPHIRE.getBlock().get(), ModBlocks.TierCompressedStone.SAPPHIRE.getBlock().get(), 100),
+        new MachineRecipeDefinition("tier_diamond_compressed_cobblestone_to_compressed_stone", ModBlocks.TierCompressedCobblestone.DIAMOND.getBlock().get(), ModBlocks.TierCompressedStone.DIAMOND.getBlock().get(), 100),
+        new MachineRecipeDefinition("tier_emerald_compressed_cobblestone_to_compressed_stone", ModBlocks.TierCompressedCobblestone.EMERALD.getBlock().get(), ModBlocks.TierCompressedStone.EMERALD.getBlock().get(), 100),
+        new MachineRecipeDefinition("tier_netherite_compressed_cobblestone_to_compressed_stone", ModBlocks.TierCompressedCobblestone.NETHERITE.getBlock().get(), ModBlocks.TierCompressedStone.NETHERITE.getBlock().get(), 100),
+        new MachineRecipeDefinition("tier_obsidian_compressed_cobblestone_to_compressed_stone", ModBlocks.TierCompressedCobblestone.OBSIDIAN.getBlock().get(), ModBlocks.TierCompressedStone.OBSIDIAN.getBlock().get(), 100)
+    };
+
+    private static final CrusherRecipeDefinition[] COBBLESTONE_CRUSHER_RECIPES = new CrusherRecipeDefinition[] {
+        new CrusherRecipeDefinition(
+            "tier_copper_compressed_cobblestone_to_tier_copper_cobblestone_dust",
+            ModBlocks.TierCompressedCobblestone.COPPER.getBlock().get(),
+            ModItems.TIER_COPPER_COBBLESTONE_DUST.get(),
+            200,
+            2
+        ),
+        new CrusherRecipeDefinition(
+            "coal_to_coal_dust",
+            Items.COAL,
+            ModItems.COAL_DUST.get(),
+            100,
+            1
+        )
+    };
+
+    private static final MixerRecipeDefinition[] COBBLESTONE_MIXER_RECIPES = new MixerRecipeDefinition[] {
+        new MixerRecipeDefinition(
+            "tier_iron_cobblestone_dust_and_coal_dust_to_tier_iron_cobblestone_mixed_dust",
+            ModItems.TIER_IRON_COBBLESTONE_DUST.get(),
+            ModItems.COAL_DUST.get(),
+            ModItems.TIER_IRON_COBBLESTONE_MIXED_DUST.get(),
+            200,
+            2
+        )
+    };
+
+    private static final MachineCasingRecipeDefinition[] MACHINE_CASING_RECIPES = new MachineCasingRecipeDefinition[] {
+        new MachineCasingRecipeDefinition(
+            "cobblestone_machine_casing",
+            ModBlocks.COMPRESSED_COBBLESTONE.get(),
+            ModBlocks.COMPRESSED_STONE.get(),
+            ModItems.COBBLESTONE_GEM.get(),
+            ModBlocks.COBBLESTONE_MACHINE_CASING.get()
+        ),
+        new MachineCasingRecipeDefinition(
+            "tier_copper_cobblestone_machine_casing",
+            ModBlocks.TierCompressedCobblestone.COPPER.getBlock().get(),
+            ModBlocks.TierCompressedStone.COPPER.getBlock().get(),
+            ModItems.TIER_COPPER_COBBLESTONE_GEM.get(),
+            ModBlocks.TierCobblestoneMachineCasing.COPPER.getBlock().get()
+        ),
+        new MachineCasingRecipeDefinition(
+            "tier_iron_cobblestone_machine_casing",
+            ModBlocks.TierCompressedCobblestone.IRON.getBlock().get(),
+            ModBlocks.TierCompressedStone.IRON.getBlock().get(),
+            ModItems.TIER_IRON_COBBLESTONE_GEM.get(),
+            ModBlocks.TierCobblestoneMachineCasing.IRON.getBlock().get()
+        ),
+        new MachineCasingRecipeDefinition(
+            "tier_gold_cobblestone_machine_casing",
+            ModBlocks.TierCompressedCobblestone.GOLD.getBlock().get(),
+            ModBlocks.TierCompressedStone.GOLD.getBlock().get(),
+            ModItems.TIER_GOLD_COBBLESTONE_GEM.get(),
+            ModBlocks.TierCobblestoneMachineCasing.GOLD.getBlock().get()
+        ),
+        new MachineCasingRecipeDefinition(
+            "tier_amethyst_cobblestone_machine_casing",
+            ModBlocks.TierCompressedCobblestone.AMETHYST.getBlock().get(),
+            ModBlocks.TierCompressedStone.AMETHYST.getBlock().get(),
+            ModItems.TIER_AMETHYST_COBBLESTONE_GEM.get(),
+            ModBlocks.TierCobblestoneMachineCasing.AMETHYST.getBlock().get()
+        ),
+        new MachineCasingRecipeDefinition(
+            "tier_aquamarine_cobblestone_machine_casing",
+            ModBlocks.TierCompressedCobblestone.AQUAMARINE.getBlock().get(),
+            ModBlocks.TierCompressedStone.AQUAMARINE.getBlock().get(),
+            ModItems.TIER_AQUAMARINE_COBBLESTONE_GEM.get(),
+            ModBlocks.TierCobblestoneMachineCasing.AQUAMARINE.getBlock().get()
+        ),
+        new MachineCasingRecipeDefinition(
+            "tier_topaz_cobblestone_machine_casing",
+            ModBlocks.TierCompressedCobblestone.TOPAZ.getBlock().get(),
+            ModBlocks.TierCompressedStone.TOPAZ.getBlock().get(),
+            ModItems.TIER_TOPAZ_COBBLESTONE_GEM.get(),
+            ModBlocks.TierCobblestoneMachineCasing.TOPAZ.getBlock().get()
+        ),
+        new MachineCasingRecipeDefinition(
+            "tier_ruby_cobblestone_machine_casing",
+            ModBlocks.TierCompressedCobblestone.RUBY.getBlock().get(),
+            ModBlocks.TierCompressedStone.RUBY.getBlock().get(),
+            ModItems.TIER_RUBY_COBBLESTONE_GEM.get(),
+            ModBlocks.TierCobblestoneMachineCasing.RUBY.getBlock().get()
+        ),
+        new MachineCasingRecipeDefinition(
+            "tier_sapphire_cobblestone_machine_casing",
+            ModBlocks.TierCompressedCobblestone.SAPPHIRE.getBlock().get(),
+            ModBlocks.TierCompressedStone.SAPPHIRE.getBlock().get(),
+            ModItems.TIER_SAPPHIRE_COBBLESTONE_GEM.get(),
+            ModBlocks.TierCobblestoneMachineCasing.SAPPHIRE.getBlock().get()
+        ),
+        new MachineCasingRecipeDefinition(
+            "tier_diamond_cobblestone_machine_casing",
+            ModBlocks.TierCompressedCobblestone.DIAMOND.getBlock().get(),
+            ModBlocks.TierCompressedStone.DIAMOND.getBlock().get(),
+            ModItems.TIER_DIAMOND_COBBLESTONE_GEM.get(),
+            ModBlocks.TierCobblestoneMachineCasing.DIAMOND.getBlock().get()
+        ),
+        new MachineCasingRecipeDefinition(
+            "tier_emerald_cobblestone_machine_casing",
+            ModBlocks.TierCompressedCobblestone.EMERALD.getBlock().get(),
+            ModBlocks.TierCompressedStone.EMERALD.getBlock().get(),
+            ModItems.TIER_EMERALD_COBBLESTONE_GEM.get(),
+            ModBlocks.TierCobblestoneMachineCasing.EMERALD.getBlock().get()
+        ),
+        new MachineCasingRecipeDefinition(
+            "tier_netherite_cobblestone_machine_casing",
+            ModBlocks.TierCompressedCobblestone.NETHERITE.getBlock().get(),
+            ModBlocks.TierCompressedStone.NETHERITE.getBlock().get(),
+            ModItems.TIER_NETHERITE_COBBLESTONE_GEM.get(),
+            ModBlocks.TierCobblestoneMachineCasing.NETHERITE.getBlock().get()
+        ),
+        new MachineCasingRecipeDefinition(
+            "tier_obsidian_cobblestone_machine_casing",
+            ModBlocks.TierCompressedCobblestone.OBSIDIAN.getBlock().get(),
+            ModBlocks.TierCompressedStone.OBSIDIAN.getBlock().get(),
+            ModItems.TIER_OBSIDIAN_COBBLESTONE_GEM.get(),
+            ModBlocks.TierCobblestoneMachineCasing.OBSIDIAN.getBlock().get()
+        )
+    };
+
+    public ModRecipeProvider(PackOutput output, CompletableFuture<net.minecraft.core.HolderLookup.Provider> lookupProvider) {
+        super(output, lookupProvider);
+    }
+
+    @Override
+    protected void buildRecipes(RecipeOutput output) {
+        buildCompressedCobblestoneRecipes(output);
+        buildCompressedCobblestoneSingularityRecipes(output);
+        buildCobblestoneGeneratorRecipes(output);
+        buildCobblestoneMachineCasingRecipes(output);
+        buildGemRecipes(output);
+        buildCobblestoneRodRecipes(output);
+        buildCobblestoneMotorRecipes(output);
+        buildCobblestoneAccelerationChipRecipes(output);
+        buildCobblestoneEnergizedCubeRecipes(output);
+        buildCobblestoneFurnaceRecipes(output);
+        buildCobblestoneCrusherRecipes(output);
+        buildCobblestoneMixerRecipes(output);
+    }
+
+    private void buildCompressedCobblestoneRecipes(RecipeOutput output) {
+        // 一番下の圧縮丸石だけは、ユーザー要望どおり 2x2 の丸石で作ります。
+        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ModBlocks.COMPRESSED_COBBLESTONE.get())
+            .pattern("CC")
+            .pattern("CC")
+            .define('C', Items.COBBLESTONE)
+            .unlockedBy("has_cobblestone", has(Items.COBBLESTONE))
+            .save(output, modRecipeId("compressed_cobblestone"));
+
+        // 逆変換は単体クラフトで戻せるようにします。
+        // 無印だけは元レシピが 2x2 なので、4 個の丸石へ戻します。
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.BUILDING_BLOCKS, Items.COBBLESTONE, 4)
+            .requires(ModBlocks.COMPRESSED_COBBLESTONE.get())
+            .unlockedBy("has_compressed_cobblestone", has(ModBlocks.COMPRESSED_COBBLESTONE.get()))
+            .save(output, modRecipeId("compressed_cobblestone_to_cobblestone"));
+
+        for (CompressionRecipeDefinition recipe : COMPRESSED_COBBLESTONE_RECIPES) {
+            ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, recipe.result)
+                .pattern("CCC")
+                .pattern("CGC")
+                .pattern("CCC")
+                .define('C', recipe.outerBlock)
+                .define('G', recipe.centerGem)
+                .unlockedBy("has_" + recipe.recipeName, has(recipe.centerGem))
+                .save(output, modRecipeId(recipe.recipeName));
+
+            // 各 tier の圧縮丸石は、1 個から前の tier 8 個へ戻せるようにします。
+            ShapelessRecipeBuilder.shapeless(RecipeCategory.BUILDING_BLOCKS, recipe.outerBlock, 8)
+                .requires(recipe.result)
+                .unlockedBy("has_" + recipe.recipeName, has(recipe.result))
+                .save(output, modRecipeId(recipe.recipeName + "_to_previous_tier"));
+        }
+    }
+
+    private void buildGemRecipes(RecipeOutput output) {
+        // 通常 gem は flint を核にして作る仮レシピです。
+        // tier 側はすべて同じ見た目の recipe ですが、素材行は個別に分かれているので、
+        // 1 tier だけ別の材料や pattern へ変えたい時もここから追えます。
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.COBBLESTONE_GEM.get())
+            .pattern(" C ")
+            .pattern("CFC")
+            .pattern(" C ")
+            .define('C', Items.COBBLESTONE)
+            .define('F', Items.FLINT)
+            .unlockedBy("has_flint", has(Items.FLINT))
+            .save(output, modRecipeId("cobblestone_gem"));
+
+        for (GemRecipeDefinition recipe : GEM_RECIPES) {
+            if ("cobblestone_gem".equals(recipe.recipeName)) {
+                continue;
+            }
+
+            ShapedRecipeBuilder.shaped(RecipeCategory.MISC, recipe.result)
+                .pattern(" M ")
+                .pattern("MGM")
+                .pattern(" M ")
+                .define('M', recipe.material)
+                .define('G', ModItems.COBBLESTONE_GEM.get())
+                .unlockedBy("has_" + recipe.recipeName, has(recipe.material))
+                .save(output, modRecipeId(recipe.recipeName));
+        }
+    }
+
+    private void buildCompressedCobblestoneSingularityRecipes(RecipeOutput output) {
+        // bit は通常の圧縮丸石、tier 版は同じ tier の圧縮丸石を 8 個外周へ並べて作ります。
+        // fragment と singularity も同じ「8 個を外周へ置く」見た目でそろえ、
+        // bit -> fragment -> singularity の段階がレシピ形状から追いやすいようにします。
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.COMPRESSED_COBBLESTONE_SINGULARITY_BIT.get())
+            .pattern("CCC")
+            .pattern("C C")
+            .pattern("CCC")
+            .define('C', ModItems.COMPRESSED_COBBLESTONE_ITEM.get())
+            .unlockedBy(
+                "has_compressed_cobblestone",
+                has(ModItems.COMPRESSED_COBBLESTONE_ITEM.get())
+            )
+            .save(output, modRecipeId("compressed_cobblestone_singularity_bit"));
+
+        for (ModItems.TierCompressedCobblestoneSingularityBit tier : ModItems.TierCompressedCobblestoneSingularityBit.values()) {
+            ItemLike compressedCobblestone = ModItems.TierCompressedCobblestoneItem.valueOf(tier.name()).getItem().get();
+
+            ShapedRecipeBuilder.shaped(RecipeCategory.MISC, tier.getItem().get())
+                .pattern("CCC")
+                .pattern("C C")
+                .pattern("CCC")
+                .define('C', compressedCobblestone)
+                .unlockedBy("has_" + ModItems.TierCompressedCobblestoneItem.valueOf(tier.name()).getBlockTier().getRegistryName(), has(compressedCobblestone))
+                .save(output, modRecipeId(tier.getRegistryName()));
+        }
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.COMPRESSED_COBBLESTONE_SINGULARITY_FRAGMENT.get())
+            .pattern("BBB")
+            .pattern("B B")
+            .pattern("BBB")
+            .define('B', ModItems.COMPRESSED_COBBLESTONE_SINGULARITY_BIT.get())
+            .unlockedBy(
+                "has_compressed_cobblestone_singularity_bit",
+                has(ModItems.COMPRESSED_COBBLESTONE_SINGULARITY_BIT.get())
+            )
+            .save(output, modRecipeId("compressed_cobblestone_singularity_fragment"));
+
+        for (ModItems.TierCompressedCobblestoneSingularityFragment tier : ModItems.TierCompressedCobblestoneSingularityFragment.values()) {
+            ItemLike singularityBit = ModItems.TierCompressedCobblestoneSingularityBit.valueOf(tier.name()).getItem().get();
+
+            ShapedRecipeBuilder.shaped(RecipeCategory.MISC, tier.getItem().get())
+                .pattern("BBB")
+                .pattern("B B")
+                .pattern("BBB")
+                .define('B', singularityBit)
+                .unlockedBy("has_" + ModItems.TierCompressedCobblestoneSingularityBit.valueOf(tier.name()).getRegistryName(), has(singularityBit))
+                .save(output, modRecipeId(tier.getRegistryName()));
+        }
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.COMPRESSED_COBBLESTONE_SINGULARITY.get())
+            .pattern("FFF")
+            .pattern("F F")
+            .pattern("FFF")
+            .define('F', ModItems.COMPRESSED_COBBLESTONE_SINGULARITY_FRAGMENT.get())
+            .unlockedBy(
+                "has_compressed_cobblestone_singularity_fragment",
+                has(ModItems.COMPRESSED_COBBLESTONE_SINGULARITY_FRAGMENT.get())
+            )
+            .save(output, modRecipeId("compressed_cobblestone_singularity"));
+
+        for (ModItems.TierCompressedCobblestoneSingularity tier : ModItems.TierCompressedCobblestoneSingularity.values()) {
+            ItemLike singularityFragment = ModItems.TierCompressedCobblestoneSingularityFragment.valueOf(tier.name()).getItem().get();
+
+            ShapedRecipeBuilder.shaped(RecipeCategory.MISC, tier.getItem().get())
+                .pattern("FFF")
+                .pattern("F F")
+                .pattern("FFF")
+                .define('F', singularityFragment)
+                .unlockedBy("has_" + ModItems.TierCompressedCobblestoneSingularityFragment.valueOf(tier.name()).getRegistryName(), has(singularityFragment))
+                .save(output, modRecipeId(tier.getRegistryName()));
+        }
+    }
+
+    private void buildCobblestoneRodRecipes(RecipeOutput output) {
+        // 通常版ロッドは通常の圧縮丸石 2 個から 2 本作ります。
+        // tier 版も同じ見た目で、対応する tier の圧縮丸石だけを差し替えます。
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.COBBLESTONE_ROD.get(), 2)
+            .pattern("C")
+            .pattern("C")
+            .define('C', ModItems.COMPRESSED_COBBLESTONE_ITEM.get())
+            .unlockedBy("has_compressed_cobblestone", has(ModItems.COMPRESSED_COBBLESTONE_ITEM.get()))
+            .save(output, modRecipeId("cobblestone_rod"));
+
+        for (ModItems.TierCobblestoneRod tier : ModItems.TierCobblestoneRod.values()) {
+            ItemLike compressedCobblestone = ModItems.TierCompressedCobblestoneItem.valueOf(tier.name()).getItem().get();
+
+            ShapedRecipeBuilder.shaped(RecipeCategory.MISC, tier.getItem().get(), 2)
+                .pattern("C")
+                .pattern("C")
+                .define('C', compressedCobblestone)
+                .unlockedBy("has_" + tier.getRegistryName(), has(compressedCobblestone))
+                .save(output, modRecipeId(tier.getRegistryName()));
+        }
+    }
+
+    private void buildCobblestoneMotorRecipes(RecipeOutput output) {
+        // モーターは対応する圧縮丸石・wire・rod を組み合わせて 2 個作ります。
+        // tier 版は enum 名をそろえてあるので、その名前から同じ tier の素材を引けます。
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.COBBLESTONE_MOTOR.get(), 2)
+            .pattern("CWR")
+            .pattern("WRW")
+            .pattern("RWC")
+            .define('C', ModItems.COMPRESSED_COBBLESTONE_ITEM.get())
+            .define('W', ModItems.COBBLESTONE_WIRE.get())
+            .define('R', ModItems.COBBLESTONE_ROD.get())
+            .unlockedBy("has_cobblestone_rod", has(ModItems.COBBLESTONE_ROD.get()))
+            .save(output, modRecipeId("cobblestone_motor"));
+
+        for (ModItems.TierCobblestoneMotor tier : ModItems.TierCobblestoneMotor.values()) {
+            ItemLike compressedCobblestone = ModItems.TierCompressedCobblestoneItem.valueOf(tier.name()).getItem().get();
+            ItemLike cobblestoneWire = ModItems.TierCobblestoneWire.valueOf(tier.name()).getItem().get();
+            ItemLike cobblestoneRod = ModItems.TierCobblestoneRod.valueOf(tier.name()).getItem().get();
+
+            ShapedRecipeBuilder.shaped(RecipeCategory.MISC, tier.getItem().get(), 2)
+                .pattern("CWR")
+                .pattern("WRW")
+                .pattern("RWC")
+                .define('C', compressedCobblestone)
+                .define('W', cobblestoneWire)
+                .define('R', cobblestoneRod)
+                .unlockedBy("has_" + tier.getRegistryName(), has(cobblestoneRod))
+                .save(output, modRecipeId(tier.getRegistryName()));
+        }
+    }
+
+    private void buildCobblestoneAccelerationChipRecipes(RecipeOutput output) {
+        // Acceleration Chip は、外周を圧縮丸石で囲み、中央へ motor を置く 3x3 レシピです。
+        // tier 版も同じ見た目のまま、対応する tier の圧縮丸石と motor に差し替えます。
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.COBBLESTONE_ACCELERATION_CHIP.get())
+            .pattern("AAA")
+            .pattern("ABA")
+            .pattern("AAA")
+            .define('A', ModItems.COMPRESSED_COBBLESTONE_ITEM.get())
+            .define('B', ModItems.COBBLESTONE_MOTOR.get())
+            .unlockedBy("has_cobblestone_motor", has(ModItems.COBBLESTONE_MOTOR.get()))
+            .save(output, modRecipeId("cobblestone_acceleration_chip"));
+
+        for (ModItems.TierCobblestoneAccelerationChip tier : ModItems.TierCobblestoneAccelerationChip.values()) {
+            ItemLike compressedCobblestone = ModItems.TierCompressedCobblestoneItem.valueOf(tier.name()).getItem().get();
+            ItemLike cobblestoneMotor = ModItems.TierCobblestoneMotor.valueOf(tier.name()).getItem().get();
+
+            ShapedRecipeBuilder.shaped(RecipeCategory.MISC, tier.getItem().get())
+                .pattern("AAA")
+                .pattern("ABA")
+                .pattern("AAA")
+                .define('A', compressedCobblestone)
+                .define('B', cobblestoneMotor)
+                .unlockedBy("has_" + tier.getRegistryName(), has(cobblestoneMotor))
+                .save(output, modRecipeId(tier.getRegistryName()));
+        }
+    }
+
+    private void buildCobblestoneEnergizedCubeRecipes(RecipeOutput output) {
+        // Energized Cube は、外周を圧縮丸石で囲み、中央へ processor を置く 3x3 レシピです。
+        // tier 版は enum 名から同じ tier の圧縮丸石と processor を引いて、そのまま回します。
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.COBBLESTONE_ENERGIZED_CUBE.get())
+            .pattern("AAA")
+            .pattern("ABA")
+            .pattern("AAA")
+            .define('A', ModItems.COMPRESSED_COBBLESTONE_ITEM.get())
+            .define('B', ModItems.COBBLESTONE_PROCESSOR.get())
+            .unlockedBy("has_cobblestone_processor", has(ModItems.COBBLESTONE_PROCESSOR.get()))
+            .save(output, modRecipeId("cobblestone_energized_cube"));
+
+        for (ModItems.TierCobblestoneEnergizedCube tier : ModItems.TierCobblestoneEnergizedCube.values()) {
+            ItemLike compressedCobblestone = ModItems.TierCompressedCobblestoneItem.valueOf(tier.name()).getItem().get();
+            ItemLike cobblestoneProcessor = ModItems.TierCobblestoneProcessor.valueOf(tier.name()).getItem().get();
+
+            ShapedRecipeBuilder.shaped(RecipeCategory.MISC, tier.getItem().get())
+                .pattern("AAA")
+                .pattern("ABA")
+                .pattern("AAA")
+                .define('A', compressedCobblestone)
+                .define('B', cobblestoneProcessor)
+                .unlockedBy("has_" + tier.getRegistryName(), has(cobblestoneProcessor))
+                .save(output, modRecipeId(tier.getRegistryName()));
+        }
+    }
+
+    private void buildCobblestoneGeneratorRecipes(RecipeOutput output) {
+        for (ModBlocks.TierCobblestoneGenerator generatorVariant : ModBlocks.TierCobblestoneGenerator.values()) {
+            ItemLike result = ModItems.TierCobblestoneGeneratorItem.from(generatorVariant).getItem().get();
+
+            if (generatorVariant.getSize() == ModBlocks.CobblestoneGeneratorSize.S) {
+                ItemLike compressedCobblestone;
+                ItemLike singularity;
+
+                if (generatorVariant.hasTier()) {
+                    compressedCobblestone = generatorVariant.getTier().getBlock().get();
+                    singularity = ModItems.TierCompressedCobblestoneSingularity.valueOf(generatorVariant.getTier().name()).getItem().get();
+                } else {
+                    compressedCobblestone = ModBlocks.COMPRESSED_COBBLESTONE.get();
+                    singularity = ModItems.COMPRESSED_COBBLESTONE_SINGULARITY.get();
+                }
+
+                ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, result)
+                    .pattern("CCC")
+                    .pattern("CSC")
+                    .pattern("CCC")
+                    .define('C', compressedCobblestone)
+                    .define('S', singularity)
+                    .unlockedBy("has_" + generatorVariant.getRegistryName(), has(singularity))
+                    .save(output, modRecipeId(generatorVariant.getRegistryName()));
+
+                continue;
+            }
+
+            ModBlocks.CobblestoneGeneratorSize previousSize = generatorVariant.getSize() == ModBlocks.CobblestoneGeneratorSize.M
+                ? ModBlocks.CobblestoneGeneratorSize.S
+                : ModBlocks.CobblestoneGeneratorSize.M;
+            ModBlocks.TierCobblestoneGenerator previousVariant = ModBlocks.TierCobblestoneGenerator.from(generatorVariant.getTier(), previousSize);
+            ItemLike previousGenerator = ModItems.TierCobblestoneGeneratorItem.from(previousVariant).getItem().get();
+
+            ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, result)
+                .pattern("GGG")
+                .pattern("G G")
+                .pattern("GGG")
+                .define('G', previousGenerator)
+                .unlockedBy("has_" + previousVariant.getRegistryName(), has(previousGenerator))
+                .save(output, modRecipeId(generatorVariant.getRegistryName()));
+        }
+    }
+
+    private void buildCobblestoneMachineCasingRecipes(RecipeOutput output) {
+        for (MachineCasingRecipeDefinition recipe : MACHINE_CASING_RECIPES) {
+            ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, recipe.result)
+                .pattern("CSC")
+                .pattern("SGS")
+                .pattern("CSC")
+                .define('C', recipe.compressedCobblestone)
+                .define('S', recipe.compressedStone)
+                .define('G', recipe.centerGem)
+                .unlockedBy("has_" + recipe.recipeName, has(recipe.centerGem))
+                .save(output, modRecipeId(recipe.recipeName));
+        }
+    }
+
+    private void buildCobblestoneFurnaceRecipes(RecipeOutput output) {
+        // 既存の cobblestone -> stone 例も datagen 管理へ寄せます。
+        saveCobblestoneFurnaceRecipe(output, "cobblestone_to_stone", Items.COBBLESTONE, Items.STONE, 100);
+
+        for (MachineRecipeDefinition recipe : COMPRESSED_STONE_MACHINE_RECIPES) {
+            saveCobblestoneFurnaceRecipe(output, recipe.recipeName, recipe.ingredient, recipe.result, recipe.processingTime);
+        }
+    }
+
+    private void buildCobblestoneCrusherRecipes(RecipeOutput output) {
+        for (CrusherRecipeDefinition recipe : COBBLESTONE_CRUSHER_RECIPES) {
+            saveCobblestoneCrusherRecipe(
+                output,
+                recipe.recipeName,
+                recipe.ingredient,
+                recipe.result,
+                recipe.totalCobblestonePower,
+                recipe.cobblestonePowerPerTick
+            );
+        }
+    }
+
+    private void buildCobblestoneMixerRecipes(RecipeOutput output) {
+        for (MixerRecipeDefinition recipe : COBBLESTONE_MIXER_RECIPES) {
+            saveCobblestoneMixerRecipe(
+                output,
+                recipe.recipeName,
+                recipe.firstIngredient,
+                recipe.secondIngredient,
+                recipe.result,
+                recipe.totalCobblestonePower,
+                recipe.cobblestonePowerPerTick
+            );
+        }
+    }
+
+    private void saveCobblestoneFurnaceRecipe(RecipeOutput output, String recipeName, ItemLike ingredient, ItemLike result, int processingTime) {
+        CobblestoneFurnaceRecipe recipe = new CobblestoneFurnaceRecipe(
+            Ingredient.of(ingredient),
+            new ItemStack(result),
+            processingTime
+        );
+
+        output.accept(
+            modRecipeId("cobblestone_furnace/" + recipeName),
+            recipe,
+            null
+        );
+    }
+
+    private void saveCobblestoneCrusherRecipe(
+        RecipeOutput output,
+        String recipeName,
+        ItemLike ingredient,
+        ItemLike result,
+        int totalCobblestonePower,
+        int cobblestonePowerPerTick
+    ) {
+        CobblestoneCrusherRecipe recipe = new CobblestoneCrusherRecipe(
+            Ingredient.of(ingredient),
+            new ItemStack(result),
+            totalCobblestonePower,
+            cobblestonePowerPerTick
+        );
+
+        output.accept(
+            modRecipeId("cobblestone_crusher/" + recipeName),
+            recipe,
+            null
+        );
+    }
+
+    private void saveCobblestoneMixerRecipe(
+        RecipeOutput output,
+        String recipeName,
+        ItemLike firstIngredient,
+        ItemLike secondIngredient,
+        ItemLike result,
+        int totalCobblestonePower,
+        int cobblestonePowerPerTick
+    ) {
+        CobblestoneMixerRecipe recipe = new CobblestoneMixerRecipe(
+            Ingredient.of(firstIngredient),
+            Ingredient.of(secondIngredient),
+            new ItemStack(result),
+            totalCobblestonePower,
+            cobblestonePowerPerTick
+        );
+
+        output.accept(
+            modRecipeId("cobblestone_mixer/" + recipeName),
+            recipe,
+            null
+        );
+    }
+
+    private ResourceLocation modRecipeId(String path) {
+        return ResourceLocation.fromNamespaceAndPath(CobblestonexXCompressed.MODID, path);
+    }
+
+    private static class GemRecipeDefinition {
+        private final String recipeName;
+        private final ItemLike material;
+        private final ItemLike result;
+
+        private GemRecipeDefinition(String recipeName, ItemLike material, ItemLike result) {
+            this.recipeName = recipeName;
+            this.material = material;
+            this.result = result;
+        }
+    }
+
+    private static class CompressionRecipeDefinition {
+        private final String recipeName;
+        private final ItemLike outerBlock;
+        private final ItemLike centerGem;
+        private final ItemLike result;
+
+        private CompressionRecipeDefinition(String recipeName, ItemLike outerBlock, ItemLike centerGem, ItemLike result) {
+            this.recipeName = recipeName;
+            this.outerBlock = outerBlock;
+            this.centerGem = centerGem;
+            this.result = result;
+        }
+    }
+
+    private static class MachineRecipeDefinition {
+        private final String recipeName;
+        private final ItemLike ingredient;
+        private final ItemLike result;
+        private final int processingTime;
+
+        private MachineRecipeDefinition(String recipeName, ItemLike ingredient, ItemLike result, int processingTime) {
+            this.recipeName = recipeName;
+            this.ingredient = ingredient;
+            this.result = result;
+            this.processingTime = processingTime;
+        }
+    }
+
+    private static class MachineCasingRecipeDefinition {
+        private final String recipeName;
+        private final ItemLike compressedCobblestone;
+        private final ItemLike compressedStone;
+        private final ItemLike centerGem;
+        private final ItemLike result;
+
+        private MachineCasingRecipeDefinition(
+            String recipeName,
+            ItemLike compressedCobblestone,
+            ItemLike compressedStone,
+            ItemLike centerGem,
+            ItemLike result
+        ) {
+            this.recipeName = recipeName;
+            this.compressedCobblestone = compressedCobblestone;
+            this.compressedStone = compressedStone;
+            this.centerGem = centerGem;
+            this.result = result;
+        }
+    }
+
+    private static class CrusherRecipeDefinition {
+        private final String recipeName;
+        private final ItemLike ingredient;
+        private final ItemLike result;
+        private final int totalCobblestonePower;
+        private final int cobblestonePowerPerTick;
+
+        private CrusherRecipeDefinition(
+            String recipeName,
+            ItemLike ingredient,
+            ItemLike result,
+            int totalCobblestonePower,
+            int cobblestonePowerPerTick
+        ) {
+            this.recipeName = recipeName;
+            this.ingredient = ingredient;
+            this.result = result;
+            this.totalCobblestonePower = totalCobblestonePower;
+            this.cobblestonePowerPerTick = cobblestonePowerPerTick;
+        }
+    }
+
+    private static class MixerRecipeDefinition {
+        private final String recipeName;
+        private final ItemLike firstIngredient;
+        private final ItemLike secondIngredient;
+        private final ItemLike result;
+        private final int totalCobblestonePower;
+        private final int cobblestonePowerPerTick;
+
+        private MixerRecipeDefinition(
+            String recipeName,
+            ItemLike firstIngredient,
+            ItemLike secondIngredient,
+            ItemLike result,
+            int totalCobblestonePower,
+            int cobblestonePowerPerTick
+        ) {
+            this.recipeName = recipeName;
+            this.firstIngredient = firstIngredient;
+            this.secondIngredient = secondIngredient;
+            this.result = result;
+            this.totalCobblestonePower = totalCobblestonePower;
+            this.cobblestonePowerPerTick = cobblestonePowerPerTick;
+        }
+    }
+}

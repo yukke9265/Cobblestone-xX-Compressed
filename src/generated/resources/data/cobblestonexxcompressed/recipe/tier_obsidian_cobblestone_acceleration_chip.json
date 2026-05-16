@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "cobblestonexxcompressed:tier_obsidian_compressed_cobblestone"
+    },
+    "B": {
+      "item": "cobblestonexxcompressed:tier_obsidian_cobblestone_motor"
+    }
+  },
+  "pattern": [
+    "AAA",
+    "ABA",
+    "AAA"
+  ],
+  "result": {
+    "count": 1,
+    "id": "cobblestonexxcompressed:tier_obsidian_cobblestone_acceleration_chip"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    {
+      "item": "cobblestonexxcompressed:tier_iron_compressed_cobblestone"
+    }
+  ],
+  "result": {
+    "count": 8,
+    "id": "cobblestonexxcompressed:tier_copper_compressed_cobblestone"
+  }
+}
