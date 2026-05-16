@@ -9,6 +9,7 @@ import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneFurnaceRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneLaserDrillRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneMixerRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestonePoweredFurnaceRecipe;
+import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneReactionChamberRecipe;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -35,4 +36,7 @@ public class ModRecipeTypes {
 
     public static final Supplier<RecipeType<CobblestoneMixerRecipe>> COBBLESTONE_MIXER =
         RECIPE_TYPES.register("cobblestone_mixer", RecipeType::simple);
+
+    public static final Supplier<RecipeType<CobblestoneReactionChamberRecipe>> COBBLESTONE_REACTION_CHAMBER =
+        RECIPE_TYPES.register("cobblestone_reaction_chamber", RecipeType::simple);
 }

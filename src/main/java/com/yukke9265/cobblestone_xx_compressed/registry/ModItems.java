@@ -236,6 +236,41 @@ public class ModItems {
         }
     }
 
+    // 宝石系ダスト 5 種は、登録名と英語表示名の対応が固定なので、
+    // enum にまとめておくと creative tab・lang・model で同じ一覧を使い回せます。
+    public enum GemDust {
+        AMETHYST("amethyst_dust", "Amethyst Dust"),
+        AQUAMARINE("aquamarine_dust", "Aquamarine Dust"),
+        TOPAZ("topaz_dust", "Topaz Dust"),
+        RUBY("ruby_dust", "Ruby Dust"),
+        SAPPHIRE("sapphire_dust", "Sapphire Dust");
+
+        private final String registryName;
+        private final String englishDisplayName;
+        private DeferredItem<Item> item;
+
+        GemDust(String registryName, String englishDisplayName) {
+            this.registryName = registryName;
+            this.englishDisplayName = englishDisplayName;
+        }
+
+        public String getRegistryName() {
+            return this.registryName;
+        }
+
+        public String getEnglishDisplayName() {
+            return this.englishDisplayName;
+        }
+
+        public DeferredItem<Item> getItem() {
+            return this.item;
+        }
+
+        private void setItem(DeferredItem<Item> item) {
+            this.item = item;
+        }
+    }
+
     // tier 違いの丸石パンは、見た目だけでなく登録名も規則的なので、
     // 共通の Item.Properties を使う小さな補助メソッドを用意しておくと追加手順が追いやすくなります。
     private static DeferredItem<Item> registerTierCobblestoneBread(String name) {
@@ -255,6 +290,10 @@ public class ModItems {
     }
 
     private static DeferredItem<Item> registerTierCobblestoneMixedDust(String name) {
+        return ITEMS.registerSimpleItem(name, createCobblestoneDustProperties());
+    }
+
+    private static DeferredItem<Item> registerGemDust(String name) {
         return ITEMS.registerSimpleItem(name, createCobblestoneDustProperties());
     }
 
@@ -911,6 +950,27 @@ public class ModItems {
     }
 
     static {
+        for (GemDust dust : GemDust.values()) {
+            dust.setItem(registerGemDust(dust.getRegistryName()));
+        }
+    }
+
+    public static final DeferredItem<Item> AMETHYST_DUST =
+        GemDust.AMETHYST.getItem();
+
+    public static final DeferredItem<Item> AQUAMARINE_DUST =
+        GemDust.AQUAMARINE.getItem();
+
+    public static final DeferredItem<Item> TOPAZ_DUST =
+        GemDust.TOPAZ.getItem();
+
+    public static final DeferredItem<Item> RUBY_DUST =
+        GemDust.RUBY.getItem();
+
+    public static final DeferredItem<Item> SAPPHIRE_DUST =
+        GemDust.SAPPHIRE.getItem();
+
+    static {
         for (TierCompressedCobblestoneSingularityBit tier : TierCompressedCobblestoneSingularityBit.values()) {
             tier.setItem(registerTierCompressedCobblestoneSingularityBit(tier.getRegistryName()));
         }
@@ -1441,6 +1501,11 @@ public class ModItems {
         ModItems.ITEMS.registerSimpleBlockItem(
             "cobblestone_mixer",
             ModBlocks.COBBLESTONE_MIXER);
+
+    public static final DeferredItem<BlockItem> COBBLESTONE_REACTION_CHAMBER_ITEM =
+        ModItems.ITEMS.registerSimpleBlockItem(
+            "cobblestone_reaction_chamber",
+            ModBlocks.COBBLESTONE_REACTION_CHAMBER);
 
     // cobblestone_centrifuge も設置できるように BlockItem を登録します。
     public static final DeferredItem<BlockItem> COBBLESTONE_CENTRIFUGE_ITEM =

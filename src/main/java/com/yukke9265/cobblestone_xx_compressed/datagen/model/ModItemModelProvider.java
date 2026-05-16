@@ -45,6 +45,10 @@ public class ModItemModelProvider extends ItemModelProvider {
         registerShardItemModel(ModItems.RUBY_SHARD);
         registerShardItemModel(ModItems.SAPPHIRE_SHARD);
 
+        for (ModItems.GemDust dust : ModItems.GemDust.values()) {
+            registerGemDustItemModel(dust.getItem());
+        }
+
         registerCobblestoneDustItemModel(ModItems.COBBLESTONE_DUST);
 
         for (ModItems.TierCobblestoneDust tier : ModItems.TierCobblestoneDust.values()) {
@@ -146,6 +150,10 @@ public class ModItemModelProvider extends ItemModelProvider {
 
     private void registerShardItemModel(DeferredItem<Item> item) {
         registerGeneratedItemModel(item, "shard");
+    }
+
+    private void registerGemDustItemModel(DeferredItem<Item> item) {
+        registerGeneratedItemModel(item, "dust");
     }
 
     private void registerCobblestoneDustItemModel(DeferredItem<Item> item) {

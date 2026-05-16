@@ -1,0 +1,11 @@
+{
+  "type": "cobblestonexxcompressed:cobblestone_crusher",
+  "ingredient": {
+    "item": "cobblestonexxcompressed:ruby_shard"
+  },
+  "result": {
+    "count": 1,
+    "id": "cobblestonexxcompressed:ruby_dust"
+  },
+  "total_cobblestone_power": 100
+}

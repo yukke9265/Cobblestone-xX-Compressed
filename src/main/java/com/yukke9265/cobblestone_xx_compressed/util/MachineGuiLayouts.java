@@ -60,6 +60,35 @@ public final class MachineGuiLayouts {
         }
     }
 
+    public static final class ReactionChamber {
+        public static final int MACHINE_SLOT_Y = 31;
+        public static final int FLUID_SLOT_X = 14;
+        public static final int FLUID_SLOT_Y = MACHINE_SLOT_Y;
+        public static final int INPUT_SLOT_1_X = 36;
+        public static final int INPUT_SLOT_1_Y = MACHINE_SLOT_Y;
+        public static final int INPUT_SLOT_2_X = INPUT_SLOT_1_X + SLOT_SIZE + 2;
+        public static final int INPUT_SLOT_2_Y = MACHINE_SLOT_Y;
+        public static final int OUTPUT_SLOT_X = INPUT_SLOT_2_X + SLOT_SIZE + 40;
+        public static final int OUTPUT_SLOT_Y = MACHINE_SLOT_Y;
+        public static final int POWER_SLOT_X = 10;
+        public static final int POWER_SLOT_Y = 51;
+        public static final int PROGRESS_BAR_X = 80;
+        public static final int PROGRESS_BAR_Y = 31;
+        public static final int PROGRESS_BAR_WIDTH = 16;
+        public static final int PROGRESS_BAR_HEIGHT = 16;
+        public static final int POWER_BAR_X = 36;
+        public static final int POWER_BAR_Y = 63;
+        public static final int POWER_BAR_WIDTH = 124;
+        public static final int POWER_BAR_HEIGHT = 8;
+        public static final int FLUID_FILL_X = FLUID_SLOT_X + 1;
+        public static final int FLUID_FILL_Y = FLUID_SLOT_Y + 1;
+        public static final int FLUID_FILL_WIDTH = 16;
+        public static final int FLUID_FILL_HEIGHT = 16;
+
+        private ReactionChamber() {
+        }
+    }
+
     public static final class Centrifuge {
         public static final int MACHINE_SLOT_Y = 31;
         public static final int POWER_SLOT_X = 10;

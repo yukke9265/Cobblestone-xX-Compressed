@@ -15,6 +15,7 @@ import com.yukke9265.cobblestone_xx_compressed.jei.category.CobblestoneFurnaceRe
 import com.yukke9265.cobblestone_xx_compressed.jei.category.CobblestoneLaserDrillRecipeCategory;
 import com.yukke9265.cobblestone_xx_compressed.jei.category.CobblestoneMixerRecipeCategory;
 import com.yukke9265.cobblestone_xx_compressed.jei.category.CobblestonePoweredFurnaceRecipeCategory;
+import com.yukke9265.cobblestone_xx_compressed.jei.category.CobblestoneReactionChamberRecipeCategory;
 import com.yukke9265.cobblestone_xx_compressed.menu.BaseMenu;
 import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneCrusherMenu;
 import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneCentrifugeMenu;
@@ -22,12 +23,14 @@ import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneFurnaceMenu;
 import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneLaserDrillMenu;
 import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneMixerMenu;
 import com.yukke9265.cobblestone_xx_compressed.menu.CobblestonePoweredFurnaceMenu;
+import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneReactionChamberMenu;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneCrusherRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneCentrifugeRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneFurnaceRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneLaserDrillRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneMixerRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestonePoweredFurnaceRecipe;
+import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneReactionChamberRecipe;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModBlocks;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModMenuType;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModRecipeTypes;
@@ -97,6 +100,13 @@ public class ModJeiPlugin implements IModPlugin {
             CobblestoneMixerRecipe.class
         );
 
+    public static final RecipeType<CobblestoneReactionChamberRecipe> COBBLESTONE_REACTION_CHAMBER_RECIPE_TYPE =
+        RecipeType.create(
+            ModJeiIds.COBBLESTONE_REACTION_CHAMBER.getNamespace(),
+            ModJeiIds.COBBLESTONE_REACTION_CHAMBER.getPath(),
+            CobblestoneReactionChamberRecipe.class
+        );
+
     public static final RecipeType<CompressedStoneLootJeiRecipe> COMPRESSED_STONE_LOOT_RECIPE_TYPE =
         RecipeType.create(
             ModJeiIds.COMPRESSED_STONE_LOOT.getNamespace(),
@@ -164,13 +174,24 @@ public class ModJeiPlugin implements IModPlugin {
             ModMenuType.COBBLESTONE_MIXER_MENU
         );
 
+    private static final MachineJeiDefinition<CobblestoneReactionChamberRecipe, CobblestoneReactionChamberMenu> COBBLESTONE_REACTION_CHAMBER_DEFINITION =
+        new MachineJeiDefinition<>(
+            ModJeiIds.COBBLESTONE_REACTION_CHAMBER,
+            COBBLESTONE_REACTION_CHAMBER_RECIPE_TYPE,
+            registration -> new CobblestoneReactionChamberRecipeCategory(registration.getJeiHelpers().getGuiHelper()),
+            () -> new ItemStack(ModBlocks.COBBLESTONE_REACTION_CHAMBER.get()),
+            CobblestoneReactionChamberMenu.class,
+            ModMenuType.COBBLESTONE_REACTION_CHAMBER_MENU
+        );
+
     private static final List<MachineJeiDefinition<?, ?>> MACHINE_DEFINITIONS = List.of(
         COBBLESTONE_FURNACE_DEFINITION,
         COBBLESTONE_POWERED_FURNACE_DEFINITION,
         COBBLESTONE_CRUSHER_DEFINITION,
         COBBLESTONE_CENTRIFUGE_DEFINITION,
         COBBLESTONE_LASER_DRILL_DEFINITION,
-        COBBLESTONE_MIXER_DEFINITION
+        COBBLESTONE_MIXER_DEFINITION,
+        COBBLESTONE_REACTION_CHAMBER_DEFINITION
     );
 
     @Override
@@ -238,6 +259,13 @@ public class ModJeiPlugin implements IModPlugin {
             .map(RecipeHolder::value)
             .toList();
         registration.addRecipes(COBBLESTONE_MIXER_DEFINITION.recipeType(), mixerRecipes);
+
+        List<CobblestoneReactionChamberRecipe> reactionChamberRecipes = minecraft.level.getRecipeManager()
+            .getAllRecipesFor(ModRecipeTypes.COBBLESTONE_REACTION_CHAMBER.get())
+            .stream()
+            .map(RecipeHolder::value)
+            .toList();
+        registration.addRecipes(COBBLESTONE_REACTION_CHAMBER_DEFINITION.recipeType(), reactionChamberRecipes);
     }
 
     @Override

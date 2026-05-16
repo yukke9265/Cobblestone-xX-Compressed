@@ -46,6 +46,9 @@ public class ModEnglishLanguageProvider extends LanguageProvider {
         addItem(ModItems.TOPAZ_SHARD, "Topaz Shard");
         addItem(ModItems.RUBY_SHARD, "Ruby Shard");
         addItem(ModItems.SAPPHIRE_SHARD, "Sapphire Shard");
+        for (ModItems.GemDust dust : ModItems.GemDust.values()) {
+            addItem(dust.getItem(), dust.getEnglishDisplayName());
+        }
 
         addItem(ModItems.COBBLESTONE_DUST, "Cobblestone Dust");
         for (ModItems.TierCobblestoneDust tier : ModItems.TierCobblestoneDust.values()) {

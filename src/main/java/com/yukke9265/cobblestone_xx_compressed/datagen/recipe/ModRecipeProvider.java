@@ -86,6 +86,41 @@ public class ModRecipeProvider extends RecipeProvider {
             2
         ),
         new CrusherRecipeDefinition(
+            "amethyst_shard_to_amethyst_dust",
+            Items.AMETHYST_SHARD,
+            ModItems.AMETHYST_DUST.get(),
+            100,
+            1
+        ),
+        new CrusherRecipeDefinition(
+            "aquamarine_shard_to_aquamarine_dust",
+            ModItems.AQUAMARINE_SHARD.get(),
+            ModItems.AQUAMARINE_DUST.get(),
+            100,
+            1
+        ),
+        new CrusherRecipeDefinition(
+            "topaz_shard_to_topaz_dust",
+            ModItems.TOPAZ_SHARD.get(),
+            ModItems.TOPAZ_DUST.get(),
+            100,
+            1
+        ),
+        new CrusherRecipeDefinition(
+            "ruby_shard_to_ruby_dust",
+            ModItems.RUBY_SHARD.get(),
+            ModItems.RUBY_DUST.get(),
+            100,
+            1
+        ),
+        new CrusherRecipeDefinition(
+            "sapphire_shard_to_sapphire_dust",
+            ModItems.SAPPHIRE_SHARD.get(),
+            ModItems.SAPPHIRE_DUST.get(),
+            100,
+            1
+        ),
+        new CrusherRecipeDefinition(
             "coal_to_coal_dust",
             Items.COAL,
             ModItems.COAL_DUST.get(),

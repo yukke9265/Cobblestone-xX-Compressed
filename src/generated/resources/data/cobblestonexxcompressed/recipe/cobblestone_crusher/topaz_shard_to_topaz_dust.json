@@ -1,0 +1,11 @@
+{
+  "type": "cobblestonexxcompressed:cobblestone_crusher",
+  "ingredient": {
+    "item": "cobblestonexxcompressed:topaz_shard"
+  },
+  "result": {
+    "count": 1,
+    "id": "cobblestonexxcompressed:topaz_dust"
+  },
+  "total_cobblestone_power": 100
+}

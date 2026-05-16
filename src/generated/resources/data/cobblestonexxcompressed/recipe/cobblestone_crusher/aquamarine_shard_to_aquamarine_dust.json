@@ -1,0 +1,11 @@
+{
+  "type": "cobblestonexxcompressed:cobblestone_crusher",
+  "ingredient": {
+    "item": "cobblestonexxcompressed:aquamarine_shard"
+  },
+  "result": {
+    "count": 1,
+    "id": "cobblestonexxcompressed:aquamarine_dust"
+  },
+  "total_cobblestone_power": 100
+}

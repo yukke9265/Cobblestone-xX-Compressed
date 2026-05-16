@@ -25,6 +25,9 @@ public final class ModJeiIds {
     public static final ResourceLocation COBBLESTONE_MIXER =
         ResourceLocation.fromNamespaceAndPath(CobblestonexXCompressed.MODID, "cobblestone_mixer");
 
+    public static final ResourceLocation COBBLESTONE_REACTION_CHAMBER =
+        ResourceLocation.fromNamespaceAndPath(CobblestonexXCompressed.MODID, "cobblestone_reaction_chamber");
+
     public static final ResourceLocation COMPRESSED_STONE_LOOT =
         ResourceLocation.fromNamespaceAndPath(CobblestonexXCompressed.MODID, "compressed_stone_loot");
 

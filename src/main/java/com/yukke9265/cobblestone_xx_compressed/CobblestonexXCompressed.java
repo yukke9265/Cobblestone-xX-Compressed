@@ -90,6 +90,9 @@ public class CobblestonexXCompressed {
                 output.accept(ModItems.TOPAZ_SHARD.get());
                 output.accept(ModItems.RUBY_SHARD.get());
                 output.accept(ModItems.SAPPHIRE_SHARD.get());
+                for (ModItems.GemDust dust : ModItems.GemDust.values()) {
+                    output.accept(dust.getItem().get());
+                }
                 output.accept(ModItems.COBBLESTONE_DUST.get());
                 for (ModItems.TierCobblestoneDust tier : ModItems.TierCobblestoneDust.values()) {
                     output.accept(tier.getItem().get());
@@ -139,6 +142,7 @@ public class CobblestonexXCompressed {
                 output.accept(ModItems.COBBLESTONE_CENTRIFUGE_ITEM.get());
                 output.accept(ModItems.COBBLESTONE_LASER_DRILL_ITEM.get());
                 output.accept(ModItems.COBBLESTONE_MIXER_ITEM.get());
+                output.accept(ModItems.COBBLESTONE_REACTION_CHAMBER_ITEM.get());
                 for (ModItems.TierCobblestoneGeneratorItem generatorItem : ModItems.TierCobblestoneGeneratorItem.values()) {
                     output.accept(generatorItem.getItem().get());
                 }
@@ -273,6 +277,18 @@ public class CobblestonexXCompressed {
             Capabilities.ItemHandler.BLOCK,
             ModBlockEntities.COBBLESTONE_MIXER_BLOCK_ENTITY.get(),
             (blockEntity, side) -> blockEntity.getAutomationItemHandler(side)
+        );
+
+        event.registerBlockEntity(
+            Capabilities.ItemHandler.BLOCK,
+            ModBlockEntities.COBBLESTONE_REACTION_CHAMBER_BLOCK_ENTITY.get(),
+            (blockEntity, side) -> blockEntity.getAutomationItemHandler(side)
+        );
+
+        event.registerBlockEntity(
+            Capabilities.FluidHandler.BLOCK,
+            ModBlockEntities.COBBLESTONE_REACTION_CHAMBER_BLOCK_ENTITY.get(),
+            (blockEntity, side) -> blockEntity.getFluidHandler(side)
         );
 
         event.registerBlockEntity(
