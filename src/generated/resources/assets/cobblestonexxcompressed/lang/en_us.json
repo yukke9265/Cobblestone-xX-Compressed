@@ -335,5 +335,10 @@
   "item.cobblestonexxcompressed.tier_topaz_compressed_cobblestone_singularity": "Topaz Compressed Cobblestone Singularity",
   "item.cobblestonexxcompressed.tier_topaz_compressed_cobblestone_singularity_bit": "Topaz Compressed Cobblestone Singularity Bit",
   "item.cobblestonexxcompressed.tier_topaz_compressed_cobblestone_singularity_fragment": "Topaz Compressed Cobblestone Singularity Fragment",
-  "itemGroup.cobblestonexxcompressed": "Cobblestone xXCompressed"
+  "itemGroup.cobblestonexxcompressed": "Cobblestone xXCompressed",
+  "jei.cobblestonexxcompressed.chance": "Chance: %s",
+  "jei.cobblestonexxcompressed.compressed_stone_loot": "Compressed Stone Loot",
+  "jei.cobblestonexxcompressed.count_range_fortune": "Count: %s-%s (Fortune)",
+  "jei.cobblestonexxcompressed.no_silk_touch": "No Silk Touch",
+  "jei.cobblestonexxcompressed.silk_touch": "Silk Touch"
 }

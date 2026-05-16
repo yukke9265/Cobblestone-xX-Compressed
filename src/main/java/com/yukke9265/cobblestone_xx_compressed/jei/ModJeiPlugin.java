@@ -8,6 +8,7 @@ import com.yukke9265.cobblestone_xx_compressed.CobblestonexXCompressed;
 import com.yukke9265.cobblestone_xx_compressed.compat.jei.JeiClickableAreaDefinition;
 import com.yukke9265.cobblestone_xx_compressed.compat.jei.JeiRecipeTransferDefinition;
 import com.yukke9265.cobblestone_xx_compressed.compat.jei.ModJeiIds;
+import com.yukke9265.cobblestone_xx_compressed.jei.category.CompressedStoneLootRecipeCategory;
 import com.yukke9265.cobblestone_xx_compressed.jei.category.CobblestoneCrusherRecipeCategory;
 import com.yukke9265.cobblestone_xx_compressed.jei.category.CobblestoneCentrifugeRecipeCategory;
 import com.yukke9265.cobblestone_xx_compressed.jei.category.CobblestoneFurnaceRecipeCategory;
@@ -86,6 +87,13 @@ public class ModJeiPlugin implements IModPlugin {
             CobblestoneMixerRecipe.class
         );
 
+    public static final RecipeType<CompressedStoneLootJeiRecipe> COMPRESSED_STONE_LOOT_RECIPE_TYPE =
+        RecipeType.create(
+            ModJeiIds.COMPRESSED_STONE_LOOT.getNamespace(),
+            ModJeiIds.COMPRESSED_STONE_LOOT.getPath(),
+            CompressedStoneLootJeiRecipe.class
+        );
+
     private static final MachineJeiDefinition<CobblestoneFurnaceRecipe, CobblestoneFurnaceMenu> COBBLESTONE_FURNACE_DEFINITION =
         new MachineJeiDefinition<>(
             ModJeiIds.COBBLESTONE_FURNACE,
@@ -151,6 +159,8 @@ public class ModJeiPlugin implements IModPlugin {
 
     @Override
     public void registerCategories(IRecipeCategoryRegistration registration) {
+        registration.addRecipeCategories(new CompressedStoneLootRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
+
         for (MachineJeiDefinition<?, ?> definition : MACHINE_DEFINITIONS) {
             registration.addRecipeCategories(definition.createCategory(registration));
         }
@@ -162,6 +172,8 @@ public class ModJeiPlugin implements IModPlugin {
         if (minecraft.level == null) {
             return;
         }
+
+        registration.addRecipes(COMPRESSED_STONE_LOOT_RECIPE_TYPE, CompressedStoneLootJeiRecipe.createRecipes());
 
         // レシピの登録本体は機械ごとに違いますが、plugin 側の呼び出し手順は共通化します。
         List<CobblestoneFurnaceRecipe> recipes = minecraft.level.getRecipeManager()

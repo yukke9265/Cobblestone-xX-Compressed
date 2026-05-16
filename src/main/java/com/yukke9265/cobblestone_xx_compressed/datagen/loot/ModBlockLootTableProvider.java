@@ -10,30 +10,18 @@ import org.jetbrains.annotations.NotNull;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.yukke9265.cobblestone_xx_compressed.CobblestonexXCompressed;
+import com.yukke9265.cobblestone_xx_compressed.loot.CompressedStoneLootDefinition;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModBlocks;
 
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
+import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.Block;
 
 public class ModBlockLootTableProvider implements DataProvider {
     private static final String MODID = CobblestonexXCompressed.MODID;
-
-    private static final StoneLootDefinition[] COMPRESSED_STONE_LOOT_DEFINITIONS = new StoneLootDefinition[] {
-        new StoneLootDefinition("compressed_stone", "compressed_cobblestone", "cobblestone_gem", 0.12d, "minecraft:flint", 0.35d, 1.0d, 2.0d),
-        new StoneLootDefinition("tier_copper_compressed_stone", "tier_copper_compressed_cobblestone", "tier_copper_cobblestone_gem", 0.12d, "minecraft:copper_nugget", 0.45d, 1.0d, 3.0d),
-        new StoneLootDefinition("tier_iron_compressed_stone", "tier_iron_compressed_cobblestone", "tier_iron_cobblestone_gem", 0.12d, "minecraft:iron_nugget", 0.45d, 1.0d, 3.0d),
-        new StoneLootDefinition("tier_gold_compressed_stone", "tier_gold_compressed_cobblestone", "tier_gold_cobblestone_gem", 0.12d, "minecraft:gold_nugget", 0.45d, 1.0d, 3.0d),
-        new StoneLootDefinition("tier_amethyst_compressed_stone", "tier_amethyst_compressed_cobblestone", "tier_amethyst_cobblestone_gem", 0.12d, "minecraft:amethyst_shard", 0.45d, 1.0d, 3.0d),
-        new StoneLootDefinition("tier_aquamarine_compressed_stone", "tier_aquamarine_compressed_cobblestone", "tier_aquamarine_cobblestone_gem", 0.12d, "minecraft:prismarine_crystals", 0.45d, 1.0d, 3.0d),
-        new StoneLootDefinition("tier_topaz_compressed_stone", "tier_topaz_compressed_cobblestone", "tier_topaz_cobblestone_gem", 0.12d, "minecraft:quartz", 0.4d, 1.0d, 2.0d),
-        new StoneLootDefinition("tier_ruby_compressed_stone", "tier_ruby_compressed_cobblestone", "tier_ruby_cobblestone_gem", 0.12d, "minecraft:redstone", 0.45d, 1.0d, 4.0d),
-        new StoneLootDefinition("tier_sapphire_compressed_stone", "tier_sapphire_compressed_cobblestone", "tier_sapphire_cobblestone_gem", 0.12d, "minecraft:lapis_lazuli", 0.45d, 2.0d, 5.0d),
-        new StoneLootDefinition("tier_diamond_compressed_stone", "tier_diamond_compressed_cobblestone", "tier_diamond_cobblestone_gem", 0.1d, "minecraft:diamond", 0.2d),
-        new StoneLootDefinition("tier_emerald_compressed_stone", "tier_emerald_compressed_cobblestone", "tier_emerald_cobblestone_gem", 0.1d, "minecraft:emerald", 0.18d),
-        new StoneLootDefinition("tier_netherite_compressed_stone", "tier_netherite_compressed_cobblestone", "tier_netherite_cobblestone_gem", 0.08d, "minecraft:netherite_scrap", 0.08d),
-        new StoneLootDefinition("tier_obsidian_compressed_stone", "tier_obsidian_compressed_cobblestone", "tier_obsidian_cobblestone_gem", 0.1d, "minecraft:obsidian", 0.2d)
-    };
 
     private final PackOutput output;
 
@@ -77,8 +65,8 @@ public class ModBlockLootTableProvider implements DataProvider {
             futures.add(DataProvider.saveStable(cache, createSimpleSelfDropLoot(name), rootPath.resolve(name + ".json")));
         }
 
-        for (StoneLootDefinition definition : COMPRESSED_STONE_LOOT_DEFINITIONS) {
-            futures.add(DataProvider.saveStable(cache, createCompressedStoneLoot(definition), rootPath.resolve(definition.stoneBlockName + ".json")));
+        for (CompressedStoneLootDefinition definition : CompressedStoneLootDefinition.getDefinitions()) {
+            futures.add(DataProvider.saveStable(cache, createCompressedStoneLoot(definition), rootPath.resolve(getBlockPath(definition.getStoneBlock().get()) + ".json")));
         }
 
         return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
@@ -101,8 +89,8 @@ public class ModBlockLootTableProvider implements DataProvider {
         return root;
     }
 
-    private JsonObject createCompressedStoneLoot(StoneLootDefinition definition) {
-        JsonObject root = createBlockLootRoot(definition.stoneBlockName);
+    private JsonObject createCompressedStoneLoot(CompressedStoneLootDefinition definition) {
+        JsonObject root = createBlockLootRoot(getBlockPath(definition.getStoneBlock().get()));
         JsonArray pools = new JsonArray();
 
         JsonObject mainPool = new JsonObject();
@@ -111,16 +99,22 @@ public class ModBlockLootTableProvider implements DataProvider {
         JsonObject alternatives = new JsonObject();
         alternatives.addProperty("type", "minecraft:alternatives");
         JsonArray children = new JsonArray();
-        children.add(singleItemEntry(modItemName(definition.stoneBlockName), false, true, false, 0.0d, false, null, 0.0d, 0.0d));
-        children.add(singleItemEntry(modItemName(definition.cobblestoneBlockName), true, false, false, 0.0d, false, null, 0.0d, 0.0d));
+        children.add(singleItemEntry(getItemName(definition.getStoneBlock().get()), false, true, false, 0.0d, false, null, 0.0d, 0.0d));
+        children.add(singleItemEntry(getItemName(definition.getCobblestoneBlock().get()), true, false, false, 0.0d, false, null, 0.0d, 0.0d));
         alternatives.add("children", children);
         mainEntries.add(alternatives);
         mainPool.add("entries", mainEntries);
         mainPool.addProperty("rolls", 1.0d);
         pools.add(mainPool);
 
-        pools.add(createBonusPool(modItemName(definition.gemItemName), definition.gemChance, false, 0.0d, 0.0d));
-        pools.add(createBonusPool(definition.resourceItemName, definition.resourceChance, definition.hasCountRange, definition.minCount, definition.maxCount));
+        pools.add(createBonusPool(getItemName(definition.getGemItem().get()), definition.getGemChance(), false, 0.0d, 0.0d));
+        pools.add(createBonusPool(
+            getItemName(definition.getResourceItem().get()),
+            definition.getResourceChance(),
+            definition.hasCountRange(),
+            definition.getMinCount(),
+            definition.getMaxCount()
+        ));
 
         root.add("pools", pools);
         return root;
@@ -252,35 +246,11 @@ public class ModBlockLootTableProvider implements DataProvider {
         return MODID + ":" + path;
     }
 
-    private static class StoneLootDefinition {
-        private final String stoneBlockName;
-        private final String cobblestoneBlockName;
-        private final String gemItemName;
-        private final double gemChance;
-        private final String resourceItemName;
-        private final double resourceChance;
-        private final boolean hasCountRange;
-        private final double minCount;
-        private final double maxCount;
+    private String getBlockPath(Block block) {
+        return BuiltInRegistries.BLOCK.getKey(block).getPath();
+    }
 
-        private StoneLootDefinition(String stoneBlockName, String cobblestoneBlockName, String gemItemName, double gemChance, String resourceItemName, double resourceChance) {
-            this(stoneBlockName, cobblestoneBlockName, gemItemName, gemChance, resourceItemName, resourceChance, false, 0.0d, 0.0d);
-        }
-
-        private StoneLootDefinition(String stoneBlockName, String cobblestoneBlockName, String gemItemName, double gemChance, String resourceItemName, double resourceChance, double minCount, double maxCount) {
-            this(stoneBlockName, cobblestoneBlockName, gemItemName, gemChance, resourceItemName, resourceChance, true, minCount, maxCount);
-        }
-
-        private StoneLootDefinition(String stoneBlockName, String cobblestoneBlockName, String gemItemName, double gemChance, String resourceItemName, double resourceChance, boolean hasCountRange, double minCount, double maxCount) {
-            this.stoneBlockName = stoneBlockName;
-            this.cobblestoneBlockName = cobblestoneBlockName;
-            this.gemItemName = gemItemName;
-            this.gemChance = gemChance;
-            this.resourceItemName = resourceItemName;
-            this.resourceChance = resourceChance;
-            this.hasCountRange = hasCountRange;
-            this.minCount = minCount;
-            this.maxCount = maxCount;
-        }
+    private String getItemName(ItemLike itemLike) {
+        return BuiltInRegistries.ITEM.getKey(itemLike.asItem()).toString();
     }
 }

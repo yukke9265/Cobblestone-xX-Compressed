@@ -134,7 +134,7 @@
               "function": "minecraft:explosion_decay"
             }
           ],
-          "name": "minecraft:copper_nugget"
+          "name": "minecraft:copper_ingot"
         }
       ],
       "rolls": 1.0
