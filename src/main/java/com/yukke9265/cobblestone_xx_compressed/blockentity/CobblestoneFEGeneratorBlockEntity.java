@@ -2,12 +2,10 @@ package com.yukke9265.cobblestone_xx_compressed.blockentity;
 
 import javax.annotation.Nonnull;
 
-import com.yukke9265.cobblestone_xx_compressed.CobblestonexXCompressed;
 import com.yukke9265.cobblestone_xx_compressed.block.OnOffBlock;
 import com.yukke9265.cobblestone_xx_compressed.compat.flux.FluxNetworkCompat;
 import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneFEGeneratorMenu;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModBlockEntities;
-import com.yukke9265.cobblestone_xx_compressed.registry.ModBlocks;
 import com.yukke9265.cobblestone_xx_compressed.util.LongDataHelper;
 
 import org.jetbrains.annotations.NotNull;
@@ -62,15 +60,6 @@ public class CobblestoneFEGeneratorBlockEntity extends BaseBlockEntity implement
     private long lastConvertedForgeEnergy;
     private long lastExportedForgeEnergy;
     private boolean isAvailable = true;
-    private boolean loggedFluxUnavailable;
-
-    private final boolean[] loggedFluxCapabilityRequests = new boolean[Direction.values().length + 1];
-    private final boolean[] loggedFluxPullExtractions = new boolean[Direction.values().length + 1];
-    private final boolean[] loggedFluxTargetMissing = new boolean[Direction.values().length];
-    private final boolean[] loggedFluxTargetCannotReceive = new boolean[Direction.values().length];
-    private final boolean[] loggedFluxLongExportSides = new boolean[Direction.values().length];
-    private final boolean[] loggedFluxLongZeroAccepted = new boolean[Direction.values().length];
-    private final boolean[] loggedForgeFallbackSides = new boolean[Direction.values().length];
 
     private final FixedSizeItemStackHandler itemStackHandler = new FixedSizeItemStackHandler(1) {
         @Override
@@ -212,10 +201,6 @@ public class CobblestoneFEGeneratorBlockEntity extends BaseBlockEntity implement
         }
 
         if (!FluxNetworkCompat.isLoaded()) {
-            if (!this.loggedFluxUnavailable) {
-                CobblestonexXCompressed.LOGGER.info("[CobblestoneFEGenerator] Flux capability is not available. Flux export will fall back to FE when possible.");
-                this.loggedFluxUnavailable = true;
-            }
             return null;
         }
 
@@ -224,15 +209,6 @@ public class CobblestoneFEGeneratorBlockEntity extends BaseBlockEntity implement
         if (storage == null) {
             storage = FluxNetworkCompat.createLongEnergyStorage(new GeneratorFluxEnergyStorage(side));
             this.fluxEnergyStorages[capabilityIndex] = storage;
-        }
-
-        if (!this.loggedFluxCapabilityRequests[capabilityIndex]) {
-            CobblestonexXCompressed.LOGGER.info(
-                "[CobblestoneFEGenerator] Exposed Flux long capability on side={} at pos={}",
-                this.getSideName(side),
-                this.worldPosition
-            );
-            this.loggedFluxCapabilityRequests[capabilityIndex] = true;
         }
 
         return storage;
@@ -327,60 +303,13 @@ public class CobblestoneFEGeneratorBlockEntity extends BaseBlockEntity implement
 
             BlockEntity targetBlockEntity = currentLevel.getBlockEntity(this.worldPosition.relative(direction));
             Object fluxStorage = FluxNetworkCompat.getBlockEnergyStorage(targetBlockEntity, direction.getOpposite());
-            if (fluxStorage == null) {
-                if (!this.loggedFluxTargetMissing[direction.get3DDataValue()]) {
-                    CobblestonexXCompressed.LOGGER.info(
-                        "[CobblestoneFEGenerator] Flux target capability was null side={} target={} requestedSide={} storedFE={}",
-                        direction,
-                        this.describeBlockEntity(targetBlockEntity),
-                        direction.getOpposite(),
-                        this.storedForgeEnergy
-                    );
-                    this.loggedFluxTargetMissing[direction.get3DDataValue()] = true;
-                }
-            } else if (!FluxNetworkCompat.canReceive(fluxStorage)) {
-                if (!this.loggedFluxTargetCannotReceive[direction.get3DDataValue()]) {
-                    CobblestonexXCompressed.LOGGER.info(
-                        "[CobblestoneFEGenerator] Flux target cannot receive side={} target={} storageClass={} requestedSide={} storedFE={}",
-                        direction,
-                        this.describeBlockEntity(targetBlockEntity),
-                        fluxStorage.getClass().getName(),
-                        direction.getOpposite(),
-                        this.storedForgeEnergy
-                    );
-                    this.loggedFluxTargetCannotReceive[direction.get3DDataValue()] = true;
-                }
-            }
-
             if (FluxNetworkCompat.canReceive(fluxStorage)) {
-                if (!this.loggedFluxLongExportSides[direction.get3DDataValue()]) {
-                    CobblestonexXCompressed.LOGGER.info(
-                        "[CobblestoneFEGenerator] Using Flux long export path side={} target={} storedFE={}",
-                        direction,
-                        this.describeBlockEntity(targetBlockEntity),
-                        this.storedForgeEnergy
-                    );
-                    this.loggedFluxLongExportSides[direction.get3DDataValue()] = true;
-                }
-
                 long accepted = FluxNetworkCompat.receiveEnergy(fluxStorage, this.storedForgeEnergy, false);
                 if (accepted > 0L) {
                     this.storedForgeEnergy -= accepted;
                     exportedEnergy += accepted;
                     this.setChanged();
                     continue;
-                }
-
-                if (!this.loggedFluxLongZeroAccepted[direction.get3DDataValue()]) {
-                    CobblestonexXCompressed.LOGGER.info(
-                        "[CobblestoneFEGenerator] Flux long export accepted 0 side={} target={} storageClass={} requested={} storedFE={}",
-                        direction,
-                        this.describeBlockEntity(targetBlockEntity),
-                        fluxStorage.getClass().getName(),
-                        this.storedForgeEnergy,
-                        this.storedForgeEnergy
-                    );
-                    this.loggedFluxLongZeroAccepted[direction.get3DDataValue()] = true;
                 }
             }
 
@@ -391,16 +320,6 @@ public class CobblestoneFEGeneratorBlockEntity extends BaseBlockEntity implement
             );
             if (targetStorage == null || !targetStorage.canReceive()) {
                 continue;
-            }
-
-            if (!this.loggedForgeFallbackSides[direction.get3DDataValue()]) {
-                CobblestonexXCompressed.LOGGER.info(
-                    "[CobblestoneFEGenerator] Falling back to FE export path side={} target={} storedFE={}",
-                    direction,
-                    this.describeBlockEntity(targetBlockEntity),
-                    this.storedForgeEnergy
-                );
-                this.loggedForgeFallbackSides[direction.get3DDataValue()] = true;
             }
 
             int toSend = (int) Math.min(this.storedForgeEnergy, Integer.MAX_VALUE);
@@ -460,22 +379,6 @@ public class CobblestoneFEGeneratorBlockEntity extends BaseBlockEntity implement
 
     private int getCapabilityIndex(@Nullable Direction side) {
         return side == null ? Direction.values().length : side.get3DDataValue();
-    }
-
-    private String getSideName(@Nullable Direction side) {
-        if (side == null) {
-            return "internal";
-        }
-
-        return side.getName();
-    }
-
-    private String describeBlockEntity(@Nullable BlockEntity blockEntity) {
-        if (blockEntity == null) {
-            return "null";
-        }
-
-        return blockEntity.getClass().getName() + " type=" + blockEntity.getType();
     }
 
     @Override
@@ -685,22 +588,7 @@ public class CobblestoneFEGeneratorBlockEntity extends BaseBlockEntity implement
                 return 0L;
             }
 
-            long extractedEnergy = CobblestoneFEGeneratorBlockEntity.this.extractForgeEnergy(amount, simulate);
-            if (!simulate && extractedEnergy > 0L) {
-                int capabilityIndex = CobblestoneFEGeneratorBlockEntity.this.getCapabilityIndex(this.side);
-                if (!CobblestoneFEGeneratorBlockEntity.this.loggedFluxPullExtractions[capabilityIndex]) {
-                    CobblestonexXCompressed.LOGGER.info(
-                        "[CobblestoneFEGenerator] Flux long pull extracted side={} requested={} extracted={} remainingFE={}",
-                        CobblestoneFEGeneratorBlockEntity.this.getSideName(this.side),
-                        amount,
-                        extractedEnergy,
-                        CobblestoneFEGeneratorBlockEntity.this.storedForgeEnergy
-                    );
-                    CobblestoneFEGeneratorBlockEntity.this.loggedFluxPullExtractions[capabilityIndex] = true;
-                }
-            }
-
-            return extractedEnergy;
+            return CobblestoneFEGeneratorBlockEntity.this.extractForgeEnergy(amount, simulate);
         }
 
         @Override

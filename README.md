@@ -1,25 +1,37 @@
 
-Installation information
-=======
+# Cobblestone xX Compressed
 
-This template repository can be directly cloned to get you started with a new
-mod. Simply create a new repository cloned from this one, by following the
-instructions provided by [GitHub](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-repository-from-a-template).
+Minecraft 1.21.1 / NeoForge 1.21.1 向けの mod です。
 
-Once you have your clone, simply open the repository in the IDE of your choice. The usual recommendation for an IDE is either IntelliJ IDEA or Eclipse.
+丸石圧縮系アイテムと、それを材料や内部エネルギーとして使う機械を追加しています。現在の実装には、圧縮丸石系アイテム、丸石系の加工機、Cobblestone Powered Furnace、Cobblestone FE Generator などが含まれます。
 
-If at any point you are missing libraries in your IDE, or you've run into problems you can
-run `gradlew --refresh-dependencies` to refresh the local cache. `gradlew clean` to reset everything 
-{this does not affect your code} and then start the process again.
+## 開発環境
 
-Mapping Names:
-============
-By default, the MDK is configured to use the official mapping names from Mojang for methods and fields 
-in the Minecraft codebase. These names are covered by a specific license. All modders should be aware of this
-license. For the latest license text, refer to the mapping file itself, or the reference copy here:
-https://github.com/NeoForged/NeoForm/blob/main/Mojang.md
+- Java 21
+- Minecraft 1.21.1
+- NeoForge 1.21.1
 
-Additional Resources: 
-==========
-Community Documentation: https://docs.neoforged.net/  
-NeoForged Discord: https://discord.neoforged.net/
+## 主な確認コマンド
+
+```bat
+gradlew.bat compileJava
+gradlew.bat runClient
+gradlew.bat runData
+```
+
+`runData` は専用の `run-data` ディレクトリを使う設定にしてあり、通常プレイ用の `run` と分離しています。
+
+## リソース生成
+
+データ生成の出力先は `src/generated/resources` です。
+
+VS Code / Java 実行時に generated resources が見えないことがあるため、このプロジェクトでは `processResources` / `classes` / `runData` の後に `bin/main` へ同期する設定を入れています。
+
+## 補足
+
+- JEI は開発時の任意依存として設定しています。
+- Flux Networks との long energy 互換は mod 側で対応しています。
+
+## ライセンス
+
+このリポジトリのコードは同梱の `LICENSE` に従います。
