@@ -7,6 +7,7 @@ import com.yukke9265.cobblestone_xx_compressed.blockentity.CobblestoneFEGenerato
 import com.yukke9265.cobblestone_xx_compressed.blockentity.CobblestonePoweredFurnaceBlockEntity;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModBlocks;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModMenuType;
+import com.yukke9265.cobblestone_xx_compressed.util.MachineGuiLayouts;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -37,8 +38,6 @@ public class CobblestoneFEGeneratorMenu extends BaseMenu {
     private static final int DATA_INDEX_EXPORTED_ENERGY = 10;
     private static final int DATA_INDEX_AUTO_EXPORT = 12 + BaseBlockEntity.AUTOMATION_FACE_COUNT;
 
-    private static final int MACHINE_SLOT_X = 8;
-    private static final int MACHINE_SLOT_Y = 16;
     private static final int MACHINE_SLOT_COUNT = 1;
     private static final int PLAYER_INVENTORY_COLUMNS = 9;
     private static final int PLAYER_INVENTORY_ROWS = 3;
@@ -65,7 +64,12 @@ public class CobblestoneFEGeneratorMenu extends BaseMenu {
         checkContainerDataCount(generatorData, DATA_COUNT);
         this.addDataSlots(generatorData);
 
-        this.addSlot(new SlotItemHandler(itemStackHandler, CobblestoneFEGeneratorBlockEntity.COBBLESTONE_SLOT_INDEX, MACHINE_SLOT_X, MACHINE_SLOT_Y));
+        this.addSlot(new SlotItemHandler(
+            itemStackHandler,
+            CobblestoneFEGeneratorBlockEntity.COBBLESTONE_SLOT_INDEX,
+            MachineGuiLayouts.PoweredMachine.POWER_SLOT_X,
+            MachineGuiLayouts.PoweredMachine.POWER_SLOT_Y
+        ));
         this.addPlayerInventorySlots(playerInventory);
         this.addPlayerHotbarSlots(playerInventory);
     }

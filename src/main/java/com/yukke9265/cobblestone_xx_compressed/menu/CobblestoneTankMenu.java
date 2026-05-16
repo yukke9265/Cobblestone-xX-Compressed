@@ -41,8 +41,8 @@ public class CobblestoneTankMenu extends BaseMenu {
     private static final int DATA_INDEX_AUTO_EXPORT = DATA_INDEX_FLUID_AUTOMATION_START + BaseBlockEntity.AUTOMATION_FACE_COUNT;
 
     private static final int SLOT_SIZE = 18;
-    private static final int INPUT_SLOT_X = 56;
-    private static final int OUTPUT_SLOT_X = 116;
+    private static final int INPUT_SLOT_X = 26;
+    private static final int OUTPUT_SLOT_X = 132;
     private static final int MACHINE_SLOT_Y = 17;
     private static final int MACHINE_SLOT_COUNT = 2;
     private static final int PLAYER_INVENTORY_COLUMNS = 9;
