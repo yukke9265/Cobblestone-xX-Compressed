@@ -6,11 +6,15 @@ import com.yukke9265.cobblestone_xx_compressed.blockentity.BaseBlockEntity;
 import com.yukke9265.cobblestone_xx_compressed.compat.jei.JeiRecipeTransferDefinition;
 import com.yukke9265.cobblestone_xx_compressed.util.LongDataHelper;
 
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.Fluids;
+import net.neoforged.neoforge.fluids.FluidStack;
 
 
 public class BaseMenu extends AbstractContainerMenu {
@@ -104,6 +108,25 @@ public class BaseMenu extends AbstractContainerMenu {
 
     protected final long getLongFromData(ContainerData data, int lowerIndex) {
         return LongDataHelper.toLong(data.get(lowerIndex), data.get(lowerIndex + 1));
+    }
+
+    protected final FluidStack getFluidFromData(ContainerData data, int amountLowerIndex, int fluidIdIndex) {
+        long storedAmount = this.getLongFromData(data, amountLowerIndex);
+        if (storedAmount <= 0L) {
+            return FluidStack.EMPTY;
+        }
+
+        int fluidId = data.get(fluidIdIndex);
+        if (fluidId < 0) {
+            return FluidStack.EMPTY;
+        }
+
+        Fluid fluid = BuiltInRegistries.FLUID.byId(fluidId);
+        if (fluid == Fluids.EMPTY) {
+            return FluidStack.EMPTY;
+        }
+
+        return new FluidStack(fluid, (int) Math.min(storedAmount, Integer.MAX_VALUE));
     }
 
     // JEI 連携では毎回同じ形の definition を組み立てるので、

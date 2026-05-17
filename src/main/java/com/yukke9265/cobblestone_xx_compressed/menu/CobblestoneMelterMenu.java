@@ -37,14 +37,15 @@ public class CobblestoneMelterMenu extends BaseMenu {
         AutomationMode.OUTPUT
     };
 
-    private static final int DATA_COUNT = 11 + BaseBlockEntity.AUTOMATION_FACE_COUNT * 2;
+    private static final int DATA_COUNT = 12 + BaseBlockEntity.AUTOMATION_FACE_COUNT * 2;
     private static final int DATA_INDEX_PROGRESS = 0;
     private static final int DATA_INDEX_MAX_PROGRESS = 1;
     private static final int DATA_INDEX_STORED_POWER = 2;
     private static final int DATA_INDEX_MAX_STORED_POWER = 4;
     private static final int DATA_INDEX_STORED_FLUID = 6;
     private static final int DATA_INDEX_MAX_FLUID = 8;
-    private static final int DATA_INDEX_ITEM_AUTOMATION_START = 10;
+    private static final int DATA_INDEX_FLUID_ID = 10;
+    private static final int DATA_INDEX_ITEM_AUTOMATION_START = 11;
     private static final int DATA_INDEX_FLUID_AUTOMATION_START = DATA_INDEX_ITEM_AUTOMATION_START + BaseBlockEntity.AUTOMATION_FACE_COUNT;
     private static final int DATA_INDEX_AUTO_EXPORT = DATA_INDEX_FLUID_AUTOMATION_START + BaseBlockEntity.AUTOMATION_FACE_COUNT;
     private static final int MACHINE_SLOT_COUNT = 4;
@@ -101,7 +102,7 @@ public class CobblestoneMelterMenu extends BaseMenu {
     }
 
     public FluidStack getDisplayedFluid() {
-        return this.melterBlockEntity.getDisplayedFluid();
+        return this.getFluidFromData(this.melterData, DATA_INDEX_STORED_FLUID, DATA_INDEX_FLUID_ID);
     }
 
     public boolean getIsAvailable() {

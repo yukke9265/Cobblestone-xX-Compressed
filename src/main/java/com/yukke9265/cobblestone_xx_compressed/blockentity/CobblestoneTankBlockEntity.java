@@ -15,6 +15,7 @@ import com.yukke9265.cobblestone_xx_compressed.util.LongDataHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.MenuProvider;
@@ -42,7 +43,8 @@ public class CobblestoneTankBlockEntity extends BaseBlockEntity implements MenuP
     private static final int DATA_INDEX_STORED_FLUID_UPPER = 1;
     private static final int DATA_INDEX_MAX_FLUID = 2;
     private static final int DATA_INDEX_MAX_FLUID_UPPER = 3;
-    private static final int DATA_INDEX_ITEM_AUTOMATION_START = 4;
+    private static final int DATA_INDEX_FLUID_ID = 4;
+    private static final int DATA_INDEX_ITEM_AUTOMATION_START = 5;
     private static final int DATA_INDEX_FLUID_AUTOMATION_START = DATA_INDEX_ITEM_AUTOMATION_START + AUTOMATION_FACE_COUNT;
     private static final int DATA_INDEX_AUTO_EXPORT = DATA_INDEX_FLUID_AUTOMATION_START + AUTOMATION_FACE_COUNT;
 
@@ -234,6 +236,14 @@ public class CobblestoneTankBlockEntity extends BaseBlockEntity implements MenuP
         }
 
         return this.storedFluid.copyWithAmount((int) Math.min(this.storedFluidAmount, Integer.MAX_VALUE));
+    }
+
+    private int getDisplayedFluidId() {
+        if (this.storedFluid.isEmpty() || this.storedFluidAmount <= 0L) {
+            return -1;
+        }
+
+        return BuiltInRegistries.FLUID.getId(this.storedFluid.getFluid());
     }
 
     public boolean handleFluidIndicatorClick(Player player, boolean processAll) {
@@ -645,6 +655,10 @@ public class CobblestoneTankBlockEntity extends BaseBlockEntity implements MenuP
 
                 if (index == DATA_INDEX_MAX_FLUID_UPPER) {
                     return LongDataHelper.upperInt(CobblestoneTankBlockEntity.this.maxFluidAmount);
+                }
+
+                if (index == DATA_INDEX_FLUID_ID) {
+                    return CobblestoneTankBlockEntity.this.getDisplayedFluidId();
                 }
 
                 if (index >= DATA_INDEX_ITEM_AUTOMATION_START && index < DATA_INDEX_FLUID_AUTOMATION_START) {

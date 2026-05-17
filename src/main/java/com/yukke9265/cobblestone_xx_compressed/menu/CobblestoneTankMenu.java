@@ -16,6 +16,7 @@ import net.minecraft.world.inventory.SimpleContainerData;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import net.neoforged.neoforge.items.SlotItemHandler;
 
@@ -33,10 +34,11 @@ public class CobblestoneTankMenu extends BaseMenu {
         AutomationMode.IN_OUT
     };
 
-    private static final int DATA_COUNT = 5 + BaseBlockEntity.AUTOMATION_FACE_COUNT * 2;
+    private static final int DATA_COUNT = 6 + BaseBlockEntity.AUTOMATION_FACE_COUNT * 2;
     private static final int DATA_INDEX_STORED_FLUID = 0;
     private static final int DATA_INDEX_MAX_FLUID = 2;
-    private static final int DATA_INDEX_ITEM_AUTOMATION_START = 4;
+    private static final int DATA_INDEX_FLUID_ID = 4;
+    private static final int DATA_INDEX_ITEM_AUTOMATION_START = 5;
     private static final int DATA_INDEX_FLUID_AUTOMATION_START = DATA_INDEX_ITEM_AUTOMATION_START + BaseBlockEntity.AUTOMATION_FACE_COUNT;
     private static final int DATA_INDEX_AUTO_EXPORT = DATA_INDEX_FLUID_AUTOMATION_START + BaseBlockEntity.AUTOMATION_FACE_COUNT;
 
@@ -88,8 +90,8 @@ public class CobblestoneTankMenu extends BaseMenu {
         return this.tankBlockEntity.getDisplayedFluid().getFluid().getBucket().getDefaultInstance();
     }
 
-    public net.neoforged.neoforge.fluids.FluidStack getDisplayedFluid() {
-        return this.tankBlockEntity.getDisplayedFluid();
+    public FluidStack getDisplayedFluid() {
+        return this.getFluidFromData(this.tankData, DATA_INDEX_STORED_FLUID, DATA_INDEX_FLUID_ID);
     }
 
     public AutomationMode getItemAutomationMode(AutomationSide automationSide) {
