@@ -5,8 +5,10 @@ import java.util.concurrent.CompletableFuture;
 import com.yukke9265.cobblestone_xx_compressed.CobblestonexXCompressed;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneCrusherRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneFurnaceRecipe;
+import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneMelterRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneMixerRecipe;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModBlocks;
+import com.yukke9265.cobblestone_xx_compressed.registry.ModFluids;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModItems;
 
 import net.minecraft.data.PackOutput;
@@ -20,6 +22,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
+import net.neoforged.neoforge.fluids.FluidStack;
 
 public class ModRecipeProvider extends RecipeProvider {
     // gem のレシピは tier ごとに個別変更しやすいよう、
@@ -140,6 +143,16 @@ public class ModRecipeProvider extends RecipeProvider {
         )
     };
 
+    private static final MelterRecipeDefinition[] COBBLESTONE_MELTER_RECIPES = new MelterRecipeDefinition[] {
+        new MelterRecipeDefinition(
+            "tier_topaz_compressed_cobblestone_to_molten_tier_topaz_compressed_cobblestone",
+            ModBlocks.TierCompressedCobblestone.TOPAZ.getBlock().get(),
+            new FluidStack(ModFluids.TierMoltenCompressedCobblestone.TOPAZ.getFluidEntry().getStillFluid().get(), 1000),
+            6400,
+            64
+        )
+    };
+
     private static final MachineCasingRecipeDefinition[] MACHINE_CASING_RECIPES = new MachineCasingRecipeDefinition[] {
         new MachineCasingRecipeDefinition(
             "cobblestone_machine_casing",
@@ -252,6 +265,7 @@ public class ModRecipeProvider extends RecipeProvider {
         buildCobblestoneEnergizedCubeRecipes(output);
         buildCobblestoneFurnaceRecipes(output);
         buildCobblestoneCrusherRecipes(output);
+        buildCobblestoneMelterRecipes(output);
         buildCobblestoneMixerRecipes(output);
     }
 
@@ -619,6 +633,19 @@ public class ModRecipeProvider extends RecipeProvider {
         }
     }
 
+    private void buildCobblestoneMelterRecipes(RecipeOutput output) {
+        for (MelterRecipeDefinition recipe : COBBLESTONE_MELTER_RECIPES) {
+            saveCobblestoneMelterRecipe(
+                output,
+                recipe.recipeName,
+                recipe.ingredient,
+                recipe.fluidResult,
+                recipe.totalCobblestonePower,
+                recipe.cobblestonePowerPerTick
+            );
+        }
+    }
+
     private void saveCobblestoneFurnaceRecipe(RecipeOutput output, String recipeName, ItemLike ingredient, ItemLike result, int processingTime) {
         CobblestoneFurnaceRecipe recipe = new CobblestoneFurnaceRecipe(
             Ingredient.of(ingredient),
@@ -674,6 +701,28 @@ public class ModRecipeProvider extends RecipeProvider {
 
         output.accept(
             modRecipeId("cobblestone_mixer/" + recipeName),
+            recipe,
+            null
+        );
+    }
+
+    private void saveCobblestoneMelterRecipe(
+        RecipeOutput output,
+        String recipeName,
+        ItemLike ingredient,
+        FluidStack fluidResult,
+        int totalCobblestonePower,
+        int cobblestonePowerPerTick
+    ) {
+        CobblestoneMelterRecipe recipe = new CobblestoneMelterRecipe(
+            Ingredient.of(ingredient),
+            fluidResult,
+            totalCobblestonePower,
+            cobblestonePowerPerTick
+        );
+
+        output.accept(
+            modRecipeId("cobblestone_melter/" + recipeName),
             recipe,
             null
         );
@@ -787,6 +836,28 @@ public class ModRecipeProvider extends RecipeProvider {
             this.firstIngredient = firstIngredient;
             this.secondIngredient = secondIngredient;
             this.result = result;
+            this.totalCobblestonePower = totalCobblestonePower;
+            this.cobblestonePowerPerTick = cobblestonePowerPerTick;
+        }
+    }
+
+    private static class MelterRecipeDefinition {
+        private final String recipeName;
+        private final ItemLike ingredient;
+        private final FluidStack fluidResult;
+        private final int totalCobblestonePower;
+        private final int cobblestonePowerPerTick;
+
+        private MelterRecipeDefinition(
+            String recipeName,
+            ItemLike ingredient,
+            FluidStack fluidResult,
+            int totalCobblestonePower,
+            int cobblestonePowerPerTick
+        ) {
+            this.recipeName = recipeName;
+            this.ingredient = ingredient;
+            this.fluidResult = fluidResult.copy();
             this.totalCobblestonePower = totalCobblestonePower;
             this.cobblestonePowerPerTick = cobblestonePowerPerTick;
         }

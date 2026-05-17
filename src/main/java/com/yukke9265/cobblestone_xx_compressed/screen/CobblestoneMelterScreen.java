@@ -7,19 +7,18 @@ import com.yukke9265.cobblestone_xx_compressed.blockentity.AutomationMode;
 import com.yukke9265.cobblestone_xx_compressed.blockentity.AutomationSide;
 import com.yukke9265.cobblestone_xx_compressed.compat.jei.JeiClickableAreaDefinition;
 import com.yukke9265.cobblestone_xx_compressed.compat.jei.ModJeiIds;
-import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneReactionChamberMenu;
+import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneMelterMenu;
 import com.yukke9265.cobblestone_xx_compressed.util.MachineGuiLayouts;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.neoforged.neoforge.fluids.FluidStack;
 
-public class CobblestoneReactionChamberScreen extends BaseScreen<CobblestoneReactionChamberMenu> {
+public class CobblestoneMelterScreen extends BaseScreen<CobblestoneMelterMenu> {
     private static final AutomationSide[] AUTOMATION_SIDES = new AutomationSide[] {
         AutomationSide.UP,
         AutomationSide.DOWN,
@@ -39,30 +38,31 @@ public class CobblestoneReactionChamberScreen extends BaseScreen<CobblestoneReac
     private static final int SIDE_BUTTON_WIDTH = 62;
     private static final int SIDE_BUTTON_HEIGHT = 20;
     private static final int SIDE_BUTTON_X_OFFSET = 4;
-    private static final int JEI_CLICK_AREA_X = MachineGuiLayouts.ReactionChamber.PROGRESS_BAR_X;
-    private static final int JEI_CLICK_AREA_Y = MachineGuiLayouts.ReactionChamber.PROGRESS_BAR_Y;
-    private static final int JEI_CLICK_AREA_WIDTH = MachineGuiLayouts.ReactionChamber.PROGRESS_BAR_WIDTH;
-    private static final int JEI_CLICK_AREA_HEIGHT = MachineGuiLayouts.ReactionChamber.PROGRESS_BAR_HEIGHT;
+    private static final int JEI_CLICK_AREA_X = MachineGuiLayouts.PoweredMachine.PROGRESS_BAR_X;
+    private static final int JEI_CLICK_AREA_Y = MachineGuiLayouts.PoweredMachine.PROGRESS_BAR_Y;
+    private static final int JEI_CLICK_AREA_WIDTH = MachineGuiLayouts.PoweredMachine.PROGRESS_BAR_WIDTH;
+    private static final int JEI_CLICK_AREA_HEIGHT = MachineGuiLayouts.PoweredMachine.PROGRESS_BAR_HEIGHT;
     private static final int POWER_BAR_BORDER_COLOR = 0xFF404040;
     private static final int POWER_BAR_BACKGROUND_COLOR = 0xFF111111;
     private static final int POWER_BAR_FILL_COLOR = 0xFFD6D6D6;
     private static final int FLUID_INDICATOR_BACKGROUND_COLOR = 0xFF101010;
     private static final int FLUID_INDICATOR_FILL_COLOR = 0xFF3B8BFF;
-
-    private static final ResourceLocation BACKGROUND_TEXTURE =
-        ResourceLocation.fromNamespaceAndPath(CobblestonexXCompressed.MODID, "textures/gui/cobblestone_reaction_chamber.png");
-
-    private static final ResourceLocation PROGRESS_BAR_TEXTURE =
-        ResourceLocation.fromNamespaceAndPath(CobblestonexXCompressed.MODID, "textures/gui/cobblestone_reaction_chamber_progress_bar.png");
-
+    private static final int FLUID_SLOT_X = MachineGuiLayouts.PoweredMachine.OUTPUT_SLOT_X;
+    private static final int FLUID_SLOT_Y = MachineGuiLayouts.PoweredMachine.MACHINE_SLOT_Y;
     private static final Component ACCELERATION_TOOLTIP = Component.literal("acceleration_chip");
     private static final Component ENERGIZED_CUBE_TOOLTIP = Component.literal("energized_cube");
+
+    private static final ResourceLocation BACKGROUND_TEXTURE =
+        ResourceLocation.fromNamespaceAndPath(CobblestonexXCompressed.MODID, "textures/gui/cobblestone_melter.png");
+
+    private static final ResourceLocation PROGRESS_BAR_TEXTURE =
+        ResourceLocation.fromNamespaceAndPath(CobblestonexXCompressed.MODID, "textures/gui/cobblestone_melter_progress_bar.png");
 
     private final Button[] itemAutomationButtons = new Button[AUTOMATION_SIDES.length];
     private final Button[] fluidAutomationButtons = new Button[AUTOMATION_SIDES.length];
     private Button autoExportButton;
 
-    public CobblestoneReactionChamberScreen(CobblestoneReactionChamberMenu menu, Inventory inventory, Component title) {
+    public CobblestoneMelterScreen(CobblestoneMelterMenu menu, Inventory inventory, Component title) {
         super(menu, inventory, title);
 
         this.imageWidth = MachineGuiLayouts.STANDARD_IMAGE_WIDTH;
@@ -174,60 +174,56 @@ public class CobblestoneReactionChamberScreen extends BaseScreen<CobblestoneReac
         int y = this.topPos;
 
         this.renderBackgroundTexture(guiGraphics, BACKGROUND_TEXTURE, x, y, this.imageWidth, this.imageHeight);
-        this.renderNormalSlotPart(guiGraphics, x + MachineGuiLayouts.ReactionChamber.FLUID_SLOT_X, y + MachineGuiLayouts.ReactionChamber.FLUID_SLOT_Y);
-        this.renderNormalSlotPart(guiGraphics, x + MachineGuiLayouts.ReactionChamber.INPUT_SLOT_1_X, y + MachineGuiLayouts.ReactionChamber.INPUT_SLOT_1_Y);
-        this.renderNormalSlotPart(guiGraphics, x + MachineGuiLayouts.ReactionChamber.INPUT_SLOT_2_X, y + MachineGuiLayouts.ReactionChamber.INPUT_SLOT_2_Y);
-        this.renderNormalSlotPart(guiGraphics, x + MachineGuiLayouts.ReactionChamber.OUTPUT_SLOT_X, y + MachineGuiLayouts.ReactionChamber.OUTPUT_SLOT_Y);
-        this.renderCobblestoneSlotPart(guiGraphics, x + MachineGuiLayouts.ReactionChamber.POWER_SLOT_X, y + MachineGuiLayouts.ReactionChamber.POWER_SLOT_Y);
+        this.renderNormalSlotPart(guiGraphics, x + MachineGuiLayouts.PoweredMachine.INPUT_SLOT_X, y + MachineGuiLayouts.PoweredMachine.MACHINE_SLOT_Y);
+        this.renderNormalSlotPart(guiGraphics, x + FLUID_SLOT_X, y + FLUID_SLOT_Y);
+        this.renderCobblestoneSlotPart(guiGraphics, x + MachineGuiLayouts.PoweredMachine.POWER_SLOT_X, y + MachineGuiLayouts.PoweredMachine.POWER_SLOT_Y);
         this.renderNormalSlotPart(guiGraphics, x + MachineGuiLayouts.UPGRADE_SLOT_X, y + MachineGuiLayouts.ACCELERATION_SLOT_Y);
         this.renderNormalSlotPart(guiGraphics, x + MachineGuiLayouts.UPGRADE_SLOT_X, y + MachineGuiLayouts.ENERGIZED_CUBE_SLOT_Y);
-        this.renderProgressFramePart(guiGraphics, x + MachineGuiLayouts.ReactionChamber.PROGRESS_BAR_X, y + MachineGuiLayouts.ReactionChamber.PROGRESS_BAR_Y);
+        this.renderProgressFramePart(guiGraphics, x + MachineGuiLayouts.PoweredMachine.PROGRESS_BAR_X, y + MachineGuiLayouts.PoweredMachine.PROGRESS_BAR_Y);
 
         int progress = this.menu.getProgress();
         int maxProgress = this.menu.getMaxProgress();
         if (maxProgress > 0) {
-            int currentProgressBarWidth = (int) (progress / (float) maxProgress * MachineGuiLayouts.ReactionChamber.PROGRESS_BAR_WIDTH);
+            int currentProgressBarWidth = (int) (progress / (float) maxProgress * MachineGuiLayouts.PoweredMachine.PROGRESS_BAR_WIDTH);
             guiGraphics.blit(
                 PROGRESS_BAR_TEXTURE,
-                x + MachineGuiLayouts.ReactionChamber.PROGRESS_BAR_X,
-                y + MachineGuiLayouts.ReactionChamber.PROGRESS_BAR_Y,
+                x + MachineGuiLayouts.PoweredMachine.PROGRESS_BAR_X,
+                y + MachineGuiLayouts.PoweredMachine.PROGRESS_BAR_Y,
                 0,
                 0,
                 currentProgressBarWidth,
-                MachineGuiLayouts.ReactionChamber.PROGRESS_BAR_HEIGHT,
-                MachineGuiLayouts.ReactionChamber.PROGRESS_BAR_WIDTH,
-                MachineGuiLayouts.ReactionChamber.PROGRESS_BAR_HEIGHT
+                MachineGuiLayouts.PoweredMachine.PROGRESS_BAR_HEIGHT,
+                MachineGuiLayouts.PoweredMachine.PROGRESS_BAR_WIDTH,
+                MachineGuiLayouts.PoweredMachine.PROGRESS_BAR_HEIGHT
             );
         }
 
-        int powerBarLeft = x + MachineGuiLayouts.ReactionChamber.POWER_BAR_X;
-        int powerBarTop = y + MachineGuiLayouts.ReactionChamber.POWER_BAR_Y;
-        guiGraphics.fill(powerBarLeft - 1, powerBarTop - 1, powerBarLeft + MachineGuiLayouts.ReactionChamber.POWER_BAR_WIDTH + 1, powerBarTop + MachineGuiLayouts.ReactionChamber.POWER_BAR_HEIGHT + 1, POWER_BAR_BORDER_COLOR);
-        guiGraphics.fill(powerBarLeft, powerBarTop, powerBarLeft + MachineGuiLayouts.ReactionChamber.POWER_BAR_WIDTH, powerBarTop + MachineGuiLayouts.ReactionChamber.POWER_BAR_HEIGHT, POWER_BAR_BACKGROUND_COLOR);
+        int powerBarLeft = x + MachineGuiLayouts.PoweredMachine.POWER_BAR_X;
+        int powerBarTop = y + MachineGuiLayouts.PoweredMachine.POWER_BAR_Y;
+        guiGraphics.fill(powerBarLeft - 1, powerBarTop - 1, powerBarLeft + MachineGuiLayouts.PoweredMachine.POWER_BAR_WIDTH + 1, powerBarTop + MachineGuiLayouts.PoweredMachine.POWER_BAR_HEIGHT + 1, POWER_BAR_BORDER_COLOR);
+        guiGraphics.fill(powerBarLeft, powerBarTop, powerBarLeft + MachineGuiLayouts.PoweredMachine.POWER_BAR_WIDTH, powerBarTop + MachineGuiLayouts.PoweredMachine.POWER_BAR_HEIGHT, POWER_BAR_BACKGROUND_COLOR);
 
         long storedPower = this.menu.getStoredCobblestonePower();
         long maxStoredPower = this.menu.getMaxCobblestonePower();
         if (maxStoredPower > 0L) {
-            int filledWidth = (int) (storedPower / (double) maxStoredPower * MachineGuiLayouts.ReactionChamber.POWER_BAR_WIDTH);
-            guiGraphics.fill(powerBarLeft, powerBarTop, powerBarLeft + filledWidth, powerBarTop + MachineGuiLayouts.ReactionChamber.POWER_BAR_HEIGHT, POWER_BAR_FILL_COLOR);
+            int filledWidth = (int) (storedPower / (double) maxStoredPower * MachineGuiLayouts.PoweredMachine.POWER_BAR_WIDTH);
+            guiGraphics.fill(powerBarLeft, powerBarTop, powerBarLeft + filledWidth, powerBarTop + MachineGuiLayouts.PoweredMachine.POWER_BAR_HEIGHT, POWER_BAR_FILL_COLOR);
         }
 
-        int fluidLeft = x + MachineGuiLayouts.ReactionChamber.FLUID_FILL_X;
-        int fluidTop = y + MachineGuiLayouts.ReactionChamber.FLUID_FILL_Y;
-        // 液体スロットの外枠は renderNormalSlotPart が担当しているので、
-        // ここでは中身の 16x16 領域だけを塗って二重の枠が見えないようにします。
-        guiGraphics.fill(fluidLeft, fluidTop, fluidLeft + MachineGuiLayouts.ReactionChamber.FLUID_FILL_WIDTH, fluidTop + MachineGuiLayouts.ReactionChamber.FLUID_FILL_HEIGHT, FLUID_INDICATOR_BACKGROUND_COLOR);
+        int fluidLeft = x + FLUID_SLOT_X;
+        int fluidTop = y + FLUID_SLOT_Y;
+        guiGraphics.fill(fluidLeft, fluidTop, fluidLeft + 16, fluidTop + 16, FLUID_INDICATOR_BACKGROUND_COLOR);
 
         long storedFluidAmount = this.menu.getStoredFluidAmount();
         long maxFluidAmount = this.menu.getMaxFluidAmount();
         if (maxFluidAmount > 0L && storedFluidAmount > 0L) {
             int fillColor = this.getFluidIndicatorFillColor();
-            int filledHeight = (int) Math.max(1L, Math.round(storedFluidAmount / (double) maxFluidAmount * MachineGuiLayouts.ReactionChamber.FLUID_FILL_HEIGHT));
+            int filledHeight = (int) Math.max(1L, Math.round(storedFluidAmount / (double) maxFluidAmount * 16.0D));
             guiGraphics.fill(
                 fluidLeft,
-                fluidTop + MachineGuiLayouts.ReactionChamber.FLUID_FILL_HEIGHT - filledHeight,
-                fluidLeft + MachineGuiLayouts.ReactionChamber.FLUID_FILL_WIDTH,
-                fluidTop + MachineGuiLayouts.ReactionChamber.FLUID_FILL_HEIGHT,
+                fluidTop + 16 - filledHeight,
+                fluidLeft + 16,
+                fluidTop + 16,
                 fillColor
             );
         }
@@ -244,7 +240,7 @@ public class CobblestoneReactionChamberScreen extends BaseScreen<CobblestoneReac
             .append(" / ")
             .append(String.valueOf(this.menu.getMaxCobblestonePower()))
             .withStyle(AutomationMode.COBBLESTONE_INPUT.createLabelComponent().getStyle());
-        guiGraphics.drawString(this.font, powerLabel, MachineGuiLayouts.ReactionChamber.POWER_BAR_X, MachineGuiLayouts.ReactionChamber.POWER_BAR_Y - 10, 0x404040, false);
+        guiGraphics.drawString(this.font, powerLabel, MachineGuiLayouts.PoweredMachine.POWER_BAR_X, MachineGuiLayouts.PoweredMachine.POWER_BAR_Y - 10, 0x404040, false);
 
         int itemPanelX = 0 - AUTOMATION_PANEL_X_OFFSET - AUTOMATION_BUTTON_WIDTH;
         int fluidPanelX = itemPanelX - AUTOMATION_BUTTON_WIDTH - 4;
@@ -282,36 +278,20 @@ public class CobblestoneReactionChamberScreen extends BaseScreen<CobblestoneReac
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (button == 0 && this.isMouseOverFluidIndicator((int) mouseX, (int) mouseY)) {
-            int buttonId = Screen.hasShiftDown()
-                ? this.menu.getFluidInteractionShiftButtonId()
-                : this.menu.getFluidInteractionButtonId();
-            this.sendMenuButtonClick(buttonId);
-            return true;
-        }
-
-        return super.mouseClicked(mouseX, mouseY, button);
-    }
-
-    @Override
     public List<JeiClickableAreaDefinition> getJeiClickableAreaDefinitions() {
         return this.createSingleJeiClickableAreaDefinition(
             JEI_CLICK_AREA_X,
             JEI_CLICK_AREA_Y,
             JEI_CLICK_AREA_WIDTH,
             JEI_CLICK_AREA_HEIGHT,
-            ModJeiIds.COBBLESTONE_REACTION_CHAMBER
+            ModJeiIds.COBBLESTONE_MELTER
         );
     }
 
     private boolean isMouseOverFluidIndicator(int mouseX, int mouseY) {
-        int left = this.leftPos + MachineGuiLayouts.ReactionChamber.FLUID_SLOT_X;
-        int top = this.topPos + MachineGuiLayouts.ReactionChamber.FLUID_SLOT_Y;
-        return mouseX >= left
-            && mouseX < left + MachineGuiLayouts.SLOT_SIZE
-            && mouseY >= top
-            && mouseY < top + MachineGuiLayouts.SLOT_SIZE;
+        int left = this.leftPos + FLUID_SLOT_X;
+        int top = this.topPos + FLUID_SLOT_Y;
+        return mouseX >= left && mouseX < left + MachineGuiLayouts.SLOT_SIZE && mouseY >= top && mouseY < top + MachineGuiLayouts.SLOT_SIZE;
     }
 
     private int getFluidIndicatorFillColor() {

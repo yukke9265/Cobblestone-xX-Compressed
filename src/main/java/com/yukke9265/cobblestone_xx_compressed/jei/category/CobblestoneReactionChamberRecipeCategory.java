@@ -34,8 +34,8 @@ public class CobblestoneReactionChamberRecipeCategory implements IRecipeCategory
     private static final int BACKGROUND_V = 6;
     private static final int BACKGROUND_WIDTH = 176 - BACKGROUND_U * 2;
     private static final int BACKGROUND_HEIGHT = 78 - BACKGROUND_V * 2;
-    private static final int FLUID_SLOT_X = MachineGuiLayouts.ReactionChamber.FLUID_SLOT_X - BACKGROUND_U + 1;
-    private static final int FLUID_SLOT_Y = MachineGuiLayouts.ReactionChamber.FLUID_SLOT_Y - BACKGROUND_V + 1;
+    private static final int FLUID_SLOT_X = MachineGuiLayouts.ReactionChamber.FLUID_SLOT_X - BACKGROUND_U;
+    private static final int FLUID_SLOT_Y = MachineGuiLayouts.ReactionChamber.FLUID_SLOT_Y - BACKGROUND_V;
     private static final int INPUT_SLOT_1_X = MachineGuiLayouts.ReactionChamber.INPUT_SLOT_1_X - BACKGROUND_U;
     private static final int INPUT_SLOT_1_Y = MachineGuiLayouts.ReactionChamber.INPUT_SLOT_1_Y - BACKGROUND_V;
     private static final int INPUT_SLOT_2_X = MachineGuiLayouts.ReactionChamber.INPUT_SLOT_2_X - BACKGROUND_U;
@@ -46,10 +46,10 @@ public class CobblestoneReactionChamberRecipeCategory implements IRecipeCategory
     private static final int POWER_SLOT_Y = MachineGuiLayouts.ReactionChamber.POWER_SLOT_Y - BACKGROUND_V;
     private static final int PROGRESS_FRAME_X = MachineGuiLayouts.ReactionChamber.PROGRESS_BAR_X - BACKGROUND_U;
     private static final int PROGRESS_FRAME_Y = MachineGuiLayouts.ReactionChamber.PROGRESS_BAR_Y - BACKGROUND_V;
-    private static final int CPPT_LABEL_X = 8;
-    private static final int CPPT_LABEL_Y = 2;
-    private static final int TOTAL_CP_LABEL_X = 8;
-    private static final int TOTAL_CP_LABEL_Y = 12;
+    private static final int CPPT_LABEL_X = 36;
+    private static final int CPPT_LABEL_Y = 50;//スロットと被らないように、下部に移動
+    private static final int TOTAL_CP_LABEL_X = 36;
+    private static final int TOTAL_CP_LABEL_Y = CPPT_LABEL_Y + 10;
 
     private final IDrawable background;
     private final IDrawable icon;

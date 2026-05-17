@@ -9,6 +9,7 @@ import com.yukke9265.cobblestone_xx_compressed.blockentity.CobblestoneCentrifuge
 import com.yukke9265.cobblestone_xx_compressed.blockentity.CobblestoneFEGeneratorBlockEntity;
 import com.yukke9265.cobblestone_xx_compressed.blockentity.CobblestoneFurnaceBlockEntity;
 import com.yukke9265.cobblestone_xx_compressed.blockentity.CobblestoneLaserDrillBlockEntity;
+import com.yukke9265.cobblestone_xx_compressed.blockentity.CobblestoneMelterBlockEntity;
 import com.yukke9265.cobblestone_xx_compressed.blockentity.CobblestoneMixerBlockEntity;
 import com.yukke9265.cobblestone_xx_compressed.blockentity.CobblestoneReactionChamberBlockEntity;
 import com.yukke9265.cobblestone_xx_compressed.blockentity.CobblestonePoweredFurnaceBlockEntity;
@@ -83,6 +84,15 @@ public class ModBlockEntities {
             () -> BlockEntityType.Builder.of(
                 CobblestoneMixerBlockEntity::new,
                 ModBlocks.COBBLESTONE_MIXER.get()
+            ).build(null)
+        );
+
+    public static final Supplier<BlockEntityType<CobblestoneMelterBlockEntity>> COBBLESTONE_MELTER_BLOCK_ENTITY =
+        BLOCK_ENTITY_TYPES.register(
+            "cobblestone_melter",
+            () -> BlockEntityType.Builder.of(
+                CobblestoneMelterBlockEntity::new,
+                ModBlocks.COBBLESTONE_MELTER.get()
             ).build(null)
         );
 

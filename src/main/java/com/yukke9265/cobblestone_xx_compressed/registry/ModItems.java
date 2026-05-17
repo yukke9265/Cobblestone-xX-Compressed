@@ -1502,6 +1502,11 @@ public class ModItems {
             "cobblestone_mixer",
             ModBlocks.COBBLESTONE_MIXER);
 
+    public static final DeferredItem<BlockItem> COBBLESTONE_MELTER_ITEM =
+        ModItems.ITEMS.registerSimpleBlockItem(
+            "cobblestone_melter",
+            ModBlocks.COBBLESTONE_MELTER);
+
     public static final DeferredItem<BlockItem> COBBLESTONE_REACTION_CHAMBER_ITEM =
         ModItems.ITEMS.registerSimpleBlockItem(
             "cobblestone_reaction_chamber",

@@ -9,6 +9,7 @@ import com.yukke9265.cobblestone_xx_compressed.block.CobblestoneCentrifugeBlock;
 import com.yukke9265.cobblestone_xx_compressed.block.CobblestoneFEGeneratorBlock;
 import com.yukke9265.cobblestone_xx_compressed.block.CobblestoneFurnaceBlock;
 import com.yukke9265.cobblestone_xx_compressed.block.CobblestoneLaserDrillBlock;
+import com.yukke9265.cobblestone_xx_compressed.block.CobblestoneMelterBlock;
 import com.yukke9265.cobblestone_xx_compressed.block.CobblestoneMixerBlock;
 import com.yukke9265.cobblestone_xx_compressed.block.CobblestonePoweredFurnaceBlock;
 import com.yukke9265.cobblestone_xx_compressed.block.CobblestoneReactionChamberBlock;
@@ -549,6 +550,18 @@ public class ModBlocks {
         BLOCKS.register(
             "cobblestone_mixer",
             () -> new CobblestoneMixerBlock(
+                BlockBehaviour.Properties
+                    .of()
+                    .mapColor(MapColor.STONE)
+                    .strength(0.5F)
+                    .sound(SoundType.STONE)
+            )
+        );
+
+    public static final DeferredBlock<Block> COBBLESTONE_MELTER =
+        BLOCKS.register(
+            "cobblestone_melter",
+            () -> new CobblestoneMelterBlock(
                 BlockBehaviour.Properties
                     .of()
                     .mapColor(MapColor.STONE)
