@@ -132,6 +132,13 @@ public class ModEnglishLanguageProvider extends LanguageProvider {
             addItem(tier.getFluidEntry().getBucketItem(), tier.getBucketEnglishDisplayName());
         }
 
+        add("fluid_type.cobblestonexxcompressed.molten_dirty_compressed_cobblestone", "Molten Dirty Compressed Cobblestone");
+        addItem(ModFluids.MOLTEN_DIRTY_COMPRESSED_COBBLESTONE.getBucketItem(), "Molten Dirty Compressed Cobblestone Bucket");
+        for (ModFluids.TierMoltenDirtyCompressedCobblestone tier : ModFluids.TierMoltenDirtyCompressedCobblestone.values()) {
+            add("fluid_type.cobblestonexxcompressed." + tier.getRegistryName(), tier.getEnglishDisplayName());
+            addItem(tier.getFluidEntry().getBucketItem(), tier.getBucketEnglishDisplayName());
+        }
+
         addBlock(ModBlocks.COMPRESSED_COBBLESTONE, "Compressed Cobblestone");
         for (ModBlocks.TierCompressedCobblestone tier : ModBlocks.TierCompressedCobblestone.values()) {
             addBlock(tier.getBlock(), tier.getEnglishDisplayName());

@@ -150,6 +150,10 @@ public class CobblestonexXCompressed {
                 for (ModFluids.TierMoltenCompressedCobblestone tier : ModFluids.TierMoltenCompressedCobblestone.values()) {
                     output.accept(tier.getFluidEntry().getBucketItem().get());
                 }
+                output.accept(ModFluids.MOLTEN_DIRTY_COMPRESSED_COBBLESTONE.getBucketItem().get());
+                for (ModFluids.TierMoltenDirtyCompressedCobblestone tier : ModFluids.TierMoltenDirtyCompressedCobblestone.values()) {
+                    output.accept(tier.getFluidEntry().getBucketItem().get());
+                }
                 for (ModItems.TierCobblestoneGeneratorItem generatorItem : ModItems.TierCobblestoneGeneratorItem.values()) {
                     output.accept(generatorItem.getItem().get());
                 }

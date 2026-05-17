@@ -74,13 +74,73 @@ public class ModFluids {
         }
     }
 
+    // dirty molten fluid も clean 版と同じ並びで保持しておくと、
+    // creative tab や datagen で別ファミリーを同じ手順で処理できます。
+    public enum TierMoltenDirtyCompressedCobblestone {
+        COPPER,
+        IRON,
+        GOLD,
+        AMETHYST,
+        AQUAMARINE,
+        TOPAZ,
+        RUBY,
+        SAPPHIRE,
+        DIAMOND,
+        EMERALD,
+        NETHERITE,
+        OBSIDIAN;
+
+        private final ModFluidTypes.TierMoltenDirtyCompressedCobblestone fluidTypeTier;
+        private MoltenFluidEntry fluidEntry;
+
+        TierMoltenDirtyCompressedCobblestone() {
+            this.fluidTypeTier = ModFluidTypes.TierMoltenDirtyCompressedCobblestone.valueOf(this.name());
+        }
+
+        public String getRegistryName() {
+            return this.fluidTypeTier.getRegistryName();
+        }
+
+        public String getEnglishDisplayName() {
+            return this.fluidTypeTier.getEnglishDisplayName();
+        }
+
+        public String getBucketEnglishDisplayName() {
+            return this.fluidTypeTier.getBucketEnglishDisplayName();
+        }
+
+        public int getTintColor() {
+            return this.fluidTypeTier.getTintColor();
+        }
+
+        public MoltenFluidEntry getFluidEntry() {
+            return this.fluidEntry;
+        }
+
+        private void setFluidEntry(MoltenFluidEntry fluidEntry) {
+            this.fluidEntry = fluidEntry;
+        }
+
+        public net.neoforged.neoforge.registries.DeferredHolder<net.neoforged.neoforge.fluids.FluidType, net.neoforged.neoforge.fluids.FluidType> getFluidType() {
+            return this.fluidTypeTier.getFluidType();
+        }
+    }
+
     public static final MoltenFluidEntry MOLTEN_COMPRESSED_COBBLESTONE = registerMoltenFluid(
         "molten_compressed_cobblestone",
         ModFluidTypes.MOLTEN_COMPRESSED_COBBLESTONE
     );
+    public static final MoltenFluidEntry MOLTEN_DIRTY_COMPRESSED_COBBLESTONE = registerMoltenFluid(
+        "molten_dirty_compressed_cobblestone",
+        ModFluidTypes.MOLTEN_DIRTY_COMPRESSED_COBBLESTONE
+    );
 
     static {
         for (TierMoltenCompressedCobblestone tier : TierMoltenCompressedCobblestone.values()) {
+            tier.setFluidEntry(registerMoltenFluid(tier.getRegistryName(), tier.getFluidType()));
+        }
+
+        for (TierMoltenDirtyCompressedCobblestone tier : TierMoltenDirtyCompressedCobblestone.values()) {
             tier.setFluidEntry(registerMoltenFluid(tier.getRegistryName(), tier.getFluidType()));
         }
     }

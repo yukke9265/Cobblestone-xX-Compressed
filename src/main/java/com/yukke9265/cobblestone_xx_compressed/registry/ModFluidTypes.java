@@ -29,6 +29,14 @@ public class ModFluidTypes {
         CobblestonexXCompressed.MODID,
         "block/fluid/molten_compressed_cobblestone_flow"
     );
+    public static final ResourceLocation MOLTEN_DIRTY_COMPRESSED_COBBLESTONE_STILL_TEXTURE = ResourceLocation.fromNamespaceAndPath(
+        CobblestonexXCompressed.MODID,
+        "block/fluid/molten_dirty_compressed_cobblestone_still"
+    );
+    public static final ResourceLocation MOLTEN_DIRTY_COMPRESSED_COBBLESTONE_FLOWING_TEXTURE = ResourceLocation.fromNamespaceAndPath(
+        CobblestonexXCompressed.MODID,
+        "block/fluid/molten_dirty_compressed_cobblestone_flow"
+    );
 
     public static final int BASE_COMPRESSED_COBBLESTONE_TINT = 0xFFB3B1AF;
     public static final int COPPER_COMPRESSED_COBBLESTONE_TINT = 0xFFC78357;
@@ -96,24 +104,101 @@ public class ModFluidTypes {
         }
     }
 
+    // dirty 版も molten compressed cobblestone と同じ tier 色を使うため、
+    // registry 名だけを変えた別 enum を用意して同じ流れで登録します。
+    public enum TierMoltenDirtyCompressedCobblestone {
+        COPPER("molten_dirty_tier_copper_compressed_cobblestone", COPPER_COMPRESSED_COBBLESTONE_TINT),
+        IRON("molten_dirty_tier_iron_compressed_cobblestone", IRON_COMPRESSED_COBBLESTONE_TINT),
+        GOLD("molten_dirty_tier_gold_compressed_cobblestone", GOLD_COMPRESSED_COBBLESTONE_TINT),
+        AMETHYST("molten_dirty_tier_amethyst_compressed_cobblestone", AMETHYST_COMPRESSED_COBBLESTONE_TINT),
+        AQUAMARINE("molten_dirty_tier_aquamarine_compressed_cobblestone", AQUAMARINE_COMPRESSED_COBBLESTONE_TINT),
+        TOPAZ("molten_dirty_tier_topaz_compressed_cobblestone", TOPAZ_COMPRESSED_COBBLESTONE_TINT),
+        RUBY("molten_dirty_tier_ruby_compressed_cobblestone", RUBY_COMPRESSED_COBBLESTONE_TINT),
+        SAPPHIRE("molten_dirty_tier_sapphire_compressed_cobblestone", SAPPHIRE_COMPRESSED_COBBLESTONE_TINT),
+        DIAMOND("molten_dirty_tier_diamond_compressed_cobblestone", DIAMOND_COMPRESSED_COBBLESTONE_TINT),
+        EMERALD("molten_dirty_tier_emerald_compressed_cobblestone", EMERALD_COMPRESSED_COBBLESTONE_TINT),
+        NETHERITE("molten_dirty_tier_netherite_compressed_cobblestone", NETHERITE_COMPRESSED_COBBLESTONE_TINT),
+        OBSIDIAN("molten_dirty_tier_obsidian_compressed_cobblestone", OBSIDIAN_COMPRESSED_COBBLESTONE_TINT);
+
+        private final String registryName;
+        private final int tintColor;
+        private DeferredHolder<FluidType, FluidType> fluidType;
+
+        TierMoltenDirtyCompressedCobblestone(String registryName, int tintColor) {
+            this.registryName = registryName;
+            this.tintColor = tintColor;
+        }
+
+        public String getRegistryName() {
+            return this.registryName;
+        }
+
+        public int getTintColor() {
+            return this.tintColor;
+        }
+
+        public String getEnglishDisplayName() {
+            return "Molten Dirty " + ModBlocks.TierCompressedCobblestone.valueOf(this.name()).getEnglishDisplayName();
+        }
+
+        public String getBucketEnglishDisplayName() {
+            return this.getEnglishDisplayName() + " Bucket";
+        }
+
+        public DeferredHolder<FluidType, FluidType> getFluidType() {
+            return this.fluidType;
+        }
+
+        private void setFluidType(DeferredHolder<FluidType, FluidType> fluidType) {
+            this.fluidType = fluidType;
+        }
+    }
+
     // molten compressed cobblestone は今後 tier 版を増やす予定があるため、
     // 通常版も tier 版も共通 helper で増やせる形にしておきます。
     public static final DeferredHolder<FluidType, FluidType> MOLTEN_COMPRESSED_COBBLESTONE = registerMoltenFluidType(
         "molten_compressed_cobblestone",
-        BASE_COMPRESSED_COBBLESTONE_TINT
+        BASE_COMPRESSED_COBBLESTONE_TINT,
+        MOLTEN_COMPRESSED_COBBLESTONE_STILL_TEXTURE,
+        MOLTEN_COMPRESSED_COBBLESTONE_FLOWING_TEXTURE
+    );
+    public static final DeferredHolder<FluidType, FluidType> MOLTEN_DIRTY_COMPRESSED_COBBLESTONE = registerMoltenFluidType(
+        "molten_dirty_compressed_cobblestone",
+        BASE_COMPRESSED_COBBLESTONE_TINT,
+        MOLTEN_DIRTY_COMPRESSED_COBBLESTONE_STILL_TEXTURE,
+        MOLTEN_DIRTY_COMPRESSED_COBBLESTONE_FLOWING_TEXTURE
     );
 
     static {
         for (TierMoltenCompressedCobblestone tier : TierMoltenCompressedCobblestone.values()) {
-            tier.setFluidType(registerMoltenFluidType(tier.getRegistryName(), tier.getTintColor()));
+            tier.setFluidType(registerMoltenFluidType(
+                tier.getRegistryName(),
+                tier.getTintColor(),
+                MOLTEN_COMPRESSED_COBBLESTONE_STILL_TEXTURE,
+                MOLTEN_COMPRESSED_COBBLESTONE_FLOWING_TEXTURE
+            ));
+        }
+
+        for (TierMoltenDirtyCompressedCobblestone tier : TierMoltenDirtyCompressedCobblestone.values()) {
+            tier.setFluidType(registerMoltenFluidType(
+                tier.getRegistryName(),
+                tier.getTintColor(),
+                MOLTEN_DIRTY_COMPRESSED_COBBLESTONE_STILL_TEXTURE,
+                MOLTEN_DIRTY_COMPRESSED_COBBLESTONE_FLOWING_TEXTURE
+            ));
         }
     }
 
     private ModFluidTypes() {
     }
 
-    private static DeferredHolder<FluidType, FluidType> registerMoltenFluidType(String name, int tintColor) {
-        return FLUID_TYPES.register(name, resourceLocation -> new MoltenFluidType(createMoltenProperties(resourceLocation), tintColor));
+    private static DeferredHolder<FluidType, FluidType> registerMoltenFluidType(
+        String name,
+        int tintColor,
+        ResourceLocation stillTexture,
+        ResourceLocation flowingTexture
+    ) {
+        return FLUID_TYPES.register(name, resourceLocation -> new MoltenFluidType(createMoltenProperties(resourceLocation), tintColor, stillTexture, flowingTexture));
     }
 
     private static FluidType.Properties createMoltenProperties(ResourceLocation resourceLocation) {
@@ -141,8 +226,13 @@ public class ModFluidTypes {
 
     public static void registerClientExtensions(RegisterClientExtensionsEvent event) {
         registerClientExtension(event, MOLTEN_COMPRESSED_COBBLESTONE.get(), "molten_compressed_cobblestone");
+        registerClientExtension(event, MOLTEN_DIRTY_COMPRESSED_COBBLESTONE.get(), "molten_dirty_compressed_cobblestone");
 
         for (TierMoltenCompressedCobblestone tier : TierMoltenCompressedCobblestone.values()) {
+            registerClientExtension(event, tier.getFluidType().get(), tier.getRegistryName());
+        }
+
+        for (TierMoltenDirtyCompressedCobblestone tier : TierMoltenDirtyCompressedCobblestone.values()) {
             registerClientExtension(event, tier.getFluidType().get(), tier.getRegistryName());
         }
     }
@@ -191,10 +281,10 @@ public class ModFluidTypes {
         private final ResourceLocation flowingTexture;
         private final int tintColor;
 
-        private MoltenFluidType(Properties properties, int tintColor) {
+        private MoltenFluidType(Properties properties, int tintColor, ResourceLocation stillTexture, ResourceLocation flowingTexture) {
             super(properties);
-            this.stillTexture = MOLTEN_COMPRESSED_COBBLESTONE_STILL_TEXTURE;
-            this.flowingTexture = MOLTEN_COMPRESSED_COBBLESTONE_FLOWING_TEXTURE;
+            this.stillTexture = stillTexture;
+            this.flowingTexture = flowingTexture;
             this.tintColor = tintColor;
         }
     }

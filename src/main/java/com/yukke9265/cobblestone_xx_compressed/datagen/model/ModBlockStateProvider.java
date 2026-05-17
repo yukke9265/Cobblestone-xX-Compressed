@@ -62,6 +62,20 @@ public class ModBlockStateProvider extends BlockStateProvider {
         for (ModFluids.TierMoltenCompressedCobblestone tier : ModFluids.TierMoltenCompressedCobblestone.values()) {
             registerMoltenFluidBlock(tier.getFluidEntry().getFluidBlock().get(), tier.getFluidEntry().getFluidBlock().getId().getPath());
         }
+
+        registerMoltenFluidBlock(
+            ModFluids.MOLTEN_DIRTY_COMPRESSED_COBBLESTONE.getFluidBlock().get(),
+            ModFluids.MOLTEN_DIRTY_COMPRESSED_COBBLESTONE.getFluidBlock().getId().getPath(),
+            ModFluidTypes.MOLTEN_DIRTY_COMPRESSED_COBBLESTONE_STILL_TEXTURE
+        );
+
+        for (ModFluids.TierMoltenDirtyCompressedCobblestone tier : ModFluids.TierMoltenDirtyCompressedCobblestone.values()) {
+            registerMoltenFluidBlock(
+                tier.getFluidEntry().getFluidBlock().get(),
+                tier.getFluidEntry().getFluidBlock().getId().getPath(),
+                ModFluidTypes.MOLTEN_DIRTY_COMPRESSED_COBBLESTONE_STILL_TEXTURE
+            );
+        }
     }
 
     private void registerCompressedCobblestoneBlock(net.minecraft.world.level.block.Block block, String textureName) {
@@ -141,9 +155,13 @@ public class ModBlockStateProvider extends BlockStateProvider {
     }
 
     private void registerMoltenFluidBlock(net.minecraft.world.level.block.Block block, String modelName) {
+        registerMoltenFluidBlock(block, modelName, ModFluidTypes.MOLTEN_COMPRESSED_COBBLESTONE_STILL_TEXTURE);
+    }
+
+    private void registerMoltenFluidBlock(net.minecraft.world.level.block.Block block, String modelName, net.minecraft.resources.ResourceLocation particleTexture) {
         this.simpleBlock(
             block,
-            this.models().getBuilder(modelName).texture("particle", ModFluidTypes.MOLTEN_COMPRESSED_COBBLESTONE_STILL_TEXTURE)
+            this.models().getBuilder(modelName).texture("particle", particleTexture)
         );
     }
 
