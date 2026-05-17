@@ -7,6 +7,8 @@ import com.yukke9265.cobblestone_xx_compressed.compat.flux.FluxNetworkCompat;
 import com.yukke9265.cobblestone_xx_compressed.datagen.ModDatagen;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModBlockEntities;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModBlocks;
+import com.yukke9265.cobblestone_xx_compressed.registry.ModFluidTypes;
+import com.yukke9265.cobblestone_xx_compressed.registry.ModFluids;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModItems;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModMenuType;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModRecipeSerializers;
@@ -143,6 +145,10 @@ public class CobblestonexXCompressed {
                 output.accept(ModItems.COBBLESTONE_LASER_DRILL_ITEM.get());
                 output.accept(ModItems.COBBLESTONE_MIXER_ITEM.get());
                 output.accept(ModItems.COBBLESTONE_REACTION_CHAMBER_ITEM.get());
+                output.accept(ModFluids.MOLTEN_COMPRESSED_COBBLESTONE.getBucketItem().get());
+                for (ModFluids.TierMoltenCompressedCobblestone tier : ModFluids.TierMoltenCompressedCobblestone.values()) {
+                    output.accept(tier.getFluidEntry().getBucketItem().get());
+                }
                 for (ModItems.TierCobblestoneGeneratorItem generatorItem : ModItems.TierCobblestoneGeneratorItem.values()) {
                     output.accept(generatorItem.getItem().get());
                 }
@@ -171,6 +177,13 @@ public class CobblestonexXCompressed {
 
         //ModBlocksクラスのブロックも登録します
         ModBlocks.BLOCKS.register(modEventBus);
+
+        // 独自液体は FluidType、fluid 本体、液体ブロック、バケツをそれぞれ登録します。
+        // 分けて登録しておくと、今後 tier 版を増やすときにも依存関係を追いやすくなります。
+        ModFluidTypes.FLUID_TYPES.register(modEventBus);
+        ModFluids.FLUIDS.register(modEventBus);
+        ModFluids.FLUID_BLOCKS.register(modEventBus);
+        ModFluids.FLUID_ITEMS.register(modEventBus);
 
         //ModBlockEntitiesクラスのブロックエンティティも登録します
         ModBlockEntities.BLOCK_ENTITY_TYPES.register(modEventBus);

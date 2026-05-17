@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "minecraft:item/bucket",
+    "layer1": "cobblestonexxcompressed:item/bucket/molten_tier_emerald_compressed_cobblestone_bucket_fluid"
+  }
+}

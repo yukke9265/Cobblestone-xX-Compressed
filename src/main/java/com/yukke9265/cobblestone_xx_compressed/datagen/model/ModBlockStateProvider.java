@@ -1,6 +1,8 @@
 package com.yukke9265.cobblestone_xx_compressed.datagen.model;
 
 import com.yukke9265.cobblestone_xx_compressed.CobblestonexXCompressed;
+import com.yukke9265.cobblestone_xx_compressed.registry.ModFluidTypes;
+import com.yukke9265.cobblestone_xx_compressed.registry.ModFluids;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModBlocks;
 
 import net.minecraft.data.PackOutput;
@@ -43,6 +45,14 @@ public class ModBlockStateProvider extends BlockStateProvider {
         for (ModBlocks.TierCobblestoneGenerator generatorVariant : ModBlocks.TierCobblestoneGenerator.values()) {
             registerCobblestoneGeneratorBlock(generatorVariant);
         }
+
+        // LiquidBlock は level ごとに状態を持ちますが、見た目は fluid renderer が担当します。
+        // そのため blockstate 側では、粒子テクスチャだけ持つ最小の model を全状態で共有すれば十分です。
+        registerMoltenFluidBlock(ModFluids.MOLTEN_COMPRESSED_COBBLESTONE.getFluidBlock().get(), ModFluids.MOLTEN_COMPRESSED_COBBLESTONE.getFluidBlock().getId().getPath());
+
+        for (ModFluids.TierMoltenCompressedCobblestone tier : ModFluids.TierMoltenCompressedCobblestone.values()) {
+            registerMoltenFluidBlock(tier.getFluidEntry().getFluidBlock().get(), tier.getFluidEntry().getFluidBlock().getId().getPath());
+        }
     }
 
     private void registerCompressedCobblestoneBlock(net.minecraft.world.level.block.Block block, String textureName) {
@@ -75,6 +85,13 @@ public class ModBlockStateProvider extends BlockStateProvider {
             generatorVariant.getTextureFolderName(),
             generatorVariant.getRegistryName(),
             generatorVariant.getRegistryName()
+        );
+    }
+
+    private void registerMoltenFluidBlock(net.minecraft.world.level.block.Block block, String modelName) {
+        this.simpleBlock(
+            block,
+            this.models().getBuilder(modelName).texture("particle", ModFluidTypes.MOLTEN_COMPRESSED_COBBLESTONE_STILL_TEXTURE)
         );
     }
 

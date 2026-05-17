@@ -1,5 +1,6 @@
 package com.yukke9265.cobblestone_xx_compressed;
 
+import com.yukke9265.cobblestone_xx_compressed.registry.ModFluidTypes;
 import com.yukke9265.cobblestone_xx_compressed.screen.CobblestoneFurnaceScreen;
 import com.yukke9265.cobblestone_xx_compressed.screen.CobblestoneCrusherScreen;
 import com.yukke9265.cobblestone_xx_compressed.screen.CobblestoneCentrifugeScreen;
@@ -18,6 +19,7 @@ import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
@@ -39,6 +41,13 @@ public class CobblestonexXCompressedClient {
         // クライアント側のセットアップ処理
         CobblestonexXCompressed.LOGGER.info("HELLO FROM CLIENT SETUP");
         CobblestonexXCompressed.LOGGER.info("MINECRAFT NAME >> {}", Minecraft.getInstance().getUser().getName());
+    }
+
+    @SubscribeEvent
+    static void onRegisterClientExtensions(RegisterClientExtensionsEvent event) {
+        // Mekanism と同じく RegisterClientExtensionsEvent で FluidType ごとの描画情報を明示登録します。
+        // bucket の液体色もこの経路を使うため、ここで tier ごとの tint を確実に分けます。
+        ModFluidTypes.registerClientExtensions(event);
     }
 
     @SubscribeEvent

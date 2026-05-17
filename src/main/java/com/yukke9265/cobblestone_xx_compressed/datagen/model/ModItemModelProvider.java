@@ -1,6 +1,7 @@
 package com.yukke9265.cobblestone_xx_compressed.datagen.model;
 
 import com.yukke9265.cobblestone_xx_compressed.CobblestonexXCompressed;
+import com.yukke9265.cobblestone_xx_compressed.registry.ModFluids;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModItems;
 
 import net.minecraft.data.PackOutput;
@@ -136,6 +137,11 @@ public class ModItemModelProvider extends ItemModelProvider {
         for (ModItems.TierCobblestoneEnergizedCube tier : ModItems.TierCobblestoneEnergizedCube.values()) {
             registerCobblestoneEnergizedCubeItemModel(tier.getItem());
         }
+
+        registerFluidBucketItemModel(ModFluids.MOLTEN_COMPRESSED_COBBLESTONE.getBucketItem());
+        for (ModFluids.TierMoltenCompressedCobblestone tier : ModFluids.TierMoltenCompressedCobblestone.values()) {
+            registerFluidBucketItemModel(tier.getFluidEntry().getBucketItem());
+        }
     }
 
     // 丸石パン系は、登録名と PNG ファイル名を同じにしておくと管理がかなり楽です。
@@ -218,6 +224,22 @@ public class ModItemModelProvider extends ItemModelProvider {
 
     private void registerCobblestoneEnergizedCubeItemModel(DeferredItem<Item> item) {
         registerGeneratedItemModel(item, "cobblestone_energized_cube");
+    }
+
+    private void registerFluidBucketItemModel(DeferredItem<? extends Item> item) {
+        String itemName = item.getId().getPath();
+
+        // fluid_container は FluidType 単位でしか見た目を切り替えられないため、
+        // tier ごとのバケツ差分は通常の layered item model で表現します。
+        withExistingParent(itemName, mcLoc("item/generated"))
+            .texture("layer0", ResourceLocation.withDefaultNamespace("item/bucket"))
+            .texture(
+                "layer1",
+                ResourceLocation.fromNamespaceAndPath(
+                    CobblestonexXCompressed.MODID,
+                    "item/bucket/" + itemName + "_fluid"
+                )
+            );
     }
 
     private void registerGeneratedItemModel(DeferredItem<Item> item, String textureFolder) {

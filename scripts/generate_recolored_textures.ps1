@@ -16,7 +16,7 @@ function Get-Luminance {
     return (0.2126 * $Color.R) + (0.7152 * $Color.G) + (0.0722 * $Color.B)
 }
 
-function Clamp-Byte {
+function ConvertTo-ByteValue {
     param(
         [double]$Value
     )
@@ -53,9 +53,9 @@ function New-TintedColor {
     $sourceLuminance = Get-Luminance $SourceColor
     $brightnessRatio = $sourceLuminance / $referenceLuminance
 
-    $newRed = Clamp-Byte ($TargetColor.R * $brightnessRatio)
-    $newGreen = Clamp-Byte ($TargetColor.G * $brightnessRatio)
-    $newBlue = Clamp-Byte ($TargetColor.B * $brightnessRatio)
+    $newRed = ConvertTo-ByteValue ($TargetColor.R * $brightnessRatio)
+    $newGreen = ConvertTo-ByteValue ($TargetColor.G * $brightnessRatio)
+    $newBlue = ConvertTo-ByteValue ($TargetColor.B * $brightnessRatio)
 
     return [System.Drawing.Color]::FromArgb($SourceColor.A, $newRed, $newGreen, $newBlue)
 }
@@ -101,12 +101,17 @@ $baseTexturePath = Join-Path $textureDirectory $config.BaseTextureFileName
 $paletteTexturePath = $null
 $variantOutputNames = $config.VariantOutputNames
 $referencePaletteIndex = $config.ReferencePaletteIndex
+$variantPaletteIndices = $null
 
 if ($config.ContainsKey('PaletteTexturePath')) {
     $paletteTexturePath = Resolve-ConfigPath -Path $config.PaletteTexturePath -ScriptRootPath $configDirectory
 }
 else {
     $paletteTexturePath = Join-Path $textureDirectory $config.PaletteTextureFileName
+}
+
+if ($config.ContainsKey('VariantPaletteIndices')) {
+    $variantPaletteIndices = $config.VariantPaletteIndices
 }
 
 if (-not (Test-Path $baseTexturePath)) {
@@ -117,11 +122,30 @@ if (-not (Test-Path $paletteTexturePath)) {
     throw "Palette texture not found: $paletteTexturePath"
 }
 
-$baseBitmap = [System.Drawing.Bitmap]::FromFile($baseTexturePath)
-$paletteBitmap = [System.Drawing.Bitmap]::FromFile($paletteTexturePath)
+$baseBitmapFileHandle = [System.Drawing.Bitmap]::FromFile($baseTexturePath)
+$paletteBitmapFileHandle = [System.Drawing.Bitmap]::FromFile($paletteTexturePath)
+
+try {
+    # Clone the images into memory so the source files are no longer locked.
+    # This allows regenerating a texture into the same path as the base image.
+    $baseBitmap = New-Object System.Drawing.Bitmap($baseBitmapFileHandle)
+    $paletteBitmap = New-Object System.Drawing.Bitmap($paletteBitmapFileHandle)
+}
+finally {
+    $baseBitmapFileHandle.Dispose()
+    $paletteBitmapFileHandle.Dispose()
+}
 
 try {
     $requiredPaletteWidth = $variantOutputNames.Count + $referencePaletteIndex + 1
+
+    if ($null -ne $variantPaletteIndices) {
+        if ($variantPaletteIndices.Count -ne $variantOutputNames.Count) {
+            throw "VariantPaletteIndices count must match VariantOutputNames count."
+        }
+
+        $requiredPaletteWidth = ([int]($variantPaletteIndices | Measure-Object -Maximum).Maximum) + 1
+    }
 
     if ($paletteBitmap.Width -lt $requiredPaletteWidth) {
         throw "Palette texture is too narrow. It needs at least $requiredPaletteWidth columns."
@@ -133,9 +157,16 @@ try {
 
     for ($variantIndex = 0; $variantIndex -lt $variantOutputNames.Count; $variantIndex++) {
         $paletteX = $referencePaletteIndex + $variantIndex + 1
+
+        if ($null -ne $variantPaletteIndices) {
+            $paletteX = [int]$variantPaletteIndices[$variantIndex]
+        }
+
         $targetColor = Get-PaletteColor -PaletteBitmap $paletteBitmap -X $paletteX
         $outputFileName = $variantOutputNames[$variantIndex] + '.png'
         $outputPath = Join-Path $textureDirectory $outputFileName
+        $resolvedOutputPath = [System.IO.Path]::GetFullPath($outputPath)
+        $resolvedBaseTexturePath = [System.IO.Path]::GetFullPath($baseTexturePath)
 
         $outputBitmap = New-Object System.Drawing.Bitmap($baseBitmap.Width, $baseBitmap.Height)
 
@@ -148,7 +179,16 @@ try {
                 }
             }
 
-            $outputBitmap.Save($outputPath, [System.Drawing.Imaging.ImageFormat]::Png)
+            if ($resolvedOutputPath -eq $resolvedBaseTexturePath) {
+                $temporaryOutputPath = $outputPath + '.tmp'
+                $outputBitmap.Save($temporaryOutputPath, [System.Drawing.Imaging.ImageFormat]::Png)
+                Remove-Item -Path $outputPath -Force
+                Move-Item -Path $temporaryOutputPath -Destination $outputPath
+            }
+            else {
+                $outputBitmap.Save($outputPath, [System.Drawing.Imaging.ImageFormat]::Png)
+            }
+
             Write-Output "generated: $outputFileName"
         }
         finally {

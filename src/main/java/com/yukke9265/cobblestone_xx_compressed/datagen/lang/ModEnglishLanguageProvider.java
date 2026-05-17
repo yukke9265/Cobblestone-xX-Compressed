@@ -2,6 +2,7 @@ package com.yukke9265.cobblestone_xx_compressed.datagen.lang;
 
 import com.yukke9265.cobblestone_xx_compressed.CobblestonexXCompressed;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModBlocks;
+import com.yukke9265.cobblestone_xx_compressed.registry.ModFluids;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModItems;
 
 import net.minecraft.data.PackOutput;
@@ -122,6 +123,13 @@ public class ModEnglishLanguageProvider extends LanguageProvider {
         addItem(ModItems.COBBLESTONE_ENERGIZED_CUBE, "Cobblestone Energized Cube");
         for (ModItems.TierCobblestoneEnergizedCube tier : ModItems.TierCobblestoneEnergizedCube.values()) {
             addItem(tier.getItem(), tier.getEnglishDisplayName());
+        }
+
+        add("fluid_type.cobblestonexxcompressed.molten_compressed_cobblestone", "Molten Compressed Cobblestone");
+        addItem(ModFluids.MOLTEN_COMPRESSED_COBBLESTONE.getBucketItem(), "Molten Compressed Cobblestone Bucket");
+        for (ModFluids.TierMoltenCompressedCobblestone tier : ModFluids.TierMoltenCompressedCobblestone.values()) {
+            add("fluid_type.cobblestonexxcompressed." + tier.getRegistryName(), tier.getEnglishDisplayName());
+            addItem(tier.getFluidEntry().getBucketItem(), tier.getBucketEnglishDisplayName());
         }
 
         addBlock(ModBlocks.COMPRESSED_COBBLESTONE, "Compressed Cobblestone");
