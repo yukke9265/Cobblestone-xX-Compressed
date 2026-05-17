@@ -146,6 +146,7 @@ public class CobblestonexXCompressed {
                 output.accept(ModItems.COBBLESTONE_MIXER_ITEM.get());
                 output.accept(ModItems.COBBLESTONE_MELTER_ITEM.get());
                 output.accept(ModItems.COBBLESTONE_REACTION_CHAMBER_ITEM.get());
+                output.accept(ModItems.COBBLESTONE_DISSOLUTION_CHAMBER_ITEM.get());
                 output.accept(ModFluids.MOLTEN_COMPRESSED_COBBLESTONE.getBucketItem().get());
                 for (ModFluids.TierMoltenCompressedCobblestone tier : ModFluids.TierMoltenCompressedCobblestone.values()) {
                     output.accept(tier.getFluidEntry().getBucketItem().get());
@@ -318,6 +319,18 @@ public class CobblestonexXCompressed {
         event.registerBlockEntity(
             Capabilities.FluidHandler.BLOCK,
             ModBlockEntities.COBBLESTONE_REACTION_CHAMBER_BLOCK_ENTITY.get(),
+            (blockEntity, side) -> blockEntity.getFluidHandler(side)
+        );
+
+        event.registerBlockEntity(
+            Capabilities.ItemHandler.BLOCK,
+            ModBlockEntities.COBBLESTONE_DISSOLUTION_CHAMBER_BLOCK_ENTITY.get(),
+            (blockEntity, side) -> blockEntity.getAutomationItemHandler(side)
+        );
+
+        event.registerBlockEntity(
+            Capabilities.FluidHandler.BLOCK,
+            ModBlockEntities.COBBLESTONE_DISSOLUTION_CHAMBER_BLOCK_ENTITY.get(),
             (blockEntity, side) -> blockEntity.getFluidHandler(side)
         );
 

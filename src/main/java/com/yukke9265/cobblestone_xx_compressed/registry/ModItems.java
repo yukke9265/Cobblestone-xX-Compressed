@@ -1512,6 +1512,11 @@ public class ModItems {
             "cobblestone_reaction_chamber",
             ModBlocks.COBBLESTONE_REACTION_CHAMBER);
 
+    public static final DeferredItem<BlockItem> COBBLESTONE_DISSOLUTION_CHAMBER_ITEM =
+        ModItems.ITEMS.registerSimpleBlockItem(
+            "cobblestone_dissolution_chamber",
+            ModBlocks.COBBLESTONE_DISSOLUTION_CHAMBER);
+
     // cobblestone_centrifuge も設置できるように BlockItem を登録します。
     public static final DeferredItem<BlockItem> COBBLESTONE_CENTRIFUGE_ITEM =
         ModItems.ITEMS.registerSimpleBlockItem(

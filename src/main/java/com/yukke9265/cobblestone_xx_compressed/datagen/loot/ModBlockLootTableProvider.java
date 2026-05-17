@@ -43,6 +43,7 @@ public class ModBlockLootTableProvider implements DataProvider {
         futures.add(DataProvider.saveStable(cache, createSimpleSelfDropLoot("cobblestone_laser_drill"), rootPath.resolve("cobblestone_laser_drill.json")));
         futures.add(DataProvider.saveStable(cache, createSimpleSelfDropLoot("cobblestone_melter"), rootPath.resolve("cobblestone_melter.json")));
         futures.add(DataProvider.saveStable(cache, createSimpleSelfDropLoot("cobblestone_mixer"), rootPath.resolve("cobblestone_mixer.json")));
+        futures.add(DataProvider.saveStable(cache, createSimpleSelfDropLoot("cobblestone_dissolution_chamber"), rootPath.resolve("cobblestone_dissolution_chamber.json")));
         futures.add(DataProvider.saveStable(cache, createSimpleSelfDropLoot("compressed_cobblestone"), rootPath.resolve("compressed_cobblestone.json")));
         futures.add(DataProvider.saveStable(cache, createSimpleSelfDropLoot("cobblestone_machine_casing"), rootPath.resolve("cobblestone_machine_casing.json")));
         futures.add(DataProvider.saveStable(cache, createSimpleSelfDropLoot("cobblestone_tank"), rootPath.resolve("cobblestone_tank.json")));

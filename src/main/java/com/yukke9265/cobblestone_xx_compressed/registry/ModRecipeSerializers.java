@@ -5,6 +5,7 @@ import java.util.function.Supplier;
 import com.yukke9265.cobblestone_xx_compressed.CobblestonexXCompressed;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneCrusherRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneCentrifugeRecipe;
+import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneDissolutionChamberRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneFurnaceRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneLaserDrillRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneMelterRecipe;
@@ -147,6 +148,22 @@ public class ModRecipeSerializers {
                 @Override
                 public StreamCodec<RegistryFriendlyByteBuf, CobblestoneReactionChamberRecipe> streamCodec() {
                     return CobblestoneReactionChamberRecipe.STREAM_CODEC;
+                }
+            }
+        );
+
+    public static final Supplier<RecipeSerializer<CobblestoneDissolutionChamberRecipe>> COBBLESTONE_DISSOLUTION_CHAMBER =
+        RECIPE_SERIALIZERS.register(
+            "cobblestone_dissolution_chamber",
+            () -> new RecipeSerializer<CobblestoneDissolutionChamberRecipe>() {
+                @Override
+                public MapCodec<CobblestoneDissolutionChamberRecipe> codec() {
+                    return CobblestoneDissolutionChamberRecipe.CODEC;
+                }
+
+                @Override
+                public StreamCodec<RegistryFriendlyByteBuf, CobblestoneDissolutionChamberRecipe> streamCodec() {
+                    return CobblestoneDissolutionChamberRecipe.STREAM_CODEC;
                 }
             }
         );

@@ -5,6 +5,7 @@ import java.util.function.Supplier;
 import com.yukke9265.cobblestone_xx_compressed.CobblestonexXCompressed;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneCrusherRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneCentrifugeRecipe;
+import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneDissolutionChamberRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneFurnaceRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneLaserDrillRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneMelterRecipe;
@@ -43,4 +44,7 @@ public class ModRecipeTypes {
 
     public static final Supplier<RecipeType<CobblestoneReactionChamberRecipe>> COBBLESTONE_REACTION_CHAMBER =
         RECIPE_TYPES.register("cobblestone_reaction_chamber", RecipeType::simple);
+
+    public static final Supplier<RecipeType<CobblestoneDissolutionChamberRecipe>> COBBLESTONE_DISSOLUTION_CHAMBER =
+        RECIPE_TYPES.register("cobblestone_dissolution_chamber", RecipeType::simple);
 }

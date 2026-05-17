@@ -3,6 +3,7 @@ package com.yukke9265.cobblestone_xx_compressed.datagen.recipe;
 import java.util.concurrent.CompletableFuture;
 
 import com.yukke9265.cobblestone_xx_compressed.CobblestonexXCompressed;
+import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneDissolutionChamberRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneCrusherRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneFurnaceRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneMelterRecipe;
@@ -153,6 +154,17 @@ public class ModRecipeProvider extends RecipeProvider {
         )
     };
 
+    private static final DissolutionChamberRecipeDefinition[] COBBLESTONE_DISSOLUTION_CHAMBER_RECIPES = new DissolutionChamberRecipeDefinition[] {
+        new DissolutionChamberRecipeDefinition(
+            "tier_ruby_compressed_cobblestone_to_molten_tier_ruby_dirty_compressed_cobblestone",
+            ModBlocks.TierCompressedCobblestone.RUBY.getBlock().get(),
+            new FluidStack(net.minecraft.world.level.material.Fluids.LAVA, 100),
+            new FluidStack(ModFluids.TierMoltenDirtyCompressedCobblestone.RUBY.getFluidEntry().getStillFluid().get(), 1000),
+            12800,
+            128
+        )
+    };
+
     private static final MachineCasingRecipeDefinition[] MACHINE_CASING_RECIPES = new MachineCasingRecipeDefinition[] {
         new MachineCasingRecipeDefinition(
             "cobblestone_machine_casing",
@@ -267,6 +279,7 @@ public class ModRecipeProvider extends RecipeProvider {
         buildCobblestoneCrusherRecipes(output);
         buildCobblestoneMelterRecipes(output);
         buildCobblestoneMixerRecipes(output);
+        buildCobblestoneDissolutionChamberRecipes(output);
     }
 
     private void buildCompressedCobblestoneRecipes(RecipeOutput output) {
@@ -646,6 +659,20 @@ public class ModRecipeProvider extends RecipeProvider {
         }
     }
 
+    private void buildCobblestoneDissolutionChamberRecipes(RecipeOutput output) {
+        for (DissolutionChamberRecipeDefinition recipe : COBBLESTONE_DISSOLUTION_CHAMBER_RECIPES) {
+            saveCobblestoneDissolutionChamberRecipe(
+                output,
+                recipe.recipeName,
+                recipe.ingredient,
+                recipe.fluidInput,
+                recipe.fluidOutput,
+                recipe.totalCobblestonePower,
+                recipe.cobblestonePowerPerTick
+            );
+        }
+    }
+
     private void saveCobblestoneFurnaceRecipe(RecipeOutput output, String recipeName, ItemLike ingredient, ItemLike result, int processingTime) {
         CobblestoneFurnaceRecipe recipe = new CobblestoneFurnaceRecipe(
             Ingredient.of(ingredient),
@@ -723,6 +750,30 @@ public class ModRecipeProvider extends RecipeProvider {
 
         output.accept(
             modRecipeId("cobblestone_melter/" + recipeName),
+            recipe,
+            null
+        );
+    }
+
+    private void saveCobblestoneDissolutionChamberRecipe(
+        RecipeOutput output,
+        String recipeName,
+        ItemLike ingredient,
+        FluidStack fluidInput,
+        FluidStack fluidOutput,
+        int totalCobblestonePower,
+        int cobblestonePowerPerTick
+    ) {
+        CobblestoneDissolutionChamberRecipe recipe = new CobblestoneDissolutionChamberRecipe(
+            Ingredient.of(ingredient),
+            fluidInput,
+            fluidOutput,
+            totalCobblestonePower,
+            cobblestonePowerPerTick
+        );
+
+        output.accept(
+            modRecipeId("cobblestone_dissolution_chamber/" + recipeName),
             recipe,
             null
         );
@@ -858,6 +909,31 @@ public class ModRecipeProvider extends RecipeProvider {
             this.recipeName = recipeName;
             this.ingredient = ingredient;
             this.fluidResult = fluidResult.copy();
+            this.totalCobblestonePower = totalCobblestonePower;
+            this.cobblestonePowerPerTick = cobblestonePowerPerTick;
+        }
+    }
+
+    private static class DissolutionChamberRecipeDefinition {
+        private final String recipeName;
+        private final ItemLike ingredient;
+        private final FluidStack fluidInput;
+        private final FluidStack fluidOutput;
+        private final int totalCobblestonePower;
+        private final int cobblestonePowerPerTick;
+
+        private DissolutionChamberRecipeDefinition(
+            String recipeName,
+            ItemLike ingredient,
+            FluidStack fluidInput,
+            FluidStack fluidOutput,
+            int totalCobblestonePower,
+            int cobblestonePowerPerTick
+        ) {
+            this.recipeName = recipeName;
+            this.ingredient = ingredient;
+            this.fluidInput = fluidInput.copy();
+            this.fluidOutput = fluidOutput.copy();
             this.totalCobblestonePower = totalCobblestonePower;
             this.cobblestonePowerPerTick = cobblestonePowerPerTick;
         }

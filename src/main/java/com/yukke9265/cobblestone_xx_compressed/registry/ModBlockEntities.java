@@ -6,6 +6,7 @@ import com.yukke9265.cobblestone_xx_compressed.CobblestonexXCompressed;
 import com.yukke9265.cobblestone_xx_compressed.blockentity.CobblestoneGeneratorBlockEntity;
 import com.yukke9265.cobblestone_xx_compressed.blockentity.CobblestoneCrusherBlockEntity;
 import com.yukke9265.cobblestone_xx_compressed.blockentity.CobblestoneCentrifugeBlockEntity;
+import com.yukke9265.cobblestone_xx_compressed.blockentity.CobblestoneDissolutionChamberBlockEntity;
 import com.yukke9265.cobblestone_xx_compressed.blockentity.CobblestoneFEGeneratorBlockEntity;
 import com.yukke9265.cobblestone_xx_compressed.blockentity.CobblestoneFurnaceBlockEntity;
 import com.yukke9265.cobblestone_xx_compressed.blockentity.CobblestoneLaserDrillBlockEntity;
@@ -102,6 +103,15 @@ public class ModBlockEntities {
             () -> BlockEntityType.Builder.of(
                 CobblestoneReactionChamberBlockEntity::new,
                 ModBlocks.COBBLESTONE_REACTION_CHAMBER.get()
+            ).build(null)
+        );
+
+    public static final Supplier<BlockEntityType<CobblestoneDissolutionChamberBlockEntity>> COBBLESTONE_DISSOLUTION_CHAMBER_BLOCK_ENTITY =
+        BLOCK_ENTITY_TYPES.register(
+            "cobblestone_dissolution_chamber",
+            () -> BlockEntityType.Builder.of(
+                CobblestoneDissolutionChamberBlockEntity::new,
+                ModBlocks.COBBLESTONE_DISSOLUTION_CHAMBER.get()
             ).build(null)
         );
 

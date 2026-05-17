@@ -9,6 +9,7 @@ import com.yukke9265.cobblestone_xx_compressed.compat.jei.JeiClickableAreaDefini
 import com.yukke9265.cobblestone_xx_compressed.compat.jei.JeiRecipeTransferDefinition;
 import com.yukke9265.cobblestone_xx_compressed.compat.jei.ModJeiIds;
 import com.yukke9265.cobblestone_xx_compressed.jei.category.CompressedStoneLootRecipeCategory;
+import com.yukke9265.cobblestone_xx_compressed.jei.category.CobblestoneDissolutionChamberRecipeCategory;
 import com.yukke9265.cobblestone_xx_compressed.jei.category.CobblestoneCrusherRecipeCategory;
 import com.yukke9265.cobblestone_xx_compressed.jei.category.CobblestoneCentrifugeRecipeCategory;
 import com.yukke9265.cobblestone_xx_compressed.jei.category.CobblestoneFurnaceRecipeCategory;
@@ -20,6 +21,7 @@ import com.yukke9265.cobblestone_xx_compressed.jei.category.CobblestoneReactionC
 import com.yukke9265.cobblestone_xx_compressed.menu.BaseMenu;
 import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneCrusherMenu;
 import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneCentrifugeMenu;
+import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneDissolutionChamberMenu;
 import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneFurnaceMenu;
 import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneLaserDrillMenu;
 import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneMelterMenu;
@@ -28,6 +30,7 @@ import com.yukke9265.cobblestone_xx_compressed.menu.CobblestonePoweredFurnaceMen
 import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneReactionChamberMenu;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneCrusherRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneCentrifugeRecipe;
+import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneDissolutionChamberRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneFurnaceRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneLaserDrillRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneMelterRecipe;
@@ -117,6 +120,13 @@ public class ModJeiPlugin implements IModPlugin {
             CobblestoneReactionChamberRecipe.class
         );
 
+    public static final RecipeType<CobblestoneDissolutionChamberRecipe> COBBLESTONE_DISSOLUTION_CHAMBER_RECIPE_TYPE =
+        RecipeType.create(
+            ModJeiIds.COBBLESTONE_DISSOLUTION_CHAMBER.getNamespace(),
+            ModJeiIds.COBBLESTONE_DISSOLUTION_CHAMBER.getPath(),
+            CobblestoneDissolutionChamberRecipe.class
+        );
+
     public static final RecipeType<CompressedStoneLootJeiRecipe> COMPRESSED_STONE_LOOT_RECIPE_TYPE =
         RecipeType.create(
             ModJeiIds.COMPRESSED_STONE_LOOT.getNamespace(),
@@ -204,6 +214,16 @@ public class ModJeiPlugin implements IModPlugin {
             ModMenuType.COBBLESTONE_REACTION_CHAMBER_MENU
         );
 
+    private static final MachineJeiDefinition<CobblestoneDissolutionChamberRecipe, CobblestoneDissolutionChamberMenu> COBBLESTONE_DISSOLUTION_CHAMBER_DEFINITION =
+        new MachineJeiDefinition<>(
+            ModJeiIds.COBBLESTONE_DISSOLUTION_CHAMBER,
+            COBBLESTONE_DISSOLUTION_CHAMBER_RECIPE_TYPE,
+            registration -> new CobblestoneDissolutionChamberRecipeCategory(registration.getJeiHelpers().getGuiHelper()),
+            () -> new ItemStack(ModBlocks.COBBLESTONE_DISSOLUTION_CHAMBER.get()),
+            CobblestoneDissolutionChamberMenu.class,
+            ModMenuType.COBBLESTONE_DISSOLUTION_CHAMBER_MENU
+        );
+
     private static final List<MachineJeiDefinition<?, ?>> MACHINE_DEFINITIONS = List.of(
         COBBLESTONE_FURNACE_DEFINITION,
         COBBLESTONE_POWERED_FURNACE_DEFINITION,
@@ -212,7 +232,8 @@ public class ModJeiPlugin implements IModPlugin {
         COBBLESTONE_LASER_DRILL_DEFINITION,
         COBBLESTONE_MIXER_DEFINITION,
         COBBLESTONE_MELTER_DEFINITION,
-        COBBLESTONE_REACTION_CHAMBER_DEFINITION
+        COBBLESTONE_REACTION_CHAMBER_DEFINITION,
+        COBBLESTONE_DISSOLUTION_CHAMBER_DEFINITION
     );
 
     @Override
@@ -294,6 +315,13 @@ public class ModJeiPlugin implements IModPlugin {
             .map(RecipeHolder::value)
             .toList();
         registration.addRecipes(COBBLESTONE_REACTION_CHAMBER_DEFINITION.recipeType(), reactionChamberRecipes);
+
+        List<CobblestoneDissolutionChamberRecipe> dissolutionChamberRecipes = minecraft.level.getRecipeManager()
+            .getAllRecipesFor(ModRecipeTypes.COBBLESTONE_DISSOLUTION_CHAMBER.get())
+            .stream()
+            .map(RecipeHolder::value)
+            .toList();
+        registration.addRecipes(COBBLESTONE_DISSOLUTION_CHAMBER_DEFINITION.recipeType(), dissolutionChamberRecipes);
     }
 
     @Override

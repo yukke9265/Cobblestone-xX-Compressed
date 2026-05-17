@@ -6,6 +6,7 @@ import com.yukke9265.cobblestone_xx_compressed.CobblestonexXCompressed;
 import com.yukke9265.cobblestone_xx_compressed.block.CobblestoneGeneratorBlock;
 import com.yukke9265.cobblestone_xx_compressed.block.CobblestoneCrusherBlock;
 import com.yukke9265.cobblestone_xx_compressed.block.CobblestoneCentrifugeBlock;
+import com.yukke9265.cobblestone_xx_compressed.block.CobblestoneDissolutionChamberBlock;
 import com.yukke9265.cobblestone_xx_compressed.block.CobblestoneFEGeneratorBlock;
 import com.yukke9265.cobblestone_xx_compressed.block.CobblestoneFurnaceBlock;
 import com.yukke9265.cobblestone_xx_compressed.block.CobblestoneLaserDrillBlock;
@@ -574,6 +575,18 @@ public class ModBlocks {
         BLOCKS.register(
             "cobblestone_reaction_chamber",
             () -> new CobblestoneReactionChamberBlock(
+                BlockBehaviour.Properties
+                    .of()
+                    .mapColor(MapColor.STONE)
+                    .strength(0.5F)
+                    .sound(SoundType.STONE)
+            )
+        );
+
+    public static final DeferredBlock<Block> COBBLESTONE_DISSOLUTION_CHAMBER =
+        BLOCKS.register(
+            "cobblestone_dissolution_chamber",
+            () -> new CobblestoneDissolutionChamberBlock(
                 BlockBehaviour.Properties
                     .of()
                     .mapColor(MapColor.STONE)

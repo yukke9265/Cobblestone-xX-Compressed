@@ -168,6 +168,8 @@ public class ModEnglishLanguageProvider extends LanguageProvider {
         addBlock(ModBlocks.COBBLESTONE_LASER_DRILL, "Cobblestone Laser Drill");
         addBlock(ModBlocks.COBBLESTONE_MELTER, "Cobblestone Melter");
         addBlock(ModBlocks.COBBLESTONE_MIXER, "Cobblestone Mixer");
+        addBlock(ModBlocks.COBBLESTONE_REACTION_CHAMBER, "Cobblestone Reaction Chamber");
+        addBlock(ModBlocks.COBBLESTONE_DISSOLUTION_CHAMBER, "Cobblestone Dissolution Chamber");
 
         for (ModBlocks.TierCobblestoneGenerator generatorVariant : ModBlocks.TierCobblestoneGenerator.values()) {
             addBlock(generatorVariant.getBlock(), generatorVariant.getEnglishDisplayName());
