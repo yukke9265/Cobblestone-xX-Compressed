@@ -5,6 +5,7 @@ import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneCrusherMenu;
 import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneCentrifugeMenu;
 import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneDissolutionChamberMenu;
 import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneFEGeneratorMenu;
+import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneFluidMixerMenu;
 import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneFurnaceMenu;
 import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneLaserDrillMenu;
 import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneMelterMenu;
@@ -81,6 +82,12 @@ public class ModMenuType {
         MENU_TYPES.register(
             "cobblestone_dissolution_chamber_menu",
             () -> IMenuTypeExtension.create(CobblestoneDissolutionChamberMenu::new)
+        );
+
+    public static final Supplier<MenuType<CobblestoneFluidMixerMenu>> COBBLESTONE_FLUID_MIXER_MENU =
+        MENU_TYPES.register(
+            "cobblestone_fluid_mixer_menu",
+            () -> IMenuTypeExtension.create(CobblestoneFluidMixerMenu::new)
         );
 
     public static final Supplier<MenuType<CobblestoneTankMenu>> COBBLESTONE_TANK_MENU =

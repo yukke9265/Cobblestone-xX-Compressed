@@ -12,13 +12,11 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 
+@SuppressWarnings("null")
 public class BaseScreen<T extends BaseMenu> extends AbstractContainerScreen<T> {
     protected static final int EXTERNAL_SLOT_SIZE = 18;
     private static final int EXTERNAL_SLOT_BORDER_COLOR = 0xFF8B8B8B;
     private static final int EXTERNAL_SLOT_BACKGROUND_COLOR = 0xFF373737;
-    private static final int HOVER_LABEL_BACKGROUND_COLOR = 0xF0100010;
-    private static final int HOVER_LABEL_BORDER_COLOR = 0xFF505050;
-    private static final int HOVER_LABEL_TEXT_COLOR = 0xFFFFFFFF;
 
     // 共通の基底スクリーンクラスです。全てのスクリーンはこれを継承します。
     public BaseScreen(T menu, Inventory inventory, Component title) {
@@ -47,6 +45,11 @@ public class BaseScreen<T extends BaseMenu> extends AbstractContainerScreen<T> {
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         super.render(guiGraphics, mouseX, mouseY, partialTick);
         this.renderHoverLabels(guiGraphics, mouseX, mouseY);
+        // AbstractContainerScreen の super.render(...) だけでは、
+        // スロット上の ItemStack 用ツールチップは描画されません。
+        // 最後に標準の renderTooltip(...) を呼ぶことで、
+        // アイテム名や説明文を通常どおり最前面に描画します。
+        this.renderTooltip(guiGraphics, mouseX, mouseY);
     }
 
     protected final void sendMenuButtonClick(int buttonId) {
@@ -108,19 +111,9 @@ public class BaseScreen<T extends BaseMenu> extends AbstractContainerScreen<T> {
     }
 
     protected final void renderHoverLabel(GuiGraphics guiGraphics, int mouseX, int mouseY, Component text) {
-        int textWidth = this.font.width(text);
-        int textHeight = 8;
-        int labelLeft = mouseX + 8;
-        int labelTop = mouseY - 12;
-        int labelRight = labelLeft + textWidth + 8;
-        int labelBottom = labelTop + textHeight + 8;
-
-        guiGraphics.fill(labelLeft, labelTop, labelRight, labelBottom, HOVER_LABEL_BACKGROUND_COLOR);
-        guiGraphics.fill(labelLeft, labelTop, labelRight, labelTop + 1, HOVER_LABEL_BORDER_COLOR);
-        guiGraphics.fill(labelLeft, labelBottom - 1, labelRight, labelBottom, HOVER_LABEL_BORDER_COLOR);
-        guiGraphics.fill(labelLeft, labelTop, labelLeft + 1, labelBottom, HOVER_LABEL_BORDER_COLOR);
-        guiGraphics.fill(labelRight - 1, labelTop, labelRight, labelBottom, HOVER_LABEL_BORDER_COLOR);
-        guiGraphics.drawString(this.font, text, labelLeft + 4, labelTop + 4, HOVER_LABEL_TEXT_COLOR, false);
+        // 自作ラベルも通常のツールチップ描画 API を使って、
+        // アイテムや他の GUI 要素より前面に出るようにします。
+        guiGraphics.renderTooltip(this.font, text, mouseX, mouseY);
     }
 
     protected final void renderButtonHoverLabel(
