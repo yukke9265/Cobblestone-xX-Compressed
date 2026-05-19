@@ -169,6 +169,7 @@ public class ModEnglishLanguageProvider extends LanguageProvider {
         addBlock(ModBlocks.COBBLESTONE_MELTER, "Cobblestone Melter");
         addBlock(ModBlocks.COBBLESTONE_MIXER, "Cobblestone Mixer");
         addBlock(ModBlocks.COBBLESTONE_REACTION_CHAMBER, "Cobblestone Reaction Chamber");
+        addBlock(ModBlocks.COBBLESTONE_CRYSTALLIZATION_CHAMBER, "Cobblestone Crystallization Chamber");
         addBlock(ModBlocks.COBBLESTONE_DISSOLUTION_CHAMBER, "Cobblestone Dissolution Chamber");
         addBlock(ModBlocks.COBBLESTONE_FLUID_MIXER, "Cobblestone Fluid Mixer");
 

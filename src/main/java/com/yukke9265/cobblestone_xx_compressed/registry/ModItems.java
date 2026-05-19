@@ -1512,6 +1512,11 @@ public class ModItems {
             "cobblestone_reaction_chamber",
             ModBlocks.COBBLESTONE_REACTION_CHAMBER);
 
+    public static final DeferredItem<BlockItem> COBBLESTONE_CRYSTALLIZATION_CHAMBER_ITEM =
+        ModItems.ITEMS.registerSimpleBlockItem(
+            "cobblestone_crystallization_chamber",
+            ModBlocks.COBBLESTONE_CRYSTALLIZATION_CHAMBER);
+
     public static final DeferredItem<BlockItem> COBBLESTONE_DISSOLUTION_CHAMBER_ITEM =
         ModItems.ITEMS.registerSimpleBlockItem(
             "cobblestone_dissolution_chamber",

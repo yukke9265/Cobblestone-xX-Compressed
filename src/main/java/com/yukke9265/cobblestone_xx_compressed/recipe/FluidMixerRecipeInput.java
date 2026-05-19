@@ -20,7 +20,14 @@ public class FluidMixerRecipeInput implements RecipeInput {
 
     @Override
     public int size() {
-        return 0;
+        return 2;
+    }
+
+    @Override
+    public boolean isEmpty() {
+        // Fluid Mixer は 2 種類の液体だけを材料にするため、
+        // item ベースの既定判定では空入力と誤認される。
+        return this.firstFluidInput.isEmpty() && this.secondFluidInput.isEmpty();
     }
 
     public FluidStack getFirstFluidInput() {

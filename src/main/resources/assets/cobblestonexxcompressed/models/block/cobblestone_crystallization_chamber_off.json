@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "particle": "cobblestonexxcompressed:block/cobblestone_crystallization_chamber/cobblestone_crystallization_chamber_top",
+    "down": "cobblestonexxcompressed:block/cobblestone_crystallization_chamber/cobblestone_crystallization_chamber_top",
+    "up": "cobblestonexxcompressed:block/cobblestone_crystallization_chamber/cobblestone_crystallization_chamber_top",
+    "north": "cobblestonexxcompressed:block/cobblestone_crystallization_chamber/cobblestone_crystallization_chamber_front",
+    "south": "cobblestonexxcompressed:block/cobblestone_crystallization_chamber/cobblestone_crystallization_chamber_side",
+    "west": "cobblestonexxcompressed:block/cobblestone_crystallization_chamber/cobblestone_crystallization_chamber_side",
+    "east": "cobblestonexxcompressed:block/cobblestone_crystallization_chamber/cobblestone_crystallization_chamber_side"
+  }
+}

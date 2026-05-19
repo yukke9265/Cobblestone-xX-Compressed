@@ -3,6 +3,7 @@ package com.yukke9265.cobblestone_xx_compressed.datagen.recipe;
 import java.util.concurrent.CompletableFuture;
 
 import com.yukke9265.cobblestone_xx_compressed.CobblestonexXCompressed;
+import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneCrystallizationChamberRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneDissolutionChamberRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneCrusherRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneFurnaceRecipe;
@@ -151,6 +152,13 @@ public class ModRecipeProvider extends RecipeProvider {
             new FluidStack(ModFluids.TierMoltenCompressedCobblestone.TOPAZ.getFluidEntry().getStillFluid().get(), 1000),
             6400,
             64
+        ),
+        new MelterRecipeDefinition(
+            "tier_diamond_compressed_cobblestone_to_molten_tier_diamond_compressed_cobblestone",
+            ModBlocks.TierCompressedCobblestone.DIAMOND.getBlock().get(),
+            new FluidStack(ModFluids.TierMoltenCompressedCobblestone.DIAMOND.getFluidEntry().getStillFluid().get(), 1000),
+            51200,
+            512
         )
     };
 
@@ -165,6 +173,16 @@ public class ModRecipeProvider extends RecipeProvider {
         )
     };
 
+
+    private static final CrystallizationChamberRecipeDefinition[] COBBLESTONE_CRYSTALLIZATION_CHAMBER_RECIPES = new CrystallizationChamberRecipeDefinition[] {
+        new CrystallizationChamberRecipeDefinition(
+            "molten_diamond_compressed_cobblestone_to_diamond_cobblestone_dust",
+            new FluidStack(ModFluids.TierMoltenCompressedCobblestone.DIAMOND.getFluidEntry().getStillFluid().get(), 1000),
+            ModItems.TIER_DIAMOND_COBBLESTONE_DUST.get(),
+            51200,
+            512
+        )
+    };
     private static final MachineCasingRecipeDefinition[] MACHINE_CASING_RECIPES = new MachineCasingRecipeDefinition[] {
         new MachineCasingRecipeDefinition(
             "cobblestone_machine_casing",
@@ -280,6 +298,7 @@ public class ModRecipeProvider extends RecipeProvider {
         buildCobblestoneMelterRecipes(output);
         buildCobblestoneMixerRecipes(output);
         buildCobblestoneDissolutionChamberRecipes(output);
+        buildCobblestoneCrystallizationChamberRecipes(output);
     }
 
     private void buildCompressedCobblestoneRecipes(RecipeOutput output) {
@@ -673,6 +692,19 @@ public class ModRecipeProvider extends RecipeProvider {
         }
     }
 
+    private void buildCobblestoneCrystallizationChamberRecipes(RecipeOutput output) {
+        for (CrystallizationChamberRecipeDefinition recipe : COBBLESTONE_CRYSTALLIZATION_CHAMBER_RECIPES) {
+            saveCobblestoneCrystallizationChamberRecipe(
+                output,
+                recipe.recipeName,
+                recipe.fluidInput,
+                recipe.result,
+                recipe.totalCobblestonePower,
+                recipe.cobblestonePowerPerTick
+            );
+        }
+    }
+
     private void saveCobblestoneFurnaceRecipe(RecipeOutput output, String recipeName, ItemLike ingredient, ItemLike result, int processingTime) {
         CobblestoneFurnaceRecipe recipe = new CobblestoneFurnaceRecipe(
             Ingredient.of(ingredient),
@@ -774,6 +806,28 @@ public class ModRecipeProvider extends RecipeProvider {
 
         output.accept(
             modRecipeId("cobblestone_dissolution_chamber/" + recipeName),
+            recipe,
+            null
+        );
+    }
+
+    private void saveCobblestoneCrystallizationChamberRecipe(
+        RecipeOutput output,
+        String recipeName,
+        FluidStack fluidInput,
+        ItemLike result,
+        int totalCobblestonePower,
+        int cobblestonePowerPerTick
+    ) {
+        CobblestoneCrystallizationChamberRecipe recipe = new CobblestoneCrystallizationChamberRecipe(
+            fluidInput,
+            new ItemStack(result),
+            totalCobblestonePower,
+            cobblestonePowerPerTick
+        );
+
+        output.accept(
+            modRecipeId("cobblestone_crystallization_chamber/" + recipeName),
             recipe,
             null
         );
@@ -934,6 +988,28 @@ public class ModRecipeProvider extends RecipeProvider {
             this.ingredient = ingredient;
             this.fluidInput = fluidInput.copy();
             this.fluidOutput = fluidOutput.copy();
+            this.totalCobblestonePower = totalCobblestonePower;
+            this.cobblestonePowerPerTick = cobblestonePowerPerTick;
+        }
+    }
+
+    private static class CrystallizationChamberRecipeDefinition {
+        private final String recipeName;
+        private final FluidStack fluidInput;
+        private final ItemLike result;
+        private final int totalCobblestonePower;
+        private final int cobblestonePowerPerTick;
+
+        private CrystallizationChamberRecipeDefinition(
+            String recipeName,
+            FluidStack fluidInput,
+            ItemLike result,
+            int totalCobblestonePower,
+            int cobblestonePowerPerTick
+        ) {
+            this.recipeName = recipeName;
+            this.fluidInput = fluidInput.copy();
+            this.result = result;
             this.totalCobblestonePower = totalCobblestonePower;
             this.cobblestonePowerPerTick = cobblestonePowerPerTick;
         }

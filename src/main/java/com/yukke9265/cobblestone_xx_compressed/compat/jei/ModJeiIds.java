@@ -31,6 +31,9 @@ public final class ModJeiIds {
     public static final ResourceLocation COBBLESTONE_REACTION_CHAMBER =
         ResourceLocation.fromNamespaceAndPath(CobblestonexXCompressed.MODID, "cobblestone_reaction_chamber");
 
+    public static final ResourceLocation COBBLESTONE_CRYSTALLIZATION_CHAMBER =
+        ResourceLocation.fromNamespaceAndPath(CobblestonexXCompressed.MODID, "cobblestone_crystallization_chamber");
+
     public static final ResourceLocation COBBLESTONE_DISSOLUTION_CHAMBER =
         ResourceLocation.fromNamespaceAndPath(CobblestonexXCompressed.MODID, "cobblestone_dissolution_chamber");
 

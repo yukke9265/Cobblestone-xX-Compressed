@@ -13,6 +13,7 @@ import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneMelterRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneMixerRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestonePoweredFurnaceRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneReactionChamberRecipe;
+import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneCrystallizationChamberRecipe;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -149,6 +150,22 @@ public class ModRecipeSerializers {
                 @Override
                 public StreamCodec<RegistryFriendlyByteBuf, CobblestoneReactionChamberRecipe> streamCodec() {
                     return CobblestoneReactionChamberRecipe.STREAM_CODEC;
+                }
+            }
+        );
+
+    public static final Supplier<RecipeSerializer<CobblestoneCrystallizationChamberRecipe>> COBBLESTONE_CRYSTALLIZATION_CHAMBER =
+        RECIPE_SERIALIZERS.register(
+            "cobblestone_crystallization_chamber",
+            () -> new RecipeSerializer<CobblestoneCrystallizationChamberRecipe>() {
+                @Override
+                public MapCodec<CobblestoneCrystallizationChamberRecipe> codec() {
+                    return CobblestoneCrystallizationChamberRecipe.CODEC;
+                }
+
+                @Override
+                public StreamCodec<RegistryFriendlyByteBuf, CobblestoneCrystallizationChamberRecipe> streamCodec() {
+                    return CobblestoneCrystallizationChamberRecipe.STREAM_CODEC;
                 }
             }
         );

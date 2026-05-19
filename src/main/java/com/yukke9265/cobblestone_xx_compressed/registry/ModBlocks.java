@@ -15,6 +15,7 @@ import com.yukke9265.cobblestone_xx_compressed.block.CobblestoneMelterBlock;
 import com.yukke9265.cobblestone_xx_compressed.block.CobblestoneMixerBlock;
 import com.yukke9265.cobblestone_xx_compressed.block.CobblestonePoweredFurnaceBlock;
 import com.yukke9265.cobblestone_xx_compressed.block.CobblestoneReactionChamberBlock;
+import com.yukke9265.cobblestone_xx_compressed.block.CobblestoneCrystallizationChamberBlock;
 import com.yukke9265.cobblestone_xx_compressed.block.CobblestoneTankBlock;
 
 import net.minecraft.world.level.block.Block;
@@ -576,6 +577,18 @@ public class ModBlocks {
         BLOCKS.register(
             "cobblestone_reaction_chamber",
             () -> new CobblestoneReactionChamberBlock(
+                BlockBehaviour.Properties
+                    .of()
+                    .mapColor(MapColor.STONE)
+                    .strength(0.5F)
+                    .sound(SoundType.STONE)
+            )
+        );
+
+    public static final DeferredBlock<Block> COBBLESTONE_CRYSTALLIZATION_CHAMBER =
+        BLOCKS.register(
+            "cobblestone_crystallization_chamber",
+            () -> new CobblestoneCrystallizationChamberBlock(
                 BlockBehaviour.Properties
                     .of()
                     .mapColor(MapColor.STONE)

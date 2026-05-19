@@ -111,6 +111,17 @@ B に加えて必要です。
 7. レシピ JSON の追加
 8. 必要なら src/generated/resources を含む datagen 対応
 
+### fluid-only / fluid-main レシピの注意
+
+- 液体だけを材料にする機械でも、RecipeInput は Minecraft 側の共通判定を通る
+- そのため、独自 RecipeInput で size() を 0 のままにしないこと
+- item を使わない機械でも、入力の論理個数に合わせて size() を返すこと
+- さらに isEmpty() を明示的に override し、「液体入力が空かどうか」で判定すること
+- これを怠ると、JEI にはレシピが出ていても RecipeManager.getRecipeFor(...) の入口で空入力扱いされ、実機が開始しないことがある
+- 例:
+   - 液体 1 入力機なら size() は 1、isEmpty() は fluidInput.isEmpty()
+   - 液体 2 入力機なら size() は 2、isEmpty() は firstFluidInput.isEmpty() && secondFluidInput.isEmpty()
+
 ### D. 自動化対応する機械
 
 C に加えて必要になることがあります。
@@ -120,6 +131,13 @@ C に加えて必要になることがあります。
 3. side が null の場合の方針
 4. CobblestonexXCompressed の registerCapabilities(...) での登録
 5. GUI スロットルールと外部入出力ルールが矛盾しないこと
+
+### 自動化ハンドラの注意
+
+- IN_OUT 用の複合 IItemHandler は、できるだけ「実スロット数」をそのまま公開すること
+- 挿入禁止・搬出禁止の制御は getSlots() を減らすのではなく、insertItem(...) と extractItem(...) で行うこと
+- 既存機械と違う仮想スロット構成にすると、ホッパーや外部パイプ側で正常に扱えないことがある
+- まず Melter、Dissolution Chamber、Reaction Chamber の automationAccessHandler の形に合わせること
 
 ### E. JEI 対応する機械
 
@@ -133,6 +151,13 @@ C に加えて必要です。
 6. Screen 側のクリック領域定義
 7. Menu 側のレシピ転送定義
 8. JEI plugin の static 初期化で DeferredHolder.get() を早すぎるタイミングで呼ばないこと
+
+### JEI レイアウトの注意
+
+- JEI category の slot 座標は、Screen と別に直書きせず MachineGuiLayouts を参照すること
+- 背景テクスチャの切り出しは、同系統の既存機械と同じ基準で合わせること
+- PoweredMachine 系の 1 行レイアウト機械は、まず既存の Melter / Crusher / Furnace 系と同じ BACKGROUND_U = 3、BACKGROUND_V = 6 を基準に確認すること
+- JEI だけ独自の切り出し値を使うと、実 GUI と JEI の見た目や slot 位置がずれやすい
 
 ## 4. 実装順
 
@@ -183,8 +208,10 @@ C に加えて必要です。
 - Menu と Screen が正しく結び付いているか
 - 保存 / 読み込みで中身が消えないか
 - レシピが読み込まれるか
+- fluid-only レシピなら RecipeInput の size() / isEmpty() が液体入力前提になっているか
 - 出力先に積めないときに誤作動しないか
 - JEI カテゴリが表示されるか
+- JEI の背景切り出しと slot 位置が Screen と一致しているか
 - JEI plugin が起動時に落ちていないか
 - ホッパーやパイプの入出力方向が想定どおりか
 
