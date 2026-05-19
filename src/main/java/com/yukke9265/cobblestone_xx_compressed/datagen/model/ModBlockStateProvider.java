@@ -54,6 +54,8 @@ public class ModBlockStateProvider extends BlockStateProvider {
         // Cobblestone Melter は前面の見た目が ON/OFF で変わるので、
         // 単純な cubeAll ではなく、blockstate と 2 つの model をここでまとめて生成します。
         registerCobblestoneMelterBlock(ModBlocks.COBBLESTONE_MELTER.get(), "cobblestone_melter");
+        registerCobblestoneAssemblyMachineBlock(ModBlocks.COBBLESTONE_ASSEMBLY_MACHINE.get(), "cobblestone_assembly_machine");
+        registerCobblestoneChemicalReactorBlock(ModBlocks.COBBLESTONE_CHEMICAL_REACTOR.get(), "cobblestone_chemical_reactor");
         registerCobblestoneDissolutionChamberBlock(ModBlocks.COBBLESTONE_DISSOLUTION_CHAMBER.get(), "cobblestone_dissolution_chamber");
 
         // LiquidBlock は level ごとに状態を持ちますが、見た目は fluid renderer が担当します。
@@ -175,6 +177,88 @@ public class ModBlockStateProvider extends BlockStateProvider {
             .texture("south", this.modLoc("block/cobblestone_dissolution_chamber/cobblestone_dissolution_chamber_side"))
             .texture("west", this.modLoc("block/cobblestone_dissolution_chamber/cobblestone_dissolution_chamber_side"))
             .texture("east", this.modLoc("block/cobblestone_dissolution_chamber/cobblestone_dissolution_chamber_side"));
+
+        this.getVariantBuilder(block).forAllStates(state -> {
+            Direction facing = state.getValue(OnOffBlock.FACING);
+            boolean isOn = state.getValue(OnOffBlock.ON);
+
+            int rotationY = switch (facing) {
+                case SOUTH -> 180;
+                case EAST -> 90;
+                case WEST -> 270;
+                default -> 0;
+            };
+
+            return ConfiguredModel.builder()
+                .modelFile(isOn ? onModel : offModel)
+                .rotationY(rotationY)
+                .build();
+        });
+
+        this.simpleBlockItem(block, offModel);
+    }
+
+    private void registerCobblestoneChemicalReactorBlock(Block block, String blockName) {
+        ModelFile offModel = this.models()
+            .withExistingParent(blockName + "_off", this.mcLoc("block/cube"))
+            .texture("particle", this.modLoc("block/cobblestone_chemical_reactor/cobblestone_chemical_reactor_top"))
+            .texture("down", this.modLoc("block/cobblestone_chemical_reactor/cobblestone_chemical_reactor_top"))
+            .texture("up", this.modLoc("block/cobblestone_chemical_reactor/cobblestone_chemical_reactor_top"))
+            .texture("north", this.modLoc("block/cobblestone_chemical_reactor/cobblestone_chemical_reactor_front"))
+            .texture("south", this.modLoc("block/cobblestone_chemical_reactor/cobblestone_chemical_reactor_side"))
+            .texture("west", this.modLoc("block/cobblestone_chemical_reactor/cobblestone_chemical_reactor_side"))
+            .texture("east", this.modLoc("block/cobblestone_chemical_reactor/cobblestone_chemical_reactor_side"));
+
+        ModelFile onModel = this.models()
+            .withExistingParent(blockName + "_on", this.mcLoc("block/cube"))
+            .texture("particle", this.modLoc("block/cobblestone_chemical_reactor/cobblestone_chemical_reactor_top"))
+            .texture("down", this.modLoc("block/cobblestone_chemical_reactor/cobblestone_chemical_reactor_top"))
+            .texture("up", this.modLoc("block/cobblestone_chemical_reactor/cobblestone_chemical_reactor_top"))
+            .texture("north", this.modLoc("block/cobblestone_chemical_reactor/cobblestone_chemical_reactor_front_on"))
+            .texture("south", this.modLoc("block/cobblestone_chemical_reactor/cobblestone_chemical_reactor_side"))
+            .texture("west", this.modLoc("block/cobblestone_chemical_reactor/cobblestone_chemical_reactor_side"))
+            .texture("east", this.modLoc("block/cobblestone_chemical_reactor/cobblestone_chemical_reactor_side"));
+
+        this.getVariantBuilder(block).forAllStates(state -> {
+            Direction facing = state.getValue(OnOffBlock.FACING);
+            boolean isOn = state.getValue(OnOffBlock.ON);
+
+            int rotationY = switch (facing) {
+                case SOUTH -> 180;
+                case EAST -> 90;
+                case WEST -> 270;
+                default -> 0;
+            };
+
+            return ConfiguredModel.builder()
+                .modelFile(isOn ? onModel : offModel)
+                .rotationY(rotationY)
+                .build();
+        });
+
+        this.simpleBlockItem(block, offModel);
+    }
+
+    private void registerCobblestoneAssemblyMachineBlock(Block block, String blockName) {
+        ModelFile offModel = this.models()
+            .withExistingParent(blockName + "_off", this.mcLoc("block/cube"))
+            .texture("particle", this.modLoc("block/cobblestone_assembly_machine/cobblestone_assembly_machine_top"))
+            .texture("down", this.modLoc("block/cobblestone_assembly_machine/cobblestone_assembly_machine_top"))
+            .texture("up", this.modLoc("block/cobblestone_assembly_machine/cobblestone_assembly_machine_top"))
+            .texture("north", this.modLoc("block/cobblestone_assembly_machine/cobblestone_assembly_machine_front"))
+            .texture("south", this.modLoc("block/cobblestone_assembly_machine/cobblestone_assembly_machine_side"))
+            .texture("west", this.modLoc("block/cobblestone_assembly_machine/cobblestone_assembly_machine_side"))
+            .texture("east", this.modLoc("block/cobblestone_assembly_machine/cobblestone_assembly_machine_side"));
+
+        ModelFile onModel = this.models()
+            .withExistingParent(blockName + "_on", this.mcLoc("block/cube"))
+            .texture("particle", this.modLoc("block/cobblestone_assembly_machine/cobblestone_assembly_machine_top"))
+            .texture("down", this.modLoc("block/cobblestone_assembly_machine/cobblestone_assembly_machine_top"))
+            .texture("up", this.modLoc("block/cobblestone_assembly_machine/cobblestone_assembly_machine_top"))
+            .texture("north", this.modLoc("block/cobblestone_assembly_machine/cobblestone_assembly_machine_front_on"))
+            .texture("south", this.modLoc("block/cobblestone_assembly_machine/cobblestone_assembly_machine_side"))
+            .texture("west", this.modLoc("block/cobblestone_assembly_machine/cobblestone_assembly_machine_side"))
+            .texture("east", this.modLoc("block/cobblestone_assembly_machine/cobblestone_assembly_machine_side"));
 
         this.getVariantBuilder(block).forAllStates(state -> {
             Direction facing = state.getValue(OnOffBlock.FACING);

@@ -211,6 +211,8 @@ public class CobblestoneFluidMixerBlockEntity extends BaseBlockEntity implements
 
     private final IFluidHandler internalFluidHandler = new FluidMixerFluidHandler(true, true);
     private final IFluidHandler inputFluidHandler = new FluidMixerFluidHandler(true, false);
+    private final IFluidHandler inputFluid1Handler = new SingleTankInputFluidHandler(0);
+    private final IFluidHandler inputFluid2Handler = new SingleTankInputFluidHandler(1);
     private final IFluidHandler outputFluidHandler = new FluidMixerFluidHandler(false, true);
 
     public CobblestoneFluidMixerBlockEntity(BlockPos pos, BlockState state) {
@@ -317,6 +319,14 @@ public class CobblestoneFluidMixerBlockEntity extends BaseBlockEntity implements
         AutomationMode automationMode = this.getFluidAutomationMode(AutomationSide.fromWorldSide(side, this.getBlockState()));
         if (automationMode == AutomationMode.INPUT) {
             return this.inputFluidHandler;
+        }
+
+        if (automationMode == AutomationMode.INPUT_1) {
+            return this.inputFluid1Handler;
+        }
+
+        if (automationMode == AutomationMode.INPUT_2) {
+            return this.inputFluid2Handler;
         }
 
         if (automationMode == AutomationMode.OUTPUT) {
@@ -889,6 +899,14 @@ public class CobblestoneFluidMixerBlockEntity extends BaseBlockEntity implements
         return this.fillTankInternal(1, resource, action);
     }
 
+    private int fillSpecificInputTank(int tankIndex, FluidStack resource, IFluidHandler.FluidAction action) {
+        if (tankIndex != 0 && tankIndex != 1) {
+            return 0;
+        }
+
+        return this.fillTankInternal(tankIndex, resource, action);
+    }
+
     private FluidStack getStoredFluidByTank(int tankIndex) {
         return switch (tankIndex) {
             case 0 -> this.storedInputFluid1;
@@ -1022,6 +1040,57 @@ public class CobblestoneFluidMixerBlockEntity extends BaseBlockEntity implements
             }
 
             return CobblestoneFluidMixerBlockEntity.this.drainTankInternal(2, maxDrain, action);
+        }
+    }
+
+    private class SingleTankInputFluidHandler implements IFluidHandler {
+        private final int tankIndex;
+
+        private SingleTankInputFluidHandler(int tankIndex) {
+            this.tankIndex = tankIndex;
+        }
+
+        @Override
+        public int getTanks() {
+            return 1;
+        }
+
+        @Override
+        public @Nonnull FluidStack getFluidInTank(int tank) {
+            if (tank != 0) {
+                return FluidStack.EMPTY;
+            }
+
+            return CobblestoneFluidMixerBlockEntity.this.getDisplayedFluidByTank(this.tankIndex);
+        }
+
+        @Override
+        public int getTankCapacity(int tank) {
+            if (tank != 0) {
+                return 0;
+            }
+
+            return (int) Math.min(Integer.MAX_VALUE, CobblestoneFluidMixerBlockEntity.this.getMaxAmountByTank(this.tankIndex));
+        }
+
+        @Override
+        public boolean isFluidValid(int tank, @Nonnull FluidStack stack) {
+            return tank == 0;
+        }
+
+        @Override
+        public int fill(FluidStack resource, FluidAction action) {
+            return CobblestoneFluidMixerBlockEntity.this.fillSpecificInputTank(this.tankIndex, resource, action);
+        }
+
+        @Override
+        public @Nonnull FluidStack drain(FluidStack resource, FluidAction action) {
+            return FluidStack.EMPTY;
+        }
+
+        @Override
+        public @Nonnull FluidStack drain(int maxDrain, FluidAction action) {
+            return FluidStack.EMPTY;
         }
     }
 }

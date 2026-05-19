@@ -5,6 +5,8 @@ import java.util.function.Supplier;
 import com.yukke9265.cobblestone_xx_compressed.CobblestonexXCompressed;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneCrusherRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneCentrifugeRecipe;
+import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneAssemblyMachineRecipe;
+import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneChemicalReactorRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneDissolutionChamberRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneFluidMixerRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneFurnaceRecipe;
@@ -134,6 +136,38 @@ public class ModRecipeSerializers {
                 @Override
                 public StreamCodec<RegistryFriendlyByteBuf, CobblestoneMelterRecipe> streamCodec() {
                     return CobblestoneMelterRecipe.STREAM_CODEC;
+                }
+            }
+        );
+
+    public static final Supplier<RecipeSerializer<CobblestoneAssemblyMachineRecipe>> COBBLESTONE_ASSEMBLY_MACHINE =
+        RECIPE_SERIALIZERS.register(
+            "cobblestone_assembly_machine",
+            () -> new RecipeSerializer<CobblestoneAssemblyMachineRecipe>() {
+                @Override
+                public MapCodec<CobblestoneAssemblyMachineRecipe> codec() {
+                    return CobblestoneAssemblyMachineRecipe.CODEC;
+                }
+
+                @Override
+                public StreamCodec<RegistryFriendlyByteBuf, CobblestoneAssemblyMachineRecipe> streamCodec() {
+                    return CobblestoneAssemblyMachineRecipe.STREAM_CODEC;
+                }
+            }
+        );
+
+    public static final Supplier<RecipeSerializer<CobblestoneChemicalReactorRecipe>> COBBLESTONE_CHEMICAL_REACTOR =
+        RECIPE_SERIALIZERS.register(
+            "cobblestone_chemical_reactor",
+            () -> new RecipeSerializer<CobblestoneChemicalReactorRecipe>() {
+                @Override
+                public MapCodec<CobblestoneChemicalReactorRecipe> codec() {
+                    return CobblestoneChemicalReactorRecipe.CODEC;
+                }
+
+                @Override
+                public StreamCodec<RegistryFriendlyByteBuf, CobblestoneChemicalReactorRecipe> streamCodec() {
+                    return CobblestoneChemicalReactorRecipe.STREAM_CODEC;
                 }
             }
         );

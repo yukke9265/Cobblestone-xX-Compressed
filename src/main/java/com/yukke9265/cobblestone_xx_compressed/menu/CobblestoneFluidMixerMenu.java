@@ -36,6 +36,8 @@ public class CobblestoneFluidMixerMenu extends BaseMenu {
     private static final AutomationMode[] FLUID_AUTOMATION_MODES = new AutomationMode[] {
         AutomationMode.DISABLED,
         AutomationMode.INPUT,
+        AutomationMode.INPUT_1,
+        AutomationMode.INPUT_2,
         AutomationMode.OUTPUT,
         AutomationMode.IN_OUT
     };

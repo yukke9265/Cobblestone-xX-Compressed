@@ -2,8 +2,12 @@ package com.yukke9265.cobblestone_xx_compressed.datagen.recipe;
 
 import java.util.concurrent.CompletableFuture;
 
+import javax.annotation.Nonnull;
+
 import com.yukke9265.cobblestone_xx_compressed.CobblestonexXCompressed;
+import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneAssemblyMachineRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneCrystallizationChamberRecipe;
+import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneChemicalReactorRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneDissolutionChamberRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneCrusherRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneFurnaceRecipe;
@@ -26,6 +30,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.fluids.FluidStack;
 
+@SuppressWarnings("null")
 public class ModRecipeProvider extends RecipeProvider {
     // gem のレシピは tier ごとに個別変更しやすいよう、
     // 「出力先」と「その tier で使う素材」を 1 行ずつ定義しておきます。
@@ -183,6 +188,39 @@ public class ModRecipeProvider extends RecipeProvider {
             512
         )
     };
+
+    private static final ChemicalReactorRecipeDefinition[] COBBLESTONE_CHEMICAL_REACTOR_RECIPES = new ChemicalReactorRecipeDefinition[] {
+        new ChemicalReactorRecipeDefinition(
+            "redstone_and_emerald_diamond_fluids_to_obsidian",
+            new ItemStack(Items.REDSTONE, 16),
+            ItemStack.EMPTY,
+            new FluidStack(ModFluids.TierMoltenDirtyCompressedCobblestone.EMERALD.getFluidEntry().getStillFluid().get(), 1000),
+            new FluidStack(ModFluids.TierMoltenCompressedCobblestone.DIAMOND.getFluidEntry().getStillFluid().get(), 1000),
+            new ItemStack(Items.OBSIDIAN),
+            new ItemStack(ModItems.DIRTY_MIXTURE.get()),
+            new FluidStack(ModFluids.TierMoltenCompressedCobblestone.EMERALD.getFluidEntry().getStillFluid().get(), 1000),
+            new FluidStack(ModFluids.TierMoltenDirtyCompressedCobblestone.DIAMOND.getFluidEntry().getStillFluid().get(), 1000),
+            102400,
+            1024
+        )
+    };
+
+    private static final AssemblyMachineRecipeDefinition[] COBBLESTONE_ASSEMBLY_MACHINE_RECIPES = new AssemblyMachineRecipeDefinition[] {
+        new AssemblyMachineRecipeDefinition(
+            "netherite_processor",
+            new ItemStack(ModItems.TierCobblestoneCircuit.NETHERITE.getItem().get(), 4),
+            new ItemStack(ModItems.TierCobblestoneCircuit.EMERALD.getItem().get(), 4),
+            new ItemStack(ModItems.TierCobblestoneCircuitPackage.NETHERITE.getItem().get(), 1),
+            new ItemStack(ModItems.TierCobblestoneWire.NETHERITE.getItem().get(), 16),
+            new ItemStack(ModItems.TIER_NETHERITE_COBBLESTONE_GEM.get(), 16),
+            ItemStack.EMPTY,
+            new FluidStack(ModFluids.TierMoltenCompressedCobblestone.NETHERITE.getFluidEntry().getStillFluid().get(), 1000),
+            new ItemStack(ModItems.TierCobblestoneProcessor.NETHERITE.getItem().get(), 1),
+            204800,
+            2048
+        )
+    };
+
     private static final MachineCasingRecipeDefinition[] MACHINE_CASING_RECIPES = new MachineCasingRecipeDefinition[] {
         new MachineCasingRecipeDefinition(
             "cobblestone_machine_casing",
@@ -282,7 +320,7 @@ public class ModRecipeProvider extends RecipeProvider {
     }
 
     @Override
-    protected void buildRecipes(RecipeOutput output) {
+    protected void buildRecipes(@Nonnull RecipeOutput output) {
         buildCompressedCobblestoneRecipes(output);
         buildCompressedCobblestoneSingularityRecipes(output);
         buildCobblestoneGeneratorRecipes(output);
@@ -296,6 +334,8 @@ public class ModRecipeProvider extends RecipeProvider {
         buildCobblestoneFurnaceRecipes(output);
         buildCobblestoneCrusherRecipes(output);
         buildCobblestoneMelterRecipes(output);
+        buildCobblestoneAssemblyMachineRecipes(output);
+        buildCobblestoneChemicalReactorRecipes(output);
         buildCobblestoneMixerRecipes(output);
         buildCobblestoneDissolutionChamberRecipes(output);
         buildCobblestoneCrystallizationChamberRecipes(output);
@@ -678,6 +718,44 @@ public class ModRecipeProvider extends RecipeProvider {
         }
     }
 
+    private void buildCobblestoneChemicalReactorRecipes(RecipeOutput output) {
+        for (ChemicalReactorRecipeDefinition recipe : COBBLESTONE_CHEMICAL_REACTOR_RECIPES) {
+            saveCobblestoneChemicalReactorRecipe(
+                output,
+                recipe.recipeName,
+                recipe.firstItemInput,
+                recipe.secondItemInput,
+                recipe.firstFluidInput,
+                recipe.secondFluidInput,
+                recipe.firstResultItem,
+                recipe.secondResultItem,
+                recipe.firstResultFluid,
+                recipe.secondResultFluid,
+                recipe.totalCobblestonePower,
+                recipe.cobblestonePowerPerTick
+            );
+        }
+    }
+
+    private void buildCobblestoneAssemblyMachineRecipes(RecipeOutput output) {
+        for (AssemblyMachineRecipeDefinition recipe : COBBLESTONE_ASSEMBLY_MACHINE_RECIPES) {
+            saveCobblestoneAssemblyMachineRecipe(
+                output,
+                recipe.recipeName,
+                recipe.firstItemInput,
+                recipe.secondItemInput,
+                recipe.thirdItemInput,
+                recipe.fourthItemInput,
+                recipe.fifthItemInput,
+                recipe.sixthItemInput,
+                recipe.fluidInput,
+                recipe.resultItem,
+                recipe.totalCobblestonePower,
+                recipe.cobblestonePowerPerTick
+            );
+        }
+    }
+
     private void buildCobblestoneDissolutionChamberRecipes(RecipeOutput output) {
         for (DissolutionChamberRecipeDefinition recipe : COBBLESTONE_DISSOLUTION_CHAMBER_RECIPES) {
             saveCobblestoneDissolutionChamberRecipe(
@@ -782,6 +860,74 @@ public class ModRecipeProvider extends RecipeProvider {
 
         output.accept(
             modRecipeId("cobblestone_melter/" + recipeName),
+            recipe,
+            null
+        );
+    }
+
+    private void saveCobblestoneChemicalReactorRecipe(
+        RecipeOutput output,
+        String recipeName,
+        ItemStack firstItemInput,
+        ItemStack secondItemInput,
+        FluidStack firstFluidInput,
+        FluidStack secondFluidInput,
+        ItemStack firstResultItem,
+        ItemStack secondResultItem,
+        FluidStack firstResultFluid,
+        FluidStack secondResultFluid,
+        int totalCobblestonePower,
+        int cobblestonePowerPerTick
+    ) {
+        CobblestoneChemicalReactorRecipe recipe = new CobblestoneChemicalReactorRecipe(
+            firstItemInput,
+            secondItemInput,
+            firstFluidInput,
+            secondFluidInput,
+            firstResultItem,
+            secondResultItem,
+            firstResultFluid,
+            secondResultFluid,
+            totalCobblestonePower,
+            cobblestonePowerPerTick
+        );
+
+        output.accept(
+            modRecipeId("cobblestone_chemical_reactor/" + recipeName),
+            recipe,
+            null
+        );
+    }
+
+    private void saveCobblestoneAssemblyMachineRecipe(
+        RecipeOutput output,
+        String recipeName,
+        ItemStack firstItemInput,
+        ItemStack secondItemInput,
+        ItemStack thirdItemInput,
+        ItemStack fourthItemInput,
+        ItemStack fifthItemInput,
+        ItemStack sixthItemInput,
+        FluidStack fluidInput,
+        ItemStack resultItem,
+        int totalCobblestonePower,
+        int cobblestonePowerPerTick
+    ) {
+        CobblestoneAssemblyMachineRecipe recipe = new CobblestoneAssemblyMachineRecipe(
+            firstItemInput,
+            secondItemInput,
+            thirdItemInput,
+            fourthItemInput,
+            fifthItemInput,
+            sixthItemInput,
+            fluidInput,
+            resultItem,
+            totalCobblestonePower,
+            cobblestonePowerPerTick
+        );
+
+        output.accept(
+            modRecipeId("cobblestone_assembly_machine/" + recipeName),
             recipe,
             null
         );
@@ -1010,6 +1156,86 @@ public class ModRecipeProvider extends RecipeProvider {
             this.recipeName = recipeName;
             this.fluidInput = fluidInput.copy();
             this.result = result;
+            this.totalCobblestonePower = totalCobblestonePower;
+            this.cobblestonePowerPerTick = cobblestonePowerPerTick;
+        }
+    }
+
+    private static class ChemicalReactorRecipeDefinition {
+        private final String recipeName;
+        private final ItemStack firstItemInput;
+        private final ItemStack secondItemInput;
+        private final FluidStack firstFluidInput;
+        private final FluidStack secondFluidInput;
+        private final ItemStack firstResultItem;
+        private final ItemStack secondResultItem;
+        private final FluidStack firstResultFluid;
+        private final FluidStack secondResultFluid;
+        private final int totalCobblestonePower;
+        private final int cobblestonePowerPerTick;
+
+        private ChemicalReactorRecipeDefinition(
+            String recipeName,
+            ItemStack firstItemInput,
+            ItemStack secondItemInput,
+            FluidStack firstFluidInput,
+            FluidStack secondFluidInput,
+            ItemStack firstResultItem,
+            ItemStack secondResultItem,
+            FluidStack firstResultFluid,
+            FluidStack secondResultFluid,
+            int totalCobblestonePower,
+            int cobblestonePowerPerTick
+        ) {
+            this.recipeName = recipeName;
+            this.firstItemInput = firstItemInput.copy();
+            this.secondItemInput = secondItemInput.copy();
+            this.firstFluidInput = firstFluidInput.copy();
+            this.secondFluidInput = secondFluidInput.copy();
+            this.firstResultItem = firstResultItem.copy();
+            this.secondResultItem = secondResultItem.copy();
+            this.firstResultFluid = firstResultFluid.copy();
+            this.secondResultFluid = secondResultFluid.copy();
+            this.totalCobblestonePower = totalCobblestonePower;
+            this.cobblestonePowerPerTick = cobblestonePowerPerTick;
+        }
+    }
+
+    private static class AssemblyMachineRecipeDefinition {
+        private final String recipeName;
+        private final ItemStack firstItemInput;
+        private final ItemStack secondItemInput;
+        private final ItemStack thirdItemInput;
+        private final ItemStack fourthItemInput;
+        private final ItemStack fifthItemInput;
+        private final ItemStack sixthItemInput;
+        private final FluidStack fluidInput;
+        private final ItemStack resultItem;
+        private final int totalCobblestonePower;
+        private final int cobblestonePowerPerTick;
+
+        private AssemblyMachineRecipeDefinition(
+            String recipeName,
+            ItemStack firstItemInput,
+            ItemStack secondItemInput,
+            ItemStack thirdItemInput,
+            ItemStack fourthItemInput,
+            ItemStack fifthItemInput,
+            ItemStack sixthItemInput,
+            FluidStack fluidInput,
+            ItemStack resultItem,
+            int totalCobblestonePower,
+            int cobblestonePowerPerTick
+        ) {
+            this.recipeName = recipeName;
+            this.firstItemInput = firstItemInput.copy();
+            this.secondItemInput = secondItemInput.copy();
+            this.thirdItemInput = thirdItemInput.copy();
+            this.fourthItemInput = fourthItemInput.copy();
+            this.fifthItemInput = fifthItemInput.copy();
+            this.sixthItemInput = sixthItemInput.copy();
+            this.fluidInput = fluidInput.copy();
+            this.resultItem = resultItem.copy();
             this.totalCobblestonePower = totalCobblestonePower;
             this.cobblestonePowerPerTick = cobblestonePowerPerTick;
         }

@@ -1507,6 +1507,16 @@ public class ModItems {
             "cobblestone_melter",
             ModBlocks.COBBLESTONE_MELTER);
 
+    public static final DeferredItem<BlockItem> COBBLESTONE_ASSEMBLY_MACHINE_ITEM =
+        ModItems.ITEMS.registerSimpleBlockItem(
+            "cobblestone_assembly_machine",
+            ModBlocks.COBBLESTONE_ASSEMBLY_MACHINE);
+
+    public static final DeferredItem<BlockItem> COBBLESTONE_CHEMICAL_REACTOR_ITEM =
+        ModItems.ITEMS.registerSimpleBlockItem(
+            "cobblestone_chemical_reactor",
+            ModBlocks.COBBLESTONE_CHEMICAL_REACTOR);
+
     public static final DeferredItem<BlockItem> COBBLESTONE_REACTION_CHAMBER_ITEM =
         ModItems.ITEMS.registerSimpleBlockItem(
             "cobblestone_reaction_chamber",

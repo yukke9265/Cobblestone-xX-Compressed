@@ -28,6 +28,12 @@ public final class ModJeiIds {
     public static final ResourceLocation COBBLESTONE_MELTER =
         ResourceLocation.fromNamespaceAndPath(CobblestonexXCompressed.MODID, "cobblestone_melter");
 
+    public static final ResourceLocation COBBLESTONE_ASSEMBLY_MACHINE =
+        ResourceLocation.fromNamespaceAndPath(CobblestonexXCompressed.MODID, "cobblestone_assembly_machine");
+
+    public static final ResourceLocation COBBLESTONE_CHEMICAL_REACTOR =
+        ResourceLocation.fromNamespaceAndPath(CobblestonexXCompressed.MODID, "cobblestone_chemical_reactor");
+
     public static final ResourceLocation COBBLESTONE_REACTION_CHAMBER =
         ResourceLocation.fromNamespaceAndPath(CobblestonexXCompressed.MODID, "cobblestone_reaction_chamber");
 

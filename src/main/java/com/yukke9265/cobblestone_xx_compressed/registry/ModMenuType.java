@@ -3,6 +3,8 @@ package com.yukke9265.cobblestone_xx_compressed.registry;
 import com.yukke9265.cobblestone_xx_compressed.CobblestonexXCompressed;
 import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneCrusherMenu;
 import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneCentrifugeMenu;
+import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneAssemblyMachineMenu;
+import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneChemicalReactorMenu;
 import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneDissolutionChamberMenu;
 import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneFEGeneratorMenu;
 import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneFluidMixerMenu;
@@ -71,6 +73,18 @@ public class ModMenuType {
         MENU_TYPES.register(
             "cobblestone_melter_menu",
             () -> IMenuTypeExtension.create(CobblestoneMelterMenu::new)
+        );
+
+    public static final Supplier<MenuType<CobblestoneAssemblyMachineMenu>> COBBLESTONE_ASSEMBLY_MACHINE_MENU =
+        MENU_TYPES.register(
+            "cobblestone_assembly_machine_menu",
+            () -> IMenuTypeExtension.create(CobblestoneAssemblyMachineMenu::new)
+        );
+
+    public static final Supplier<MenuType<CobblestoneChemicalReactorMenu>> COBBLESTONE_CHEMICAL_REACTOR_MENU =
+        MENU_TYPES.register(
+            "cobblestone_chemical_reactor_menu",
+            () -> IMenuTypeExtension.create(CobblestoneChemicalReactorMenu::new)
         );
 
     public static final Supplier<MenuType<CobblestoneReactionChamberMenu>> COBBLESTONE_REACTION_CHAMBER_MENU =

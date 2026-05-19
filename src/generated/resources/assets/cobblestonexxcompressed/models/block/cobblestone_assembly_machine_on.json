@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "down": "cobblestonexxcompressed:block/cobblestone_assembly_machine/cobblestone_assembly_machine_top",
+    "east": "cobblestonexxcompressed:block/cobblestone_assembly_machine/cobblestone_assembly_machine_side",
+    "north": "cobblestonexxcompressed:block/cobblestone_assembly_machine/cobblestone_assembly_machine_front_on",
+    "particle": "cobblestonexxcompressed:block/cobblestone_assembly_machine/cobblestone_assembly_machine_top",
+    "south": "cobblestonexxcompressed:block/cobblestone_assembly_machine/cobblestone_assembly_machine_side",
+    "up": "cobblestonexxcompressed:block/cobblestone_assembly_machine/cobblestone_assembly_machine_top",
+    "west": "cobblestonexxcompressed:block/cobblestone_assembly_machine/cobblestone_assembly_machine_side"
+  }
+}

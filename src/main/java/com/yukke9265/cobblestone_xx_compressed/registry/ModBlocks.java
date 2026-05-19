@@ -6,6 +6,8 @@ import com.yukke9265.cobblestone_xx_compressed.CobblestonexXCompressed;
 import com.yukke9265.cobblestone_xx_compressed.block.CobblestoneGeneratorBlock;
 import com.yukke9265.cobblestone_xx_compressed.block.CobblestoneCrusherBlock;
 import com.yukke9265.cobblestone_xx_compressed.block.CobblestoneCentrifugeBlock;
+import com.yukke9265.cobblestone_xx_compressed.block.CobblestoneAssemblyMachineBlock;
+import com.yukke9265.cobblestone_xx_compressed.block.CobblestoneChemicalReactorBlock;
 import com.yukke9265.cobblestone_xx_compressed.block.CobblestoneDissolutionChamberBlock;
 import com.yukke9265.cobblestone_xx_compressed.block.CobblestoneFEGeneratorBlock;
 import com.yukke9265.cobblestone_xx_compressed.block.CobblestoneFluidMixerBlock;
@@ -565,6 +567,30 @@ public class ModBlocks {
         BLOCKS.register(
             "cobblestone_melter",
             () -> new CobblestoneMelterBlock(
+                BlockBehaviour.Properties
+                    .of()
+                    .mapColor(MapColor.STONE)
+                    .strength(0.5F)
+                    .sound(SoundType.STONE)
+            )
+        );
+
+    public static final DeferredBlock<Block> COBBLESTONE_ASSEMBLY_MACHINE =
+        BLOCKS.register(
+            "cobblestone_assembly_machine",
+            () -> new CobblestoneAssemblyMachineBlock(
+                BlockBehaviour.Properties
+                    .of()
+                    .mapColor(MapColor.STONE)
+                    .strength(0.5F)
+                    .sound(SoundType.STONE)
+            )
+        );
+
+    public static final DeferredBlock<Block> COBBLESTONE_CHEMICAL_REACTOR =
+        BLOCKS.register(
+            "cobblestone_chemical_reactor",
+            () -> new CobblestoneChemicalReactorBlock(
                 BlockBehaviour.Properties
                     .of()
                     .mapColor(MapColor.STONE)

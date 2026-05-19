@@ -6,6 +6,8 @@ import com.yukke9265.cobblestone_xx_compressed.CobblestonexXCompressed;
 import com.yukke9265.cobblestone_xx_compressed.blockentity.CobblestoneGeneratorBlockEntity;
 import com.yukke9265.cobblestone_xx_compressed.blockentity.CobblestoneCrusherBlockEntity;
 import com.yukke9265.cobblestone_xx_compressed.blockentity.CobblestoneCentrifugeBlockEntity;
+import com.yukke9265.cobblestone_xx_compressed.blockentity.CobblestoneAssemblyMachineBlockEntity;
+import com.yukke9265.cobblestone_xx_compressed.blockentity.CobblestoneChemicalReactorBlockEntity;
 import com.yukke9265.cobblestone_xx_compressed.blockentity.CobblestoneDissolutionChamberBlockEntity;
 import com.yukke9265.cobblestone_xx_compressed.blockentity.CobblestoneFEGeneratorBlockEntity;
 import com.yukke9265.cobblestone_xx_compressed.blockentity.CobblestoneFluidMixerBlockEntity;
@@ -96,6 +98,24 @@ public class ModBlockEntities {
             () -> BlockEntityType.Builder.of(
                 CobblestoneMelterBlockEntity::new,
                 ModBlocks.COBBLESTONE_MELTER.get()
+            ).build(null)
+        );
+
+    public static final Supplier<BlockEntityType<CobblestoneAssemblyMachineBlockEntity>> COBBLESTONE_ASSEMBLY_MACHINE_BLOCK_ENTITY =
+        BLOCK_ENTITY_TYPES.register(
+            "cobblestone_assembly_machine",
+            () -> BlockEntityType.Builder.of(
+                CobblestoneAssemblyMachineBlockEntity::new,
+                ModBlocks.COBBLESTONE_ASSEMBLY_MACHINE.get()
+            ).build(null)
+        );
+
+    public static final Supplier<BlockEntityType<CobblestoneChemicalReactorBlockEntity>> COBBLESTONE_CHEMICAL_REACTOR_BLOCK_ENTITY =
+        BLOCK_ENTITY_TYPES.register(
+            "cobblestone_chemical_reactor",
+            () -> BlockEntityType.Builder.of(
+                CobblestoneChemicalReactorBlockEntity::new,
+                ModBlocks.COBBLESTONE_CHEMICAL_REACTOR.get()
             ).build(null)
         );
 

@@ -9,6 +9,8 @@ import com.yukke9265.cobblestone_xx_compressed.compat.jei.JeiClickableAreaDefini
 import com.yukke9265.cobblestone_xx_compressed.compat.jei.JeiRecipeTransferDefinition;
 import com.yukke9265.cobblestone_xx_compressed.compat.jei.ModJeiIds;
 import com.yukke9265.cobblestone_xx_compressed.jei.category.CompressedStoneLootRecipeCategory;
+import com.yukke9265.cobblestone_xx_compressed.jei.category.CobblestoneAssemblyMachineRecipeCategory;
+import com.yukke9265.cobblestone_xx_compressed.jei.category.CobblestoneChemicalReactorRecipeCategory;
 import com.yukke9265.cobblestone_xx_compressed.jei.category.CobblestoneDissolutionChamberRecipeCategory;
 import com.yukke9265.cobblestone_xx_compressed.jei.category.CobblestoneFluidMixerRecipeCategory;
 import com.yukke9265.cobblestone_xx_compressed.jei.category.CobblestoneCrusherRecipeCategory;
@@ -21,6 +23,8 @@ import com.yukke9265.cobblestone_xx_compressed.jei.category.CobblestonePoweredFu
 import com.yukke9265.cobblestone_xx_compressed.jei.category.CobblestoneReactionChamberRecipeCategory;
 import com.yukke9265.cobblestone_xx_compressed.jei.category.CobblestoneCrystallizationChamberRecipeCategory;
 import com.yukke9265.cobblestone_xx_compressed.menu.BaseMenu;
+import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneAssemblyMachineMenu;
+import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneChemicalReactorMenu;
 import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneCrusherMenu;
 import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneCentrifugeMenu;
 import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneDissolutionChamberMenu;
@@ -33,6 +37,8 @@ import com.yukke9265.cobblestone_xx_compressed.menu.CobblestonePoweredFurnaceMen
 import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneReactionChamberMenu;
 import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneCrystallizationChamberMenu;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneCrusherRecipe;
+import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneAssemblyMachineRecipe;
+import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneChemicalReactorRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneCentrifugeRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneDissolutionChamberRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneFluidMixerRecipe;
@@ -117,6 +123,20 @@ public class ModJeiPlugin implements IModPlugin {
             ModJeiIds.COBBLESTONE_MELTER.getNamespace(),
             ModJeiIds.COBBLESTONE_MELTER.getPath(),
             CobblestoneMelterRecipe.class
+        );
+
+    public static final RecipeType<CobblestoneAssemblyMachineRecipe> COBBLESTONE_ASSEMBLY_MACHINE_RECIPE_TYPE =
+        RecipeType.create(
+            ModJeiIds.COBBLESTONE_ASSEMBLY_MACHINE.getNamespace(),
+            ModJeiIds.COBBLESTONE_ASSEMBLY_MACHINE.getPath(),
+            CobblestoneAssemblyMachineRecipe.class
+        );
+
+    public static final RecipeType<CobblestoneChemicalReactorRecipe> COBBLESTONE_CHEMICAL_REACTOR_RECIPE_TYPE =
+        RecipeType.create(
+            ModJeiIds.COBBLESTONE_CHEMICAL_REACTOR.getNamespace(),
+            ModJeiIds.COBBLESTONE_CHEMICAL_REACTOR.getPath(),
+            CobblestoneChemicalReactorRecipe.class
         );
 
     public static final RecipeType<CobblestoneReactionChamberRecipe> COBBLESTONE_REACTION_CHAMBER_RECIPE_TYPE =
@@ -224,6 +244,26 @@ public class ModJeiPlugin implements IModPlugin {
             ModMenuType.COBBLESTONE_MELTER_MENU
         );
 
+    private static final MachineJeiDefinition<CobblestoneAssemblyMachineRecipe, CobblestoneAssemblyMachineMenu> COBBLESTONE_ASSEMBLY_MACHINE_DEFINITION =
+        new MachineJeiDefinition<>(
+            ModJeiIds.COBBLESTONE_ASSEMBLY_MACHINE,
+            COBBLESTONE_ASSEMBLY_MACHINE_RECIPE_TYPE,
+            registration -> new CobblestoneAssemblyMachineRecipeCategory(registration.getJeiHelpers().getGuiHelper()),
+            () -> new ItemStack(ModBlocks.COBBLESTONE_ASSEMBLY_MACHINE.get()),
+            CobblestoneAssemblyMachineMenu.class,
+            ModMenuType.COBBLESTONE_ASSEMBLY_MACHINE_MENU
+        );
+
+    private static final MachineJeiDefinition<CobblestoneChemicalReactorRecipe, CobblestoneChemicalReactorMenu> COBBLESTONE_CHEMICAL_REACTOR_DEFINITION =
+        new MachineJeiDefinition<>(
+            ModJeiIds.COBBLESTONE_CHEMICAL_REACTOR,
+            COBBLESTONE_CHEMICAL_REACTOR_RECIPE_TYPE,
+            registration -> new CobblestoneChemicalReactorRecipeCategory(registration.getJeiHelpers().getGuiHelper()),
+            () -> new ItemStack(ModBlocks.COBBLESTONE_CHEMICAL_REACTOR.get()),
+            CobblestoneChemicalReactorMenu.class,
+            ModMenuType.COBBLESTONE_CHEMICAL_REACTOR_MENU
+        );
+
     private static final MachineJeiDefinition<CobblestoneReactionChamberRecipe, CobblestoneReactionChamberMenu> COBBLESTONE_REACTION_CHAMBER_DEFINITION =
         new MachineJeiDefinition<>(
             ModJeiIds.COBBLESTONE_REACTION_CHAMBER,
@@ -272,6 +312,8 @@ public class ModJeiPlugin implements IModPlugin {
         COBBLESTONE_LASER_DRILL_DEFINITION,
         COBBLESTONE_MIXER_DEFINITION,
         COBBLESTONE_MELTER_DEFINITION,
+        COBBLESTONE_ASSEMBLY_MACHINE_DEFINITION,
+        COBBLESTONE_CHEMICAL_REACTOR_DEFINITION,
         COBBLESTONE_REACTION_CHAMBER_DEFINITION,
         COBBLESTONE_CRYSTALLIZATION_CHAMBER_DEFINITION,
         COBBLESTONE_DISSOLUTION_CHAMBER_DEFINITION,
@@ -350,6 +392,20 @@ public class ModJeiPlugin implements IModPlugin {
             .map(RecipeHolder::value)
             .toList();
         registration.addRecipes(COBBLESTONE_MELTER_DEFINITION.recipeType(), melterRecipes);
+
+        List<CobblestoneAssemblyMachineRecipe> assemblyMachineRecipes = minecraft.level.getRecipeManager()
+            .getAllRecipesFor(ModRecipeTypes.COBBLESTONE_ASSEMBLY_MACHINE.get())
+            .stream()
+            .map(RecipeHolder::value)
+            .toList();
+        registration.addRecipes(COBBLESTONE_ASSEMBLY_MACHINE_DEFINITION.recipeType(), assemblyMachineRecipes);
+
+        List<CobblestoneChemicalReactorRecipe> chemicalReactorRecipes = minecraft.level.getRecipeManager()
+            .getAllRecipesFor(ModRecipeTypes.COBBLESTONE_CHEMICAL_REACTOR.get())
+            .stream()
+            .map(RecipeHolder::value)
+            .toList();
+        registration.addRecipes(COBBLESTONE_CHEMICAL_REACTOR_DEFINITION.recipeType(), chemicalReactorRecipes);
 
         List<CobblestoneReactionChamberRecipe> reactionChamberRecipes = minecraft.level.getRecipeManager()
             .getAllRecipesFor(ModRecipeTypes.COBBLESTONE_REACTION_CHAMBER.get())

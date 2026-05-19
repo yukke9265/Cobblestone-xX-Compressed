@@ -5,6 +5,8 @@ import java.util.function.Supplier;
 import com.yukke9265.cobblestone_xx_compressed.CobblestonexXCompressed;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneCrusherRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneCentrifugeRecipe;
+import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneAssemblyMachineRecipe;
+import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneChemicalReactorRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneDissolutionChamberRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneFluidMixerRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneFurnaceRecipe;
@@ -43,6 +45,12 @@ public class ModRecipeTypes {
 
     public static final Supplier<RecipeType<CobblestoneMelterRecipe>> COBBLESTONE_MELTER =
         RECIPE_TYPES.register("cobblestone_melter", RecipeType::simple);
+
+    public static final Supplier<RecipeType<CobblestoneAssemblyMachineRecipe>> COBBLESTONE_ASSEMBLY_MACHINE =
+        RECIPE_TYPES.register("cobblestone_assembly_machine", RecipeType::simple);
+
+    public static final Supplier<RecipeType<CobblestoneChemicalReactorRecipe>> COBBLESTONE_CHEMICAL_REACTOR =
+        RECIPE_TYPES.register("cobblestone_chemical_reactor", RecipeType::simple);
 
     public static final Supplier<RecipeType<CobblestoneReactionChamberRecipe>> COBBLESTONE_REACTION_CHAMBER =
         RECIPE_TYPES.register("cobblestone_reaction_chamber", RecipeType::simple);
