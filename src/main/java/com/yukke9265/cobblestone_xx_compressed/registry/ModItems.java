@@ -1485,6 +1485,11 @@ public class ModItems {
             "cobblestone_powered_furnace",
             ModBlocks.COBBLESTONE_POWERED_FURNACE);
 
+    public static final DeferredItem<BlockItem> COBBLESTONE_EXTREME_COMPRESSOR_ITEM =
+        ModItems.ITEMS.registerSimpleBlockItem(
+            "cobblestone_extreme_compressor",
+            ModBlocks.COBBLESTONE_EXTREME_COMPRESSOR);
+
     // cobblestone_crusher も設置できるように BlockItem を登録します。
     public static final DeferredItem<BlockItem> COBBLESTONE_CRUSHER_ITEM =
         ModItems.ITEMS.registerSimpleBlockItem(

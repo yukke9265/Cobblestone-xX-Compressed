@@ -13,6 +13,9 @@ public final class ModJeiIds {
     public static final ResourceLocation COBBLESTONE_POWERED_FURNACE =
         ResourceLocation.fromNamespaceAndPath(CobblestonexXCompressed.MODID, "cobblestone_powered_furnace");
 
+    public static final ResourceLocation COBBLESTONE_EXTREME_COMPRESSOR =
+        ResourceLocation.fromNamespaceAndPath(CobblestonexXCompressed.MODID, "cobblestone_extreme_compressor");
+
     public static final ResourceLocation COBBLESTONE_CRUSHER =
         ResourceLocation.fromNamespaceAndPath(CobblestonexXCompressed.MODID, "cobblestone_crusher");
 

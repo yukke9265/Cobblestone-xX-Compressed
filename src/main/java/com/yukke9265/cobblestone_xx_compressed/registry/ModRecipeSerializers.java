@@ -8,6 +8,7 @@ import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneCentrifugeRecip
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneAssemblyMachineRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneChemicalReactorRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneDissolutionChamberRecipe;
+import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneExtremeCompressorRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneFluidMixerRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneFurnaceRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneLaserDrillRecipe;
@@ -56,6 +57,22 @@ public class ModRecipeSerializers {
                 @Override
                 public StreamCodec<RegistryFriendlyByteBuf, CobblestonePoweredFurnaceRecipe> streamCodec() {
                     return CobblestonePoweredFurnaceRecipe.STREAM_CODEC;
+                }
+            }
+        );
+
+    public static final Supplier<RecipeSerializer<CobblestoneExtremeCompressorRecipe>> COBBLESTONE_EXTREME_COMPRESSOR =
+        RECIPE_SERIALIZERS.register(
+            "cobblestone_extreme_compressor",
+            () -> new RecipeSerializer<CobblestoneExtremeCompressorRecipe>() {
+                @Override
+                public MapCodec<CobblestoneExtremeCompressorRecipe> codec() {
+                    return CobblestoneExtremeCompressorRecipe.CODEC;
+                }
+
+                @Override
+                public StreamCodec<RegistryFriendlyByteBuf, CobblestoneExtremeCompressorRecipe> streamCodec() {
+                    return CobblestoneExtremeCompressorRecipe.STREAM_CODEC;
                 }
             }
         );

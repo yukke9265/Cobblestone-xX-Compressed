@@ -10,12 +10,12 @@
     "id": "cobblestonexxcompressed:tier_netherite_cobblestone_circuit"
   },
   "item_input_2": {
-    "count": 1,
-    "id": "cobblestonexxcompressed:tier_netherite_cobblestone_circuit_package"
-  },
-  "item_input_3": {
     "count": 4,
     "id": "cobblestonexxcompressed:tier_emerald_cobblestone_circuit"
+  },
+  "item_input_3": {
+    "count": 1,
+    "id": "cobblestonexxcompressed:tier_netherite_cobblestone_circuit_package"
   },
   "item_input_4": {
     "count": 16,

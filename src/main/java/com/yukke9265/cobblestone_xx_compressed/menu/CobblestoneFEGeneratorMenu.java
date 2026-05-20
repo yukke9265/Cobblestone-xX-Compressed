@@ -26,6 +26,7 @@ public class CobblestoneFEGeneratorMenu extends BaseMenu {
         AutomationMode.DISABLED,
         AutomationMode.INPUT,
         AutomationMode.OUTPUT,
+        AutomationMode.COBBLESTONE_INPUT,
         AutomationMode.IN_OUT
     };
 

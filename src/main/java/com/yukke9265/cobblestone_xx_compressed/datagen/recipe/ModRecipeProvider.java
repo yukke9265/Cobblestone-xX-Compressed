@@ -10,6 +10,7 @@ import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneCrystallization
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneChemicalReactorRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneDissolutionChamberRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneCrusherRecipe;
+import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneExtremeCompressorRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneFurnaceRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneMelterRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneMixerRecipe;
@@ -136,6 +137,17 @@ public class ModRecipeProvider extends RecipeProvider {
             ModItems.COAL_DUST.get(),
             100,
             1
+        )
+    };
+
+    private static final ExtremeCompressorRecipeDefinition[] COBBLESTONE_EXTREME_COMPRESSOR_RECIPES = new ExtremeCompressorRecipeDefinition[] {
+        new ExtremeCompressorRecipeDefinition(
+            "obsidian_compressed_cobblestone_to_bedrock",
+            ModBlocks.TierCompressedCobblestone.OBSIDIAN.getBlock().get(),
+            Items.BEDROCK,
+            5000,
+            409600,
+            4096
         )
     };
 
@@ -332,6 +344,7 @@ public class ModRecipeProvider extends RecipeProvider {
         buildCobblestoneAccelerationChipRecipes(output);
         buildCobblestoneEnergizedCubeRecipes(output);
         buildCobblestoneFurnaceRecipes(output);
+        buildCobblestoneExtremeCompressorRecipes(output);
         buildCobblestoneCrusherRecipes(output);
         buildCobblestoneMelterRecipes(output);
         buildCobblestoneAssemblyMachineRecipes(output);
@@ -678,6 +691,20 @@ public class ModRecipeProvider extends RecipeProvider {
         }
     }
 
+    private void buildCobblestoneExtremeCompressorRecipes(RecipeOutput output) {
+        for (ExtremeCompressorRecipeDefinition recipe : COBBLESTONE_EXTREME_COMPRESSOR_RECIPES) {
+            saveCobblestoneExtremeCompressorRecipe(
+                output,
+                recipe.recipeName,
+                recipe.ingredient,
+                recipe.result,
+                recipe.requiredItemCount,
+                recipe.totalCobblestonePower,
+                recipe.cobblestonePowerPerTick
+            );
+        }
+    }
+
     private void buildCobblestoneCrusherRecipes(RecipeOutput output) {
         for (CrusherRecipeDefinition recipe : COBBLESTONE_CRUSHER_RECIPES) {
             saveCobblestoneCrusherRecipe(
@@ -814,6 +841,30 @@ public class ModRecipeProvider extends RecipeProvider {
 
         output.accept(
             modRecipeId("cobblestone_crusher/" + recipeName),
+            recipe,
+            null
+        );
+    }
+
+    private void saveCobblestoneExtremeCompressorRecipe(
+        RecipeOutput output,
+        String recipeName,
+        ItemLike ingredient,
+        ItemLike result,
+        int requiredItemCount,
+        int totalCobblestonePower,
+        int cobblestonePowerPerTick
+    ) {
+        CobblestoneExtremeCompressorRecipe recipe = new CobblestoneExtremeCompressorRecipe(
+            Ingredient.of(ingredient),
+            new ItemStack(result),
+            requiredItemCount,
+            totalCobblestonePower,
+            cobblestonePowerPerTick
+        );
+
+        output.accept(
+            modRecipeId("cobblestone_extreme_compressor/" + recipeName),
             recipe,
             null
         );
@@ -1062,6 +1113,31 @@ public class ModRecipeProvider extends RecipeProvider {
             this.recipeName = recipeName;
             this.ingredient = ingredient;
             this.result = result;
+            this.totalCobblestonePower = totalCobblestonePower;
+            this.cobblestonePowerPerTick = cobblestonePowerPerTick;
+        }
+    }
+
+    private static class ExtremeCompressorRecipeDefinition {
+        private final String recipeName;
+        private final ItemLike ingredient;
+        private final ItemLike result;
+        private final int requiredItemCount;
+        private final int totalCobblestonePower;
+        private final int cobblestonePowerPerTick;
+
+        private ExtremeCompressorRecipeDefinition(
+            String recipeName,
+            ItemLike ingredient,
+            ItemLike result,
+            int requiredItemCount,
+            int totalCobblestonePower,
+            int cobblestonePowerPerTick
+        ) {
+            this.recipeName = recipeName;
+            this.ingredient = ingredient;
+            this.result = result;
+            this.requiredItemCount = requiredItemCount;
             this.totalCobblestonePower = totalCobblestonePower;
             this.cobblestonePowerPerTick = cobblestonePowerPerTick;
         }

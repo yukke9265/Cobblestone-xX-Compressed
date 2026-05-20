@@ -18,12 +18,12 @@ public class BaseBlockEntity extends BlockEntity {
     public static final int AUTOMATION_FACE_COUNT = AutomationSide.values().length;
 
     private final AutomationMode[] automationModes = new AutomationMode[] {
-        AutomationMode.INPUT,
-        AutomationMode.OUTPUT,
-        AutomationMode.INPUT,
-        AutomationMode.INPUT,
-        AutomationMode.INPUT,
-        AutomationMode.INPUT
+        AutomationMode.DISABLED,
+        AutomationMode.DISABLED,
+        AutomationMode.DISABLED,
+        AutomationMode.DISABLED,
+        AutomationMode.DISABLED,
+        AutomationMode.DISABLED
     };
     private final AutomationMode[] fluidAutomationModes = new AutomationMode[] {
         AutomationMode.DISABLED,

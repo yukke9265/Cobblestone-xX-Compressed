@@ -7,6 +7,7 @@ import com.yukke9265.cobblestone_xx_compressed.screen.CobblestoneCentrifugeScree
 import com.yukke9265.cobblestone_xx_compressed.screen.CobblestoneAssemblyMachineScreen;
 import com.yukke9265.cobblestone_xx_compressed.screen.CobblestoneChemicalReactorScreen;
 import com.yukke9265.cobblestone_xx_compressed.screen.CobblestoneDissolutionChamberScreen;
+import com.yukke9265.cobblestone_xx_compressed.screen.CobblestoneExtremeCompressorScreen;
 import com.yukke9265.cobblestone_xx_compressed.screen.CobblestoneFEGeneratorScreen;
 import com.yukke9265.cobblestone_xx_compressed.screen.CobblestoneFluidMixerScreen;
 import com.yukke9265.cobblestone_xx_compressed.screen.CobblestoneLaserDrillScreen;
@@ -61,6 +62,7 @@ public class CobblestonexXCompressedClient {
         // ここで、スクリーンとメニューの関連付けを行います。これにより、特定のメニューが開かれたときに対応するスクリーンが表示されるようになります。
         event.register(ModMenuType.COBBLESTONE_FURNACE_MENU.get(), CobblestoneFurnaceScreen::new);
         event.register(ModMenuType.COBBLESTONE_POWERED_FURNACE_MENU.get(), CobblestonePoweredFurnaceScreen::new);
+        event.register(ModMenuType.COBBLESTONE_EXTREME_COMPRESSOR_MENU.get(), CobblestoneExtremeCompressorScreen::new);
         event.register(ModMenuType.COBBLESTONE_CRUSHER_MENU.get(), CobblestoneCrusherScreen::new);
         event.register(ModMenuType.COBBLESTONE_FE_GENERATOR_MENU.get(), CobblestoneFEGeneratorScreen::new);
         event.register(ModMenuType.COBBLESTONE_CENTRIFUGE_MENU.get(), CobblestoneCentrifugeScreen::new);

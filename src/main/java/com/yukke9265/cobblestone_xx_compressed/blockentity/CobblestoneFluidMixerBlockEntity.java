@@ -178,10 +178,6 @@ public class CobblestoneFluidMixerBlockEntity extends BaseBlockEntity implements
 
         @Override
         public @Nonnull ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-            if (slot == POWER_SLOT_INDEX) {
-                return CobblestoneFluidMixerBlockEntity.this.itemStackHandler.insertItem(slot, stack, simulate);
-            }
-
             return stack;
         }
 
@@ -299,7 +295,7 @@ public class CobblestoneFluidMixerBlockEntity extends BaseBlockEntity implements
         }
 
         AutomationMode automationMode = this.getAutomationMode(AutomationSide.fromWorldSide(side, this.getBlockState()));
-        if (automationMode == AutomationMode.INPUT || automationMode == AutomationMode.COBBLESTONE_INPUT) {
+        if (automationMode == AutomationMode.COBBLESTONE_INPUT) {
             return this.cobblestoneInputAutomationHandler;
         }
 

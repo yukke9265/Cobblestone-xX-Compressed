@@ -37,6 +37,35 @@ public final class MachineGuiLayouts {
         }
     }
 
+    public static final class ExtremeCompressor {
+        public static final int MACHINE_SLOT_Y = PoweredMachine.MACHINE_SLOT_Y + 3;//アイテム数表示と被らないように下げる
+        public static final int INPUT_SLOT_X = PoweredMachine.INPUT_SLOT_X;
+        public static final int OUTPUT_SLOT_X = PoweredMachine.OUTPUT_SLOT_X;
+        public static final int POWER_SLOT_X = PoweredMachine.POWER_SLOT_X;
+        public static final int POWER_SLOT_Y = PoweredMachine.POWER_SLOT_Y;
+        public static final int PROGRESS_BAR_X = PoweredMachine.PROGRESS_BAR_X;
+        public static final int PROGRESS_BAR_Y = PoweredMachine.PROGRESS_BAR_Y + 3;//アイテム数表示と被らないように下げる
+        public static final int PROGRESS_BAR_WIDTH = PoweredMachine.PROGRESS_BAR_WIDTH;
+        public static final int PROGRESS_BAR_HEIGHT = PoweredMachine.PROGRESS_BAR_HEIGHT;
+        public static final int POWER_BAR_X = PoweredMachine.POWER_BAR_X;
+        public static final int POWER_BAR_Y = PoweredMachine.POWER_BAR_Y;
+        public static final int POWER_BAR_WIDTH = PoweredMachine.POWER_BAR_WIDTH;
+        public static final int POWER_BAR_HEIGHT = PoweredMachine.POWER_BAR_HEIGHT;
+        public static final int INPUT_NAME_LABEL_X = 8;
+        public static final int INPUT_NAME_LABEL_Y = 14;
+        public static final int INPUT_COUNT_LABEL_X = INPUT_NAME_LABEL_X;
+        public static final int INPUT_COUNT_LABEL_Y = INPUT_NAME_LABEL_Y + 10;
+        public static final int JEI_COUNT_LABEL_X = INPUT_NAME_LABEL_X;
+        public static final int JEI_COUNT_LABEL_Y = 2;
+        public static final int JEI_CPPT_LABEL_X = 36;
+        public static final int JEI_CPPT_LABEL_Y = 50;
+        public static final int JEI_TOTAL_CP_LABEL_X = 36;
+        public static final int JEI_TOTAL_CP_LABEL_Y = 60;
+
+        private ExtremeCompressor() {
+        }
+    }
+
     public static final class Mixer {
         public static final int MACHINE_SLOT_Y = 31;
         public static final int POWER_SLOT_X = 10;

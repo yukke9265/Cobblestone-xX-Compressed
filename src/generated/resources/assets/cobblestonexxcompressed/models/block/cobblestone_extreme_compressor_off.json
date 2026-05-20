@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "down": "cobblestonexxcompressed:block/cobblestone_extreme_compressor/cobblestone_extreme_compressor_top",
+    "east": "cobblestonexxcompressed:block/cobblestone_extreme_compressor/cobblestone_extreme_compressor_side",
+    "north": "cobblestonexxcompressed:block/cobblestone_extreme_compressor/cobblestone_extreme_compressor_front",
+    "particle": "cobblestonexxcompressed:block/cobblestone_extreme_compressor/cobblestone_extreme_compressor_top",
+    "south": "cobblestonexxcompressed:block/cobblestone_extreme_compressor/cobblestone_extreme_compressor_side",
+    "up": "cobblestonexxcompressed:block/cobblestone_extreme_compressor/cobblestone_extreme_compressor_top",
+    "west": "cobblestonexxcompressed:block/cobblestone_extreme_compressor/cobblestone_extreme_compressor_side"
+  }
+}

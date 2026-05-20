@@ -1,6 +1,7 @@
 package com.yukke9265.cobblestone_xx_compressed.datagen;
 
 import com.yukke9265.cobblestone_xx_compressed.datagen.lang.ModEnglishLanguageProvider;
+import com.yukke9265.cobblestone_xx_compressed.datagen.lang.ModJapaneseLanguageProvider;
 import com.yukke9265.cobblestone_xx_compressed.datagen.loot.ModBlockLootTableProvider;
 import com.yukke9265.cobblestone_xx_compressed.datagen.model.ModBlockStateProvider;
 import com.yukke9265.cobblestone_xx_compressed.datagen.model.ModItemModelProvider;
@@ -27,6 +28,7 @@ public class ModDatagen {
             // main/resources と generated/resources の両方に同じキーを置くと追跡しづらいため、
             // 今回は en_us をこの provider 側へまとめます。
             event.createProvider(output -> new ModEnglishLanguageProvider(output));
+            event.createProvider(output -> new ModJapaneseLanguageProvider(output));
         }
 
         if (event.includeServer()) {

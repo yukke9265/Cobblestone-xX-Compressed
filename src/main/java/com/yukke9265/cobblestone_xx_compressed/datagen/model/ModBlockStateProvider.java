@@ -53,6 +53,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
 
         // Cobblestone Melter は前面の見た目が ON/OFF で変わるので、
         // 単純な cubeAll ではなく、blockstate と 2 つの model をここでまとめて生成します。
+        registerCobblestoneExtremeCompressorBlock(ModBlocks.COBBLESTONE_EXTREME_COMPRESSOR.get(), "cobblestone_extreme_compressor");
         registerCobblestoneMelterBlock(ModBlocks.COBBLESTONE_MELTER.get(), "cobblestone_melter");
         registerCobblestoneAssemblyMachineBlock(ModBlocks.COBBLESTONE_ASSEMBLY_MACHINE.get(), "cobblestone_assembly_machine");
         registerCobblestoneChemicalReactorBlock(ModBlocks.COBBLESTONE_CHEMICAL_REACTOR.get(), "cobblestone_chemical_reactor");
@@ -141,6 +142,47 @@ public class ModBlockStateProvider extends BlockStateProvider {
 
             // datagen では north 基準の model を作り、
             // blockstate 側で向きごとの回転だけを差し替えるようにします。
+            int rotationY = switch (facing) {
+                case SOUTH -> 180;
+                case EAST -> 90;
+                case WEST -> 270;
+                default -> 0;
+            };
+
+            return ConfiguredModel.builder()
+                .modelFile(isOn ? onModel : offModel)
+                .rotationY(rotationY)
+                .build();
+        });
+
+        this.simpleBlockItem(block, offModel);
+    }
+
+    private void registerCobblestoneExtremeCompressorBlock(Block block, String blockName) {
+        ModelFile offModel = this.models()
+            .withExistingParent(blockName + "_off", this.mcLoc("block/cube"))
+            .texture("particle", this.modLoc("block/cobblestone_extreme_compressor/cobblestone_extreme_compressor_top"))
+            .texture("down", this.modLoc("block/cobblestone_extreme_compressor/cobblestone_extreme_compressor_top"))
+            .texture("up", this.modLoc("block/cobblestone_extreme_compressor/cobblestone_extreme_compressor_top"))
+            .texture("north", this.modLoc("block/cobblestone_extreme_compressor/cobblestone_extreme_compressor_front"))
+            .texture("south", this.modLoc("block/cobblestone_extreme_compressor/cobblestone_extreme_compressor_side"))
+            .texture("west", this.modLoc("block/cobblestone_extreme_compressor/cobblestone_extreme_compressor_side"))
+            .texture("east", this.modLoc("block/cobblestone_extreme_compressor/cobblestone_extreme_compressor_side"));
+
+        ModelFile onModel = this.models()
+            .withExistingParent(blockName + "_on", this.mcLoc("block/cube"))
+            .texture("particle", this.modLoc("block/cobblestone_extreme_compressor/cobblestone_extreme_compressor_top"))
+            .texture("down", this.modLoc("block/cobblestone_extreme_compressor/cobblestone_extreme_compressor_top"))
+            .texture("up", this.modLoc("block/cobblestone_extreme_compressor/cobblestone_extreme_compressor_top"))
+            .texture("north", this.modLoc("block/cobblestone_extreme_compressor/cobblestone_extreme_compressor_front_on"))
+            .texture("south", this.modLoc("block/cobblestone_extreme_compressor/cobblestone_extreme_compressor_side"))
+            .texture("west", this.modLoc("block/cobblestone_extreme_compressor/cobblestone_extreme_compressor_side"))
+            .texture("east", this.modLoc("block/cobblestone_extreme_compressor/cobblestone_extreme_compressor_side"));
+
+        this.getVariantBuilder(block).forAllStates(state -> {
+            Direction facing = state.getValue(OnOffBlock.FACING);
+            boolean isOn = state.getValue(OnOffBlock.ON);
+
             int rotationY = switch (facing) {
                 case SOUTH -> 180;
                 case EAST -> 90;

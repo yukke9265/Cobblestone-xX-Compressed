@@ -120,11 +120,7 @@ public class CobblestoneCrystallizationChamberBlockEntity extends BaseBlockEntit
 
         @Override
         public @Nonnull ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-            if (slot != POWER_SLOT_INDEX) {
-                return stack;
-            }
-
-            return CobblestoneCrystallizationChamberBlockEntity.this.itemStackHandler.insertItem(POWER_SLOT_INDEX, stack, simulate);
+            return stack;
         }
 
         @Override

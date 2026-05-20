@@ -97,17 +97,13 @@ public class CobblestonePoweredFurnaceBlockEntity extends BaseBlockEntity implem
     private final IItemHandler inputAutomationHandler = new IItemHandler() {
         @Override
         public int getSlots() {
-            return 2;
+            return 1;
         }
 
         @Override
         public @Nonnull ItemStack getStackInSlot(int slot) {
             if (slot == 0) {
                 return CobblestonePoweredFurnaceBlockEntity.this.itemStackHandler.getStackInSlot(INPUT_SLOT_INDEX);
-            }
-
-            if (slot == 1) {
-                return CobblestonePoweredFurnaceBlockEntity.this.itemStackHandler.getStackInSlot(POWER_SLOT_INDEX);
             }
 
             return ItemStack.EMPTY;
@@ -117,10 +113,6 @@ public class CobblestonePoweredFurnaceBlockEntity extends BaseBlockEntity implem
         public @Nonnull ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
             if (slot == 0) {
                 return CobblestonePoweredFurnaceBlockEntity.this.itemStackHandler.insertItem(INPUT_SLOT_INDEX, stack, simulate);
-            }
-
-            if (slot == 1) {
-                return CobblestonePoweredFurnaceBlockEntity.this.itemStackHandler.insertItem(POWER_SLOT_INDEX, stack, simulate);
             }
 
             return stack;
@@ -137,10 +129,6 @@ public class CobblestonePoweredFurnaceBlockEntity extends BaseBlockEntity implem
                 return CobblestonePoweredFurnaceBlockEntity.this.itemStackHandler.getSlotLimit(INPUT_SLOT_INDEX);
             }
 
-            if (slot == 1) {
-                return CobblestonePoweredFurnaceBlockEntity.this.itemStackHandler.getSlotLimit(POWER_SLOT_INDEX);
-            }
-
             return 0;
         }
 
@@ -148,10 +136,6 @@ public class CobblestonePoweredFurnaceBlockEntity extends BaseBlockEntity implem
         public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
             if (slot == 0) {
                 return CobblestonePoweredFurnaceBlockEntity.this.itemStackHandler.isItemValid(INPUT_SLOT_INDEX, stack);
-            }
-
-            if (slot == 1) {
-                return CobblestonePoweredFurnaceBlockEntity.this.itemStackHandler.isItemValid(POWER_SLOT_INDEX, stack);
             }
 
             return false;
@@ -267,7 +251,7 @@ public class CobblestonePoweredFurnaceBlockEntity extends BaseBlockEntity implem
 
         @Override
         public @Nonnull ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-            if (slot == INPUT_SLOT_INDEX || slot == POWER_SLOT_INDEX) {
+            if (slot == INPUT_SLOT_INDEX) {
                 return CobblestonePoweredFurnaceBlockEntity.this.itemStackHandler.insertItem(slot, stack, simulate);
             }
 

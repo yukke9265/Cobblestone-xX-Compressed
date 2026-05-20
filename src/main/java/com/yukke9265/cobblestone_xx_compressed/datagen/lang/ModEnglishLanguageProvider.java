@@ -163,6 +163,9 @@ public class ModEnglishLanguageProvider extends LanguageProvider {
         addBlock(ModBlocks.COBBLESTONE_FURNACE, "Cobblestone Furnace");
         addBlock(ModBlocks.COBBLESTONE_FE_GENERATOR, "Cobblestone FE Generator");
         addBlock(ModBlocks.COBBLESTONE_POWERED_FURNACE, "Cobblestone Powered Furnace");
+        // Extreme Compressor だけは generated en_us へ確実に出したいので、
+        // 明示キーで追加して datagen の反映を確認しやすくします。
+        add("block.cobblestonexxcompressed.cobblestone_extreme_compressor", "Cobblestone Extreme Compressor");
         addBlock(ModBlocks.COBBLESTONE_CRUSHER, "Cobblestone Crusher");
         addBlock(ModBlocks.COBBLESTONE_CENTRIFUGE, "Cobblestone Centrifuge");
         addBlock(ModBlocks.COBBLESTONE_LASER_DRILL, "Cobblestone Laser Drill");

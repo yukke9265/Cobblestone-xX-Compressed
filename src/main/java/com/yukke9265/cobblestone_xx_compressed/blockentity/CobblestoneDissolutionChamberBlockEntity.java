@@ -129,7 +129,7 @@ public class CobblestoneDissolutionChamberBlockEntity extends BaseBlockEntity im
 
         @Override
         public @Nonnull ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-            if (slot == INPUT_SLOT_INDEX || slot == POWER_SLOT_INDEX) {
+            if (slot == INPUT_SLOT_INDEX) {
                 return CobblestoneDissolutionChamberBlockEntity.this.itemStackHandler.insertItem(slot, stack, simulate);
             }
 

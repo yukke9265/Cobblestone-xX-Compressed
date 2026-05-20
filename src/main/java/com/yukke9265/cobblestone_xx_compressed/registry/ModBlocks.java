@@ -9,6 +9,7 @@ import com.yukke9265.cobblestone_xx_compressed.block.CobblestoneCentrifugeBlock;
 import com.yukke9265.cobblestone_xx_compressed.block.CobblestoneAssemblyMachineBlock;
 import com.yukke9265.cobblestone_xx_compressed.block.CobblestoneChemicalReactorBlock;
 import com.yukke9265.cobblestone_xx_compressed.block.CobblestoneDissolutionChamberBlock;
+import com.yukke9265.cobblestone_xx_compressed.block.CobblestoneExtremeCompressorBlock;
 import com.yukke9265.cobblestone_xx_compressed.block.CobblestoneFEGeneratorBlock;
 import com.yukke9265.cobblestone_xx_compressed.block.CobblestoneFluidMixerBlock;
 import com.yukke9265.cobblestone_xx_compressed.block.CobblestoneFurnaceBlock;
@@ -495,6 +496,18 @@ public class ModBlocks {
         BLOCKS.register(
             "cobblestone_powered_furnace",
             () -> new CobblestonePoweredFurnaceBlock(
+                BlockBehaviour.Properties
+                    .of()
+                    .mapColor(MapColor.STONE)
+                    .strength(0.5F)
+                    .sound(SoundType.STONE)
+            )
+        );
+
+    public static final DeferredBlock<Block> COBBLESTONE_EXTREME_COMPRESSOR =
+        BLOCKS.register(
+            "cobblestone_extreme_compressor",
+            () -> new CobblestoneExtremeCompressorBlock(
                 BlockBehaviour.Properties
                     .of()
                     .mapColor(MapColor.STONE)

@@ -182,7 +182,7 @@ public class CobblestoneAssemblyMachineBlockEntity extends BaseBlockEntity imple
 
         @Override
         public @Nonnull ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-            if ((slot >= INPUT_SLOT_1_INDEX && slot <= INPUT_SLOT_6_INDEX) || slot == POWER_SLOT_INDEX) {
+            if (slot >= INPUT_SLOT_1_INDEX && slot <= INPUT_SLOT_6_INDEX) {
                 return CobblestoneAssemblyMachineBlockEntity.this.itemStackHandler.insertItem(slot, stack, simulate);
             }
 

@@ -139,6 +139,7 @@ public class CobblestonexXCompressed {
                 }
                 output.accept(ModItems.COBBLESTONE_FURNACE_ITEM.get());
                 output.accept(ModItems.COBBLESTONE_POWERED_FURNACE_ITEM.get());
+                output.accept(ModItems.COBBLESTONE_EXTREME_COMPRESSOR_ITEM.get());
                 output.accept(ModItems.COBBLESTONE_CRUSHER_ITEM.get());
                 output.accept(ModItems.COBBLESTONE_FE_GENERATOR_ITEM.get());
                 output.accept(ModItems.COBBLESTONE_CENTRIFUGE_ITEM.get());
@@ -245,6 +246,15 @@ public class CobblestonexXCompressed {
         event.registerBlockEntity(
             Capabilities.ItemHandler.BLOCK,
             ModBlockEntities.COBBLESTONE_POWERED_FURNACE_BLOCK_ENTITY.get(),
+            (blockEntity, side) -> blockEntity.getAutomationItemHandler(side)
+        );
+
+        // Cobblestone Extreme Compressor は 1 入力 1 出力に加えて、
+        // 内部へ蓄積した入力個数を停止時に回収できる機械です。
+        // 自動化の面設定は Powered Furnace と同じ形で扱います。
+        event.registerBlockEntity(
+            Capabilities.ItemHandler.BLOCK,
+            ModBlockEntities.COBBLESTONE_EXTREME_COMPRESSOR_BLOCK_ENTITY.get(),
             (blockEntity, side) -> blockEntity.getAutomationItemHandler(side)
         );
 

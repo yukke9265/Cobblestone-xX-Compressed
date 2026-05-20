@@ -8,6 +8,7 @@ import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneCentrifugeRecip
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneAssemblyMachineRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneChemicalReactorRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneDissolutionChamberRecipe;
+import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneExtremeCompressorRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneFluidMixerRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneFurnaceRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneLaserDrillRecipe;
@@ -30,6 +31,9 @@ public class ModRecipeTypes {
 
     public static final Supplier<RecipeType<CobblestonePoweredFurnaceRecipe>> COBBLESTONE_POWERED_FURNACE =
         RECIPE_TYPES.register("cobblestone_powered_furnace", RecipeType::simple);
+
+    public static final Supplier<RecipeType<CobblestoneExtremeCompressorRecipe>> COBBLESTONE_EXTREME_COMPRESSOR =
+        RECIPE_TYPES.register("cobblestone_extreme_compressor", RecipeType::simple);
 
     public static final Supplier<RecipeType<CobblestoneCrusherRecipe>> COBBLESTONE_CRUSHER =
         RECIPE_TYPES.register("cobblestone_crusher", RecipeType::simple);

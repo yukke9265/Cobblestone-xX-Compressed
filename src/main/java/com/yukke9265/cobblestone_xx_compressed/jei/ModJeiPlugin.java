@@ -12,6 +12,7 @@ import com.yukke9265.cobblestone_xx_compressed.jei.category.CompressedStoneLootR
 import com.yukke9265.cobblestone_xx_compressed.jei.category.CobblestoneAssemblyMachineRecipeCategory;
 import com.yukke9265.cobblestone_xx_compressed.jei.category.CobblestoneChemicalReactorRecipeCategory;
 import com.yukke9265.cobblestone_xx_compressed.jei.category.CobblestoneDissolutionChamberRecipeCategory;
+import com.yukke9265.cobblestone_xx_compressed.jei.category.CobblestoneExtremeCompressorRecipeCategory;
 import com.yukke9265.cobblestone_xx_compressed.jei.category.CobblestoneFluidMixerRecipeCategory;
 import com.yukke9265.cobblestone_xx_compressed.jei.category.CobblestoneCrusherRecipeCategory;
 import com.yukke9265.cobblestone_xx_compressed.jei.category.CobblestoneCentrifugeRecipeCategory;
@@ -28,6 +29,7 @@ import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneChemicalReactorMe
 import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneCrusherMenu;
 import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneCentrifugeMenu;
 import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneDissolutionChamberMenu;
+import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneExtremeCompressorMenu;
 import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneFluidMixerMenu;
 import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneFurnaceMenu;
 import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneLaserDrillMenu;
@@ -41,6 +43,7 @@ import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneAssemblyMachine
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneChemicalReactorRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneCentrifugeRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneDissolutionChamberRecipe;
+import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneExtremeCompressorRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneFluidMixerRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneFurnaceRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneLaserDrillRecipe;
@@ -95,6 +98,13 @@ public class ModJeiPlugin implements IModPlugin {
             ModJeiIds.COBBLESTONE_POWERED_FURNACE.getNamespace(),
             ModJeiIds.COBBLESTONE_POWERED_FURNACE.getPath(),
             CobblestonePoweredFurnaceRecipe.class
+        );
+
+    public static final RecipeType<CobblestoneExtremeCompressorRecipe> COBBLESTONE_EXTREME_COMPRESSOR_RECIPE_TYPE =
+        RecipeType.create(
+            ModJeiIds.COBBLESTONE_EXTREME_COMPRESSOR.getNamespace(),
+            ModJeiIds.COBBLESTONE_EXTREME_COMPRESSOR.getPath(),
+            CobblestoneExtremeCompressorRecipe.class
         );
 
     public static final RecipeType<CobblestoneCentrifugeRecipe> COBBLESTONE_CENTRIFUGE_RECIPE_TYPE =
@@ -204,6 +214,16 @@ public class ModJeiPlugin implements IModPlugin {
             ModMenuType.COBBLESTONE_POWERED_FURNACE_MENU
         );
 
+    private static final MachineJeiDefinition<CobblestoneExtremeCompressorRecipe, CobblestoneExtremeCompressorMenu> COBBLESTONE_EXTREME_COMPRESSOR_DEFINITION =
+        new MachineJeiDefinition<>(
+            ModJeiIds.COBBLESTONE_EXTREME_COMPRESSOR,
+            COBBLESTONE_EXTREME_COMPRESSOR_RECIPE_TYPE,
+            registration -> new CobblestoneExtremeCompressorRecipeCategory(registration.getJeiHelpers().getGuiHelper()),
+            () -> new ItemStack(ModBlocks.COBBLESTONE_EXTREME_COMPRESSOR.get()),
+            CobblestoneExtremeCompressorMenu.class,
+            ModMenuType.COBBLESTONE_EXTREME_COMPRESSOR_MENU
+        );
+
     private static final MachineJeiDefinition<CobblestoneCentrifugeRecipe, CobblestoneCentrifugeMenu> COBBLESTONE_CENTRIFUGE_DEFINITION =
         new MachineJeiDefinition<>(
             ModJeiIds.COBBLESTONE_CENTRIFUGE,
@@ -307,6 +327,7 @@ public class ModJeiPlugin implements IModPlugin {
     private static final List<MachineJeiDefinition<?, ?>> MACHINE_DEFINITIONS = List.of(
         COBBLESTONE_FURNACE_DEFINITION,
         COBBLESTONE_POWERED_FURNACE_DEFINITION,
+        COBBLESTONE_EXTREME_COMPRESSOR_DEFINITION,
         COBBLESTONE_CRUSHER_DEFINITION,
         COBBLESTONE_CENTRIFUGE_DEFINITION,
         COBBLESTONE_LASER_DRILL_DEFINITION,
@@ -357,6 +378,13 @@ public class ModJeiPlugin implements IModPlugin {
             .map(RecipeHolder::value)
             .toList();
         registration.addRecipes(COBBLESTONE_POWERED_FURNACE_DEFINITION.recipeType(), poweredFurnaceRecipes);
+
+        List<CobblestoneExtremeCompressorRecipe> extremeCompressorRecipes = minecraft.level.getRecipeManager()
+            .getAllRecipesFor(ModRecipeTypes.COBBLESTONE_EXTREME_COMPRESSOR.get())
+            .stream()
+            .map(RecipeHolder::value)
+            .toList();
+        registration.addRecipes(COBBLESTONE_EXTREME_COMPRESSOR_DEFINITION.recipeType(), extremeCompressorRecipes);
 
         List<CobblestoneCrusherRecipe> crusherRecipes = minecraft.level.getRecipeManager()
             .getAllRecipesFor(ModRecipeTypes.COBBLESTONE_CRUSHER.get())
