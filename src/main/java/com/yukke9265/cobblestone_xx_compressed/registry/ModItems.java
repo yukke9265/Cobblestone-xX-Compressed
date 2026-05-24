@@ -540,6 +540,9 @@ public class ModItems {
     public static final DeferredItem<Item> COAL_DUST =
         ITEMS.registerSimpleItem("coal_dust", createCobblestoneDustProperties());
 
+    public static final DeferredItem<Item> OBSIDIAN_DUST =
+        ITEMS.registerSimpleItem("obsidian_dust", createCobblestoneDustProperties());
+
     public static final DeferredItem<Item> CANNED_STABLE_ENDERITE =
         ITEMS.registerSimpleItem("canned_stable_enderite", createOtherItemProperties());
 

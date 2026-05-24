@@ -99,6 +99,7 @@ public class ModItemModelProvider extends ItemModelProvider {
         }
 
         registerCoalDustItemModel(ModItems.COAL_DUST);
+        registerGemDustItemModel(ModItems.OBSIDIAN_DUST);
         registerOtherItemModel(ModItems.CANNED_STABLE_ENDERITE);
         registerOtherItemModel(ModItems.EXTREME_COMPRESSED_CANNED_ENDERITE);
         registerOtherItemModel(ModItems.EXTREME_COMPRESSED_OBSIDIAN);

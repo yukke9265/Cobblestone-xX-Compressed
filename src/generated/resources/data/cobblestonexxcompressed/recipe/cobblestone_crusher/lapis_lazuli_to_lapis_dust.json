@@ -1,5 +1,6 @@
 {
   "type": "cobblestonexxcompressed:cobblestone_crusher",
+  "cobblestone_power_per_tick": 4,
   "ingredient": {
     "item": "minecraft:lapis_lazuli"
   },
@@ -7,5 +8,5 @@
     "count": 1,
     "id": "cobblestonexxcompressed:lapis_dust"
   },
-  "total_cobblestone_power": 100
+  "total_cobblestone_power": 800
 }

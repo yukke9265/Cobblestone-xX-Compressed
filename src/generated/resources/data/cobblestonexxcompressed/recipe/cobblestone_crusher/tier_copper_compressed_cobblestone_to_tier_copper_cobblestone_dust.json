@@ -1,6 +1,6 @@
 {
   "type": "cobblestonexxcompressed:cobblestone_crusher",
-  "cobblestone_power_per_tick": 2,
+  "cobblestone_power_per_tick": 4,
   "ingredient": {
     "item": "cobblestonexxcompressed:tier_copper_compressed_cobblestone"
   },
@@ -8,5 +8,5 @@
     "count": 1,
     "id": "cobblestonexxcompressed:tier_copper_cobblestone_dust"
   },
-  "total_cobblestone_power": 200
+  "total_cobblestone_power": 800
 }

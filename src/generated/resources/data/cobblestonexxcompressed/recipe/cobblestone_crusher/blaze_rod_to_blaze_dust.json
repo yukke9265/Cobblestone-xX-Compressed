@@ -2,11 +2,11 @@
   "type": "cobblestonexxcompressed:cobblestone_crusher",
   "cobblestone_power_per_tick": 4,
   "ingredient": {
-    "item": "minecraft:amethyst_shard"
+    "item": "minecraft:blaze_rod"
   },
   "result": {
     "count": 1,
-    "id": "cobblestonexxcompressed:amethyst_dust"
+    "id": "minecraft:blaze_powder"
   },
   "total_cobblestone_power": 800
 }

@@ -114,111 +114,127 @@ public class ModRecipeProvider extends RecipeProvider {
         new MachineRecipeDefinition("tier_obsidian_compressed_cobblestone_pure_dust_to_tier_obsidian_compressed_stone", ModItems.TIER_OBSIDIAN_COBBLESTONE_PURE_DUST.get(), ModBlocks.TierCompressedStone.OBSIDIAN.getBlock().get(), 100)
     };
 
-        private static final CrusherRecipeDefinition[] COBBLESTONE_CRUSHER_RECIPES = new CrusherRecipeDefinition[] {
+    //粉砕機の基本レシピ設定は800CP 4CP/tで統一しますが、将来個別に変える可能性もあるので、レシピごとに定義しておきます。
+    private static final CrusherRecipeDefinition[] COBBLESTONE_CRUSHER_RECIPES = new CrusherRecipeDefinition[] {
         new CrusherRecipeDefinition(
             "tier_copper_compressed_cobblestone_to_tier_copper_cobblestone_dust",
             ModBlocks.TierCompressedCobblestone.COPPER.getBlock().get(),
             ModItems.TIER_COPPER_COBBLESTONE_DUST.get(),
-            200,
-            2
-        ),
-        new CrusherRecipeDefinition(
-            "amethyst_shard_to_amethyst_dust",
-            Items.AMETHYST_SHARD,
-            ModItems.AMETHYST_DUST.get(),
-            100,
-            1
-        ),
-        new CrusherRecipeDefinition(
-            "aquamarine_shard_to_aquamarine_dust",
-            ModItems.AQUAMARINE_SHARD.get(),
-            ModItems.AQUAMARINE_DUST.get(),
-            100,
-            1
+            800,
+            4
         ),
         new CrusherRecipeDefinition(
             "ancient_debris_to_ancient_debris_dust",
             Items.ANCIENT_DEBRIS,
             ModItems.ANCIENT_DEBRIS_DUST.get(),
-            100,
-            1
-        ),
-        new CrusherRecipeDefinition(
-            "copper_ingot_to_copper_dust",
-            Items.COPPER_INGOT,
-            ModItems.COPPER_DUST.get(),
-            100,
-            1
-        ),
-        new CrusherRecipeDefinition(
-            "diamond_to_diamond_dust",
-            Items.DIAMOND,
-            ModItems.DIAMOND_DUST.get(),
-            100,
-            1
+            800,
+            4
         ),
         new CrusherRecipeDefinition(
             "ender_pearl_to_ender_dust",
             Items.ENDER_PEARL,
             ModItems.ENDER_DUST.get(),
-            100,
-            1
+            800,
+            4
         ),
         new CrusherRecipeDefinition(
-            "emerald_to_emerald_dust",
-            Items.EMERALD,
-            ModItems.EMERALD_DUST.get(),
-            100,
-            1
-        ),
-        new CrusherRecipeDefinition(
-            "gold_ingot_to_gold_dust",
-            Items.GOLD_INGOT,
-            ModItems.GOLD_DUST.get(),
-            100,
-            1
-        ),
-        new CrusherRecipeDefinition(
-            "iron_ingot_to_iron_dust",
-            Items.IRON_INGOT,
-            ModItems.IRON_DUST.get(),
-            100,
-            1
-        ),
-        new CrusherRecipeDefinition(
-            "lapis_lazuli_to_lapis_dust",
-            Items.LAPIS_LAZULI,
-            ModItems.LAPIS_DUST.get(),
-            100,
-            1
-        ),
-        new CrusherRecipeDefinition(
-            "topaz_shard_to_topaz_dust",
-            ModItems.TOPAZ_SHARD.get(),
-            ModItems.TOPAZ_DUST.get(),
-            100,
-            1
-        ),
-        new CrusherRecipeDefinition(
-            "ruby_shard_to_ruby_dust",
-            ModItems.RUBY_SHARD.get(),
-            ModItems.RUBY_DUST.get(),
-            100,
-            1
-        ),
-        new CrusherRecipeDefinition(
-            "sapphire_shard_to_sapphire_dust",
-            ModItems.SAPPHIRE_SHARD.get(),
-            ModItems.SAPPHIRE_DUST.get(),
-            100,
-            1
+            "blaze_rod_to_blaze_dust",
+            Items.BLAZE_ROD,
+            Items.BLAZE_POWDER,
+            800,
+            4
         ),
         new CrusherRecipeDefinition(
             "coal_to_coal_dust",
             Items.COAL,
             ModItems.COAL_DUST.get(),
-            100,
-            1
+            800,
+            4
+        ),
+        // 黒曜石は 1 個から 4 個の粉へ砕けるように、結果だけ ItemStack で個数を持たせます。
+        new CrusherRecipeDefinition(
+            "obsidian_to_obsidian_dust",
+            Items.OBSIDIAN,
+            new ItemStack(ModItems.OBSIDIAN_DUST.get(), 4),
+            800,
+            4
+        ),
+        new CrusherRecipeDefinition(
+            "copper_ingot_to_copper_dust",
+            Items.COPPER_INGOT,
+            ModItems.COPPER_DUST.get(),
+            800,
+            4
+        ),
+        new CrusherRecipeDefinition(
+            "gold_ingot_to_gold_dust",
+            Items.GOLD_INGOT,
+            ModItems.GOLD_DUST.get(),
+            800,
+            4
+        ),
+        new CrusherRecipeDefinition(
+            "iron_ingot_to_iron_dust",
+            Items.IRON_INGOT,
+            ModItems.IRON_DUST.get(),
+            800,
+            4
+        ),
+        new CrusherRecipeDefinition(
+            "lapis_lazuli_to_lapis_dust",
+            Items.LAPIS_LAZULI,
+            ModItems.LAPIS_DUST.get(),
+            800,
+            4
+        ),
+        new CrusherRecipeDefinition(
+            "diamond_to_diamond_dust",
+            Items.DIAMOND,
+            ModItems.DIAMOND_DUST.get(),
+            800,
+            4
+        ),
+        new CrusherRecipeDefinition(
+            "emerald_to_emerald_dust",
+            Items.EMERALD,
+            ModItems.EMERALD_DUST.get(),
+            800,
+            4
+        ),
+                new CrusherRecipeDefinition(
+            "amethyst_shard_to_amethyst_dust",
+            Items.AMETHYST_SHARD,
+            ModItems.AMETHYST_DUST.get(),
+            800,
+            4
+        ),
+        new CrusherRecipeDefinition(
+            "aquamarine_shard_to_aquamarine_dust",
+            ModItems.AQUAMARINE_SHARD.get(),
+            ModItems.AQUAMARINE_DUST.get(),
+            800,
+            4
+        ),
+        new CrusherRecipeDefinition(
+            "topaz_shard_to_topaz_dust",
+            ModItems.TOPAZ_SHARD.get(),
+            ModItems.TOPAZ_DUST.get(),
+            800,
+            4
+        ),
+        new CrusherRecipeDefinition(
+            "ruby_shard_to_ruby_dust",
+            ModItems.RUBY_SHARD.get(),
+            ModItems.RUBY_DUST.get(),
+            800,
+            4
+        ),
+        new CrusherRecipeDefinition(
+            "sapphire_shard_to_sapphire_dust",
+            ModItems.SAPPHIRE_SHARD.get(),
+            ModItems.SAPPHIRE_DUST.get(),
+            800,
+            4
         )
     };
 
@@ -1149,13 +1165,13 @@ public class ModRecipeProvider extends RecipeProvider {
         RecipeOutput output,
         String recipeName,
         ItemLike ingredient,
-        ItemLike result,
+        ItemStack result,
         int totalCobblestonePower,
         int cobblestonePowerPerTick
     ) {
         CobblestoneCrusherRecipe recipe = new CobblestoneCrusherRecipe(
             Ingredient.of(ingredient),
-            new ItemStack(result),
+            result.copy(),
             totalCobblestonePower,
             cobblestonePowerPerTick
         );
@@ -1527,7 +1543,7 @@ public class ModRecipeProvider extends RecipeProvider {
     private static class CrusherRecipeDefinition {
         private final String recipeName;
         private final ItemLike ingredient;
-        private final ItemLike result;
+        private final ItemStack result;
         private final int totalCobblestonePower;
         private final int cobblestonePowerPerTick;
 
@@ -1538,9 +1554,19 @@ public class ModRecipeProvider extends RecipeProvider {
             int totalCobblestonePower,
             int cobblestonePowerPerTick
         ) {
+            this(recipeName, ingredient, new ItemStack(result), totalCobblestonePower, cobblestonePowerPerTick);
+        }
+
+        private CrusherRecipeDefinition(
+            String recipeName,
+            ItemLike ingredient,
+            ItemStack result,
+            int totalCobblestonePower,
+            int cobblestonePowerPerTick
+        ) {
             this.recipeName = recipeName;
             this.ingredient = ingredient;
-            this.result = result;
+            this.result = result.copy();
             this.totalCobblestonePower = totalCobblestonePower;
             this.cobblestonePowerPerTick = cobblestonePowerPerTick;
         }

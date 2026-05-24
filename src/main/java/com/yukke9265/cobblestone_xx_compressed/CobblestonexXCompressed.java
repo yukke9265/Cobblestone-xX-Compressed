@@ -116,6 +116,7 @@ public class CobblestonexXCompressed {
                     output.accept(mixture.getItem().get());
                 }
                 output.accept(ModItems.COAL_DUST.get());
+                output.accept(ModItems.OBSIDIAN_DUST.get());
                 output.accept(ModItems.CANNED_STABLE_ENDERITE.get());
                 output.accept(ModItems.EXTREME_COMPRESSED_CANNED_ENDERITE.get());
                 output.accept(ModItems.EXTREME_COMPRESSED_OBSIDIAN.get());
