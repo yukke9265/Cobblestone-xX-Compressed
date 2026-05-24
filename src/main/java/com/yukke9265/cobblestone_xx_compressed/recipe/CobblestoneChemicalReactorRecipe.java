@@ -10,7 +10,6 @@ import com.yukke9265.cobblestone_xx_compressed.registry.ModRecipeTypes;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
@@ -29,8 +28,8 @@ public class CobblestoneChemicalReactorRecipe implements Recipe<ChemicalReactorR
         ItemStack.CODEC.optionalFieldOf("result_item_2", ItemStack.EMPTY).forGetter(CobblestoneChemicalReactorRecipe::getSecondResultItem),
         FluidStack.CODEC.optionalFieldOf("result_fluid_1", FluidStack.EMPTY).forGetter(CobblestoneChemicalReactorRecipe::getFirstResultFluid),
         FluidStack.CODEC.optionalFieldOf("result_fluid_2", FluidStack.EMPTY).forGetter(CobblestoneChemicalReactorRecipe::getSecondResultFluid),
-        Codec.INT.fieldOf("total_cobblestone_power").forGetter(CobblestoneChemicalReactorRecipe::getTotalCobblestonePower),
-        Codec.INT.optionalFieldOf("cobblestone_power_per_tick", 1).forGetter(CobblestoneChemicalReactorRecipe::getCobblestonePowerPerTick)
+        Codec.LONG.fieldOf("total_cobblestone_power").forGetter(CobblestoneChemicalReactorRecipe::getTotalCobblestonePower),
+        Codec.LONG.optionalFieldOf("cobblestone_power_per_tick", 1L).forGetter(CobblestoneChemicalReactorRecipe::getCobblestonePowerPerTick)
     ).apply(instance, (firstItemInput, secondItemInput, firstFluidInput, secondFluidInput, firstResultItem, secondResultItem, firstResultFluid, secondResultFluid, totalPower, powerPerTick) ->
         new CobblestoneChemicalReactorRecipe(
             firstItemInput,
@@ -41,8 +40,8 @@ public class CobblestoneChemicalReactorRecipe implements Recipe<ChemicalReactorR
             secondResultItem,
             firstResultFluid,
             secondResultFluid,
-            totalPower.intValue(),
-            powerPerTick.intValue()
+            totalPower.longValue(),
+            powerPerTick.longValue()
         )));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, CobblestoneChemicalReactorRecipe> STREAM_CODEC = new StreamCodec<>() {
@@ -56,8 +55,8 @@ public class CobblestoneChemicalReactorRecipe implements Recipe<ChemicalReactorR
             ItemStack secondResultItem = decodeOptionalItemStack(buf);
             FluidStack firstResultFluid = FluidStack.STREAM_CODEC.decode(buf);
             FluidStack secondResultFluid = FluidStack.STREAM_CODEC.decode(buf);
-            int totalPower = ByteBufCodecs.INT.decode(buf);
-            int powerPerTick = ByteBufCodecs.INT.decode(buf);
+            long totalPower = buf.readLong();
+            long powerPerTick = buf.readLong();
             return new CobblestoneChemicalReactorRecipe(
                 firstItemInput,
                 secondItemInput,
@@ -82,8 +81,8 @@ public class CobblestoneChemicalReactorRecipe implements Recipe<ChemicalReactorR
             encodeOptionalItemStack(buf, recipe.getSecondResultItem());
             FluidStack.STREAM_CODEC.encode(buf, recipe.getFirstResultFluid());
             FluidStack.STREAM_CODEC.encode(buf, recipe.getSecondResultFluid());
-            ByteBufCodecs.INT.encode(buf, recipe.getTotalCobblestonePower());
-            ByteBufCodecs.INT.encode(buf, recipe.getCobblestonePowerPerTick());
+            buf.writeLong(recipe.getTotalCobblestonePower());
+            buf.writeLong(recipe.getCobblestonePowerPerTick());
         }
 
         private static ItemStack decodeOptionalItemStack(RegistryFriendlyByteBuf buf) {
@@ -111,8 +110,8 @@ public class CobblestoneChemicalReactorRecipe implements Recipe<ChemicalReactorR
     private final ItemStack secondResultItem;
     private final FluidStack firstResultFluid;
     private final FluidStack secondResultFluid;
-    private final int totalCobblestonePower;
-    private final int cobblestonePowerPerTick;
+    private final long totalCobblestonePower;
+    private final long cobblestonePowerPerTick;
 
     public CobblestoneChemicalReactorRecipe(
         ItemStack firstItemInput,
@@ -123,8 +122,8 @@ public class CobblestoneChemicalReactorRecipe implements Recipe<ChemicalReactorR
         ItemStack secondResultItem,
         FluidStack firstResultFluid,
         FluidStack secondResultFluid,
-        int totalCobblestonePower,
-        int cobblestonePowerPerTick
+        long totalCobblestonePower,
+        long cobblestonePowerPerTick
     ) {
         this.firstItemInput = firstItemInput.copy();
         this.secondItemInput = secondItemInput.copy();
@@ -134,7 +133,7 @@ public class CobblestoneChemicalReactorRecipe implements Recipe<ChemicalReactorR
         this.secondResultItem = secondResultItem.copy();
         this.firstResultFluid = firstResultFluid.copy();
         this.secondResultFluid = secondResultFluid.copy();
-        this.cobblestonePowerPerTick = Math.max(1, cobblestonePowerPerTick);
+        this.cobblestonePowerPerTick = Math.max(1L, cobblestonePowerPerTick);
         this.totalCobblestonePower = Math.max(this.cobblestonePowerPerTick, totalCobblestonePower);
     }
 
@@ -170,16 +169,17 @@ public class CobblestoneChemicalReactorRecipe implements Recipe<ChemicalReactorR
         return this.secondResultFluid.copy();
     }
 
-    public int getTotalCobblestonePower() {
+    public long getTotalCobblestonePower() {
         return this.totalCobblestonePower;
     }
 
-    public int getCobblestonePowerPerTick() {
+    public long getCobblestonePowerPerTick() {
         return this.cobblestonePowerPerTick;
     }
 
     public int getProcessingTime() {
-        return Math.max(1, (this.totalCobblestonePower + this.cobblestonePowerPerTick - 1) / this.cobblestonePowerPerTick);
+        long processingTime = (this.totalCobblestonePower + this.cobblestonePowerPerTick - 1L) / this.cobblestonePowerPerTick;
+        return Math.max(1, (int) Math.min(Integer.MAX_VALUE, processingTime));
     }
 
     public boolean hasFirstItemInput() {

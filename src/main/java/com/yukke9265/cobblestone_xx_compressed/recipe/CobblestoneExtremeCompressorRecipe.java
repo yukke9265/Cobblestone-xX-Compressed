@@ -25,41 +25,50 @@ public class CobblestoneExtremeCompressorRecipe implements Recipe<SingleRecipeIn
         Ingredient.CODEC.fieldOf("ingredient").forGetter(CobblestoneExtremeCompressorRecipe::getIngredient),
         ItemStack.CODEC.fieldOf("result").forGetter(CobblestoneExtremeCompressorRecipe::getResult),
         Codec.INT.fieldOf("required_item_count").forGetter(CobblestoneExtremeCompressorRecipe::getRequiredItemCount),
-        Codec.INT.fieldOf("total_cobblestone_power").forGetter(CobblestoneExtremeCompressorRecipe::getTotalCobblestonePower),
-        Codec.INT.optionalFieldOf("cobblestone_power_per_tick", 1).forGetter(CobblestoneExtremeCompressorRecipe::getCobblestonePowerPerTick)
-    ).apply(instance, CobblestoneExtremeCompressorRecipe::new));
+        Codec.LONG.fieldOf("total_cobblestone_power").forGetter(CobblestoneExtremeCompressorRecipe::getTotalCobblestonePower),
+        Codec.LONG.optionalFieldOf("cobblestone_power_per_tick", 1L).forGetter(CobblestoneExtremeCompressorRecipe::getCobblestonePowerPerTick)
+    ).apply(instance, (ingredient, result, requiredItemCount, totalCobblestonePower, cobblestonePowerPerTick) -> new CobblestoneExtremeCompressorRecipe(
+        ingredient,
+        result,
+        requiredItemCount.intValue(),
+        totalCobblestonePower.longValue(),
+        cobblestonePowerPerTick.longValue()
+    )));
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, CobblestoneExtremeCompressorRecipe> STREAM_CODEC = StreamCodec.composite(
-        Ingredient.CONTENTS_STREAM_CODEC,
-        CobblestoneExtremeCompressorRecipe::getIngredient,
-        ItemStack.STREAM_CODEC,
-        CobblestoneExtremeCompressorRecipe::getResult,
-        ByteBufCodecs.INT,
-        CobblestoneExtremeCompressorRecipe::getRequiredItemCount,
-        ByteBufCodecs.INT,
-        CobblestoneExtremeCompressorRecipe::getTotalCobblestonePower,
-        ByteBufCodecs.INT,
-        CobblestoneExtremeCompressorRecipe::getCobblestonePowerPerTick,
-        CobblestoneExtremeCompressorRecipe::new
+    public static final StreamCodec<RegistryFriendlyByteBuf, CobblestoneExtremeCompressorRecipe> STREAM_CODEC = StreamCodec.of(
+        (buf, recipe) -> {
+            Ingredient.CONTENTS_STREAM_CODEC.encode(buf, recipe.getIngredient());
+            ItemStack.STREAM_CODEC.encode(buf, recipe.getResult());
+            ByteBufCodecs.INT.encode(buf, recipe.getRequiredItemCount());
+            buf.writeLong(recipe.getTotalCobblestonePower());
+            buf.writeLong(recipe.getCobblestonePowerPerTick());
+        },
+        buf -> new CobblestoneExtremeCompressorRecipe(
+            Ingredient.CONTENTS_STREAM_CODEC.decode(buf),
+            ItemStack.STREAM_CODEC.decode(buf),
+            ByteBufCodecs.INT.decode(buf),
+            buf.readLong(),
+            buf.readLong()
+        )
     );
 
     private final Ingredient ingredient;
     private final ItemStack result;
     private final int requiredItemCount;
-    private final int totalCobblestonePower;
-    private final int cobblestonePowerPerTick;
+    private final long totalCobblestonePower;
+    private final long cobblestonePowerPerTick;
 
     public CobblestoneExtremeCompressorRecipe(
         Ingredient ingredient,
         ItemStack result,
         int requiredItemCount,
-        int totalCobblestonePower,
-        int cobblestonePowerPerTick
+        long totalCobblestonePower,
+        long cobblestonePowerPerTick
     ) {
         this.ingredient = ingredient;
         this.result = result;
         this.requiredItemCount = Math.max(1, requiredItemCount);
-        this.cobblestonePowerPerTick = Math.max(1, cobblestonePowerPerTick);
+        this.cobblestonePowerPerTick = Math.max(1L, cobblestonePowerPerTick);
         this.totalCobblestonePower = Math.max(this.cobblestonePowerPerTick, totalCobblestonePower);
     }
 
@@ -75,16 +84,17 @@ public class CobblestoneExtremeCompressorRecipe implements Recipe<SingleRecipeIn
         return this.requiredItemCount;
     }
 
-    public int getTotalCobblestonePower() {
+    public long getTotalCobblestonePower() {
         return this.totalCobblestonePower;
     }
 
-    public int getCobblestonePowerPerTick() {
+    public long getCobblestonePowerPerTick() {
         return this.cobblestonePowerPerTick;
     }
 
     public int getProcessingTime() {
-        return Math.max(1, (this.totalCobblestonePower + this.cobblestonePowerPerTick - 1) / this.cobblestonePowerPerTick);
+        long processingTime = (this.totalCobblestonePower + this.cobblestonePowerPerTick - 1L) / this.cobblestonePowerPerTick;
+        return Math.max(1, (int) Math.min(Integer.MAX_VALUE, processingTime));
     }
 
     @Override

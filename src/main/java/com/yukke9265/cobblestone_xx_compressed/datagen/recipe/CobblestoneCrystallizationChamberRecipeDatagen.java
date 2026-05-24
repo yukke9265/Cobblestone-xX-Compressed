@@ -10,11 +10,11 @@ import net.neoforged.neoforge.fluids.FluidStack;
 public final class CobblestoneCrystallizationChamberRecipeDatagen {
     private static final CrystallizationChamberRecipeDefinition[] RECIPES = new CrystallizationChamberRecipeDefinition[] {
         new CrystallizationChamberRecipeDefinition(
-            "molten_diamond_compressed_cobblestone_to_diamond_cobblestone_dust",
+            "molten_diamond_compressed_cobblestone_to_diamond_cobblestone_dirty_dust",
             new FluidStack(ModFluids.TierMoltenCompressedCobblestone.DIAMOND.getFluidEntry().getStillFluid().get(), 1000),
-            ModItems.TIER_DIAMOND_COBBLESTONE_DUST.get(),
-            51200,
-            512
+            ModItems.TIER_DIAMOND_COBBLESTONE_DIRTY_DUST.get(),
+            13421772800L,
+            262144
         )
     };
 
@@ -31,10 +31,10 @@ public final class CobblestoneCrystallizationChamberRecipeDatagen {
         private final String recipeName;
         private final FluidStack fluidInput;
         private final ItemLike result;
-        private final int totalCobblestonePower;
-        private final int cobblestonePowerPerTick;
+        private final long totalCobblestonePower;
+        private final long cobblestonePowerPerTick;
 
-        private CrystallizationChamberRecipeDefinition(String recipeName, FluidStack fluidInput, ItemLike result, int totalCobblestonePower, int cobblestonePowerPerTick) {
+        private CrystallizationChamberRecipeDefinition(String recipeName, FluidStack fluidInput, ItemLike result, long totalCobblestonePower, long cobblestonePowerPerTick) {
             this.recipeName = recipeName;
             this.fluidInput = fluidInput.copy();
             this.result = result;

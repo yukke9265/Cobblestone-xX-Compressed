@@ -73,10 +73,10 @@ public final class CobblestoneDissolutionChamberRecipeDatagen {
         private final ItemLike ingredient;
         private final FluidStack fluidInput;
         private final FluidStack fluidOutput;
-        private final int totalCobblestonePower;
-        private final int cobblestonePowerPerTick;
+        private final long totalCobblestonePower;
+        private final long cobblestonePowerPerTick;
 
-        private DissolutionChamberRecipeDefinition(String recipeName, ItemLike ingredient, FluidStack fluidInput, FluidStack fluidOutput, int totalCobblestonePower, int cobblestonePowerPerTick) {
+        private DissolutionChamberRecipeDefinition(String recipeName, ItemLike ingredient, FluidStack fluidInput, FluidStack fluidOutput, long totalCobblestonePower, long cobblestonePowerPerTick) {
             this.recipeName = recipeName;
             this.ingredient = ingredient;
             this.fluidInput = fluidInput.copy();

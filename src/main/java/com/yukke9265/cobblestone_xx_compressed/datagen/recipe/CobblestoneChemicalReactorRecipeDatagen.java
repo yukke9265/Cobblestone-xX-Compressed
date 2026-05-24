@@ -57,8 +57,8 @@ public final class CobblestoneChemicalReactorRecipeDatagen {
         private final ItemStack secondResultItem;
         private final FluidStack firstResultFluid;
         private final FluidStack secondResultFluid;
-        private final int totalCobblestonePower;
-        private final int cobblestonePowerPerTick;
+        private final long totalCobblestonePower;
+        private final long cobblestonePowerPerTick;
 
         private ChemicalReactorRecipeDefinition(
             String recipeName,
@@ -70,8 +70,8 @@ public final class CobblestoneChemicalReactorRecipeDatagen {
             ItemStack secondResultItem,
             FluidStack firstResultFluid,
             FluidStack secondResultFluid,
-            int totalCobblestonePower,
-            int cobblestonePowerPerTick
+            long totalCobblestonePower,
+            long cobblestonePowerPerTick
         ) {
             this.recipeName = recipeName;
             this.firstItemInput = firstItemInput.copy();

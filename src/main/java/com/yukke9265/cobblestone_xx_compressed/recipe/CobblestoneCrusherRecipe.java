@@ -10,7 +10,6 @@ import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -24,31 +23,39 @@ public class CobblestoneCrusherRecipe implements Recipe<SingleRecipeInput> {
     public static final MapCodec<CobblestoneCrusherRecipe> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
         Ingredient.CODEC.fieldOf("ingredient").forGetter(CobblestoneCrusherRecipe::getIngredient),
         ItemStack.CODEC.fieldOf("result").forGetter(CobblestoneCrusherRecipe::getResult),
-        Codec.INT.fieldOf("total_cobblestone_power").forGetter(CobblestoneCrusherRecipe::getTotalCobblestonePower),
-        Codec.INT.optionalFieldOf("cobblestone_power_per_tick", 1).forGetter(CobblestoneCrusherRecipe::getCobblestonePowerPerTick)
-    ).apply(instance, CobblestoneCrusherRecipe::new));
+        Codec.LONG.fieldOf("total_cobblestone_power").forGetter(CobblestoneCrusherRecipe::getTotalCobblestonePower),
+        Codec.LONG.optionalFieldOf("cobblestone_power_per_tick", 1L).forGetter(CobblestoneCrusherRecipe::getCobblestonePowerPerTick)
+    ).apply(instance, (ingredient, result, totalCobblestonePower, cobblestonePowerPerTick) -> new CobblestoneCrusherRecipe(
+        ingredient,
+        result,
+        totalCobblestonePower.longValue(),
+        cobblestonePowerPerTick.longValue()
+    )));
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, CobblestoneCrusherRecipe> STREAM_CODEC = StreamCodec.composite(
-        Ingredient.CONTENTS_STREAM_CODEC,
-        CobblestoneCrusherRecipe::getIngredient,
-        ItemStack.STREAM_CODEC,
-        CobblestoneCrusherRecipe::getResult,
-        ByteBufCodecs.INT,
-        CobblestoneCrusherRecipe::getTotalCobblestonePower,
-        ByteBufCodecs.INT,
-        CobblestoneCrusherRecipe::getCobblestonePowerPerTick,
-        CobblestoneCrusherRecipe::new
+    public static final StreamCodec<RegistryFriendlyByteBuf, CobblestoneCrusherRecipe> STREAM_CODEC = StreamCodec.of(
+        (buf, recipe) -> {
+            Ingredient.CONTENTS_STREAM_CODEC.encode(buf, recipe.getIngredient());
+            ItemStack.STREAM_CODEC.encode(buf, recipe.getResult());
+            buf.writeLong(recipe.getTotalCobblestonePower());
+            buf.writeLong(recipe.getCobblestonePowerPerTick());
+        },
+        buf -> new CobblestoneCrusherRecipe(
+            Ingredient.CONTENTS_STREAM_CODEC.decode(buf),
+            ItemStack.STREAM_CODEC.decode(buf),
+            buf.readLong(),
+            buf.readLong()
+        )
     );
 
     private final Ingredient ingredient;
     private final ItemStack result;
-    private final int totalCobblestonePower;
-    private final int cobblestonePowerPerTick;
+    private final long totalCobblestonePower;
+    private final long cobblestonePowerPerTick;
 
-    public CobblestoneCrusherRecipe(Ingredient ingredient, ItemStack result, int totalCobblestonePower, int cobblestonePowerPerTick) {
+    public CobblestoneCrusherRecipe(Ingredient ingredient, ItemStack result, long totalCobblestonePower, long cobblestonePowerPerTick) {
         this.ingredient = ingredient;
         this.result = result;
-        this.cobblestonePowerPerTick = Math.max(1, cobblestonePowerPerTick);
+        this.cobblestonePowerPerTick = Math.max(1L, cobblestonePowerPerTick);
         this.totalCobblestonePower = Math.max(this.cobblestonePowerPerTick, totalCobblestonePower);
     }
 
@@ -60,15 +67,16 @@ public class CobblestoneCrusherRecipe implements Recipe<SingleRecipeInput> {
         return this.result;
     }
 
-    public int getTotalCobblestonePower() {
+    public long getTotalCobblestonePower() {
         return this.totalCobblestonePower;
     }
 
     public int getProcessingTime() {
-        return Math.max(1, (this.totalCobblestonePower + this.cobblestonePowerPerTick - 1) / this.cobblestonePowerPerTick);
+        long processingTime = (this.totalCobblestonePower + this.cobblestonePowerPerTick - 1L) / this.cobblestonePowerPerTick;
+        return Math.max(1, (int) Math.min(Integer.MAX_VALUE, processingTime));
     }
 
-    public int getCobblestonePowerPerTick() {
+    public long getCobblestonePowerPerTick() {
         return this.cobblestonePowerPerTick;
     }
 

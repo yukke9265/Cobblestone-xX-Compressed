@@ -42,10 +42,10 @@ public final class CobblestoneMixerRecipeDatagen {
         private final ItemStack firstIngredient;
         private final ItemStack secondIngredient;
         private final ItemStack result;
-        private final int totalCobblestonePower;
-        private final int cobblestonePowerPerTick;
+        private final long totalCobblestonePower;
+        private final long cobblestonePowerPerTick;
 
-        private MixerRecipeDefinition(String recipeName, ItemStack firstIngredient, ItemStack secondIngredient, ItemStack result, int totalCobblestonePower, int cobblestonePowerPerTick) {
+        private MixerRecipeDefinition(String recipeName, ItemStack firstIngredient, ItemStack secondIngredient, ItemStack result, long totalCobblestonePower, long cobblestonePowerPerTick) {
             this.recipeName = recipeName;
             this.firstIngredient = firstIngredient.copy();
             this.secondIngredient = secondIngredient.copy();

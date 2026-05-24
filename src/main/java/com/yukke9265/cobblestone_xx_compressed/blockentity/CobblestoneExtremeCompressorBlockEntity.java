@@ -417,7 +417,7 @@ public class CobblestoneExtremeCompressorBlockEntity extends BaseBlockEntity imp
                     int progressStep = this.getProgressStep(recipe.getCobblestonePowerPerTick());
                     if (progressStep > 0) {
                         this.progress += progressStep;
-                        this.storedCobblestonePower -= (long) recipe.getCobblestonePowerPerTick() * progressStep;
+                        this.storedCobblestonePower -= recipe.getCobblestonePowerPerTick() * progressStep;
                         shouldTurnOn = true;
                         this.setChanged();
 
@@ -546,7 +546,7 @@ public class CobblestoneExtremeCompressorBlockEntity extends BaseBlockEntity imp
         return ItemStack.isSameItemSameComponents(this.storedInputTemplate, inputStack);
     }
 
-    private int getProgressStep(int cobblestonePowerPerTick) {
+    private int getProgressStep(long cobblestonePowerPerTick) {
         if (cobblestonePowerPerTick <= 0) {
             return 0;
         }

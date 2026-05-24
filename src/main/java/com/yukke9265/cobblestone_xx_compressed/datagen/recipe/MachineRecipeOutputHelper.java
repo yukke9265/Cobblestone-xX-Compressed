@@ -42,8 +42,8 @@ final class MachineRecipeOutputHelper {
         String recipeName,
         ItemLike ingredient,
         ItemLike result,
-        int totalCobblestonePower,
-        int cobblestonePowerPerTick
+        long totalCobblestonePower,
+        long cobblestonePowerPerTick
     ) {
         CobblestonePoweredFurnaceRecipe recipe = new CobblestonePoweredFurnaceRecipe(
             Ingredient.of(ingredient),
@@ -60,8 +60,8 @@ final class MachineRecipeOutputHelper {
         String recipeName,
         ItemLike ingredient,
         ItemStack result,
-        int totalCobblestonePower,
-        int cobblestonePowerPerTick
+        long totalCobblestonePower,
+        long cobblestonePowerPerTick
     ) {
         CobblestoneCrusherRecipe recipe = new CobblestoneCrusherRecipe(
             Ingredient.of(ingredient),
@@ -81,8 +81,8 @@ final class MachineRecipeOutputHelper {
         float firstResultChance,
         ItemStack secondResult,
         float secondResultChance,
-        int totalCobblestonePower,
-        int cobblestonePowerPerTick
+        long totalCobblestonePower,
+        long cobblestonePowerPerTick
     ) {
         CobblestoneCentrifugeRecipe recipe = new CobblestoneCentrifugeRecipe(
             Ingredient.of(ingredient),
@@ -105,8 +105,8 @@ final class MachineRecipeOutputHelper {
         float firstResultChance,
         ItemStack secondResult,
         float secondResultChance,
-        int totalCobblestonePower,
-        int cobblestonePowerPerTick
+        long totalCobblestonePower,
+        long cobblestonePowerPerTick
     ) {
         CobblestoneLaserDrillRecipe recipe = new CobblestoneLaserDrillRecipe(
             Ingredient.of(ingredient),
@@ -127,8 +127,8 @@ final class MachineRecipeOutputHelper {
         ItemLike ingredient,
         ItemLike result,
         int requiredItemCount,
-        int totalCobblestonePower,
-        int cobblestonePowerPerTick
+        long totalCobblestonePower,
+        long cobblestonePowerPerTick
     ) {
         CobblestoneExtremeCompressorRecipe recipe = new CobblestoneExtremeCompressorRecipe(
             Ingredient.of(ingredient),
@@ -147,8 +147,8 @@ final class MachineRecipeOutputHelper {
         ItemStack firstIngredient,
         ItemStack secondIngredient,
         ItemStack result,
-        int totalCobblestonePower,
-        int cobblestonePowerPerTick
+        long totalCobblestonePower,
+        long cobblestonePowerPerTick
     ) {
         CobblestoneMixerRecipe recipe = new CobblestoneMixerRecipe(
             firstIngredient,
@@ -166,8 +166,8 @@ final class MachineRecipeOutputHelper {
         String recipeName,
         ItemLike ingredient,
         FluidStack fluidResult,
-        int totalCobblestonePower,
-        int cobblestonePowerPerTick
+        long totalCobblestonePower,
+        long cobblestonePowerPerTick
     ) {
         CobblestoneMelterRecipe recipe = new CobblestoneMelterRecipe(
             Ingredient.of(ingredient),
@@ -190,8 +190,8 @@ final class MachineRecipeOutputHelper {
         ItemStack secondResultItem,
         FluidStack firstResultFluid,
         FluidStack secondResultFluid,
-        int totalCobblestonePower,
-        int cobblestonePowerPerTick
+        long totalCobblestonePower,
+        long cobblestonePowerPerTick
     ) {
         CobblestoneChemicalReactorRecipe recipe = new CobblestoneChemicalReactorRecipe(
             firstItemInput,
@@ -216,8 +216,8 @@ final class MachineRecipeOutputHelper {
         ItemLike firstIngredient,
         ItemLike secondIngredient,
         ItemStack result,
-        int totalCobblestonePower,
-        int cobblestonePowerPerTick
+        long totalCobblestonePower,
+        long cobblestonePowerPerTick
     ) {
         CobblestoneReactionChamberRecipe recipe = new CobblestoneReactionChamberRecipe(
             fluidInput,
@@ -242,8 +242,8 @@ final class MachineRecipeOutputHelper {
         ItemStack sixthItemInput,
         FluidStack fluidInput,
         ItemStack resultItem,
-        int totalCobblestonePower,
-        int cobblestonePowerPerTick
+        long totalCobblestonePower,
+        long cobblestonePowerPerTick
     ) {
         CobblestoneAssemblyMachineRecipe recipe = new CobblestoneAssemblyMachineRecipe(
             firstItemInput,
@@ -267,8 +267,8 @@ final class MachineRecipeOutputHelper {
         ItemLike ingredient,
         FluidStack fluidInput,
         FluidStack fluidOutput,
-        int totalCobblestonePower,
-        int cobblestonePowerPerTick
+        long totalCobblestonePower,
+        long cobblestonePowerPerTick
     ) {
         CobblestoneDissolutionChamberRecipe recipe = new CobblestoneDissolutionChamberRecipe(
             Ingredient.of(ingredient),
@@ -286,8 +286,8 @@ final class MachineRecipeOutputHelper {
         String recipeName,
         FluidStack fluidInput,
         ItemLike result,
-        int totalCobblestonePower,
-        int cobblestonePowerPerTick
+        long totalCobblestonePower,
+        long cobblestonePowerPerTick
     ) {
         CobblestoneCrystallizationChamberRecipe recipe = new CobblestoneCrystallizationChamberRecipe(
             fluidInput,
@@ -305,8 +305,8 @@ final class MachineRecipeOutputHelper {
         FluidStack firstFluidInput,
         FluidStack secondFluidInput,
         FluidStack fluidOutput,
-        int totalCobblestonePower,
-        int cobblestonePowerPerTick
+        long totalCobblestonePower,
+        long cobblestonePowerPerTick
     ) {
         CobblestoneFluidMixerRecipe recipe = new CobblestoneFluidMixerRecipe(
             firstFluidInput,

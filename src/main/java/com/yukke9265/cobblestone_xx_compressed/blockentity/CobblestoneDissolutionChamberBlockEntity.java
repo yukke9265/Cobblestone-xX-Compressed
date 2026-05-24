@@ -327,7 +327,7 @@ public class CobblestoneDissolutionChamberBlockEntity extends BaseBlockEntity im
             if (this.canProcess(recipe)) {
                 int progressStep = this.getProgressStep(recipe.getCobblestonePowerPerTick());
                 this.progress += progressStep;
-                this.storedCobblestonePower -= (long) recipe.getCobblestonePowerPerTick() * progressStep;
+                this.storedCobblestonePower -= recipe.getCobblestonePowerPerTick() * progressStep;
                 shouldTurnOn = true;
                 this.setChanged();
 
@@ -556,7 +556,7 @@ public class CobblestoneDissolutionChamberBlockEntity extends BaseBlockEntity im
         this.fillOutputInternal(recipe.getFluidOutput(), IFluidHandler.FluidAction.EXECUTE);
     }
 
-    private int getProgressStep(int cobblestonePowerPerTick) {
+    private int getProgressStep(long cobblestonePowerPerTick) {
         if (cobblestonePowerPerTick <= 0) {
             return 0;
         }

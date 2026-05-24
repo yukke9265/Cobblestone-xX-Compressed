@@ -276,7 +276,7 @@ public class CobblestoneMelterBlockEntity extends BaseBlockEntity implements Men
             if (this.canProcess(recipe)) {
                 int progressStep = this.getProgressStep(recipe.getCobblestonePowerPerTick());
                 this.progress += progressStep;
-                this.storedCobblestonePower -= (long) recipe.getCobblestonePowerPerTick() * progressStep;
+                this.storedCobblestonePower -= recipe.getCobblestonePowerPerTick() * progressStep;
                 shouldTurnOn = true;
                 this.setChanged();
 
@@ -376,7 +376,7 @@ public class CobblestoneMelterBlockEntity extends BaseBlockEntity implements Men
         this.fillInternal(recipe.getFluidResult(), IFluidHandler.FluidAction.EXECUTE);
     }
 
-    private int getProgressStep(int cobblestonePowerPerTick) {
+    private int getProgressStep(long cobblestonePowerPerTick) {
         if (cobblestonePowerPerTick <= 0) {
             return 0;
         }

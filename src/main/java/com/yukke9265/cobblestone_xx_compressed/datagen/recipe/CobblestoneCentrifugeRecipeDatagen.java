@@ -49,8 +49,8 @@ public final class CobblestoneCentrifugeRecipeDatagen {
         private final float firstResultChance;
         private final ItemStack secondResult;
         private final float secondResultChance;
-        private final int totalCobblestonePower;
-        private final int cobblestonePowerPerTick;
+        private final long totalCobblestonePower;
+        private final long cobblestonePowerPerTick;
 
         private CentrifugeRecipeDefinition(
             String recipeName,
@@ -59,8 +59,8 @@ public final class CobblestoneCentrifugeRecipeDatagen {
             float firstResultChance,
             ItemStack secondResult,
             float secondResultChance,
-            int totalCobblestonePower,
-            int cobblestonePowerPerTick
+            long totalCobblestonePower,
+            long cobblestonePowerPerTick
         ) {
             this.recipeName = recipeName;
             this.ingredient = ingredient;

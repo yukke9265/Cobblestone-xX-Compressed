@@ -28,8 +28,8 @@ public class CobblestoneCentrifugeRecipe implements Recipe<SingleRecipeInput> {
         Codec.floatRange(0.0F, 1.0F).optionalFieldOf("result_1_chance", 1.0F).forGetter(CobblestoneCentrifugeRecipe::getFirstResultChance),
         ItemStack.CODEC.fieldOf("result_2").forGetter(CobblestoneCentrifugeRecipe::getSecondResult),
         Codec.floatRange(0.0F, 1.0F).optionalFieldOf("result_2_chance", 1.0F).forGetter(CobblestoneCentrifugeRecipe::getSecondResultChance),
-        Codec.INT.optionalFieldOf("total_cobblestone_power", 200).forGetter(CobblestoneCentrifugeRecipe::getTotalCobblestonePower),
-        Codec.INT.optionalFieldOf("cobblestone_power_per_tick", 1).forGetter(CobblestoneCentrifugeRecipe::getCobblestonePowerPerTick)
+        Codec.LONG.optionalFieldOf("total_cobblestone_power", 200L).forGetter(CobblestoneCentrifugeRecipe::getTotalCobblestonePower),
+        Codec.LONG.optionalFieldOf("cobblestone_power_per_tick", 1L).forGetter(CobblestoneCentrifugeRecipe::getCobblestonePowerPerTick)
     ).apply(instance, (ingredient, firstResult, firstChance, secondResult, secondChance, totalPower, powerPerTick) ->
         new CobblestoneCentrifugeRecipe(
             ingredient,
@@ -37,8 +37,8 @@ public class CobblestoneCentrifugeRecipe implements Recipe<SingleRecipeInput> {
             firstChance.floatValue(),
             secondResult,
             secondChance.floatValue(),
-            totalPower.intValue(),
-            powerPerTick.intValue()
+            totalPower.longValue(),
+            powerPerTick.longValue()
         )));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, CobblestoneCentrifugeRecipe> STREAM_CODEC = new StreamCodec<>() {
@@ -49,8 +49,8 @@ public class CobblestoneCentrifugeRecipe implements Recipe<SingleRecipeInput> {
             float firstChance = ByteBufCodecs.FLOAT.decode(buf);
             ItemStack secondResult = ItemStack.STREAM_CODEC.decode(buf);
             float secondChance = ByteBufCodecs.FLOAT.decode(buf);
-            int totalPower = ByteBufCodecs.INT.decode(buf);
-            int powerPerTick = ByteBufCodecs.INT.decode(buf);
+            long totalPower = buf.readLong();
+            long powerPerTick = buf.readLong();
             return new CobblestoneCentrifugeRecipe(
                 ingredient,
                 firstResult,
@@ -69,8 +69,8 @@ public class CobblestoneCentrifugeRecipe implements Recipe<SingleRecipeInput> {
             ByteBufCodecs.FLOAT.encode(buf, recipe.getFirstResultChance());
             ItemStack.STREAM_CODEC.encode(buf, recipe.getSecondResult());
             ByteBufCodecs.FLOAT.encode(buf, recipe.getSecondResultChance());
-            ByteBufCodecs.INT.encode(buf, recipe.getTotalCobblestonePower());
-            ByteBufCodecs.INT.encode(buf, recipe.getCobblestonePowerPerTick());
+            buf.writeLong(recipe.getTotalCobblestonePower());
+            buf.writeLong(recipe.getCobblestonePowerPerTick());
         }
     };
 
@@ -79,8 +79,8 @@ public class CobblestoneCentrifugeRecipe implements Recipe<SingleRecipeInput> {
     private final float firstResultChance;
     private final ItemStack secondResult;
     private final float secondResultChance;
-    private final int totalCobblestonePower;
-    private final int cobblestonePowerPerTick;
+    private final long totalCobblestonePower;
+    private final long cobblestonePowerPerTick;
 
     public CobblestoneCentrifugeRecipe(
         Ingredient ingredient,
@@ -88,15 +88,15 @@ public class CobblestoneCentrifugeRecipe implements Recipe<SingleRecipeInput> {
         float firstResultChance,
         ItemStack secondResult,
         float secondResultChance,
-        int totalCobblestonePower,
-        int cobblestonePowerPerTick
+        long totalCobblestonePower,
+        long cobblestonePowerPerTick
     ) {
         this.ingredient = ingredient;
         this.firstResult = firstResult;
         this.firstResultChance = firstResultChance;
         this.secondResult = secondResult;
         this.secondResultChance = secondResultChance;
-        this.cobblestonePowerPerTick = Math.max(1, cobblestonePowerPerTick);
+        this.cobblestonePowerPerTick = Math.max(1L, cobblestonePowerPerTick);
         this.totalCobblestonePower = Math.max(this.cobblestonePowerPerTick, totalCobblestonePower);
     }
 
@@ -120,16 +120,17 @@ public class CobblestoneCentrifugeRecipe implements Recipe<SingleRecipeInput> {
         return this.secondResultChance;
     }
 
-    public int getTotalCobblestonePower() {
+    public long getTotalCobblestonePower() {
         return this.totalCobblestonePower;
     }
 
-    public int getCobblestonePowerPerTick() {
+    public long getCobblestonePowerPerTick() {
         return this.cobblestonePowerPerTick;
     }
 
     public int getProcessingTime() {
-        return Math.max(1, (this.totalCobblestonePower + this.cobblestonePowerPerTick - 1) / this.cobblestonePowerPerTick);
+        long processingTime = (this.totalCobblestonePower + this.cobblestonePowerPerTick - 1L) / this.cobblestonePowerPerTick;
+        return Math.max(1, (int) Math.min(Integer.MAX_VALUE, processingTime));
     }
 
     public ItemStack rollFirstResult(RandomSource random) {

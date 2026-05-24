@@ -56,8 +56,8 @@ public final class CobblestoneAssemblyMachineRecipeDatagen {
         private final ItemStack sixthItemInput;
         private final FluidStack fluidInput;
         private final ItemStack resultItem;
-        private final int totalCobblestonePower;
-        private final int cobblestonePowerPerTick;
+        private final long totalCobblestonePower;
+        private final long cobblestonePowerPerTick;
 
         private AssemblyMachineRecipeDefinition(
             String recipeName,
@@ -69,8 +69,8 @@ public final class CobblestoneAssemblyMachineRecipeDatagen {
             ItemStack sixthItemInput,
             FluidStack fluidInput,
             ItemStack resultItem,
-            int totalCobblestonePower,
-            int cobblestonePowerPerTick
+            long totalCobblestonePower,
+            long cobblestonePowerPerTick
         ) {
             this.recipeName = recipeName;
             this.firstItemInput = firstItemInput.copy();

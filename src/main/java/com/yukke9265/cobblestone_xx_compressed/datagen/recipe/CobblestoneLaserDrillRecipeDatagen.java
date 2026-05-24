@@ -129,8 +129,8 @@ public final class CobblestoneLaserDrillRecipeDatagen {
         private final float firstResultChance;
         private final ItemStack secondResult;
         private final float secondResultChance;
-        private final int totalCobblestonePower;
-        private final int cobblestonePowerPerTick;
+        private final long totalCobblestonePower;
+        private final long cobblestonePowerPerTick;
 
         private LaserDrillRecipeDefinition(
             String recipeName,
@@ -139,8 +139,8 @@ public final class CobblestoneLaserDrillRecipeDatagen {
             float firstResultChance,
             ItemStack secondResult,
             float secondResultChance,
-            int totalCobblestonePower,
-            int cobblestonePowerPerTick
+            long totalCobblestonePower,
+            long cobblestonePowerPerTick
         ) {
             this.recipeName = recipeName;
             this.ingredient = ingredient;

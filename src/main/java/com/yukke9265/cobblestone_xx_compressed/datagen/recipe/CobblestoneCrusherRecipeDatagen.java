@@ -52,14 +52,14 @@ public final class CobblestoneCrusherRecipeDatagen {
         private final String recipeName;
         private final ItemLike ingredient;
         private final ItemStack result;
-        private final int totalCobblestonePower;
-        private final int cobblestonePowerPerTick;
+        private final long totalCobblestonePower;
+        private final long cobblestonePowerPerTick;
 
-        private CrusherRecipeDefinition(String recipeName, ItemLike ingredient, ItemLike result, int totalCobblestonePower, int cobblestonePowerPerTick) {
+        private CrusherRecipeDefinition(String recipeName, ItemLike ingredient, ItemLike result, long totalCobblestonePower, long cobblestonePowerPerTick) {
             this(recipeName, ingredient, new ItemStack(result), totalCobblestonePower, cobblestonePowerPerTick);
         }
 
-        private CrusherRecipeDefinition(String recipeName, ItemLike ingredient, ItemStack result, int totalCobblestonePower, int cobblestonePowerPerTick) {
+        private CrusherRecipeDefinition(String recipeName, ItemLike ingredient, ItemStack result, long totalCobblestonePower, long cobblestonePowerPerTick) {
             this.recipeName = recipeName;
             this.ingredient = ingredient;
             this.result = result.copy();

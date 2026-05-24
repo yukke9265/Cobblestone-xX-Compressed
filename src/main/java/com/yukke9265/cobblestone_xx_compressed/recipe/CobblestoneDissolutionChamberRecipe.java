@@ -10,7 +10,6 @@ import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -25,41 +24,50 @@ public class CobblestoneDissolutionChamberRecipe implements Recipe<DissolutionCh
         Ingredient.CODEC.fieldOf("ingredient").forGetter(CobblestoneDissolutionChamberRecipe::getIngredient),
         FluidStack.CODEC.fieldOf("fluid_input").forGetter(CobblestoneDissolutionChamberRecipe::getFluidInput),
         FluidStack.CODEC.fieldOf("fluid_output").forGetter(CobblestoneDissolutionChamberRecipe::getFluidOutput),
-        Codec.INT.fieldOf("total_cobblestone_power").forGetter(CobblestoneDissolutionChamberRecipe::getTotalCobblestonePower),
-        Codec.INT.fieldOf("cobblestone_power_per_tick").forGetter(CobblestoneDissolutionChamberRecipe::getCobblestonePowerPerTick)
-    ).apply(instance, CobblestoneDissolutionChamberRecipe::new));
+        Codec.LONG.fieldOf("total_cobblestone_power").forGetter(CobblestoneDissolutionChamberRecipe::getTotalCobblestonePower),
+        Codec.LONG.fieldOf("cobblestone_power_per_tick").forGetter(CobblestoneDissolutionChamberRecipe::getCobblestonePowerPerTick)
+    ).apply(instance, (ingredient, fluidInput, fluidOutput, totalCobblestonePower, cobblestonePowerPerTick) -> new CobblestoneDissolutionChamberRecipe(
+        ingredient,
+        fluidInput,
+        fluidOutput,
+        totalCobblestonePower.longValue(),
+        cobblestonePowerPerTick.longValue()
+    )));
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, CobblestoneDissolutionChamberRecipe> STREAM_CODEC = StreamCodec.composite(
-        Ingredient.CONTENTS_STREAM_CODEC,
-        CobblestoneDissolutionChamberRecipe::getIngredient,
-        FluidStack.STREAM_CODEC,
-        CobblestoneDissolutionChamberRecipe::getFluidInput,
-        FluidStack.STREAM_CODEC,
-        CobblestoneDissolutionChamberRecipe::getFluidOutput,
-        ByteBufCodecs.INT,
-        CobblestoneDissolutionChamberRecipe::getTotalCobblestonePower,
-        ByteBufCodecs.INT,
-        CobblestoneDissolutionChamberRecipe::getCobblestonePowerPerTick,
-        CobblestoneDissolutionChamberRecipe::new
+    public static final StreamCodec<RegistryFriendlyByteBuf, CobblestoneDissolutionChamberRecipe> STREAM_CODEC = StreamCodec.of(
+        (buf, recipe) -> {
+            Ingredient.CONTENTS_STREAM_CODEC.encode(buf, recipe.getIngredient());
+            FluidStack.STREAM_CODEC.encode(buf, recipe.getFluidInput());
+            FluidStack.STREAM_CODEC.encode(buf, recipe.getFluidOutput());
+            buf.writeLong(recipe.getTotalCobblestonePower());
+            buf.writeLong(recipe.getCobblestonePowerPerTick());
+        },
+        buf -> new CobblestoneDissolutionChamberRecipe(
+            Ingredient.CONTENTS_STREAM_CODEC.decode(buf),
+            FluidStack.STREAM_CODEC.decode(buf),
+            FluidStack.STREAM_CODEC.decode(buf),
+            buf.readLong(),
+            buf.readLong()
+        )
     );
 
     private final Ingredient ingredient;
     private final FluidStack fluidInput;
     private final FluidStack fluidOutput;
-    private final int totalCobblestonePower;
-    private final int cobblestonePowerPerTick;
+    private final long totalCobblestonePower;
+    private final long cobblestonePowerPerTick;
 
     public CobblestoneDissolutionChamberRecipe(
         Ingredient ingredient,
         FluidStack fluidInput,
         FluidStack fluidOutput,
-        int totalCobblestonePower,
-        int cobblestonePowerPerTick
+        long totalCobblestonePower,
+        long cobblestonePowerPerTick
     ) {
         this.ingredient = ingredient;
         this.fluidInput = fluidInput.copy();
         this.fluidOutput = fluidOutput.copy();
-        this.cobblestonePowerPerTick = Math.max(1, cobblestonePowerPerTick);
+        this.cobblestonePowerPerTick = Math.max(1L, cobblestonePowerPerTick);
         this.totalCobblestonePower = Math.max(this.cobblestonePowerPerTick, totalCobblestonePower);
     }
 
@@ -75,16 +83,17 @@ public class CobblestoneDissolutionChamberRecipe implements Recipe<DissolutionCh
         return this.fluidOutput.copy();
     }
 
-    public int getTotalCobblestonePower() {
+    public long getTotalCobblestonePower() {
         return this.totalCobblestonePower;
     }
 
-    public int getCobblestonePowerPerTick() {
+    public long getCobblestonePowerPerTick() {
         return this.cobblestonePowerPerTick;
     }
 
     public int getProcessingTime() {
-        return Math.max(1, (this.totalCobblestonePower + this.cobblestonePowerPerTick - 1) / this.cobblestonePowerPerTick);
+        long processingTime = (this.totalCobblestonePower + this.cobblestonePowerPerTick - 1L) / this.cobblestonePowerPerTick;
+        return Math.max(1, (int) Math.min(Integer.MAX_VALUE, processingTime));
     }
 
     @Override

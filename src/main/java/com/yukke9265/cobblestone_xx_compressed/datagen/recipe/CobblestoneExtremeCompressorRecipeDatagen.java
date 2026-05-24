@@ -40,16 +40,16 @@ public final class CobblestoneExtremeCompressorRecipeDatagen {
         private final ItemLike ingredient;
         private final ItemLike result;
         private final int requiredItemCount;
-        private final int totalCobblestonePower;
-        private final int cobblestonePowerPerTick;
+        private final long totalCobblestonePower;
+        private final long cobblestonePowerPerTick;
 
         private ExtremeCompressorRecipeDefinition(
             String recipeName,
             ItemLike ingredient,
             ItemLike result,
             int requiredItemCount,
-            int totalCobblestonePower,
-            int cobblestonePowerPerTick
+            long totalCobblestonePower,
+            long cobblestonePowerPerTick
         ) {
             this.recipeName = recipeName;
             this.ingredient = ingredient;

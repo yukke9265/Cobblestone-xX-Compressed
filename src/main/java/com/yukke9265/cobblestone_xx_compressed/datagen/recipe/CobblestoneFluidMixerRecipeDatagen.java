@@ -12,7 +12,7 @@ public final class CobblestoneFluidMixerRecipeDatagen {
             new FluidStack(ModFluids.WaterBasedFluid.SHINY_SAPPHIRE.getFluidEntry().getStillFluid().get(), 1000),
             new FluidStack(net.minecraft.world.level.material.Fluids.WATER, 10000),
             new FluidStack(ModFluids.WaterBasedFluid.SHINY_WATER.getFluidEntry().getStillFluid().get(), 1000),
-            1677721600,
+            1677721600L,
             65536
         ),
         new FluidMixerRecipeDefinition(
@@ -20,7 +20,7 @@ public final class CobblestoneFluidMixerRecipeDatagen {
             new FluidStack(ModFluids.WaterBasedFluid.SHINY_BLAZE.getFluidEntry().getStillFluid().get(), 1000),
             new FluidStack(net.minecraft.world.level.material.Fluids.LAVA, 1000),
             new FluidStack(ModFluids.WaterBasedFluid.HOT_LAVA.getFluidEntry().getStillFluid().get(), 1000),
-            1677721600,
+            1677721600L,
             65536
         ),
         new FluidMixerRecipeDefinition(
@@ -28,7 +28,7 @@ public final class CobblestoneFluidMixerRecipeDatagen {
             new FluidStack(ModFluids.WaterBasedFluid.UNSTABLE_EMERALD.getFluidEntry().getStillFluid().get(), 1000),
             new FluidStack(ModFluids.WaterBasedFluid.HOT_LAVA.getFluidEntry().getStillFluid().get(), 1000),
             new FluidStack(ModFluids.WaterBasedFluid.HOT_UNSTABLE_EMERALD.getFluidEntry().getStillFluid().get(), 1000),
-            1677721600,
+            1677721600L,
             65536
         ),
         new FluidMixerRecipeDefinition(
@@ -36,7 +36,7 @@ public final class CobblestoneFluidMixerRecipeDatagen {
             new FluidStack(ModFluids.WaterBasedFluid.MOLTEN_NETHERITE.getFluidEntry().getStillFluid().get(), 1000),
             new FluidStack(ModFluids.WaterBasedFluid.MOLTEN_ENDER.getFluidEntry().getStillFluid().get(), 1000),
             new FluidStack(ModFluids.WaterBasedFluid.UNSTABLE_ENDERITE.getFluidEntry().getStillFluid().get(), 1000),
-            1677721600,
+            1677721600L,
             65536
         )
     };
@@ -55,10 +55,10 @@ public final class CobblestoneFluidMixerRecipeDatagen {
         private final FluidStack firstFluidInput;
         private final FluidStack secondFluidInput;
         private final FluidStack fluidOutput;
-        private final int totalCobblestonePower;
-        private final int cobblestonePowerPerTick;
+        private final long totalCobblestonePower;
+        private final long cobblestonePowerPerTick;
 
-        private FluidMixerRecipeDefinition(String recipeName, FluidStack firstFluidInput, FluidStack secondFluidInput, FluidStack fluidOutput, int totalCobblestonePower, int cobblestonePowerPerTick) {
+        private FluidMixerRecipeDefinition(String recipeName, FluidStack firstFluidInput, FluidStack secondFluidInput, FluidStack fluidOutput, long totalCobblestonePower, long cobblestonePowerPerTick) {
             this.recipeName = recipeName;
             this.firstFluidInput = firstFluidInput.copy();
             this.secondFluidInput = secondFluidInput.copy();

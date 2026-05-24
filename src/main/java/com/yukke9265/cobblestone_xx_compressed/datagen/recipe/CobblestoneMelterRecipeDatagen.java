@@ -75,10 +75,10 @@ public final class CobblestoneMelterRecipeDatagen {
         private final String recipeName;
         private final ItemLike ingredient;
         private final FluidStack fluidResult;
-        private final int totalCobblestonePower;
-        private final int cobblestonePowerPerTick;
+        private final long totalCobblestonePower;
+        private final long cobblestonePowerPerTick;
 
-        private MelterRecipeDefinition(String recipeName, ItemLike ingredient, FluidStack fluidResult, int totalCobblestonePower, int cobblestonePowerPerTick) {
+        private MelterRecipeDefinition(String recipeName, ItemLike ingredient, FluidStack fluidResult, long totalCobblestonePower, long cobblestonePowerPerTick) {
             this.recipeName = recipeName;
             this.ingredient = ingredient;
             this.fluidResult = fluidResult.copy();

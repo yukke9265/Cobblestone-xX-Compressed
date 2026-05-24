@@ -355,7 +355,7 @@ public class CobblestoneReactionChamberBlockEntity extends BaseBlockEntity imple
             if (this.canProcess(recipe)) {
                 int progressStep = this.getProgressStep(recipe.getCobblestonePowerPerTick());
                 this.progress += progressStep;
-                this.storedCobblestonePower -= (long) recipe.getCobblestonePowerPerTick() * progressStep;
+                this.storedCobblestonePower -= recipe.getCobblestonePowerPerTick() * progressStep;
                 shouldTurnOn = true;
                 this.setChanged();
 
@@ -493,7 +493,7 @@ public class CobblestoneReactionChamberBlockEntity extends BaseBlockEntity imple
         }
     }
 
-    private int getProgressStep(int cobblestonePowerPerTick) {
+    private int getProgressStep(long cobblestonePowerPerTick) {
         if (cobblestonePowerPerTick <= 0) {
             return 0;
         }

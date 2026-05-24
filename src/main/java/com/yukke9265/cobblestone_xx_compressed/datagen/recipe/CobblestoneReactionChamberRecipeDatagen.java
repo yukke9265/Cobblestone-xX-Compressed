@@ -110,10 +110,10 @@ public final class CobblestoneReactionChamberRecipeDatagen {
         private final ItemLike firstIngredient;
         private final ItemLike secondIngredient;
         private final ItemStack result;
-        private final int totalCobblestonePower;
-        private final int cobblestonePowerPerTick;
+        private final long totalCobblestonePower;
+        private final long cobblestonePowerPerTick;
 
-        private ReactionChamberRecipeDefinition(String recipeName, FluidStack fluidInput, ItemLike firstIngredient, ItemLike secondIngredient, ItemStack result, int totalCobblestonePower, int cobblestonePowerPerTick) {
+        private ReactionChamberRecipeDefinition(String recipeName, FluidStack fluidInput, ItemLike firstIngredient, ItemLike secondIngredient, ItemStack result, long totalCobblestonePower, long cobblestonePowerPerTick) {
             this.recipeName = recipeName;
             this.fluidInput = fluidInput.copy();
             this.firstIngredient = firstIngredient;

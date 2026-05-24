@@ -10,7 +10,6 @@ import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
@@ -24,41 +23,50 @@ public class CobblestoneFluidMixerRecipe implements Recipe<FluidMixerRecipeInput
         FluidStack.CODEC.fieldOf("fluid_input_1").forGetter(CobblestoneFluidMixerRecipe::getFirstFluidInput),
         FluidStack.CODEC.fieldOf("fluid_input_2").forGetter(CobblestoneFluidMixerRecipe::getSecondFluidInput),
         FluidStack.CODEC.fieldOf("fluid_output").forGetter(CobblestoneFluidMixerRecipe::getFluidOutput),
-        Codec.INT.fieldOf("total_cobblestone_power").forGetter(CobblestoneFluidMixerRecipe::getTotalCobblestonePower),
-        Codec.INT.fieldOf("cobblestone_power_per_tick").forGetter(CobblestoneFluidMixerRecipe::getCobblestonePowerPerTick)
-    ).apply(instance, CobblestoneFluidMixerRecipe::new));
+        Codec.LONG.fieldOf("total_cobblestone_power").forGetter(CobblestoneFluidMixerRecipe::getTotalCobblestonePower),
+        Codec.LONG.fieldOf("cobblestone_power_per_tick").forGetter(CobblestoneFluidMixerRecipe::getCobblestonePowerPerTick)
+    ).apply(instance, (firstFluidInput, secondFluidInput, fluidOutput, totalCobblestonePower, cobblestonePowerPerTick) -> new CobblestoneFluidMixerRecipe(
+        firstFluidInput,
+        secondFluidInput,
+        fluidOutput,
+        totalCobblestonePower.longValue(),
+        cobblestonePowerPerTick.longValue()
+    )));
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, CobblestoneFluidMixerRecipe> STREAM_CODEC = StreamCodec.composite(
-        FluidStack.STREAM_CODEC,
-        CobblestoneFluidMixerRecipe::getFirstFluidInput,
-        FluidStack.STREAM_CODEC,
-        CobblestoneFluidMixerRecipe::getSecondFluidInput,
-        FluidStack.STREAM_CODEC,
-        CobblestoneFluidMixerRecipe::getFluidOutput,
-        ByteBufCodecs.INT,
-        CobblestoneFluidMixerRecipe::getTotalCobblestonePower,
-        ByteBufCodecs.INT,
-        CobblestoneFluidMixerRecipe::getCobblestonePowerPerTick,
-        CobblestoneFluidMixerRecipe::new
+    public static final StreamCodec<RegistryFriendlyByteBuf, CobblestoneFluidMixerRecipe> STREAM_CODEC = StreamCodec.of(
+        (buf, recipe) -> {
+            FluidStack.STREAM_CODEC.encode(buf, recipe.getFirstFluidInput());
+            FluidStack.STREAM_CODEC.encode(buf, recipe.getSecondFluidInput());
+            FluidStack.STREAM_CODEC.encode(buf, recipe.getFluidOutput());
+            buf.writeLong(recipe.getTotalCobblestonePower());
+            buf.writeLong(recipe.getCobblestonePowerPerTick());
+        },
+        buf -> new CobblestoneFluidMixerRecipe(
+            FluidStack.STREAM_CODEC.decode(buf),
+            FluidStack.STREAM_CODEC.decode(buf),
+            FluidStack.STREAM_CODEC.decode(buf),
+            buf.readLong(),
+            buf.readLong()
+        )
     );
 
     private final FluidStack firstFluidInput;
     private final FluidStack secondFluidInput;
     private final FluidStack fluidOutput;
-    private final int totalCobblestonePower;
-    private final int cobblestonePowerPerTick;
+    private final long totalCobblestonePower;
+    private final long cobblestonePowerPerTick;
 
     public CobblestoneFluidMixerRecipe(
         FluidStack firstFluidInput,
         FluidStack secondFluidInput,
         FluidStack fluidOutput,
-        int totalCobblestonePower,
-        int cobblestonePowerPerTick
+        long totalCobblestonePower,
+        long cobblestonePowerPerTick
     ) {
         this.firstFluidInput = firstFluidInput.copy();
         this.secondFluidInput = secondFluidInput.copy();
         this.fluidOutput = fluidOutput.copy();
-        this.cobblestonePowerPerTick = Math.max(1, cobblestonePowerPerTick);
+        this.cobblestonePowerPerTick = Math.max(1L, cobblestonePowerPerTick);
         this.totalCobblestonePower = Math.max(this.cobblestonePowerPerTick, totalCobblestonePower);
     }
 
@@ -74,16 +82,17 @@ public class CobblestoneFluidMixerRecipe implements Recipe<FluidMixerRecipeInput
         return this.fluidOutput.copy();
     }
 
-    public int getTotalCobblestonePower() {
+    public long getTotalCobblestonePower() {
         return this.totalCobblestonePower;
     }
 
-    public int getCobblestonePowerPerTick() {
+    public long getCobblestonePowerPerTick() {
         return this.cobblestonePowerPerTick;
     }
 
     public int getProcessingTime() {
-        return Math.max(1, (this.totalCobblestonePower + this.cobblestonePowerPerTick - 1) / this.cobblestonePowerPerTick);
+        long processingTime = (this.totalCobblestonePower + this.cobblestonePowerPerTick - 1L) / this.cobblestonePowerPerTick;
+        return Math.max(1, (int) Math.min(Integer.MAX_VALUE, processingTime));
     }
 
     @Override

@@ -10,7 +10,6 @@ import com.yukke9265.cobblestone_xx_compressed.registry.ModRecipeTypes;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
@@ -30,8 +29,8 @@ public class CobblestoneAssemblyMachineRecipe implements Recipe<AssemblyMachineR
         ItemStack.CODEC.optionalFieldOf("item_input_6", ItemStack.EMPTY).forGetter(CobblestoneAssemblyMachineRecipe::getSixthItemInput),
         FluidStack.CODEC.optionalFieldOf("fluid_input", FluidStack.EMPTY).forGetter(CobblestoneAssemblyMachineRecipe::getFluidInput),
         ItemStack.CODEC.fieldOf("result_item").forGetter(CobblestoneAssemblyMachineRecipe::getResultItemStack),
-        Codec.INT.fieldOf("total_cobblestone_power").forGetter(CobblestoneAssemblyMachineRecipe::getTotalCobblestonePower),
-        Codec.INT.optionalFieldOf("cobblestone_power_per_tick", 1).forGetter(CobblestoneAssemblyMachineRecipe::getCobblestonePowerPerTick)
+        Codec.LONG.fieldOf("total_cobblestone_power").forGetter(CobblestoneAssemblyMachineRecipe::getTotalCobblestonePower),
+        Codec.LONG.optionalFieldOf("cobblestone_power_per_tick", 1L).forGetter(CobblestoneAssemblyMachineRecipe::getCobblestonePowerPerTick)
     ).apply(instance, (firstItemInput, secondItemInput, thirdItemInput, fourthItemInput, fifthItemInput, sixthItemInput, fluidInput, resultItem, totalPower, powerPerTick) ->
         new CobblestoneAssemblyMachineRecipe(
             firstItemInput,
@@ -42,8 +41,8 @@ public class CobblestoneAssemblyMachineRecipe implements Recipe<AssemblyMachineR
             sixthItemInput,
             fluidInput,
             resultItem,
-            totalPower.intValue(),
-            powerPerTick.intValue()
+            totalPower.longValue(),
+            powerPerTick.longValue()
         )));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, CobblestoneAssemblyMachineRecipe> STREAM_CODEC = new StreamCodec<>() {
@@ -57,8 +56,8 @@ public class CobblestoneAssemblyMachineRecipe implements Recipe<AssemblyMachineR
             ItemStack sixthItemInput = decodeOptionalItemStack(buf);
             FluidStack fluidInput = FluidStack.STREAM_CODEC.decode(buf);
             ItemStack resultItem = ItemStack.STREAM_CODEC.decode(buf);
-            int totalPower = ByteBufCodecs.INT.decode(buf);
-            int powerPerTick = ByteBufCodecs.INT.decode(buf);
+            long totalPower = buf.readLong();
+            long powerPerTick = buf.readLong();
             return new CobblestoneAssemblyMachineRecipe(
                 firstItemInput,
                 secondItemInput,
@@ -83,8 +82,8 @@ public class CobblestoneAssemblyMachineRecipe implements Recipe<AssemblyMachineR
             encodeOptionalItemStack(buf, recipe.getSixthItemInput());
             FluidStack.STREAM_CODEC.encode(buf, recipe.getFluidInput());
             ItemStack.STREAM_CODEC.encode(buf, recipe.getResultItemStack());
-            ByteBufCodecs.INT.encode(buf, recipe.getTotalCobblestonePower());
-            ByteBufCodecs.INT.encode(buf, recipe.getCobblestonePowerPerTick());
+            buf.writeLong(recipe.getTotalCobblestonePower());
+            buf.writeLong(recipe.getCobblestonePowerPerTick());
         }
 
         private static ItemStack decodeOptionalItemStack(RegistryFriendlyByteBuf buf) {
@@ -112,8 +111,8 @@ public class CobblestoneAssemblyMachineRecipe implements Recipe<AssemblyMachineR
     private final ItemStack sixthItemInput;
     private final FluidStack fluidInput;
     private final ItemStack resultItem;
-    private final int totalCobblestonePower;
-    private final int cobblestonePowerPerTick;
+    private final long totalCobblestonePower;
+    private final long cobblestonePowerPerTick;
 
     public CobblestoneAssemblyMachineRecipe(
         ItemStack firstItemInput,
@@ -124,8 +123,8 @@ public class CobblestoneAssemblyMachineRecipe implements Recipe<AssemblyMachineR
         ItemStack sixthItemInput,
         FluidStack fluidInput,
         ItemStack resultItem,
-        int totalCobblestonePower,
-        int cobblestonePowerPerTick
+        long totalCobblestonePower,
+        long cobblestonePowerPerTick
     ) {
         this.firstItemInput = firstItemInput.copy();
         this.secondItemInput = secondItemInput.copy();
@@ -135,7 +134,7 @@ public class CobblestoneAssemblyMachineRecipe implements Recipe<AssemblyMachineR
         this.sixthItemInput = sixthItemInput.copy();
         this.fluidInput = fluidInput.copy();
         this.resultItem = resultItem.copy();
-        this.cobblestonePowerPerTick = Math.max(1, cobblestonePowerPerTick);
+        this.cobblestonePowerPerTick = Math.max(1L, cobblestonePowerPerTick);
         this.totalCobblestonePower = Math.max(this.cobblestonePowerPerTick, totalCobblestonePower);
     }
 
@@ -171,16 +170,17 @@ public class CobblestoneAssemblyMachineRecipe implements Recipe<AssemblyMachineR
         return this.resultItem.copy();
     }
 
-    public int getTotalCobblestonePower() {
+    public long getTotalCobblestonePower() {
         return this.totalCobblestonePower;
     }
 
-    public int getCobblestonePowerPerTick() {
+    public long getCobblestonePowerPerTick() {
         return this.cobblestonePowerPerTick;
     }
 
     public int getProcessingTime() {
-        return Math.max(1, (this.totalCobblestonePower + this.cobblestonePowerPerTick - 1) / this.cobblestonePowerPerTick);
+        long processingTime = (this.totalCobblestonePower + this.cobblestonePowerPerTick - 1L) / this.cobblestonePowerPerTick;
+        return Math.max(1, (int) Math.min(Integer.MAX_VALUE, processingTime));
     }
 
     public boolean hasFirstItemInput() {
