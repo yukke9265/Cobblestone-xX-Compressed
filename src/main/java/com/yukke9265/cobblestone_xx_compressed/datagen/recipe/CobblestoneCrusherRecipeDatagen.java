@@ -16,7 +16,7 @@ public final class CobblestoneCrusherRecipeDatagen {
         new CrusherRecipeDefinition("tier_amethyst_compressed_cobblestone_to_tier_amethyst_dirty_cobblestone_dust", ModBlocks.TierCompressedCobblestone.AMETHYST.getBlock().get(), ModItems.TIER_AMETHYST_COBBLESTONE_DIRTY_DUST.get(), 800, 4),
         new CrusherRecipeDefinition("ancient_debris_to_ancient_debris_dust", Items.ANCIENT_DEBRIS, ModItems.ANCIENT_DEBRIS_DUST.get(), 800, 4),
         new CrusherRecipeDefinition("ender_pearl_to_ender_dust", Items.ENDER_PEARL, ModItems.ENDER_DUST.get(), 800, 4),
-        new CrusherRecipeDefinition("blaze_rod_to_blaze_dust", Items.BLAZE_ROD, Items.BLAZE_POWDER, 800, 4),
+        new CrusherRecipeDefinition("blaze_rod_to_blaze_dust", Items.BLAZE_ROD, new ItemStack(Items.BLAZE_POWDER,4), 800, 4),
         new CrusherRecipeDefinition("coal_to_coal_dust", Items.COAL, ModItems.COAL_DUST.get(), 800, 4),
         new CrusherRecipeDefinition("obsidian_to_obsidian_dust", Items.OBSIDIAN, new ItemStack(ModItems.OBSIDIAN_DUST.get(), 4), 800, 4),
         new CrusherRecipeDefinition("copper_ingot_to_copper_dust", Items.COPPER_INGOT, ModItems.COPPER_DUST.get(), 800, 4),

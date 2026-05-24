@@ -10,9 +10,30 @@ import net.neoforged.neoforge.fluids.FluidStack;
 public final class CobblestoneCrystallizationChamberRecipeDatagen {
     private static final CrystallizationChamberRecipeDefinition[] RECIPES = new CrystallizationChamberRecipeDefinition[] {
         new CrystallizationChamberRecipeDefinition(
-            "molten_diamond_compressed_cobblestone_to_diamond_cobblestone_dirty_dust",
-            new FluidStack(ModFluids.TierMoltenCompressedCobblestone.DIAMOND.getFluidEntry().getStillFluid().get(), 1000),
+            "molten_dirty_diamond_compressed_cobblestone_to_diamond_cobblestone_dirty_dust",
+            new FluidStack(ModFluids.TierMoltenDirtyCompressedCobblestone.DIAMOND.getFluidEntry().getStillFluid().get(), 1000),
             ModItems.TIER_DIAMOND_COBBLESTONE_DIRTY_DUST.get(),
+            13421772800L,
+            262144
+        ),
+        new CrystallizationChamberRecipeDefinition(
+            "molten_emerald_compressed_cobblestone_to_emerald_cobblestone_dirty_dust",
+            new FluidStack(ModFluids.TierMoltenCompressedCobblestone.EMERALD.getFluidEntry().getStillFluid().get(), 1000),
+            ModItems.TIER_EMERALD_COBBLESTONE_DIRTY_DUST.get(),
+            13421772800L,
+            262144
+        ),
+        new CrystallizationChamberRecipeDefinition(
+            "molten_netherite_compressed_cobblestone_to_netherite_cobblestone_dirty_dust",
+            new FluidStack(ModFluids.TierMoltenCompressedCobblestone.NETHERITE.getFluidEntry().getStillFluid().get(), 1000),
+            ModItems.TIER_NETHERITE_COBBLESTONE_DIRTY_DUST.get(),
+            13421772800L,
+            262144
+        ),
+        new CrystallizationChamberRecipeDefinition(
+            "molten_obsidian_compressed_cobblestone_to_obsidian_cobblestone_dirty_dust",
+            new FluidStack(ModFluids.TierMoltenCompressedCobblestone.OBSIDIAN.getFluidEntry().getStillFluid().get(), 1000),
+            ModItems.TIER_OBSIDIAN_COBBLESTONE_DIRTY_DUST.get(),
             13421772800L,
             262144
         )

@@ -1,0 +1,13 @@
+{
+  "type": "cobblestonexxcompressed:cobblestone_crystallization_chamber",
+  "cobblestone_power_per_tick": 262144,
+  "fluid_input": {
+    "amount": 1000,
+    "id": "cobblestonexxcompressed:molten_tier_emerald_compressed_cobblestone"
+  },
+  "result": {
+    "count": 1,
+    "id": "cobblestonexxcompressed:tier_emerald_cobblestone_dirty_dust"
+  },
+  "total_cobblestone_power": 13421772800
+}
