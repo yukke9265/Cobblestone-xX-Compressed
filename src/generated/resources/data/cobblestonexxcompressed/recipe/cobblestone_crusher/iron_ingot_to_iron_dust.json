@@ -1,0 +1,11 @@
+{
+  "type": "cobblestonexxcompressed:cobblestone_crusher",
+  "ingredient": {
+    "item": "minecraft:iron_ingot"
+  },
+  "result": {
+    "count": 1,
+    "id": "cobblestonexxcompressed:iron_dust"
+  },
+  "total_cobblestone_power": 100
+}

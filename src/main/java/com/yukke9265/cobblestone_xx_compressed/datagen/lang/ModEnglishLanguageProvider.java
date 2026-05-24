@@ -66,6 +66,11 @@ public class ModEnglishLanguageProvider extends LanguageProvider {
             addItem(tier.getItem(), tier.getEnglishDisplayName());
         }
 
+        addItem(ModItems.COBBLESTONE_PURE_DUST, "Cobblestone Pure Dust");
+        for (ModItems.TierCobblestonePureDust tier : ModItems.TierCobblestonePureDust.values()) {
+            addItem(tier.getItem(), tier.getEnglishDisplayName());
+        }
+
         addItem(ModItems.COMPRESSED_COBBLESTONE_SINGULARITY_BIT, "Compressed Cobblestone Singularity Bit");
         for (ModItems.TierCompressedCobblestoneSingularityBit tier : ModItems.TierCompressedCobblestoneSingularityBit.values()) {
             addItem(tier.getItem(), tier.getEnglishDisplayName());
@@ -82,6 +87,9 @@ public class ModEnglishLanguageProvider extends LanguageProvider {
         }
 
         addItem(ModItems.DIRTY_MIXTURE, "Dirty Mixture");
+        for (ModItems.MixtureItem mixture : ModItems.MixtureItem.values()) {
+            addItem(mixture.getItem(), mixture.getEnglishDisplayName());
+        }
 
         addItem(ModItems.COAL_DUST, "Coal Dust");
 

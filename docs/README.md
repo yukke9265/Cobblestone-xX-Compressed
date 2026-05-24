@@ -34,10 +34,10 @@
 このうち、**新しい通常アイテムを増やす作業は `ModItems.java` に寄せる**のが分かりやすいです。
 `CobblestonexXCompressed.java` は Mod 全体の初期化やイベント登録の役割が中心なので、個別アイテムの定義まで大量に置くと追いにくくなります。
 
-また、このプロジェクトには今のところレシピ用のデータ生成コードは入っていません。
-そのため、レシピはまず `src/main/resources/data/<modid>/recipe/` に JSON を直接追加する方法で管理するのが一番簡単です。
+また、このプロジェクトではレシピ用のデータ生成コードがすでに入っています。
+通常クラフトと機械レシピは `ModRecipeProvider` から `src/generated/resources/data/<modid>/recipe/` へ出すのが現在の標準です。
 
-ただし `build.gradle` では `src/generated/resources` もリソース入力に含まれているため、将来的に data generator を導入する余地があります。
+手書き JSON も Minecraft 自体は読めますが、既存コードに合わせるならまず datagen 側へ追加してください。
 
 圧縮段階が増える設計にする場合は、登録名、レシピ、表示名の命名規則を先に決めてから増やすと管理しやすくなります。
 

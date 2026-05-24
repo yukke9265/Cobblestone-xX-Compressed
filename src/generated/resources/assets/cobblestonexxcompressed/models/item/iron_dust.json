@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "cobblestonexxcompressed:item/dust/iron_dust"
+  }
+}

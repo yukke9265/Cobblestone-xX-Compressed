@@ -236,11 +236,61 @@ public class ModItems {
         }
     }
 
+    // 純化した丸石ダストも tier ごとに命名規則がそろっているため、
+    // 既存の dust 系と同じく enum へ集約して登録名と表示名を一元管理します。
+    public enum TierCobblestonePureDust {
+        COPPER("tier_copper_cobblestone_pure_dust", "Copper Cobblestone Pure Dust"),
+        IRON("tier_iron_cobblestone_pure_dust", "Iron Cobblestone Pure Dust"),
+        GOLD("tier_gold_cobblestone_pure_dust", "Gold Cobblestone Pure Dust"),
+        AMETHYST("tier_amethyst_cobblestone_pure_dust", "Amethyst Cobblestone Pure Dust"),
+        AQUAMARINE("tier_aquamarine_cobblestone_pure_dust", "Aquamarine Cobblestone Pure Dust"),
+        TOPAZ("tier_topaz_cobblestone_pure_dust", "Topaz Cobblestone Pure Dust"),
+        RUBY("tier_ruby_cobblestone_pure_dust", "Ruby Cobblestone Pure Dust"),
+        SAPPHIRE("tier_sapphire_cobblestone_pure_dust", "Sapphire Cobblestone Pure Dust"),
+        DIAMOND("tier_diamond_cobblestone_pure_dust", "Diamond Cobblestone Pure Dust"),
+        EMERALD("tier_emerald_cobblestone_pure_dust", "Emerald Cobblestone Pure Dust"),
+        NETHERITE("tier_netherite_cobblestone_pure_dust", "Netherite Cobblestone Pure Dust"),
+        OBSIDIAN("tier_obsidian_cobblestone_pure_dust", "Obsidian Cobblestone Pure Dust");
+
+        private final String registryName;
+        private final String englishDisplayName;
+        private DeferredItem<Item> item;
+
+        TierCobblestonePureDust(String registryName, String englishDisplayName) {
+            this.registryName = registryName;
+            this.englishDisplayName = englishDisplayName;
+        }
+
+        public String getRegistryName() {
+            return this.registryName;
+        }
+
+        public String getEnglishDisplayName() {
+            return this.englishDisplayName;
+        }
+
+        public DeferredItem<Item> getItem() {
+            return this.item;
+        }
+
+        private void setItem(DeferredItem<Item> item) {
+            this.item = item;
+        }
+    }
+
     // 宝石系ダスト 5 種は、登録名と英語表示名の対応が固定なので、
     // enum にまとめておくと creative tab・lang・model で同じ一覧を使い回せます。
     public enum GemDust {
         AMETHYST("amethyst_dust", "Amethyst Dust"),
         AQUAMARINE("aquamarine_dust", "Aquamarine Dust"),
+        ANCIENT_DEBRIS("ancient_debris_dust", "Ancient Debris Dust"),
+        COPPER("copper_dust", "Copper Dust"),
+        DIAMOND("diamond_dust", "Diamond Dust"),
+        ENDER("ender_dust", "Ender Dust"),
+        EMERALD("emerald_dust", "Emerald Dust"),
+        GOLD("gold_dust", "Gold Dust"),
+        IRON("iron_dust", "Iron Dust"),
+        LAPIS("lapis_dust", "Lapis Dust"),
         TOPAZ("topaz_dust", "Topaz Dust"),
         RUBY("ruby_dust", "Ruby Dust"),
         SAPPHIRE("sapphire_dust", "Sapphire Dust");
@@ -250,6 +300,43 @@ public class ModItems {
         private DeferredItem<Item> item;
 
         GemDust(String registryName, String englishDisplayName) {
+            this.registryName = registryName;
+            this.englishDisplayName = englishDisplayName;
+        }
+
+        public String getRegistryName() {
+            return this.registryName;
+        }
+
+        public String getEnglishDisplayName() {
+            return this.englishDisplayName;
+        }
+
+        public DeferredItem<Item> getItem() {
+            return this.item;
+        }
+
+        private void setItem(DeferredItem<Item> item) {
+            this.item = item;
+        }
+    }
+
+    // mixture 系は見た目と登録名の対応が固定なので、
+    // enum へ集約して creative tab・lang・model を同じ一覧で回せるようにします。
+    public enum MixtureItem {
+        ANCIENT("ancient_mixtures", "Ancient Mixtures"),
+        AQUAMARINE("aquamarine_mixture", "Aquamarine Mixture"),
+        BLAZE("blaze_mixtures", "Blaze Mixtures"),
+        EMERALD("emerald_mixtures", "Emerald Mixtures"),
+        RUBY("ruby_mixtures", "Ruby Mixtures"),
+        SAPPHIRE("sapphire_mixture", "Sapphire Mixture"),
+        TOPAZ("topaz_mixtures", "Topaz Mixtures");
+
+        private final String registryName;
+        private final String englishDisplayName;
+        private DeferredItem<Item> item;
+
+        MixtureItem(String registryName, String englishDisplayName) {
             this.registryName = registryName;
             this.englishDisplayName = englishDisplayName;
         }
@@ -293,7 +380,15 @@ public class ModItems {
         return ITEMS.registerSimpleItem(name, createCobblestoneDustProperties());
     }
 
+    private static DeferredItem<Item> registerTierCobblestonePureDust(String name) {
+        return ITEMS.registerSimpleItem(name, createCobblestoneDustProperties());
+    }
+
     private static DeferredItem<Item> registerGemDust(String name) {
+        return ITEMS.registerSimpleItem(name, createCobblestoneDustProperties());
+    }
+
+    private static DeferredItem<Item> registerMixtureItem(String name) {
         return ITEMS.registerSimpleItem(name, createCobblestoneDustProperties());
     }
 
@@ -427,6 +522,9 @@ public class ModItems {
 
     public static final DeferredItem<Item> COBBLESTONE_MIXED_DUST =
         ITEMS.registerSimpleItem("cobblestone_mixed_dust", createCobblestoneDustProperties());
+
+    public static final DeferredItem<Item> COBBLESTONE_PURE_DUST =
+        ITEMS.registerSimpleItem("cobblestone_pure_dust", createCobblestoneDustProperties());
 
     public static final DeferredItem<Item> DIRTY_MIXTURE =
         ITEMS.registerSimpleItem("dirty_mixture", createCobblestoneDustProperties());
@@ -950,8 +1048,20 @@ public class ModItems {
     }
 
     static {
+        for (TierCobblestonePureDust tier : TierCobblestonePureDust.values()) {
+            tier.setItem(registerTierCobblestonePureDust(tier.getRegistryName()));
+        }
+    }
+
+    static {
         for (GemDust dust : GemDust.values()) {
             dust.setItem(registerGemDust(dust.getRegistryName()));
+        }
+    }
+
+    static {
+        for (MixtureItem mixture : MixtureItem.values()) {
+            mixture.setItem(registerMixtureItem(mixture.getRegistryName()));
         }
     }
 
@@ -961,6 +1071,30 @@ public class ModItems {
     public static final DeferredItem<Item> AQUAMARINE_DUST =
         GemDust.AQUAMARINE.getItem();
 
+    public static final DeferredItem<Item> ANCIENT_DEBRIS_DUST =
+        GemDust.ANCIENT_DEBRIS.getItem();
+
+    public static final DeferredItem<Item> COPPER_DUST =
+        GemDust.COPPER.getItem();
+
+    public static final DeferredItem<Item> DIAMOND_DUST =
+        GemDust.DIAMOND.getItem();
+
+    public static final DeferredItem<Item> ENDER_DUST =
+        GemDust.ENDER.getItem();
+
+    public static final DeferredItem<Item> EMERALD_DUST =
+        GemDust.EMERALD.getItem();
+
+    public static final DeferredItem<Item> GOLD_DUST =
+        GemDust.GOLD.getItem();
+
+    public static final DeferredItem<Item> IRON_DUST =
+        GemDust.IRON.getItem();
+
+    public static final DeferredItem<Item> LAPIS_DUST =
+        GemDust.LAPIS.getItem();
+
     public static final DeferredItem<Item> TOPAZ_DUST =
         GemDust.TOPAZ.getItem();
 
@@ -969,6 +1103,27 @@ public class ModItems {
 
     public static final DeferredItem<Item> SAPPHIRE_DUST =
         GemDust.SAPPHIRE.getItem();
+
+    public static final DeferredItem<Item> ANCIENT_MIXTURES =
+        MixtureItem.ANCIENT.getItem();
+
+    public static final DeferredItem<Item> AQUAMARINE_MIXTURE =
+        MixtureItem.AQUAMARINE.getItem();
+
+    public static final DeferredItem<Item> BLAZE_MIXTURES =
+        MixtureItem.BLAZE.getItem();
+
+    public static final DeferredItem<Item> EMERALD_MIXTURES =
+        MixtureItem.EMERALD.getItem();
+
+    public static final DeferredItem<Item> RUBY_MIXTURES =
+        MixtureItem.RUBY.getItem();
+
+    public static final DeferredItem<Item> SAPPHIRE_MIXTURE =
+        MixtureItem.SAPPHIRE.getItem();
+
+    public static final DeferredItem<Item> TOPAZ_MIXTURES =
+        MixtureItem.TOPAZ.getItem();
 
     static {
         for (TierCompressedCobblestoneSingularityBit tier : TierCompressedCobblestoneSingularityBit.values()) {
@@ -1163,6 +1318,31 @@ public class ModItems {
         TierCobblestoneMixedDust.NETHERITE.getItem();
     public static final DeferredItem<Item> TIER_OBSIDIAN_COBBLESTONE_MIXED_DUST =
         TierCobblestoneMixedDust.OBSIDIAN.getItem();
+
+    public static final DeferredItem<Item> TIER_COPPER_COBBLESTONE_PURE_DUST =
+        TierCobblestonePureDust.COPPER.getItem();
+    public static final DeferredItem<Item> TIER_IRON_COBBLESTONE_PURE_DUST =
+        TierCobblestonePureDust.IRON.getItem();
+    public static final DeferredItem<Item> TIER_GOLD_COBBLESTONE_PURE_DUST =
+        TierCobblestonePureDust.GOLD.getItem();
+    public static final DeferredItem<Item> TIER_AMETHYST_COBBLESTONE_PURE_DUST =
+        TierCobblestonePureDust.AMETHYST.getItem();
+    public static final DeferredItem<Item> TIER_AQUAMARINE_COBBLESTONE_PURE_DUST =
+        TierCobblestonePureDust.AQUAMARINE.getItem();
+    public static final DeferredItem<Item> TIER_TOPAZ_COBBLESTONE_PURE_DUST =
+        TierCobblestonePureDust.TOPAZ.getItem();
+    public static final DeferredItem<Item> TIER_RUBY_COBBLESTONE_PURE_DUST =
+        TierCobblestonePureDust.RUBY.getItem();
+    public static final DeferredItem<Item> TIER_SAPPHIRE_COBBLESTONE_PURE_DUST =
+        TierCobblestonePureDust.SAPPHIRE.getItem();
+    public static final DeferredItem<Item> TIER_DIAMOND_COBBLESTONE_PURE_DUST =
+        TierCobblestonePureDust.DIAMOND.getItem();
+    public static final DeferredItem<Item> TIER_EMERALD_COBBLESTONE_PURE_DUST =
+        TierCobblestonePureDust.EMERALD.getItem();
+    public static final DeferredItem<Item> TIER_NETHERITE_COBBLESTONE_PURE_DUST =
+        TierCobblestonePureDust.NETHERITE.getItem();
+    public static final DeferredItem<Item> TIER_OBSIDIAN_COBBLESTONE_PURE_DUST =
+        TierCobblestonePureDust.OBSIDIAN.getItem();
 
     public static final DeferredItem<Item> TIER_COPPER_COBBLESTONE_ROD =
         TierCobblestoneRod.COPPER.getItem();

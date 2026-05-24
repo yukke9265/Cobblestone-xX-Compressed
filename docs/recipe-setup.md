@@ -1,247 +1,133 @@
-# レシピ設定手順
-
-この文書では、このプロジェクトで**クラフトレシピを追加する基本的な方法**を説明します。
-
-現在のプロジェクトには、レシピ用の Java データ生成コードはまだ入っていません。
-そのため、まずは **JSON ファイルを直接追加する方法** が一番分かりやすく、管理もしやすいです。
-
-## 1. レシピファイルを置く場所
-
-Minecraft 1.21.1 のレシピ JSON は、次の場所へ置きます。
-
-`src/main/resources/data/cobblestonexxcompressed/recipe/`
-
-ここで重要なのは次の 2 点です。
-
-- `data` 配下はゲームデータ用
-- `recipe` は単数形
-
-ファイル名はレシピ ID の末尾になります。
-
-たとえば `compressed_cobblestone.json` を置くと、レシピ ID は次のようになります。
-
-`cobblestonexxcompressed:compressed_cobblestone`
-
-## 2. まずは shapeless recipe から覚える
-
-一番簡単なのは、材料の並び順を問わない `minecraft:crafting_shapeless` です。
+# クラフトレシピの登録手順
 
-### shaped recipe の例
+この文書では、このプロジェクトで作業台用クラフトレシピを登録する方法を、現在の datagen 構成に合わせて説明します。
 
-丸石 9 個から `compressed_cobblestone` を 1 個作る例です。
+今のプロジェクトでは、クラフトレシピも JSON を手書きするのではなく、Java の datagen から src/generated/resources へ出すのが標準です。
 
-```json
-{
-  "type": "minecraft:crafting_shapeless",
-  "ingredients": [
-    {
-      "item": "minecraft:cobblestone"
-    },
-    {
-      "item": "minecraft:cobblestone"
-    },
-    {
-      "item": "minecraft:cobblestone"
-    },
-    {
-      "item": "minecraft:cobblestone"
-    },
-    {
-      "item": "minecraft:cobblestone"
-    },
-    {
-      "item": "minecraft:cobblestone"
-    },
-    {
-      "item": "minecraft:cobblestone"
-    },
-    {
-      "item": "minecraft:cobblestone"
-    },
-    {
-      "item": "minecraft:cobblestone"
-    }
-  ],
-  "result": {
-    "id": "cobblestonexxcompressed:compressed_cobblestone",
-    "count": 1
-  }
-}
-```
+## 1. 登録の入口
 
-### 向いているケース
+クラフトレシピの datagen 入口も、機械レシピと同じく次の流れです。
 
-- 並び順を気にしない合成
-- とにかく最初に動くレシピを作りたいとき
+1. CobblestonexXCompressed で ModDatagen::gatherData を登録する
+2. ModDatagen.gatherData で ModRecipeProvider を server provider として登録する
+3. ModRecipeProvider.buildRecipes で ShapedRecipeBuilder と ShapelessRecipeBuilder を使って出力する
 
-### 注意
+つまり、クラフトレシピを増やす時も、まず触る場所は ModRecipeProvider です。
 
-今回のように 9 個材料を使う圧縮レシピは、実際には見た目どおり 3x3 で並べたいことが多いです。
-その場合は、次の shaped recipe の方が自然です。
+## 2. 現在のクラフトレシピ登録場所
 
-## 3. よく使うのは shaped recipe
+通常クラフトは次のメソッド群で登録しています。
 
-材料の配置を固定したい場合は `minecraft:crafting_shaped` を使います。
+- buildCompressedCobblestoneRecipes
+- buildCompressedCobblestoneSingularityRecipes
+- buildCobblestoneGeneratorRecipes
+- buildCobblestoneMachineCasingRecipes
+- buildCobblestoneTankRecipes
+- buildGemRecipes
+- buildCobblestoneRodRecipes
+- buildCobblestoneMotorRecipes
+- buildCobblestoneAccelerationChipRecipes
+- buildCobblestoneEnergizedCubeRecipes
 
-### 逆レシピの例
+この並びは ModRecipeProvider.buildRecipes の前半にまとまっています。
 
-3x3 で丸石を並べて `compressed_cobblestone` を作る例です。
+## 3. 何を使って出しているか
 
-```json
-{
-  "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "CCC",
-    "CCC",
-    "CCC"
-  ],
-  "key": {
-    "C": {
-      "item": "minecraft:cobblestone"
-    }
-  },
-  "result": {
-    "id": "cobblestonexxcompressed:compressed_cobblestone",
-    "count": 1
-  }
-}
-```
+通常クラフトでは、Minecraft 標準の builder を使っています。
 
-### 各項目の意味
+1. 配置付きレシピは ShapedRecipeBuilder
+2. 並び順を問わないレシピは ShapelessRecipeBuilder
 
-- `pattern`: 作業台の見た目どおりの配置
-- `key`: パターン内の文字が何の材料を意味するか
-- `result`: 出来上がるアイテム
+この 2 つは save(...) を呼ぶと、recipe JSON だけでなく解除条件用の advancement JSON も一緒に生成します。
 
-### 読み方
+## 4. 追加手順
 
-- 1 行目 `CCC`
-- 2 行目 `CCC`
-- 3 行目 `CCC`
+既存カテゴリへクラフトレシピを 1 件追加する時は、次の流れが簡単です。
 
-つまり、3x3 全部に丸石を置くレシピです。
+1. ModRecipeProvider の対応する buildXxxRecipes を開く
+2. ShapedRecipeBuilder か ShapelessRecipeBuilder を追加する
+3. unlockedBy(...) で解除条件を付ける
+4. save(output, modRecipeId("...")) で保存する
+5. gradlew.bat runData を実行する
 
-## 4. 圧縮解除レシピも一緒に作ると分かりやすい
+## 5. shaped の書き方
 
-圧縮系アイテムでは、逆レシピも用意することが多いです。
+配置を固定したいときは ShapedRecipeBuilder を使います。
 
-### 例
+考え方は次の通りです。
 
-`compressed_cobblestone` 1 個から丸石 9 個へ戻す shapeless recipe です。
+1. pattern で見た目を決める
+2. define で文字に素材を割り当てる
+3. unlockedBy で解除条件を決める
+4. save でレシピ ID を決める
 
-```json
-{
-  "type": "minecraft:crafting_shapeless",
-  "ingredients": [
-    {
-      "item": "cobblestonexxcompressed:compressed_cobblestone"
-    }
-  ],
-  "result": {
-    "id": "minecraft:cobblestone",
-    "count": 9
-  }
-}
-```
+このプロジェクトの compressed cobblestone では、2x2 の丸石を pattern に並べています。
 
-この場合は、たとえばファイル名を `compressed_cobblestone_unpacking.json` にすると意味が分かりやすいです。
+## 6. shapeless の書き方
 
-## 5. ファイル名の付け方
+順番を問わない変換では ShapelessRecipeBuilder を使います。
 
-レシピ JSON は、後で見返したときに役割が分かる名前にしておくと管理しやすいです。
+たとえば圧縮解除のように、1 個を前段階へ戻す処理は shapeless の方が読みやすいです。
 
-おすすめは次のような付け方です。
+このプロジェクトでは、compressed_cobblestone_to_cobblestone や tier の戻しレシピがその例です。
 
-- `compressed_cobblestone.json`
-- `compressed_cobblestone_unpacking.json`
-- `double_compressed_cobblestone.json`
+## 7. 生成先
 
-圧縮段階が増える Mod では、名前ルールを早めに決めておくと混乱しにくくなります。
+runData 実行後の出力先は次です。
 
-## 6. item と tag の使い分け
+- src/generated/resources/data/cobblestonexxcompressed/recipe/
+- src/generated/resources/data/cobblestonexxcompressed/advancement/recipes/
 
-材料指定には `item` だけでなく `tag` も使えます。
+recipe 配下に本体の JSON が出て、advancement/recipes 配下に解除条件が出ます。
 
-### item を使う例
+## 8. レシピ ID の決まり方
 
-```json
-{
-  "item": "minecraft:cobblestone"
-}
-```
+save(output, modRecipeId("compressed_cobblestone")) のように渡した文字列が、そのまま modid 付きレシピ ID の末尾になります。
 
-これは「丸石そのものだけを受け付ける」指定です。
+つまり、compressed_cobblestone を渡すと次になります。
 
-### tag を使う例
+1. レシピ ID: cobblestonexxcompressed:compressed_cobblestone
+2. 出力ファイル: data/cobblestonexxcompressed/recipe/compressed_cobblestone.json
 
-```json
-{
-  "tag": "minecraft:planks"
-}
-```
+## 9. 追加先の選び方
 
-これは「planks タグに入っているどの木材板でもよい」という指定です。
+どの buildXxxRecipes に書くべきか迷った時は、レシピの目的で分けると追いやすいです。
 
-### このプロジェクトで最初におすすめなのはどちらか
+1. 圧縮ブロック関係なら buildCompressedCobblestoneRecipes
+2. gem 関係なら buildGemRecipes
+3. machine casing 関係なら buildCobblestoneMachineCasingRecipes
+4. generator 関係なら buildCobblestoneGeneratorRecipes
 
-最初は `item` を使う方が分かりやすいです。
-受け付ける材料が 1 種類に固定されるため、意図を追いやすくなります。
+新しい系統が増えて既存メソッドに入れにくい時は、buildXxxRecipes を 1 つ増やして buildRecipes から呼ぶ形で分ける方が後で追いやすいです。
 
-## 7. レシピが動かないときの確認ポイント
+## 10. 今のプロジェクトでの標準形
 
-### JSON の置き場所が違う
+初心者向けに見るなら、まず次の 3 パターンを見ると分かりやすいです。
 
-特に次の間違いが起こりやすいです。
+1. 2x2 shaped: compressed cobblestone
+2. shapeless 戻し: compressed cobblestone から cobblestone へ戻すレシピ
+3. 3x3 shaped: machine casing や tank のレシピ
 
-- `assets` の下に置いてしまう
-- `recipes` と複数形でフォルダを作ってしまう
-- `modid` 部分を間違える
+この 3 つが読めれば、大半の通常クラフトは追えます。
 
-正しい場所は次です。
+## 11. 動かない時の確認ポイント
 
-`src/main/resources/data/cobblestonexxcompressed/recipe/`
+次を順に確認すると切り分けしやすいです。
 
-### result の ID を間違える
+1. ModRecipeProvider.buildRecipes からその buildXxxRecipes が呼ばれているか
+2. save(...) のレシピ ID が重複していないか
+3. unlockedBy(...) の条件に使っている ItemLike が正しいか
+4. runData 後に generated/resources 側へ JSON が出ているか
+5. 出力アイテムや入力素材が登録済みか
 
-追加したアイテムの登録名と一致していないと、レシピの出力先が見つかりません。
+## 12. 手書き JSON を使うかどうか
 
-### まだ存在しないアイテムを出力にしている
+Minecraft 自体は手書き JSON でも動きますが、このプロジェクトでは datagen に寄せた方が管理しやすいです。
 
-レシピ JSON は書けていても、Java 側でそのアイテムが未登録だと成立しません。
-先に [item-addition.md](./item-addition.md) の手順でアイテムを登録してください。
+理由は次の通りです。
 
-## 8. このプロジェクトでのおすすめ作業順
+1. tier 違いを Java 側でまとめて増やしやすい
+2. generated/resources を見れば出力結果を確認しやすい
+3. 命名や解除条件の揺れを減らしやすい
 
-圧縮アイテムを 1 つ追加するなら、次の順が分かりやすいです。
-
-1. Java 側でアイテム登録を追加する
-2. 言語ファイルを追加する
-3. モデル JSON とテクスチャを追加する
-4. 圧縮レシピを追加する
-5. 圧縮解除レシピを追加する
-6. ゲームを起動して作業台で確認する
-
-## 9. 将来的にデータ生成へ移行する場合
-
-このプロジェクトの instructions には `src/generated/resources` を使う前提も書かれています。
-将来的にレシピ数が増えたら、Java でレシピを自動生成する data generator を導入する価値があります。
-
-ただし、今の状態ではまず JSON 直書きの方が次の利点があります。
-
-- 何が読み込まれるかをそのまま見やすい
-- 初心者でも 1 ファイルずつ理解しやすい
-- レシピの失敗原因を切り分けしやすい
-
-最初の数個は JSON で管理し、量が増えてから data generator に切り替えるのが現実的です。
-
-## 10. 最小構成の例
-
-`compressed_cobblestone` 追加時に必要になりやすいファイルは次の通りです。
-
-- `src/main/java/com/yukke9265/cobblestone_xx_compressed/ModItems.java`
-- `src/main/java/com/yukke9265/cobblestone_xx_compressed/CobblestonexXCompressed.java`
-- `src/main/resources/assets/cobblestonexxcompressed/lang/en_us.json`
-- `src/main/resources/assets/cobblestonexxcompressed/models/item/compressed_cobblestone.json`
-- `src/main/resources/assets/cobblestonexxcompressed/textures/item/compressed_cobblestone.png`
-- `src/main/resources/data/cobblestonexxcompressed/recipe/compressed_cobblestone.json`
-- `src/main/resources/data/cobblestonexxcompressed/recipe/compressed_cobblestone_unpacking.json`
+新しいクラフトレシピを追加する時は、まず ModRecipeProvider へ書く方針で進めてください。

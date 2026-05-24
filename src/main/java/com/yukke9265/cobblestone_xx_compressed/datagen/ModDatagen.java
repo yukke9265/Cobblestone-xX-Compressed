@@ -33,7 +33,10 @@ public class ModDatagen {
 
         if (event.includeServer()) {
             // レシピ JSON を生成する入口です。
-            // 通常レシピや機械レシピの builder を追加するときは、この provider にまとめると分かりやすいです。
+            // このプロジェクトでは、作業台で使う通常クラフトレシピと、
+            // 機械が読む独自レシピの両方を ModRecipeProvider へまとめています。
+            // 新しい機械レシピを datagen 対応するときは、まずその機械用の
+            // buildXxxRecipes(...) と saveXxxRecipe(...) を ModRecipeProvider 側へ足します。
             event.createProvider(ModRecipeProvider::new);
 
             // ブロックタグを datagen 側に寄せます。

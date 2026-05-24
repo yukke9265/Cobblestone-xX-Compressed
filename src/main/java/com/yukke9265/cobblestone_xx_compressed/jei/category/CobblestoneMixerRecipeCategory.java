@@ -1,6 +1,7 @@
 package com.yukke9265.cobblestone_xx_compressed.jei.category;
 
 import java.util.List;
+import java.util.Objects;
 
 import com.yukke9265.cobblestone_xx_compressed.CobblestonexXCompressed;
 import com.yukke9265.cobblestone_xx_compressed.jei.ModJeiPlugin;
@@ -88,10 +89,10 @@ public class CobblestoneMixerRecipeCategory implements IRecipeCategory<Cobblesto
             ));
 
         builder.addSlot(RecipeIngredientRole.INPUT, INPUT_SLOT_1_X, INPUT_SLOT_1_Y)
-            .addIngredients(recipe.getFirstIngredient());
+            .addItemStack(Objects.requireNonNull(recipe.getFirstInput()));
 
         builder.addSlot(RecipeIngredientRole.INPUT, INPUT_SLOT_2_X, INPUT_SLOT_2_Y)
-            .addIngredients(recipe.getSecondIngredient());
+            .addItemStack(Objects.requireNonNull(recipe.getSecondInput()));
 
         builder.addSlot(RecipeIngredientRole.OUTPUT, OUTPUT_SLOT_X, OUTPUT_SLOT_Y)
             .addItemStack(recipe.getResult().copy());

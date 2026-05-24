@@ -1,0 +1,17 @@
+{
+  "type": "cobblestonexxcompressed:cobblestone_mixer",
+  "cobblestone_power_per_tick": 2,
+  "item_input_1": {
+    "count": 1,
+    "id": "cobblestonexxcompressed:ruby_dust"
+  },
+  "item_input_2": {
+    "count": 1,
+    "id": "minecraft:redstone"
+  },
+  "result": {
+    "count": 2,
+    "id": "cobblestonexxcompressed:ruby_mixtures"
+  },
+  "total_cobblestone_power": 200
+}

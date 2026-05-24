@@ -1,11 +1,13 @@
 {
   "type": "cobblestonexxcompressed:cobblestone_mixer",
   "cobblestone_power_per_tick": 2,
-  "ingredient_1": {
-    "item": "cobblestonexxcompressed:tier_iron_cobblestone_dust"
+  "item_input_1": {
+    "count": 1,
+    "id": "cobblestonexxcompressed:tier_iron_cobblestone_dust"
   },
-  "ingredient_2": {
-    "item": "cobblestonexxcompressed:coal_dust"
+  "item_input_2": {
+    "count": 1,
+    "id": "cobblestonexxcompressed:coal_dust"
   },
   "result": {
     "count": 1,

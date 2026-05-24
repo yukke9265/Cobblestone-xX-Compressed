@@ -1,0 +1,17 @@
+{
+  "type": "cobblestonexxcompressed:cobblestone_mixer",
+  "cobblestone_power_per_tick": 2,
+  "item_input_1": {
+    "count": 2,
+    "id": "minecraft:blaze_powder"
+  },
+  "item_input_2": {
+    "count": 1,
+    "id": "cobblestonexxcompressed:diamond_dust"
+  },
+  "result": {
+    "count": 3,
+    "id": "cobblestonexxcompressed:blaze_mixtures"
+  },
+  "total_cobblestone_power": 200
+}

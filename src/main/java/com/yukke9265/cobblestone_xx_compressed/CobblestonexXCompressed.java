@@ -107,7 +107,14 @@ public class CobblestonexXCompressed {
                 for (ModItems.TierCobblestoneMixedDust tier : ModItems.TierCobblestoneMixedDust.values()) {
                     output.accept(tier.getItem().get());
                 }
+                output.accept(ModItems.COBBLESTONE_PURE_DUST.get());
+                for (ModItems.TierCobblestonePureDust tier : ModItems.TierCobblestonePureDust.values()) {
+                    output.accept(tier.getItem().get());
+                }
                 output.accept(ModItems.DIRTY_MIXTURE.get());
+                for (ModItems.MixtureItem mixture : ModItems.MixtureItem.values()) {
+                    output.accept(mixture.getItem().get());
+                }
                 output.accept(ModItems.COAL_DUST.get());
                 output.accept(ModItems.COBBLESTONE_WIRE.get());
                 for (ModItems.TierCobblestoneWire tier : ModItems.TierCobblestoneWire.values()) {

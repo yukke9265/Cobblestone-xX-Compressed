@@ -1,0 +1,11 @@
+{
+  "type": "cobblestonexxcompressed:cobblestone_crusher",
+  "ingredient": {
+    "item": "minecraft:ancient_debris"
+  },
+  "result": {
+    "count": 1,
+    "id": "cobblestonexxcompressed:ancient_debris_dust"
+  },
+  "total_cobblestone_power": 100
+}

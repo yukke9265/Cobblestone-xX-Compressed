@@ -111,6 +111,62 @@ public class ModRecipeProvider extends RecipeProvider {
             1
         ),
         new CrusherRecipeDefinition(
+            "ancient_debris_to_ancient_debris_dust",
+            Items.ANCIENT_DEBRIS,
+            ModItems.ANCIENT_DEBRIS_DUST.get(),
+            100,
+            1
+        ),
+        new CrusherRecipeDefinition(
+            "copper_ingot_to_copper_dust",
+            Items.COPPER_INGOT,
+            ModItems.COPPER_DUST.get(),
+            100,
+            1
+        ),
+        new CrusherRecipeDefinition(
+            "diamond_to_diamond_dust",
+            Items.DIAMOND,
+            ModItems.DIAMOND_DUST.get(),
+            100,
+            1
+        ),
+        new CrusherRecipeDefinition(
+            "ender_pearl_to_ender_dust",
+            Items.ENDER_PEARL,
+            ModItems.ENDER_DUST.get(),
+            100,
+            1
+        ),
+        new CrusherRecipeDefinition(
+            "emerald_to_emerald_dust",
+            Items.EMERALD,
+            ModItems.EMERALD_DUST.get(),
+            100,
+            1
+        ),
+        new CrusherRecipeDefinition(
+            "gold_ingot_to_gold_dust",
+            Items.GOLD_INGOT,
+            ModItems.GOLD_DUST.get(),
+            100,
+            1
+        ),
+        new CrusherRecipeDefinition(
+            "iron_ingot_to_iron_dust",
+            Items.IRON_INGOT,
+            ModItems.IRON_DUST.get(),
+            100,
+            1
+        ),
+        new CrusherRecipeDefinition(
+            "lapis_lazuli_to_lapis_dust",
+            Items.LAPIS_LAZULI,
+            ModItems.LAPIS_DUST.get(),
+            100,
+            1
+        ),
+        new CrusherRecipeDefinition(
             "topaz_shard_to_topaz_dust",
             ModItems.TOPAZ_SHARD.get(),
             ModItems.TOPAZ_DUST.get(),
@@ -154,9 +210,65 @@ public class ModRecipeProvider extends RecipeProvider {
     private static final MixerRecipeDefinition[] COBBLESTONE_MIXER_RECIPES = new MixerRecipeDefinition[] {
         new MixerRecipeDefinition(
             "tier_iron_cobblestone_dust_and_coal_dust_to_tier_iron_cobblestone_mixed_dust",
-            ModItems.TIER_IRON_COBBLESTONE_DUST.get(),
-            ModItems.COAL_DUST.get(),
-            ModItems.TIER_IRON_COBBLESTONE_MIXED_DUST.get(),
+            new ItemStack(ModItems.TIER_IRON_COBBLESTONE_DUST.get()),
+            new ItemStack(ModItems.COAL_DUST.get()),
+            new ItemStack(ModItems.TIER_IRON_COBBLESTONE_MIXED_DUST.get()),
+            200,
+            2
+        ),
+        new MixerRecipeDefinition(
+            "ancient_debris_dust_and_gold_dust_to_ancient_mixtures",
+            new ItemStack(ModItems.ANCIENT_DEBRIS_DUST.get()),
+            new ItemStack(ModItems.GOLD_DUST.get()),
+            new ItemStack(ModItems.ANCIENT_MIXTURES.get(), 2),
+            200,
+            2
+        ),
+        new MixerRecipeDefinition(
+            "aquamarine_dust_and_lapis_dust_to_aquamarine_mixture",
+            new ItemStack(ModItems.AQUAMARINE_DUST.get()),
+            new ItemStack(ModItems.LAPIS_DUST.get()),
+            new ItemStack(ModItems.AQUAMARINE_MIXTURE.get(), 2),
+            200,
+            2
+        ),
+        new MixerRecipeDefinition(
+            "blaze_powder_and_diamond_dust_to_blaze_mixtures",
+            new ItemStack(Items.BLAZE_POWDER, 2),
+            new ItemStack(ModItems.DIAMOND_DUST.get()),
+            new ItemStack(ModItems.BLAZE_MIXTURES.get(), 3),
+            200,
+            2
+        ),
+        new MixerRecipeDefinition(
+            "emerald_dust_and_ender_dust_to_emerald_mixtures",
+            new ItemStack(ModItems.EMERALD_DUST.get()),
+            new ItemStack(ModItems.ENDER_DUST.get()),
+            new ItemStack(ModItems.EMERALD_MIXTURES.get(), 2),
+            200,
+            2
+        ),
+        new MixerRecipeDefinition(
+            "ruby_dust_and_redstone_to_ruby_mixtures",
+            new ItemStack(ModItems.RUBY_DUST.get()),
+            new ItemStack(Items.REDSTONE),
+            new ItemStack(ModItems.RUBY_MIXTURES.get(), 2),
+            200,
+            2
+        ),
+        new MixerRecipeDefinition(
+            "sapphire_dust_and_diamond_dust_to_sapphire_mixture",
+            new ItemStack(ModItems.SAPPHIRE_DUST.get()),
+            new ItemStack(ModItems.DIAMOND_DUST.get()),
+            new ItemStack(ModItems.SAPPHIRE_MIXTURE.get(), 2),
+            200,
+            2
+        ),
+        new MixerRecipeDefinition(
+            "topaz_dust_and_glowstone_dust_to_topaz_mixtures",
+            new ItemStack(ModItems.TOPAZ_DUST.get()),
+            new ItemStack(Items.GLOWSTONE_DUST),
+            new ItemStack(ModItems.TOPAZ_MIXTURES.get(), 2),
             200,
             2
         )
@@ -333,6 +445,9 @@ public class ModRecipeProvider extends RecipeProvider {
 
     @Override
     protected void buildRecipes(@Nonnull RecipeOutput output) {
+        // ここがレシピ datagen の実際の登録順です。
+        // 前半は作業台で使う通常クラフト、後半は各機械が読む独自レシピです。
+        // 追加先を迷ったら、まず「作業台でクラフトする物か」「機械内部で読む物か」をここで切り分けます。
         buildCompressedCobblestoneRecipes(output);
         buildCompressedCobblestoneSingularityRecipes(output);
         buildCobblestoneGeneratorRecipes(output);
@@ -343,6 +458,15 @@ public class ModRecipeProvider extends RecipeProvider {
         buildCobblestoneMotorRecipes(output);
         buildCobblestoneAccelerationChipRecipes(output);
         buildCobblestoneEnergizedCubeRecipes(output);
+
+        // ここから下は独自 RecipeType / RecipeSerializer を使う機械レシピです。
+        // JSON の出力先は data/<modid>/recipe/<machine_name>/... になります。
+        // 現在 datagen しているのは Furnace / ExtremeCompressor / Crusher / Mixer /
+        // Melter / AssemblyMachine / ChemicalReactor / DissolutionChamber /
+        // CrystallizationChamber の 9 系統です。
+        // RecipeType だけ登録済みで、まだ datagen していない機械
+        // (PoweredFurnace / Centrifuge / LaserDrill / ReactionChamber / FluidMixer) を
+        // 追加したい場合は、この並びへ buildXxxRecipes(...) を足します。
         buildCobblestoneFurnaceRecipes(output);
         buildCobblestoneExtremeCompressorRecipes(output);
         buildCobblestoneCrusherRecipes(output);
@@ -683,6 +807,8 @@ public class ModRecipeProvider extends RecipeProvider {
     }
 
     private void buildCobblestoneFurnaceRecipes(RecipeOutput output) {
+        // Furnace 系は ItemLike 1 個入力 + ItemStack 1 個出力 + 処理時間、という
+        // 一番単純な構成なので、最初に機械レシピを増やす時の見本として使いやすいです。
         // 既存の cobblestone -> stone 例も datagen 管理へ寄せます。
         saveCobblestoneFurnaceRecipe(output, "cobblestone_to_stone", Items.COBBLESTONE, Items.STONE, 100);
 
@@ -811,6 +937,8 @@ public class ModRecipeProvider extends RecipeProvider {
     }
 
     private void saveCobblestoneFurnaceRecipe(RecipeOutput output, String recipeName, ItemLike ingredient, ItemLike result, int processingTime) {
+        // output.accept(...) へ流した時点で、実体の JSON は generated/resources 側へ書き出されます。
+        // 機械レシピは builder を使わず、Recipe インスタンスをそのまま渡すのがこのプロジェクトの流れです。
         CobblestoneFurnaceRecipe recipe = new CobblestoneFurnaceRecipe(
             Ingredient.of(ingredient),
             new ItemStack(result),
@@ -873,16 +1001,16 @@ public class ModRecipeProvider extends RecipeProvider {
     private void saveCobblestoneMixerRecipe(
         RecipeOutput output,
         String recipeName,
-        ItemLike firstIngredient,
-        ItemLike secondIngredient,
-        ItemLike result,
+        ItemStack firstIngredient,
+        ItemStack secondIngredient,
+        ItemStack result,
         int totalCobblestonePower,
         int cobblestonePowerPerTick
     ) {
         CobblestoneMixerRecipe recipe = new CobblestoneMixerRecipe(
-            Ingredient.of(firstIngredient),
-            Ingredient.of(secondIngredient),
-            new ItemStack(result),
+            firstIngredient,
+            secondIngredient,
+            result,
             totalCobblestonePower,
             cobblestonePowerPerTick
         );
@@ -1145,24 +1273,24 @@ public class ModRecipeProvider extends RecipeProvider {
 
     private static class MixerRecipeDefinition {
         private final String recipeName;
-        private final ItemLike firstIngredient;
-        private final ItemLike secondIngredient;
-        private final ItemLike result;
+        private final ItemStack firstIngredient;
+        private final ItemStack secondIngredient;
+        private final ItemStack result;
         private final int totalCobblestonePower;
         private final int cobblestonePowerPerTick;
 
         private MixerRecipeDefinition(
             String recipeName,
-            ItemLike firstIngredient,
-            ItemLike secondIngredient,
-            ItemLike result,
+            ItemStack firstIngredient,
+            ItemStack secondIngredient,
+            ItemStack result,
             int totalCobblestonePower,
             int cobblestonePowerPerTick
         ) {
             this.recipeName = recipeName;
-            this.firstIngredient = firstIngredient;
-            this.secondIngredient = secondIngredient;
-            this.result = result;
+            this.firstIngredient = firstIngredient.copy();
+            this.secondIngredient = secondIngredient.copy();
+            this.result = result.copy();
             this.totalCobblestonePower = totalCobblestonePower;
             this.cobblestonePowerPerTick = cobblestonePowerPerTick;
         }

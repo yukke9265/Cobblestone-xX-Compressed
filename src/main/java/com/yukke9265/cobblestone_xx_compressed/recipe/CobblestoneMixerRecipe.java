@@ -13,7 +13,6 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -21,18 +20,18 @@ import net.minecraft.world.level.Level;
 
 public class CobblestoneMixerRecipe implements Recipe<DoubleItemRecipeInput> {
     public static final MapCodec<CobblestoneMixerRecipe> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-        Ingredient.CODEC.fieldOf("ingredient_1").forGetter(CobblestoneMixerRecipe::getFirstIngredient),
-        Ingredient.CODEC.fieldOf("ingredient_2").forGetter(CobblestoneMixerRecipe::getSecondIngredient),
+        ItemStack.CODEC.fieldOf("item_input_1").forGetter(CobblestoneMixerRecipe::getFirstInput),
+        ItemStack.CODEC.fieldOf("item_input_2").forGetter(CobblestoneMixerRecipe::getSecondInput),
         ItemStack.CODEC.fieldOf("result").forGetter(CobblestoneMixerRecipe::getResult),
         Codec.INT.fieldOf("total_cobblestone_power").forGetter(CobblestoneMixerRecipe::getTotalCobblestonePower),
         Codec.INT.optionalFieldOf("cobblestone_power_per_tick", 1).forGetter(CobblestoneMixerRecipe::getCobblestonePowerPerTick)
     ).apply(instance, CobblestoneMixerRecipe::new));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, CobblestoneMixerRecipe> STREAM_CODEC = StreamCodec.composite(
-        Ingredient.CONTENTS_STREAM_CODEC,
-        CobblestoneMixerRecipe::getFirstIngredient,
-        Ingredient.CONTENTS_STREAM_CODEC,
-        CobblestoneMixerRecipe::getSecondIngredient,
+        ItemStack.STREAM_CODEC,
+        CobblestoneMixerRecipe::getFirstInput,
+        ItemStack.STREAM_CODEC,
+        CobblestoneMixerRecipe::getSecondInput,
         ItemStack.STREAM_CODEC,
         CobblestoneMixerRecipe::getResult,
         ByteBufCodecs.INT,
@@ -42,36 +41,36 @@ public class CobblestoneMixerRecipe implements Recipe<DoubleItemRecipeInput> {
         CobblestoneMixerRecipe::new
     );
 
-    private final Ingredient firstIngredient;
-    private final Ingredient secondIngredient;
+    private final ItemStack firstInput;
+    private final ItemStack secondInput;
     private final ItemStack result;
     private final int totalCobblestonePower;
     private final int cobblestonePowerPerTick;
 
     public CobblestoneMixerRecipe(
-        Ingredient firstIngredient,
-        Ingredient secondIngredient,
+        ItemStack firstInput,
+        ItemStack secondInput,
         ItemStack result,
         int totalCobblestonePower,
         int cobblestonePowerPerTick
     ) {
-        this.firstIngredient = firstIngredient;
-        this.secondIngredient = secondIngredient;
-        this.result = result;
+        this.firstInput = firstInput.copy();
+        this.secondInput = secondInput.copy();
+        this.result = result.copy();
         this.cobblestonePowerPerTick = Math.max(1, cobblestonePowerPerTick);
         this.totalCobblestonePower = Math.max(this.cobblestonePowerPerTick, totalCobblestonePower);
     }
 
-    public Ingredient getFirstIngredient() {
-        return this.firstIngredient;
+    public ItemStack getFirstInput() {
+        return this.firstInput.copy();
     }
 
-    public Ingredient getSecondIngredient() {
-        return this.secondIngredient;
+    public ItemStack getSecondInput() {
+        return this.secondInput.copy();
     }
 
     public ItemStack getResult() {
-        return this.result;
+        return this.result.copy();
     }
 
     public int getTotalCobblestonePower() {
@@ -88,8 +87,8 @@ public class CobblestoneMixerRecipe implements Recipe<DoubleItemRecipeInput> {
 
     @Override
     public boolean matches(@NotNull DoubleItemRecipeInput input, @NotNull Level level) {
-        return this.firstIngredient.test(input.getItem(0))
-            && this.secondIngredient.test(input.getItem(1));
+        return matchesInput(this.firstInput, input.getItem(0))
+            && matchesInput(this.secondInput, input.getItem(1));
     }
 
     @Override
@@ -115,5 +114,21 @@ public class CobblestoneMixerRecipe implements Recipe<DoubleItemRecipeInput> {
     @Override
     public RecipeType<? extends Recipe<DoubleItemRecipeInput>> getType() {
         return ModRecipeTypes.COBBLESTONE_MIXER.get();
+    }
+
+    private static boolean matchesInput(ItemStack expected, ItemStack actual) {
+        if (expected.isEmpty()) {
+            return actual.isEmpty();
+        }
+
+        if (actual.isEmpty()) {
+            return false;
+        }
+
+        if (!ItemStack.isSameItemSameComponents(expected, actual)) {
+            return false;
+        }
+
+        return actual.getCount() >= expected.getCount();
     }
 }

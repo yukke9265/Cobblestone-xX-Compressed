@@ -68,6 +68,12 @@ public class ModItemModelProvider extends ItemModelProvider {
             registerCobblestoneMixedDustItemModel(tier.getItem());
         }
 
+        registerCobblestonePureDustItemModel(ModItems.COBBLESTONE_PURE_DUST);
+
+        for (ModItems.TierCobblestonePureDust tier : ModItems.TierCobblestonePureDust.values()) {
+            registerCobblestonePureDustItemModel(tier.getItem());
+        }
+
         registerCompressedCobblestoneSingularityBitItemModel(ModItems.COMPRESSED_COBBLESTONE_SINGULARITY_BIT);
 
         for (ModItems.TierCompressedCobblestoneSingularityBit tier : ModItems.TierCompressedCobblestoneSingularityBit.values()) {
@@ -87,6 +93,10 @@ public class ModItemModelProvider extends ItemModelProvider {
         }
 
         registerDirtyMixtureItemModel(ModItems.DIRTY_MIXTURE);
+
+        for (ModItems.MixtureItem mixture : ModItems.MixtureItem.values()) {
+            registerMixtureItemModel(mixture.getItem());
+        }
 
         registerCoalDustItemModel(ModItems.COAL_DUST);
 
@@ -179,6 +189,10 @@ public class ModItemModelProvider extends ItemModelProvider {
         registerGeneratedItemModel(item, "cobblestone_mixed_dust");
     }
 
+    private void registerCobblestonePureDustItemModel(DeferredItem<Item> item) {
+        registerGeneratedItemModel(item, "cobblestone_pure_dust");
+    }
+
     private void registerCompressedCobblestoneSingularityBitItemModel(DeferredItem<Item> item) {
         registerGeneratedItemModel(item, "compressed_cobblestone_singularity_bit");
     }
@@ -193,6 +207,10 @@ public class ModItemModelProvider extends ItemModelProvider {
 
     private void registerDirtyMixtureItemModel(DeferredItem<Item> item) {
         registerGeneratedItemModel(item, "dust");
+    }
+
+    private void registerMixtureItemModel(DeferredItem<Item> item) {
+        registerGeneratedItemModel(item, "mixtures");
     }
 
     private void registerCoalDustItemModel(DeferredItem<Item> item) {
