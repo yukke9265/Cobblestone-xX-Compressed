@@ -7,11 +7,11 @@
       },
       "trigger": "minecraft:recipe_unlocked"
     },
-    "has_tier_copper_compressed_cobblestone": {
+    "has_tier_copper_cobblestone_gem": {
       "conditions": {
         "items": [
           {
-            "items": "cobblestonexxcompressed:tier_copper_compressed_cobblestone"
+            "items": "cobblestonexxcompressed:tier_copper_cobblestone_gem"
           }
         ]
       },
@@ -21,7 +21,7 @@
   "requirements": [
     [
       "has_the_recipe",
-      "has_tier_copper_compressed_cobblestone"
+      "has_tier_copper_cobblestone_gem"
     ]
   ],
   "rewards": {

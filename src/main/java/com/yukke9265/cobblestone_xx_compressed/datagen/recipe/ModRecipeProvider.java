@@ -36,21 +36,22 @@ public class ModRecipeProvider extends RecipeProvider {
     // gem のレシピは tier ごとに個別変更しやすいよう、
     // 「出力先」と「その tier で使う素材」を 1 行ずつ定義しておきます。
     // ここを見れば、どの gem が何から作られるかをすぐ追えます。
-    private static final GemRecipeDefinition[] GEM_RECIPES = new GemRecipeDefinition[] {
-        new GemRecipeDefinition("cobblestone_gem", Items.FLINT, ModItems.COBBLESTONE_GEM.get()),
-        new GemRecipeDefinition("tier_copper_cobblestone_gem", Items.COPPER_INGOT, ModItems.TIER_COPPER_COBBLESTONE_GEM.get()),
-        new GemRecipeDefinition("tier_iron_cobblestone_gem", Items.IRON_INGOT, ModItems.TIER_IRON_COBBLESTONE_GEM.get()),
-        new GemRecipeDefinition("tier_gold_cobblestone_gem", Items.GOLD_INGOT, ModItems.TIER_GOLD_COBBLESTONE_GEM.get()),
-        new GemRecipeDefinition("tier_amethyst_cobblestone_gem", Items.AMETHYST_SHARD, ModItems.TIER_AMETHYST_COBBLESTONE_GEM.get()),
-        new GemRecipeDefinition("tier_aquamarine_cobblestone_gem", Items.PRISMARINE_CRYSTALS, ModItems.TIER_AQUAMARINE_COBBLESTONE_GEM.get()),
-        new GemRecipeDefinition("tier_topaz_cobblestone_gem", Items.QUARTZ, ModItems.TIER_TOPAZ_COBBLESTONE_GEM.get()),
-        new GemRecipeDefinition("tier_ruby_cobblestone_gem", Items.REDSTONE, ModItems.TIER_RUBY_COBBLESTONE_GEM.get()),
-        new GemRecipeDefinition("tier_sapphire_cobblestone_gem", Items.LAPIS_LAZULI, ModItems.TIER_SAPPHIRE_COBBLESTONE_GEM.get()),
-        new GemRecipeDefinition("tier_diamond_cobblestone_gem", Items.DIAMOND, ModItems.TIER_DIAMOND_COBBLESTONE_GEM.get()),
-        new GemRecipeDefinition("tier_emerald_cobblestone_gem", Items.EMERALD, ModItems.TIER_EMERALD_COBBLESTONE_GEM.get()),
-        new GemRecipeDefinition("tier_netherite_cobblestone_gem", Items.NETHERITE_INGOT, ModItems.TIER_NETHERITE_COBBLESTONE_GEM.get()),
-        new GemRecipeDefinition("tier_obsidian_cobblestone_gem", Items.OBSIDIAN, ModItems.TIER_OBSIDIAN_COBBLESTONE_GEM.get())
-    };
+    // gemのレシピは削除します(入手経路をcompressed stoneからのドロップに絞るため)
+    //private static final GemRecipeDefinition[] GEM_RECIPES = new GemRecipeDefinition[] {
+    //    new GemRecipeDefinition("cobblestone_gem", Items.FLINT, ModItems.COBBLESTONE_GEM.get()),
+    //    new GemRecipeDefinition("tier_copper_cobblestone_gem", Items.COPPER_INGOT, ModItems.TIER_COPPER_COBBLESTONE_GEM.get()),
+    //    new GemRecipeDefinition("tier_iron_cobblestone_gem", Items.IRON_INGOT, ModItems.TIER_IRON_COBBLESTONE_GEM.get()),
+    //    new GemRecipeDefinition("tier_gold_cobblestone_gem", Items.GOLD_INGOT, ModItems.TIER_GOLD_COBBLESTONE_GEM.get()),
+    //    new GemRecipeDefinition("tier_amethyst_cobblestone_gem", Items.AMETHYST_SHARD, ModItems.TIER_AMETHYST_COBBLESTONE_GEM.get()),
+    //    new GemRecipeDefinition("tier_aquamarine_cobblestone_gem", Items.PRISMARINE_CRYSTALS, ModItems.TIER_AQUAMARINE_COBBLESTONE_GEM.get()),
+    //    new GemRecipeDefinition("tier_topaz_cobblestone_gem", Items.QUARTZ, ModItems.TIER_TOPAZ_COBBLESTONE_GEM.get()),
+    //    new GemRecipeDefinition("tier_ruby_cobblestone_gem", Items.REDSTONE, ModItems.TIER_RUBY_COBBLESTONE_GEM.get()),
+    //    new GemRecipeDefinition("tier_sapphire_cobblestone_gem", Items.LAPIS_LAZULI, ModItems.TIER_SAPPHIRE_COBBLESTONE_GEM.get()),
+    //    new GemRecipeDefinition("tier_diamond_cobblestone_gem", Items.DIAMOND, ModItems.TIER_DIAMOND_COBBLESTONE_GEM.get()),
+    //    new GemRecipeDefinition("tier_emerald_cobblestone_gem", Items.EMERALD, ModItems.TIER_EMERALD_COBBLESTONE_GEM.get()),
+    //    new GemRecipeDefinition("tier_netherite_cobblestone_gem", Items.NETHERITE_INGOT, ModItems.TIER_NETHERITE_COBBLESTONE_GEM.get()),
+    //    new GemRecipeDefinition("tier_obsidian_cobblestone_gem", Items.OBSIDIAN, ModItems.TIER_OBSIDIAN_COBBLESTONE_GEM.get())
+    //};
 
     // 圧縮丸石の upgrade レシピも 1 行ずつ並べます。
     // 「前段階の圧縮丸石」と「中央に置く gem」と「出力ブロック」を分けておくと、
@@ -453,7 +454,7 @@ public class ModRecipeProvider extends RecipeProvider {
         buildCobblestoneGeneratorRecipes(output);
         buildCobblestoneMachineCasingRecipes(output);
         buildCobblestoneTankRecipes(output);
-        buildGemRecipes(output);
+        // buildGemRecipes(output); //gemはドロップによる獲得に変更するため、レシピを削除します。
         buildCobblestoneRodRecipes(output);
         buildCobblestoneMotorRecipes(output);
         buildCobblestoneAccelerationChipRecipes(output);
@@ -512,6 +513,7 @@ public class ModRecipeProvider extends RecipeProvider {
         }
     }
 
+    /* gemはドロップによる獲得に変更します
     private void buildGemRecipes(RecipeOutput output) {
         // 通常 gem は flint を核にして作る仮レシピです。
         // tier 側はすべて同じ見た目の recipe ですが、素材行は個別に分かれているので、
@@ -539,32 +541,32 @@ public class ModRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_" + recipe.recipeName, has(recipe.material))
                 .save(output, modRecipeId(recipe.recipeName));
         }
-    }
+    }*/
 
     private void buildCompressedCobblestoneSingularityRecipes(RecipeOutput output) {
-        // bit は通常の圧縮丸石、tier 版は同じ tier の圧縮丸石を 8 個外周へ並べて作ります。
+        // bit は通常の丸石 gem、tier 版は同じ tier の丸石 gem を 8 個外周へ並べて作ります。
         // fragment と singularity も同じ「8 個を外周へ置く」見た目でそろえ、
         // bit -> fragment -> singularity の段階がレシピ形状から追いやすいようにします。
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.COMPRESSED_COBBLESTONE_SINGULARITY_BIT.get())
             .pattern("CCC")
             .pattern("C C")
             .pattern("CCC")
-            .define('C', ModItems.COMPRESSED_COBBLESTONE_ITEM.get())
+            .define('C', ModItems.COBBLESTONE_GEM.get())
             .unlockedBy(
-                "has_compressed_cobblestone",
-                has(ModItems.COMPRESSED_COBBLESTONE_ITEM.get())
+                "has_cobblestone_gem",
+                has(ModItems.COBBLESTONE_GEM.get())
             )
             .save(output, modRecipeId("compressed_cobblestone_singularity_bit"));
 
         for (ModItems.TierCompressedCobblestoneSingularityBit tier : ModItems.TierCompressedCobblestoneSingularityBit.values()) {
-            ItemLike compressedCobblestone = ModItems.TierCompressedCobblestoneItem.valueOf(tier.name()).getItem().get();
+            ItemLike cobblestoneGem = ModItems.TierCobblestoneGem.valueOf(tier.name()).getItem().get();
 
             ShapedRecipeBuilder.shaped(RecipeCategory.MISC, tier.getItem().get())
                 .pattern("CCC")
                 .pattern("C C")
                 .pattern("CCC")
-                .define('C', compressedCobblestone)
-                .unlockedBy("has_" + ModItems.TierCompressedCobblestoneItem.valueOf(tier.name()).getBlockTier().getRegistryName(), has(compressedCobblestone))
+                .define('C', cobblestoneGem)
+                .unlockedBy("has_" + ModItems.TierCobblestoneGem.valueOf(tier.name()).getRegistryName(), has(cobblestoneGem))
                 .save(output, modRecipeId(tier.getRegistryName()));
         }
 
@@ -1162,6 +1164,7 @@ public class ModRecipeProvider extends RecipeProvider {
         return ResourceLocation.fromNamespaceAndPath(CobblestonexXCompressed.MODID, path);
     }
 
+    /* gemはドロップによる獲得に変更するため、レシピ定義を削除します。
     private static class GemRecipeDefinition {
         private final String recipeName;
         private final ItemLike material;
@@ -1172,7 +1175,7 @@ public class ModRecipeProvider extends RecipeProvider {
             this.material = material;
             this.result = result;
         }
-    }
+    }*/
 
     private static class CompressionRecipeDefinition {
         private final String recipeName;
