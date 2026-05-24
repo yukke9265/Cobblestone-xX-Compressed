@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "down": "cobblestonexxcompressed:block/cobblestone_powered_furnace/cobblestone_powered_furnace_top",
+    "east": "cobblestonexxcompressed:block/cobblestone_powered_furnace/cobblestone_powered_furnace_side",
+    "north": "cobblestonexxcompressed:block/cobblestone_powered_furnace/cobblestone_powered_furnace_front",
+    "particle": "cobblestonexxcompressed:block/cobblestone_powered_furnace/cobblestone_powered_furnace_top",
+    "south": "cobblestonexxcompressed:block/cobblestone_powered_furnace/cobblestone_powered_furnace_side",
+    "up": "cobblestonexxcompressed:block/cobblestone_powered_furnace/cobblestone_powered_furnace_top",
+    "west": "cobblestonexxcompressed:block/cobblestone_powered_furnace/cobblestone_powered_furnace_side"
+  }
+}

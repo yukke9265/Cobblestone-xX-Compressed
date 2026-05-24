@@ -55,14 +55,9 @@
 
 ## 4. RecipeType はあるが datagen 未接続の機械
 
-次の機械は RecipeType と RecipeSerializer の登録はありますが、現時点では ModRecipeProvider.buildRecipes からは出力していません。
+この一覧に載っていた機械は、現在はすべて ModRecipeProvider.buildRecipes から出力するようになっています。
 
-1. Cobblestone Centrifuge
-2. Cobblestone Laser Drill
-3. Cobblestone Reaction Chamber
-4. Cobblestone Fluid Mixer
-
-これらを datagen 対応したい場合は、次の 3 つを ModRecipeProvider へ追加します。
+新しい機械を追加して datagen 未接続になった場合は、次の 3 つを ModRecipeProvider へ追加します。
 
 1. 定義配列
 2. buildXxxRecipes メソッド

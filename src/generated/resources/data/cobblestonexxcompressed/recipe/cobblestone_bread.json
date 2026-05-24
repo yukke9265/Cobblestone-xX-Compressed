@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": {
+      "item": "minecraft:cobblestone"
+    },
+    "S": {
+      "item": "minecraft:stone"
+    }
+  },
+  "pattern": [
+    "   ",
+    "CCC",
+    "SSS"
+  ],
+  "result": {
+    "count": 1,
+    "id": "cobblestonexxcompressed:cobblestone_bread"
+  }
+}

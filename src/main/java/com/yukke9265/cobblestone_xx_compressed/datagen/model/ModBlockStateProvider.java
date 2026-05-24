@@ -53,11 +53,21 @@ public class ModBlockStateProvider extends BlockStateProvider {
 
         // Cobblestone Melter は前面の見た目が ON/OFF で変わるので、
         // 単純な cubeAll ではなく、blockstate と 2 つの model をここでまとめて生成します。
+        registerStandardOnOffMachineBlock(ModBlocks.COBBLESTONE_FURNACE.get(), "cobblestone_furnace");
+        registerStandardOnOffMachineBlock(ModBlocks.COBBLESTONE_POWERED_FURNACE.get(), "cobblestone_powered_furnace");
+        registerStandardOnOffMachineBlock(ModBlocks.COBBLESTONE_CRUSHER.get(), "cobblestone_crusher");
+        registerStandardOnOffMachineBlock(ModBlocks.COBBLESTONE_FE_GENERATOR.get(), "cobblestone_fe_generator");
+        registerStandardOnOffMachineBlock(ModBlocks.COBBLESTONE_CENTRIFUGE.get(), "cobblestone_centrifuge");
+        registerStandardOnOffMachineBlock(ModBlocks.COBBLESTONE_LASER_DRILL.get(), "cobblestone_laser_drill");
+        registerStandardOnOffMachineBlock(ModBlocks.COBBLESTONE_MIXER.get(), "cobblestone_mixer");
         registerCobblestoneExtremeCompressorBlock(ModBlocks.COBBLESTONE_EXTREME_COMPRESSOR.get(), "cobblestone_extreme_compressor");
         registerCobblestoneMelterBlock(ModBlocks.COBBLESTONE_MELTER.get(), "cobblestone_melter");
         registerCobblestoneAssemblyMachineBlock(ModBlocks.COBBLESTONE_ASSEMBLY_MACHINE.get(), "cobblestone_assembly_machine");
         registerCobblestoneChemicalReactorBlock(ModBlocks.COBBLESTONE_CHEMICAL_REACTOR.get(), "cobblestone_chemical_reactor");
+        registerStandardOnOffMachineBlock(ModBlocks.COBBLESTONE_REACTION_CHAMBER.get(), "cobblestone_reaction_chamber");
+        registerStandardOnOffMachineBlock(ModBlocks.COBBLESTONE_CRYSTALLIZATION_CHAMBER.get(), "cobblestone_crystallization_chamber");
         registerCobblestoneDissolutionChamberBlock(ModBlocks.COBBLESTONE_DISSOLUTION_CHAMBER.get(), "cobblestone_dissolution_chamber");
+        registerStandardOnOffMachineBlock(ModBlocks.COBBLESTONE_FLUID_MIXER.get(), "cobblestone_fluid_mixer");
 
         // LiquidBlock は level ごとに状態を持ちますが、見た目は fluid renderer が担当します。
         // そのため blockstate 側では、粒子テクスチャだけ持つ最小の model を全状態で共有すれば十分です。
@@ -121,6 +131,48 @@ public class ModBlockStateProvider extends BlockStateProvider {
             generatorVariant.getRegistryName(),
             generatorVariant.getRegistryName()
         );
+    }
+
+    @SuppressWarnings("null")
+    private void registerStandardOnOffMachineBlock(Block block, String blockName) {
+        ModelFile offModel = this.models()
+            .withExistingParent(blockName + "_off", this.mcLoc("block/cube"))
+            .texture("particle", this.modLoc("block/" + blockName + "/" + blockName + "_top"))
+            .texture("down", this.modLoc("block/" + blockName + "/" + blockName + "_top"))
+            .texture("up", this.modLoc("block/" + blockName + "/" + blockName + "_top"))
+            .texture("north", this.modLoc("block/" + blockName + "/" + blockName + "_front"))
+            .texture("south", this.modLoc("block/" + blockName + "/" + blockName + "_side"))
+            .texture("west", this.modLoc("block/" + blockName + "/" + blockName + "_side"))
+            .texture("east", this.modLoc("block/" + blockName + "/" + blockName + "_side"));
+
+        ModelFile onModel = this.models()
+            .withExistingParent(blockName + "_on", this.mcLoc("block/cube"))
+            .texture("particle", this.modLoc("block/" + blockName + "/" + blockName + "_top"))
+            .texture("down", this.modLoc("block/" + blockName + "/" + blockName + "_top"))
+            .texture("up", this.modLoc("block/" + blockName + "/" + blockName + "_top"))
+            .texture("north", this.modLoc("block/" + blockName + "/" + blockName + "_front_on"))
+            .texture("south", this.modLoc("block/" + blockName + "/" + blockName + "_side"))
+            .texture("west", this.modLoc("block/" + blockName + "/" + blockName + "_side"))
+            .texture("east", this.modLoc("block/" + blockName + "/" + blockName + "_side"));
+
+        this.getVariantBuilder(block).forAllStates(state -> {
+            Direction facing = state.getValue(OnOffBlock.FACING);
+            boolean isOn = state.getValue(OnOffBlock.ON);
+
+            int rotationY = switch (facing) {
+                case SOUTH -> 180;
+                case EAST -> 90;
+                case WEST -> 270;
+                default -> 0;
+            };
+
+            return ConfiguredModel.builder()
+                .modelFile(isOn ? onModel : offModel)
+                .rotationY(rotationY)
+                .build();
+        });
+
+        this.simpleBlockItem(block, offModel);
     }
 
     private void registerCobblestoneMelterBlock(Block block, String blockName) {

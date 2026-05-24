@@ -6,13 +6,17 @@ import javax.annotation.Nonnull;
 
 import com.yukke9265.cobblestone_xx_compressed.CobblestonexXCompressed;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneAssemblyMachineRecipe;
+import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneCentrifugeRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneCrystallizationChamberRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneChemicalReactorRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneDissolutionChamberRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneCrusherRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneExtremeCompressorRecipe;
+import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneFluidMixerRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneFurnaceRecipe;
+import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneLaserDrillRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestonePoweredFurnaceRecipe;
+import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneReactionChamberRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneMelterRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneMixerRecipe;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModBlocks;
@@ -88,6 +92,32 @@ public class ModRecipeProvider extends RecipeProvider {
         new MachineRecipeDefinition("tier_emerald_compressed_cobblestone_to_compressed_stone", ModBlocks.TierCompressedCobblestone.EMERALD.getBlock().get(), ModBlocks.TierCompressedStone.EMERALD.getBlock().get(), 100),
         new MachineRecipeDefinition("tier_netherite_compressed_cobblestone_to_compressed_stone", ModBlocks.TierCompressedCobblestone.NETHERITE.getBlock().get(), ModBlocks.TierCompressedStone.NETHERITE.getBlock().get(), 100),
         new MachineRecipeDefinition("tier_obsidian_compressed_cobblestone_to_compressed_stone", ModBlocks.TierCompressedCobblestone.OBSIDIAN.getBlock().get(), ModBlocks.TierCompressedStone.OBSIDIAN.getBlock().get(), 100)
+    };
+
+    private static final CentrifugeRecipeDefinition[] COBBLESTONE_CENTRIFUGE_RECIPES = new CentrifugeRecipeDefinition[] {
+        new CentrifugeRecipeDefinition(
+            "tier_gold_cobblestone_dust_to_tier_gold_cobblestone_dirty_dust_and_dirty_mixture",
+            ModItems.TIER_GOLD_COBBLESTONE_DUST.get(),
+            new ItemStack(ModItems.TIER_GOLD_COBBLESTONE_DIRTY_DUST.get()),
+            1.0F,
+            new ItemStack(ModItems.DIRTY_MIXTURE.get()),
+            0.3F,
+            400,
+            4
+        )
+    };
+
+    private static final LaserDrillRecipeDefinition[] COBBLESTONE_LASER_DRILL_RECIPES = new LaserDrillRecipeDefinition[] {
+        new LaserDrillRecipeDefinition(
+            "amethyst_compressed_cobblestone_to_amethyst_shard_and_diamond",
+            ModBlocks.TierCompressedCobblestone.AMETHYST.getBlock().get(),
+            new ItemStack(Items.AMETHYST_SHARD),
+            0.5F,
+            new ItemStack(Items.DIAMOND),
+            0.05F,
+            3200,
+            16
+        )
     };
 
     private static final CrusherRecipeDefinition[] COBBLESTONE_CRUSHER_RECIPES = new CrusherRecipeDefinition[] {
@@ -304,6 +334,18 @@ public class ModRecipeProvider extends RecipeProvider {
         )
     };
 
+    private static final ReactionChamberRecipeDefinition[] COBBLESTONE_REACTION_CHAMBER_RECIPES = new ReactionChamberRecipeDefinition[] {
+        new ReactionChamberRecipeDefinition(
+            "water_and_amethyst_dust_and_redstone_dust_to_amethyst_shard",
+            new FluidStack(net.minecraft.world.level.material.Fluids.WATER, 1000),
+            ModItems.AMETHYST_DUST.get(),
+            Items.REDSTONE,
+            new ItemStack(Items.AMETHYST_SHARD),
+            3200,
+            32
+        )
+    };
+
 
     private static final CrystallizationChamberRecipeDefinition[] COBBLESTONE_CRYSTALLIZATION_CHAMBER_RECIPES = new CrystallizationChamberRecipeDefinition[] {
         new CrystallizationChamberRecipeDefinition(
@@ -328,6 +370,17 @@ public class ModRecipeProvider extends RecipeProvider {
             new FluidStack(ModFluids.TierMoltenDirtyCompressedCobblestone.DIAMOND.getFluidEntry().getStillFluid().get(), 1000),
             102400,
             1024
+        )
+    };
+
+    private static final FluidMixerRecipeDefinition[] COBBLESTONE_FLUID_MIXER_RECIPES = new FluidMixerRecipeDefinition[] {
+        new FluidMixerRecipeDefinition(
+            "dirty_sapphire_and_water_to_sapphire",
+            new FluidStack(ModFluids.TierMoltenDirtyCompressedCobblestone.SAPPHIRE.getFluidEntry().getStillFluid().get(), 100),
+            new FluidStack(net.minecraft.world.level.material.Fluids.WATER, 10000),
+            new FluidStack(ModFluids.TierMoltenCompressedCobblestone.SAPPHIRE.getFluidEntry().getStillFluid().get(), 100),
+            25600,
+            256
         )
     };
 
@@ -455,6 +508,7 @@ public class ModRecipeProvider extends RecipeProvider {
         buildCobblestoneGeneratorRecipes(output);
         buildCobblestoneMachineCasingRecipes(output);
         buildCobblestoneTankRecipes(output);
+        buildCobblestoneBreadRecipe(output);
         // buildGemRecipes(output); //gemはドロップによる獲得に変更するため、レシピを削除します。
         buildCobblestoneRodRecipes(output);
         buildCobblestoneMotorRecipes(output);
@@ -463,22 +517,33 @@ public class ModRecipeProvider extends RecipeProvider {
 
         // ここから下は独自 RecipeType / RecipeSerializer を使う機械レシピです。
         // JSON の出力先は data/<modid>/recipe/<machine_name>/... になります。
-        // 現在 datagen しているのは Furnace / PoweredFurnace / ExtremeCompressor /
-        // Crusher / Mixer / Melter / AssemblyMachine / ChemicalReactor /
-        // DissolutionChamber / CrystallizationChamber の 10 系統です。
-        // RecipeType だけ登録済みで、まだ datagen していない機械
-        // (Centrifuge / LaserDrill / ReactionChamber / FluidMixer) を
-        // 追加したい場合は、この並びへ buildXxxRecipes(...) を足します。
+        // 現在は登録済みの機械レシピをすべて datagen しています。
+        // 新しい機械を追加したときは、この並びへ buildXxxRecipes(...) を足します。
         buildCobblestoneFurnaceRecipes(output);
         buildCobblestonePoweredFurnaceRecipes(output);
         buildCobblestoneExtremeCompressorRecipes(output);
         buildCobblestoneCrusherRecipes(output);
+        buildCobblestoneCentrifugeRecipes(output);
+        buildCobblestoneLaserDrillRecipes(output);
         buildCobblestoneMelterRecipes(output);
         buildCobblestoneAssemblyMachineRecipes(output);
         buildCobblestoneChemicalReactorRecipes(output);
         buildCobblestoneMixerRecipes(output);
+        buildCobblestoneReactionChamberRecipes(output);
         buildCobblestoneDissolutionChamberRecipes(output);
         buildCobblestoneCrystallizationChamberRecipes(output);
+        buildCobblestoneFluidMixerRecipes(output);
+    }
+
+    private void buildCobblestoneBreadRecipe(RecipeOutput output) {
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.COBBLESTONE_BREAD.get())
+            .pattern("   ")
+            .pattern("CCC")
+            .pattern("SSS")
+            .define('C', Items.COBBLESTONE)
+            .define('S', Items.STONE)
+            .unlockedBy("has_cobblestone", has(Items.COBBLESTONE))
+            .save(output, modRecipeId("cobblestone_bread"));
     }
 
     private void buildCompressedCobblestoneRecipes(RecipeOutput output) {
@@ -867,6 +932,38 @@ public class ModRecipeProvider extends RecipeProvider {
         }
     }
 
+    private void buildCobblestoneCentrifugeRecipes(RecipeOutput output) {
+        for (CentrifugeRecipeDefinition recipe : COBBLESTONE_CENTRIFUGE_RECIPES) {
+            saveCobblestoneCentrifugeRecipe(
+                output,
+                recipe.recipeName,
+                recipe.ingredient,
+                recipe.firstResult,
+                recipe.firstResultChance,
+                recipe.secondResult,
+                recipe.secondResultChance,
+                recipe.totalCobblestonePower,
+                recipe.cobblestonePowerPerTick
+            );
+        }
+    }
+
+    private void buildCobblestoneLaserDrillRecipes(RecipeOutput output) {
+        for (LaserDrillRecipeDefinition recipe : COBBLESTONE_LASER_DRILL_RECIPES) {
+            saveCobblestoneLaserDrillRecipe(
+                output,
+                recipe.recipeName,
+                recipe.ingredient,
+                recipe.firstResult,
+                recipe.firstResultChance,
+                recipe.secondResult,
+                recipe.secondResultChance,
+                recipe.totalCobblestonePower,
+                recipe.cobblestonePowerPerTick
+            );
+        }
+    }
+
     private void buildCobblestoneMixerRecipes(RecipeOutput output) {
         for (MixerRecipeDefinition recipe : COBBLESTONE_MIXER_RECIPES) {
             saveCobblestoneMixerRecipe(
@@ -913,6 +1010,21 @@ public class ModRecipeProvider extends RecipeProvider {
         }
     }
 
+    private void buildCobblestoneReactionChamberRecipes(RecipeOutput output) {
+        for (ReactionChamberRecipeDefinition recipe : COBBLESTONE_REACTION_CHAMBER_RECIPES) {
+            saveCobblestoneReactionChamberRecipe(
+                output,
+                recipe.recipeName,
+                recipe.fluidInput,
+                recipe.firstIngredient,
+                recipe.secondIngredient,
+                recipe.result,
+                recipe.totalCobblestonePower,
+                recipe.cobblestonePowerPerTick
+            );
+        }
+    }
+
     private void buildCobblestoneAssemblyMachineRecipes(RecipeOutput output) {
         for (AssemblyMachineRecipeDefinition recipe : COBBLESTONE_ASSEMBLY_MACHINE_RECIPES) {
             saveCobblestoneAssemblyMachineRecipe(
@@ -953,6 +1065,20 @@ public class ModRecipeProvider extends RecipeProvider {
                 recipe.recipeName,
                 recipe.fluidInput,
                 recipe.result,
+                recipe.totalCobblestonePower,
+                recipe.cobblestonePowerPerTick
+            );
+        }
+    }
+
+    private void buildCobblestoneFluidMixerRecipes(RecipeOutput output) {
+        for (FluidMixerRecipeDefinition recipe : COBBLESTONE_FLUID_MIXER_RECIPES) {
+            saveCobblestoneFluidMixerRecipe(
+                output,
+                recipe.recipeName,
+                recipe.firstFluidInput,
+                recipe.secondFluidInput,
+                recipe.fluidOutput,
                 recipe.totalCobblestonePower,
                 recipe.cobblestonePowerPerTick
             );
@@ -1014,6 +1140,62 @@ public class ModRecipeProvider extends RecipeProvider {
 
         output.accept(
             modRecipeId("cobblestone_crusher/" + recipeName),
+            recipe,
+            null
+        );
+    }
+
+    private void saveCobblestoneCentrifugeRecipe(
+        RecipeOutput output,
+        String recipeName,
+        ItemLike ingredient,
+        ItemStack firstResult,
+        float firstResultChance,
+        ItemStack secondResult,
+        float secondResultChance,
+        int totalCobblestonePower,
+        int cobblestonePowerPerTick
+    ) {
+        CobblestoneCentrifugeRecipe recipe = new CobblestoneCentrifugeRecipe(
+            Ingredient.of(ingredient),
+            firstResult,
+            firstResultChance,
+            secondResult,
+            secondResultChance,
+            totalCobblestonePower,
+            cobblestonePowerPerTick
+        );
+
+        output.accept(
+            modRecipeId("cobblestone_centrifuge/" + recipeName),
+            recipe,
+            null
+        );
+    }
+
+    private void saveCobblestoneLaserDrillRecipe(
+        RecipeOutput output,
+        String recipeName,
+        ItemLike ingredient,
+        ItemStack firstResult,
+        float firstResultChance,
+        ItemStack secondResult,
+        float secondResultChance,
+        int totalCobblestonePower,
+        int cobblestonePowerPerTick
+    ) {
+        CobblestoneLaserDrillRecipe recipe = new CobblestoneLaserDrillRecipe(
+            Ingredient.of(ingredient),
+            firstResult,
+            firstResultChance,
+            secondResult,
+            secondResultChance,
+            totalCobblestonePower,
+            cobblestonePowerPerTick
+        );
+
+        output.accept(
+            modRecipeId("cobblestone_laser_drill/" + recipeName),
             recipe,
             null
         );
@@ -1123,6 +1305,32 @@ public class ModRecipeProvider extends RecipeProvider {
         );
     }
 
+    private void saveCobblestoneReactionChamberRecipe(
+        RecipeOutput output,
+        String recipeName,
+        FluidStack fluidInput,
+        ItemLike firstIngredient,
+        ItemLike secondIngredient,
+        ItemStack result,
+        int totalCobblestonePower,
+        int cobblestonePowerPerTick
+    ) {
+        CobblestoneReactionChamberRecipe recipe = new CobblestoneReactionChamberRecipe(
+            fluidInput,
+            Ingredient.of(firstIngredient),
+            Ingredient.of(secondIngredient),
+            result,
+            totalCobblestonePower,
+            cobblestonePowerPerTick
+        );
+
+        output.accept(
+            modRecipeId("cobblestone_reaction_chamber/" + recipeName),
+            recipe,
+            null
+        );
+    }
+
     private void saveCobblestoneAssemblyMachineRecipe(
         RecipeOutput output,
         String recipeName,
@@ -1198,6 +1406,30 @@ public class ModRecipeProvider extends RecipeProvider {
 
         output.accept(
             modRecipeId("cobblestone_crystallization_chamber/" + recipeName),
+            recipe,
+            null
+        );
+    }
+
+    private void saveCobblestoneFluidMixerRecipe(
+        RecipeOutput output,
+        String recipeName,
+        FluidStack firstFluidInput,
+        FluidStack secondFluidInput,
+        FluidStack fluidOutput,
+        int totalCobblestonePower,
+        int cobblestonePowerPerTick
+    ) {
+        CobblestoneFluidMixerRecipe recipe = new CobblestoneFluidMixerRecipe(
+            firstFluidInput,
+            secondFluidInput,
+            fluidOutput,
+            totalCobblestonePower,
+            cobblestonePowerPerTick
+        );
+
+        output.accept(
+            modRecipeId("cobblestone_fluid_mixer/" + recipeName),
             recipe,
             null
         );
@@ -1287,6 +1519,68 @@ public class ModRecipeProvider extends RecipeProvider {
             this.recipeName = recipeName;
             this.ingredient = ingredient;
             this.result = result;
+            this.totalCobblestonePower = totalCobblestonePower;
+            this.cobblestonePowerPerTick = cobblestonePowerPerTick;
+        }
+    }
+
+    private static class CentrifugeRecipeDefinition {
+        private final String recipeName;
+        private final ItemLike ingredient;
+        private final ItemStack firstResult;
+        private final float firstResultChance;
+        private final ItemStack secondResult;
+        private final float secondResultChance;
+        private final int totalCobblestonePower;
+        private final int cobblestonePowerPerTick;
+
+        private CentrifugeRecipeDefinition(
+            String recipeName,
+            ItemLike ingredient,
+            ItemStack firstResult,
+            float firstResultChance,
+            ItemStack secondResult,
+            float secondResultChance,
+            int totalCobblestonePower,
+            int cobblestonePowerPerTick
+        ) {
+            this.recipeName = recipeName;
+            this.ingredient = ingredient;
+            this.firstResult = firstResult.copy();
+            this.firstResultChance = firstResultChance;
+            this.secondResult = secondResult.copy();
+            this.secondResultChance = secondResultChance;
+            this.totalCobblestonePower = totalCobblestonePower;
+            this.cobblestonePowerPerTick = cobblestonePowerPerTick;
+        }
+    }
+
+    private static class LaserDrillRecipeDefinition {
+        private final String recipeName;
+        private final ItemLike ingredient;
+        private final ItemStack firstResult;
+        private final float firstResultChance;
+        private final ItemStack secondResult;
+        private final float secondResultChance;
+        private final int totalCobblestonePower;
+        private final int cobblestonePowerPerTick;
+
+        private LaserDrillRecipeDefinition(
+            String recipeName,
+            ItemLike ingredient,
+            ItemStack firstResult,
+            float firstResultChance,
+            ItemStack secondResult,
+            float secondResultChance,
+            int totalCobblestonePower,
+            int cobblestonePowerPerTick
+        ) {
+            this.recipeName = recipeName;
+            this.ingredient = ingredient;
+            this.firstResult = firstResult.copy();
+            this.firstResultChance = firstResultChance;
+            this.secondResult = secondResult.copy();
+            this.secondResultChance = secondResultChance;
             this.totalCobblestonePower = totalCobblestonePower;
             this.cobblestonePowerPerTick = cobblestonePowerPerTick;
         }
@@ -1389,6 +1683,34 @@ public class ModRecipeProvider extends RecipeProvider {
         }
     }
 
+    private static class ReactionChamberRecipeDefinition {
+        private final String recipeName;
+        private final FluidStack fluidInput;
+        private final ItemLike firstIngredient;
+        private final ItemLike secondIngredient;
+        private final ItemStack result;
+        private final int totalCobblestonePower;
+        private final int cobblestonePowerPerTick;
+
+        private ReactionChamberRecipeDefinition(
+            String recipeName,
+            FluidStack fluidInput,
+            ItemLike firstIngredient,
+            ItemLike secondIngredient,
+            ItemStack result,
+            int totalCobblestonePower,
+            int cobblestonePowerPerTick
+        ) {
+            this.recipeName = recipeName;
+            this.fluidInput = fluidInput.copy();
+            this.firstIngredient = firstIngredient;
+            this.secondIngredient = secondIngredient;
+            this.result = result.copy();
+            this.totalCobblestonePower = totalCobblestonePower;
+            this.cobblestonePowerPerTick = cobblestonePowerPerTick;
+        }
+    }
+
     private static class CrystallizationChamberRecipeDefinition {
         private final String recipeName;
         private final FluidStack fluidInput;
@@ -1486,6 +1808,31 @@ public class ModRecipeProvider extends RecipeProvider {
             this.sixthItemInput = sixthItemInput.copy();
             this.fluidInput = fluidInput.copy();
             this.resultItem = resultItem.copy();
+            this.totalCobblestonePower = totalCobblestonePower;
+            this.cobblestonePowerPerTick = cobblestonePowerPerTick;
+        }
+    }
+
+    private static class FluidMixerRecipeDefinition {
+        private final String recipeName;
+        private final FluidStack firstFluidInput;
+        private final FluidStack secondFluidInput;
+        private final FluidStack fluidOutput;
+        private final int totalCobblestonePower;
+        private final int cobblestonePowerPerTick;
+
+        private FluidMixerRecipeDefinition(
+            String recipeName,
+            FluidStack firstFluidInput,
+            FluidStack secondFluidInput,
+            FluidStack fluidOutput,
+            int totalCobblestonePower,
+            int cobblestonePowerPerTick
+        ) {
+            this.recipeName = recipeName;
+            this.firstFluidInput = firstFluidInput.copy();
+            this.secondFluidInput = secondFluidInput.copy();
+            this.fluidOutput = fluidOutput.copy();
             this.totalCobblestonePower = totalCobblestonePower;
             this.cobblestonePowerPerTick = cobblestonePowerPerTick;
         }

@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "down": "cobblestonexxcompressed:block/cobblestone_centrifuge/cobblestone_centrifuge_top",
+    "east": "cobblestonexxcompressed:block/cobblestone_centrifuge/cobblestone_centrifuge_side",
+    "north": "cobblestonexxcompressed:block/cobblestone_centrifuge/cobblestone_centrifuge_front",
+    "particle": "cobblestonexxcompressed:block/cobblestone_centrifuge/cobblestone_centrifuge_top",
+    "south": "cobblestonexxcompressed:block/cobblestone_centrifuge/cobblestone_centrifuge_side",
+    "up": "cobblestonexxcompressed:block/cobblestone_centrifuge/cobblestone_centrifuge_top",
+    "west": "cobblestonexxcompressed:block/cobblestone_centrifuge/cobblestone_centrifuge_side"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "down": "cobblestonexxcompressed:block/cobblestone_reaction_chamber/cobblestone_reaction_chamber_top",
+    "east": "cobblestonexxcompressed:block/cobblestone_reaction_chamber/cobblestone_reaction_chamber_side",
+    "north": "cobblestonexxcompressed:block/cobblestone_reaction_chamber/cobblestone_reaction_chamber_front_on",
+    "particle": "cobblestonexxcompressed:block/cobblestone_reaction_chamber/cobblestone_reaction_chamber_top",
+    "south": "cobblestonexxcompressed:block/cobblestone_reaction_chamber/cobblestone_reaction_chamber_side",
+    "up": "cobblestonexxcompressed:block/cobblestone_reaction_chamber/cobblestone_reaction_chamber_top",
+    "west": "cobblestonexxcompressed:block/cobblestone_reaction_chamber/cobblestone_reaction_chamber_side"
+  }
+}
