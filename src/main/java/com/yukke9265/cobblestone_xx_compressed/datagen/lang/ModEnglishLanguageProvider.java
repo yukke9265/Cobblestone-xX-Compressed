@@ -92,6 +92,9 @@ public class ModEnglishLanguageProvider extends LanguageProvider {
         }
 
         addItem(ModItems.COAL_DUST, "Coal Dust");
+        addItem(ModItems.CANNED_STABLE_ENDERITE, "Canned Stable Enderite");
+        addItem(ModItems.EXTREME_COMPRESSED_CANNED_ENDERITE, "Extreme Compressed Canned Enderite");
+        addItem(ModItems.EXTREME_COMPRESSED_OBSIDIAN, "Extreme Compressed Obsidian");
 
         addItem(ModItems.COBBLESTONE_WIRE, "Cobblestone Wire");
         for (ModItems.TierCobblestoneWire tier : ModItems.TierCobblestoneWire.values()) {

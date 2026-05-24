@@ -99,6 +99,9 @@ public class ModItemModelProvider extends ItemModelProvider {
         }
 
         registerCoalDustItemModel(ModItems.COAL_DUST);
+        registerOtherItemModel(ModItems.CANNED_STABLE_ENDERITE);
+        registerOtherItemModel(ModItems.EXTREME_COMPRESSED_CANNED_ENDERITE);
+        registerOtherItemModel(ModItems.EXTREME_COMPRESSED_OBSIDIAN);
 
         registerCobblestoneWireItemModel(ModItems.COBBLESTONE_WIRE);
 
@@ -219,6 +222,10 @@ public class ModItemModelProvider extends ItemModelProvider {
 
     private void registerCoalDustItemModel(DeferredItem<Item> item) {
         registerGeneratedItemModel(item, "dust");
+    }
+
+    private void registerOtherItemModel(DeferredItem<Item> item) {
+        registerGeneratedItemModel(item, "other");
     }
 
     private void registerCobblestoneWireItemModel(DeferredItem<Item> item) {

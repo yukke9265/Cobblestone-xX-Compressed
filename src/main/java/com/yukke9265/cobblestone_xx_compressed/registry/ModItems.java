@@ -495,6 +495,14 @@ public class ModItems {
         return new Item.Properties().stacksTo(DEFAULT_STACK_SIZE);
     }
 
+    // textures/item/other に置いた単発アイテム 3 種は、
+    // 現時点では固有効果のない通常素材として追加します。
+    // 専用メソッドに分けておくと、後から rarity や耐火設定を足したい場合も
+    // このまとまりだけを見れば変更箇所が追いやすくなります。
+    private static Item.Properties createOtherItemProperties() {
+        return new Item.Properties().stacksTo(DEFAULT_STACK_SIZE);
+    }
+
     // cobblestone_bread アイテムを登録します。
     public static final DeferredItem<Item> COBBLESTONE_BREAD = 
         ITEMS.registerSimpleItem("cobblestone_bread", createCobblestoneBreadProperties());
@@ -531,6 +539,15 @@ public class ModItems {
 
     public static final DeferredItem<Item> COAL_DUST =
         ITEMS.registerSimpleItem("coal_dust", createCobblestoneDustProperties());
+
+    public static final DeferredItem<Item> CANNED_STABLE_ENDERITE =
+        ITEMS.registerSimpleItem("canned_stable_enderite", createOtherItemProperties());
+
+    public static final DeferredItem<Item> EXTREME_COMPRESSED_CANNED_ENDERITE =
+        ITEMS.registerSimpleItem("extreme_compressed_canned_enderite", createOtherItemProperties());
+
+    public static final DeferredItem<Item> EXTREME_COMPRESSED_OBSIDIAN =
+        ITEMS.registerSimpleItem("extreme_compressed_obsidian", createOtherItemProperties());
 
     public static final DeferredItem<Item> COMPRESSED_COBBLESTONE_SINGULARITY_BIT =
         ITEMS.registerSimpleItem("compressed_cobblestone_singularity_bit", createCobblestoneSingularityProperties());
