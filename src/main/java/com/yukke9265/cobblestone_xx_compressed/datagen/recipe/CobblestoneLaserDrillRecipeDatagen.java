@@ -28,7 +28,7 @@ public final class CobblestoneLaserDrillRecipeDatagen {
             0.5F,
             new ItemStack(Items.DIAMOND),
             0.01F,
-            409600,
+            4096000,
             256
         ),
         new LaserDrillRecipeDefinition(
@@ -38,7 +38,7 @@ public final class CobblestoneLaserDrillRecipeDatagen {
             0.5F,
             new ItemStack(Items.DIAMOND),
             0.01F,
-            409600,
+            4096000,
             256
         ),
         new LaserDrillRecipeDefinition(
@@ -48,7 +48,7 @@ public final class CobblestoneLaserDrillRecipeDatagen {
             0.5F,
             new ItemStack(Items.DIAMOND),
             0.01F,
-            409600,
+            4096000,
             256
         ),
         new LaserDrillRecipeDefinition(
@@ -58,7 +58,7 @@ public final class CobblestoneLaserDrillRecipeDatagen {
             0.5F,
             new ItemStack(Items.DIAMOND),
             0.01F,
-            409600,
+            4096000,
             256
         ),
         new LaserDrillRecipeDefinition(
@@ -68,7 +68,7 @@ public final class CobblestoneLaserDrillRecipeDatagen {
             0.5F,
             new ItemStack(Items.ANCIENT_DEBRIS),
             0.01F,
-            409600,
+            4096000,
             256
         ),
         new LaserDrillRecipeDefinition(
@@ -78,7 +78,7 @@ public final class CobblestoneLaserDrillRecipeDatagen {
             0.5F,
             new ItemStack(Items.ANCIENT_DEBRIS),
             0.01F,
-            409600,
+            4096000,
             256
         ),
         new LaserDrillRecipeDefinition(
@@ -88,7 +88,7 @@ public final class CobblestoneLaserDrillRecipeDatagen {
             0.5F,
             new ItemStack(Items.ECHO_SHARD),
             0.01F,
-            409600,
+            4096000,
             256
         ),
         new LaserDrillRecipeDefinition(
@@ -98,7 +98,7 @@ public final class CobblestoneLaserDrillRecipeDatagen {
             0.5F,
             new ItemStack(Items.ECHO_SHARD),
             0.01F,
-            409600,
+            4096000,
             256
         )
     };

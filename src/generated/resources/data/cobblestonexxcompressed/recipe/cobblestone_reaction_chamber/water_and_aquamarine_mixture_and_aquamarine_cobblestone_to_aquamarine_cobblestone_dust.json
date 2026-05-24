@@ -1,0 +1,19 @@
+{
+  "type": "cobblestonexxcompressed:cobblestone_reaction_chamber",
+  "cobblestone_power_per_tick": 1024,
+  "fluid_input": {
+    "amount": 1000,
+    "id": "minecraft:water"
+  },
+  "ingredient_1": {
+    "item": "cobblestonexxcompressed:aquamarine_mixture"
+  },
+  "ingredient_2": {
+    "item": "cobblestonexxcompressed:tier_aquamarine_compressed_cobblestone"
+  },
+  "result": {
+    "count": 1,
+    "id": "cobblestonexxcompressed:tier_aquamarine_cobblestone_dust"
+  },
+  "total_cobblestone_power": 3276800
+}

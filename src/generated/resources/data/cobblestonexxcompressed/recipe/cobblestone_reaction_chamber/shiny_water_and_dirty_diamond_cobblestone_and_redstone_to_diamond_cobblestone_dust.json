@@ -1,0 +1,19 @@
+{
+  "type": "cobblestonexxcompressed:cobblestone_reaction_chamber",
+  "cobblestone_power_per_tick": 1024,
+  "fluid_input": {
+    "amount": 1000,
+    "id": "cobblestonexxcompressed:shiny_water"
+  },
+  "ingredient_1": {
+    "item": "cobblestonexxcompressed:tier_diamond_cobblestone_dirty_dust"
+  },
+  "ingredient_2": {
+    "item": "minecraft:redstone"
+  },
+  "result": {
+    "count": 1,
+    "id": "cobblestonexxcompressed:tier_diamond_cobblestone_dust"
+  },
+  "total_cobblestone_power": 3276800
+}
