@@ -10,12 +10,52 @@ import net.neoforged.neoforge.fluids.FluidStack;
 public final class CobblestoneDissolutionChamberRecipeDatagen {
     private static final DissolutionChamberRecipeDefinition[] RECIPES = new DissolutionChamberRecipeDefinition[] {
         new DissolutionChamberRecipeDefinition(
-            "tier_ruby_compressed_cobblestone_to_molten_tier_ruby_dirty_compressed_cobblestone",
+            "tier_ruby_compressed_cobblestone_and_redruby_to_molten_tier_ruby_dirty_compressed_cobblestone",
             ModBlocks.TierCompressedCobblestone.RUBY.getBlock().get(),
-            new FluidStack(net.minecraft.world.level.material.Fluids.LAVA, 100),
+            new FluidStack(ModFluids.WaterBasedFluid.RED_RUBY.getFluidEntry().getStillFluid().get(), 1000),
             new FluidStack(ModFluids.TierMoltenDirtyCompressedCobblestone.RUBY.getFluidEntry().getStillFluid().get(), 1000),
-            12800,
-            128
+            209715200,
+            16384
+        ),
+        new DissolutionChamberRecipeDefinition(
+            "tier_sapphire_compressed_cobblestone_and_shinywater_to_molten_tier_sapphire_dirty_compressed_cobblestone",
+            ModBlocks.TierCompressedCobblestone.SAPPHIRE.getBlock().get(),
+            new FluidStack(ModFluids.WaterBasedFluid.SHINY_WATER.getFluidEntry().getStillFluid().get(), 1000),
+            new FluidStack(ModFluids.TierMoltenDirtyCompressedCobblestone.SAPPHIRE.getFluidEntry().getStillFluid().get(), 1000),
+            209715200,
+            16384
+        ),
+        new DissolutionChamberRecipeDefinition(
+            "tier_diamond_compressed_cobblestone_and_hot_lava_to_molten_tier_diamond_dirty_compressed_cobblestone",
+            ModBlocks.TierCompressedCobblestone.DIAMOND.getBlock().get(),
+            new FluidStack(ModFluids.WaterBasedFluid.HOT_LAVA.getFluidEntry().getStillFluid().get(), 1000),
+            new FluidStack(ModFluids.TierMoltenDirtyCompressedCobblestone.DIAMOND.getFluidEntry().getStillFluid().get(), 1000),
+            209715200,
+            16384
+        ),
+        new DissolutionChamberRecipeDefinition(
+            "tier_emerald_compressed_cobblestone_and_hot_lava_to_molten_tier_emerald_dirty_compressed_cobblestone",
+            ModBlocks.TierCompressedCobblestone.EMERALD.getBlock().get(),
+            new FluidStack(ModFluids.WaterBasedFluid.HOT_UNSTABLE_EMERALD.getFluidEntry().getStillFluid().get(), 1000),
+            new FluidStack(ModFluids.TierMoltenDirtyCompressedCobblestone.EMERALD.getFluidEntry().getStillFluid().get(), 1000),
+            209715200,
+            16384
+        ),
+        new DissolutionChamberRecipeDefinition(
+            "tier_netherite_compressed_cobblestone_and_hot_lava_to_molten_tier_netherite_dirty_compressed_cobblestone",
+            ModBlocks.TierCompressedCobblestone.NETHERITE.getBlock().get(),
+            new FluidStack(ModFluids.WaterBasedFluid.HOT_UNSTABLE_EMERALD.getFluidEntry().getStillFluid().get(), 1000),
+            new FluidStack(ModFluids.TierMoltenDirtyCompressedCobblestone.NETHERITE.getFluidEntry().getStillFluid().get(), 1000),
+            209715200,
+            16384
+        ),
+        new DissolutionChamberRecipeDefinition(
+            "tier_obsidian_compressed_cobblestone_and_hot_lava_to_molten_tier_obsidian_dirty_compressed_cobblestone",
+            ModBlocks.TierCompressedCobblestone.OBSIDIAN.getBlock().get(),
+            new FluidStack(ModFluids.WaterBasedFluid.HOT_UNSTABLE_EMERALD.getFluidEntry().getStillFluid().get(), 1000),
+            new FluidStack(ModFluids.TierMoltenDirtyCompressedCobblestone.OBSIDIAN.getFluidEntry().getStillFluid().get(), 1000),
+            209715200,
+            16384
         )
     };
 

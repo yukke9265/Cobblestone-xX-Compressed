@@ -62,6 +62,7 @@ public class ModFluidTypes {
     // 登録、lang、datagen の対応関係を追いやすくなります。
     public enum WaterBasedFluid {
         GLOW_TOPAZ("glow_topaz", 0xFFF1A969, "Glow Topaz"),
+        HOT_LAVA("hot_lava", 0xFFC94B0D, "Hot Lava"),
         HOT_UNSTABLE_EMERALD("hot_unstable_emerald", 0xFF77CB97, "Hot Unstable Emerald"),
         HOT_UNSTABLE_ENDERITE("hot_unstable_enderite", 0xFF9BADA9, "Hot Unstable Enderite"),
         MOLTEN_ENDER("molten_ender", 0xFF1F695D, "Molten Ender"),

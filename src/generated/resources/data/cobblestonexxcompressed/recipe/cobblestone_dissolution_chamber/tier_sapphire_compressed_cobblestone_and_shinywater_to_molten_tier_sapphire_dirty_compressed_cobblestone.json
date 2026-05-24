@@ -1,0 +1,16 @@
+{
+  "type": "cobblestonexxcompressed:cobblestone_dissolution_chamber",
+  "cobblestone_power_per_tick": 16384,
+  "fluid_input": {
+    "amount": 1000,
+    "id": "cobblestonexxcompressed:shiny_water"
+  },
+  "fluid_output": {
+    "amount": 1000,
+    "id": "cobblestonexxcompressed:molten_dirty_tier_sapphire_compressed_cobblestone"
+  },
+  "ingredient": {
+    "item": "cobblestonexxcompressed:tier_sapphire_compressed_cobblestone"
+  },
+  "total_cobblestone_power": 209715200
+}

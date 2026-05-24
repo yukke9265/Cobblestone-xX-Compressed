@@ -26,6 +26,7 @@ public class ModFluids {
     // creative tab、lang、model、client render の順番をそろえやすくなります。
     public enum WaterBasedFluid {
         GLOW_TOPAZ,
+        HOT_LAVA,
         HOT_UNSTABLE_EMERALD,
         HOT_UNSTABLE_ENDERITE,
         MOLTEN_ENDER,
