@@ -79,48 +79,42 @@ public class ModRecipeProvider extends RecipeProvider {
     // 圧縮石への変換は、将来 tier ごとに個別時間や個別素材へ変えることを想定して、
     // こちらも 1 レシピずつ独立した定義にします。
     private static final MachineRecipeDefinition[] COMPRESSED_STONE_MACHINE_RECIPES = new MachineRecipeDefinition[] {
+        /*
+        丸石かまど加工
+        純粋な圧縮丸石粉→圧縮石
+        丸石ティア 丸石 → 圧縮石
+        銅ティア 汚い粉→圧縮石
+        鉄 金 アメジスト ティア 混合物→圧縮石
+         */
+        
+        //丸石ティア 丸石 → 石
         new MachineRecipeDefinition("compressed_cobblestone_to_compressed_stone", ModBlocks.COMPRESSED_COBBLESTONE.get(), ModBlocks.COMPRESSED_STONE.get(), 100),
-        new MachineRecipeDefinition("tier_copper_compressed_cobblestone_to_compressed_stone", ModBlocks.TierCompressedCobblestone.COPPER.getBlock().get(), ModBlocks.TierCompressedStone.COPPER.getBlock().get(), 100),
-        new MachineRecipeDefinition("tier_iron_compressed_cobblestone_to_compressed_stone", ModBlocks.TierCompressedCobblestone.IRON.getBlock().get(), ModBlocks.TierCompressedStone.IRON.getBlock().get(), 100),
-        new MachineRecipeDefinition("tier_gold_compressed_cobblestone_to_compressed_stone", ModBlocks.TierCompressedCobblestone.GOLD.getBlock().get(), ModBlocks.TierCompressedStone.GOLD.getBlock().get(), 100),
-        new MachineRecipeDefinition("tier_amethyst_compressed_cobblestone_to_compressed_stone", ModBlocks.TierCompressedCobblestone.AMETHYST.getBlock().get(), ModBlocks.TierCompressedStone.AMETHYST.getBlock().get(), 100),
-        new MachineRecipeDefinition("tier_aquamarine_compressed_cobblestone_to_compressed_stone", ModBlocks.TierCompressedCobblestone.AQUAMARINE.getBlock().get(), ModBlocks.TierCompressedStone.AQUAMARINE.getBlock().get(), 100),
-        new MachineRecipeDefinition("tier_topaz_compressed_cobblestone_to_compressed_stone", ModBlocks.TierCompressedCobblestone.TOPAZ.getBlock().get(), ModBlocks.TierCompressedStone.TOPAZ.getBlock().get(), 100),
-        new MachineRecipeDefinition("tier_ruby_compressed_cobblestone_to_compressed_stone", ModBlocks.TierCompressedCobblestone.RUBY.getBlock().get(), ModBlocks.TierCompressedStone.RUBY.getBlock().get(), 100),
-        new MachineRecipeDefinition("tier_sapphire_compressed_cobblestone_to_compressed_stone", ModBlocks.TierCompressedCobblestone.SAPPHIRE.getBlock().get(), ModBlocks.TierCompressedStone.SAPPHIRE.getBlock().get(), 100),
-        new MachineRecipeDefinition("tier_diamond_compressed_cobblestone_to_compressed_stone", ModBlocks.TierCompressedCobblestone.DIAMOND.getBlock().get(), ModBlocks.TierCompressedStone.DIAMOND.getBlock().get(), 100),
-        new MachineRecipeDefinition("tier_emerald_compressed_cobblestone_to_compressed_stone", ModBlocks.TierCompressedCobblestone.EMERALD.getBlock().get(), ModBlocks.TierCompressedStone.EMERALD.getBlock().get(), 100),
-        new MachineRecipeDefinition("tier_netherite_compressed_cobblestone_to_compressed_stone", ModBlocks.TierCompressedCobblestone.NETHERITE.getBlock().get(), ModBlocks.TierCompressedStone.NETHERITE.getBlock().get(), 100),
-        new MachineRecipeDefinition("tier_obsidian_compressed_cobblestone_to_compressed_stone", ModBlocks.TierCompressedCobblestone.OBSIDIAN.getBlock().get(), ModBlocks.TierCompressedStone.OBSIDIAN.getBlock().get(), 100)
+        
+        //銅ティア 汚い粉→圧縮石
+        new MachineRecipeDefinition("tier_copper_dirty_compressed_cobblestone_dust_to_tier_copper_compressed_stone", ModItems.TIER_COPPER_COBBLESTONE_DIRTY_DUST.get(), ModBlocks.TierCompressedStone.COPPER.getBlock().get(), 100),
+        
+        //鉄 金 アメジスト ティア 混合物→圧縮石
+        new MachineRecipeDefinition("tier_iron_compressed_cobblestone_mixed_dust_to_tier_iron_compressed_stone", ModItems.TIER_IRON_COBBLESTONE_MIXED_DUST.get(), ModBlocks.TierCompressedStone.IRON.getBlock().get(), 100),
+        new MachineRecipeDefinition("tier_gold_compressed_cobblestone_mixed_dust_to_tier_gold_compressed_stone", ModItems.TIER_GOLD_COBBLESTONE_MIXED_DUST.get(), ModBlocks.TierCompressedStone.GOLD.getBlock().get(), 100),
+        new MachineRecipeDefinition("tier_amethyst_compressed_cobblestone_mixed_dust_to_tier_amethyst_compressed_stone", ModItems.TIER_AMETHYST_COBBLESTONE_MIXED_DUST.get(), ModBlocks.TierCompressedStone.AMETHYST.getBlock().get(), 100),
+
+        //すべてのティア ピュアな圧縮丸石粉→圧縮石
+        new MachineRecipeDefinition("compressed_cobblestone_pure_dust_to_compressed_stone",ModItems.COBBLESTONE_PURE_DUST.get(), ModBlocks.COMPRESSED_STONE.get(), 100),
+        new MachineRecipeDefinition("tier_copper_compressed_cobblestone_pure_dust_to_tier_copper_compressed_stone", ModItems.TIER_COPPER_COBBLESTONE_PURE_DUST.get(), ModBlocks.TierCompressedStone.COPPER.getBlock().get(), 100),
+        new MachineRecipeDefinition("tier_iron_compressed_cobblestone_pure_dust_to_tier_iron_compressed_stone", ModItems.TIER_IRON_COBBLESTONE_PURE_DUST.get(), ModBlocks.TierCompressedStone.IRON.getBlock().get(), 100),
+        new MachineRecipeDefinition("tier_gold_compressed_cobblestone_pure_dust_to_tier_gold_compressed_stone", ModItems.TIER_GOLD_COBBLESTONE_PURE_DUST.get(), ModBlocks.TierCompressedStone.GOLD.getBlock().get(), 100),
+        new MachineRecipeDefinition("tier_amethyst_compressed_cobblestone_pure_dust_to_tier_amethyst_compressed_stone", ModItems.TIER_AMETHYST_COBBLESTONE_PURE_DUST.get(), ModBlocks.TierCompressedStone.AMETHYST.getBlock().get(), 100),
+        new MachineRecipeDefinition("tier_aquamarine_compressed_cobblestone_pure_dust_to_tier_aquamarine_compressed_stone", ModItems.TIER_AQUAMARINE_COBBLESTONE_PURE_DUST.get(), ModBlocks.TierCompressedStone.AQUAMARINE.getBlock().get(), 100),
+        new MachineRecipeDefinition("tier_topaz_compressed_cobblestone_pure_dust_to_tier_topaz_compressed_stone", ModItems.TIER_TOPAZ_COBBLESTONE_PURE_DUST.get(), ModBlocks.TierCompressedStone.TOPAZ.getBlock().get(), 100),
+        new MachineRecipeDefinition("tier_ruby_compressed_cobblestone_pure_dust_to_tier_ruby_compressed_stone", ModItems.TIER_RUBY_COBBLESTONE_PURE_DUST.get(), ModBlocks.TierCompressedStone.RUBY.getBlock().get(), 100),
+        new MachineRecipeDefinition("tier_sapphire_compressed_cobblestone_pure_dust_to_tier_sapphire_compressed_stone", ModItems.TIER_SAPPHIRE_COBBLESTONE_PURE_DUST.get(), ModBlocks.TierCompressedStone.SAPPHIRE.getBlock().get(), 100),
+        new MachineRecipeDefinition("tier_diamond_compressed_cobblestone_pure_dust_to_tier_diamond_compressed_stone", ModItems.TIER_DIAMOND_COBBLESTONE_PURE_DUST.get(), ModBlocks.TierCompressedStone.DIAMOND.getBlock().get(), 100),
+        new MachineRecipeDefinition("tier_emerald_compressed_cobblestone_pure_dust_to_tier_emerald_compressed_stone", ModItems.TIER_EMERALD_COBBLESTONE_PURE_DUST.get(), ModBlocks.TierCompressedStone.EMERALD.getBlock().get(), 100),
+        new MachineRecipeDefinition("tier_netherite_compressed_cobblestone_pure_dust_to_tier_netherite_compressed_stone", ModItems.TIER_NETHERITE_COBBLESTONE_PURE_DUST.get(), ModBlocks.TierCompressedStone.NETHERITE.getBlock().get(), 100),
+        new MachineRecipeDefinition("tier_obsidian_compressed_cobblestone_pure_dust_to_tier_obsidian_compressed_stone", ModItems.TIER_OBSIDIAN_COBBLESTONE_PURE_DUST.get(), ModBlocks.TierCompressedStone.OBSIDIAN.getBlock().get(), 100)
     };
 
-    private static final CentrifugeRecipeDefinition[] COBBLESTONE_CENTRIFUGE_RECIPES = new CentrifugeRecipeDefinition[] {
-        new CentrifugeRecipeDefinition(
-            "tier_gold_cobblestone_dust_to_tier_gold_cobblestone_dirty_dust_and_dirty_mixture",
-            ModItems.TIER_GOLD_COBBLESTONE_DUST.get(),
-            new ItemStack(ModItems.TIER_GOLD_COBBLESTONE_DIRTY_DUST.get()),
-            1.0F,
-            new ItemStack(ModItems.DIRTY_MIXTURE.get()),
-            0.3F,
-            400,
-            4
-        )
-    };
-
-    private static final LaserDrillRecipeDefinition[] COBBLESTONE_LASER_DRILL_RECIPES = new LaserDrillRecipeDefinition[] {
-        new LaserDrillRecipeDefinition(
-            "amethyst_compressed_cobblestone_to_amethyst_shard_and_diamond",
-            ModBlocks.TierCompressedCobblestone.AMETHYST.getBlock().get(),
-            new ItemStack(Items.AMETHYST_SHARD),
-            0.5F,
-            new ItemStack(Items.DIAMOND),
-            0.05F,
-            3200,
-            16
-        )
-    };
-
-    private static final CrusherRecipeDefinition[] COBBLESTONE_CRUSHER_RECIPES = new CrusherRecipeDefinition[] {
+        private static final CrusherRecipeDefinition[] COBBLESTONE_CRUSHER_RECIPES = new CrusherRecipeDefinition[] {
         new CrusherRecipeDefinition(
             "tier_copper_compressed_cobblestone_to_tier_copper_cobblestone_dust",
             ModBlocks.TierCompressedCobblestone.COPPER.getBlock().get(),
@@ -227,6 +221,34 @@ public class ModRecipeProvider extends RecipeProvider {
             1
         )
     };
+
+    private static final CentrifugeRecipeDefinition[] COBBLESTONE_CENTRIFUGE_RECIPES = new CentrifugeRecipeDefinition[] {
+        new CentrifugeRecipeDefinition(
+            "tier_gold_cobblestone_dust_to_tier_gold_cobblestone_dirty_dust_and_dirty_mixture",
+            ModItems.TIER_GOLD_COBBLESTONE_DUST.get(),
+            new ItemStack(ModItems.TIER_GOLD_COBBLESTONE_DIRTY_DUST.get()),
+            1.0F,
+            new ItemStack(ModItems.DIRTY_MIXTURE.get()),
+            0.3F,
+            400,
+            4
+        )
+    };
+
+    private static final LaserDrillRecipeDefinition[] COBBLESTONE_LASER_DRILL_RECIPES = new LaserDrillRecipeDefinition[] {
+        new LaserDrillRecipeDefinition(
+            "amethyst_compressed_cobblestone_to_amethyst_shard_and_diamond",
+            ModBlocks.TierCompressedCobblestone.AMETHYST.getBlock().get(),
+            new ItemStack(Items.AMETHYST_SHARD),
+            0.5F,
+            new ItemStack(Items.DIAMOND),
+            0.05F,
+            3200,
+            16
+        )
+    };
+
+
 
     private static final ExtremeCompressorRecipeDefinition[] COBBLESTONE_EXTREME_COMPRESSOR_RECIPES = new ExtremeCompressorRecipeDefinition[] {
         new ExtremeCompressorRecipeDefinition(

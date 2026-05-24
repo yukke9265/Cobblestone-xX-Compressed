@@ -1,0 +1,11 @@
+{
+  "type": "cobblestonexxcompressed:cobblestone_furnace",
+  "ingredient": {
+    "item": "cobblestonexxcompressed:tier_amethyst_cobblestone_mixed_dust"
+  },
+  "processing_time": 100,
+  "result": {
+    "count": 1,
+    "id": "cobblestonexxcompressed:tier_amethyst_compressed_stone"
+  }
+}

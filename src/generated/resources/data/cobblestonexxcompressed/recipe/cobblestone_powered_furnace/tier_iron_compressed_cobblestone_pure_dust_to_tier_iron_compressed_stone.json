@@ -1,11 +1,11 @@
 {
   "type": "cobblestonexxcompressed:cobblestone_powered_furnace",
   "ingredient": {
-    "item": "cobblestonexxcompressed:tier_obsidian_compressed_cobblestone"
+    "item": "cobblestonexxcompressed:tier_iron_cobblestone_pure_dust"
   },
   "result": {
     "count": 1,
-    "id": "cobblestonexxcompressed:tier_obsidian_compressed_stone"
+    "id": "cobblestonexxcompressed:tier_iron_compressed_stone"
   },
   "total_cobblestone_power": 100
 }
