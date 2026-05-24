@@ -1,0 +1,17 @@
+{
+  "type": "cobblestonexxcompressed:cobblestone_fluid_mixer",
+  "cobblestone_power_per_tick": 65536,
+  "fluid_input_1": {
+    "amount": 1000,
+    "id": "cobblestonexxcompressed:shiny_sapphire"
+  },
+  "fluid_input_2": {
+    "amount": 10000,
+    "id": "minecraft:water"
+  },
+  "fluid_output": {
+    "amount": 1000,
+    "id": "cobblestonexxcompressed:shiny_water"
+  },
+  "total_cobblestone_power": 1677721600
+}

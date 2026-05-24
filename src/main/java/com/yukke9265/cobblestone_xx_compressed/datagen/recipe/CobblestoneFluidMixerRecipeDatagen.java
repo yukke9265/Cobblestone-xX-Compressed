@@ -8,12 +8,36 @@ import net.neoforged.neoforge.fluids.FluidStack;
 public final class CobblestoneFluidMixerRecipeDatagen {
     private static final FluidMixerRecipeDefinition[] RECIPES = new FluidMixerRecipeDefinition[] {
         new FluidMixerRecipeDefinition(
-            "dirty_sapphire_and_water_to_sapphire",
-            new FluidStack(ModFluids.TierMoltenDirtyCompressedCobblestone.SAPPHIRE.getFluidEntry().getStillFluid().get(), 100),
+            "shiny_sapphire_and_water_to_shiny_water",
+            new FluidStack(ModFluids.WaterBasedFluid.SHINY_SAPPHIRE.getFluidEntry().getStillFluid().get(), 1000),
             new FluidStack(net.minecraft.world.level.material.Fluids.WATER, 10000),
-            new FluidStack(ModFluids.TierMoltenCompressedCobblestone.SAPPHIRE.getFluidEntry().getStillFluid().get(), 100),
-            25600,
-            256
+            new FluidStack(ModFluids.WaterBasedFluid.SHINY_WATER.getFluidEntry().getStillFluid().get(), 1000),
+            1677721600,
+            65536
+        ),
+        new FluidMixerRecipeDefinition(
+            "shiny_blaze_and_lava_to_hot_lava",
+            new FluidStack(ModFluids.WaterBasedFluid.SHINY_BLAZE.getFluidEntry().getStillFluid().get(), 1000),
+            new FluidStack(net.minecraft.world.level.material.Fluids.LAVA, 1000),
+            new FluidStack(ModFluids.WaterBasedFluid.HOT_LAVA.getFluidEntry().getStillFluid().get(), 1000),
+            1677721600,
+            65536
+        ),
+        new FluidMixerRecipeDefinition(
+            "unstable_emerald_and_hot_lava_to_hot_unstable_emerald",
+            new FluidStack(ModFluids.WaterBasedFluid.UNSTABLE_EMERALD.getFluidEntry().getStillFluid().get(), 1000),
+            new FluidStack(ModFluids.WaterBasedFluid.HOT_LAVA.getFluidEntry().getStillFluid().get(), 1000),
+            new FluidStack(ModFluids.WaterBasedFluid.HOT_UNSTABLE_EMERALD.getFluidEntry().getStillFluid().get(), 1000),
+            1677721600,
+            65536
+        ),
+        new FluidMixerRecipeDefinition(
+            "netherite_and_ender_to_unstable_enderite",
+            new FluidStack(ModFluids.WaterBasedFluid.MOLTEN_NETHERITE.getFluidEntry().getStillFluid().get(), 1000),
+            new FluidStack(ModFluids.WaterBasedFluid.MOLTEN_ENDER.getFluidEntry().getStillFluid().get(), 1000),
+            new FluidStack(ModFluids.WaterBasedFluid.UNSTABLE_ENDERITE.getFluidEntry().getStillFluid().get(), 1000),
+            1677721600,
+            65536
         )
     };
 

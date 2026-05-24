@@ -1,0 +1,17 @@
+{
+  "type": "cobblestonexxcompressed:cobblestone_fluid_mixer",
+  "cobblestone_power_per_tick": 65536,
+  "fluid_input_1": {
+    "amount": 1000,
+    "id": "cobblestonexxcompressed:unstable_emerald"
+  },
+  "fluid_input_2": {
+    "amount": 1000,
+    "id": "cobblestonexxcompressed:hot_lava"
+  },
+  "fluid_output": {
+    "amount": 1000,
+    "id": "cobblestonexxcompressed:hot_unstable_emerald"
+  },
+  "total_cobblestone_power": 1677721600
+}

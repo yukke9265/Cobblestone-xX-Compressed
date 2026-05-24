@@ -1,0 +1,17 @@
+{
+  "type": "cobblestonexxcompressed:cobblestone_fluid_mixer",
+  "cobblestone_power_per_tick": 65536,
+  "fluid_input_1": {
+    "amount": 1000,
+    "id": "cobblestonexxcompressed:molten_netherite"
+  },
+  "fluid_input_2": {
+    "amount": 1000,
+    "id": "cobblestonexxcompressed:molten_ender"
+  },
+  "fluid_output": {
+    "amount": 1000,
+    "id": "cobblestonexxcompressed:unstable_enderite"
+  },
+  "total_cobblestone_power": 1677721600
+}
