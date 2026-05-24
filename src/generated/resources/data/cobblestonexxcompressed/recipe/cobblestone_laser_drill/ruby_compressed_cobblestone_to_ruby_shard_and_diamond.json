@@ -2,11 +2,11 @@
   "type": "cobblestonexxcompressed:cobblestone_laser_drill",
   "cobblestone_power_per_tick": 256,
   "ingredient": {
-    "item": "cobblestonexxcompressed:tier_amethyst_compressed_cobblestone"
+    "item": "cobblestonexxcompressed:tier_ruby_compressed_cobblestone"
   },
   "result_1": {
     "count": 1,
-    "id": "minecraft:amethyst_shard"
+    "id": "cobblestonexxcompressed:ruby_shard"
   },
   "result_1_chance": 0.5,
   "result_2": {
