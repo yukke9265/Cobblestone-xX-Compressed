@@ -6,10 +6,10 @@
     "id": "minecraft:water"
   },
   "ingredient_1": {
-    "item": "cobblestonexxcompressed:aquamarine_mixture"
+    "item": "cobblestonexxcompressed:tier_aquamarine_compressed_cobblestone"
   },
   "ingredient_2": {
-    "item": "cobblestonexxcompressed:tier_aquamarine_compressed_cobblestone"
+    "item": "cobblestonexxcompressed:aquamarine_mixture"
   },
   "result": {
     "count": 1,
