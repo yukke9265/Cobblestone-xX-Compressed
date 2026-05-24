@@ -57,11 +57,10 @@
 
 次の機械は RecipeType と RecipeSerializer の登録はありますが、現時点では ModRecipeProvider.buildRecipes からは出力していません。
 
-1. Cobblestone Powered Furnace
-2. Cobblestone Centrifuge
-3. Cobblestone Laser Drill
-4. Cobblestone Reaction Chamber
-5. Cobblestone Fluid Mixer
+1. Cobblestone Centrifuge
+2. Cobblestone Laser Drill
+3. Cobblestone Reaction Chamber
+4. Cobblestone Fluid Mixer
 
 これらを datagen 対応したい場合は、次の 3 つを ModRecipeProvider へ追加します。
 

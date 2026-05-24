@@ -12,6 +12,7 @@ import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneDissolutionCham
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneCrusherRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneExtremeCompressorRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneFurnaceRecipe;
+import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestonePoweredFurnaceRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneMelterRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneMixerRecipe;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModBlocks;
@@ -462,13 +463,14 @@ public class ModRecipeProvider extends RecipeProvider {
 
         // ここから下は独自 RecipeType / RecipeSerializer を使う機械レシピです。
         // JSON の出力先は data/<modid>/recipe/<machine_name>/... になります。
-        // 現在 datagen しているのは Furnace / ExtremeCompressor / Crusher / Mixer /
-        // Melter / AssemblyMachine / ChemicalReactor / DissolutionChamber /
-        // CrystallizationChamber の 9 系統です。
+        // 現在 datagen しているのは Furnace / PoweredFurnace / ExtremeCompressor /
+        // Crusher / Mixer / Melter / AssemblyMachine / ChemicalReactor /
+        // DissolutionChamber / CrystallizationChamber の 10 系統です。
         // RecipeType だけ登録済みで、まだ datagen していない機械
-        // (PoweredFurnace / Centrifuge / LaserDrill / ReactionChamber / FluidMixer) を
+        // (Centrifuge / LaserDrill / ReactionChamber / FluidMixer) を
         // 追加したい場合は、この並びへ buildXxxRecipes(...) を足します。
         buildCobblestoneFurnaceRecipes(output);
+        buildCobblestonePoweredFurnaceRecipes(output);
         buildCobblestoneExtremeCompressorRecipes(output);
         buildCobblestoneCrusherRecipes(output);
         buildCobblestoneMelterRecipes(output);
@@ -819,6 +821,25 @@ public class ModRecipeProvider extends RecipeProvider {
         }
     }
 
+    private void buildCobblestonePoweredFurnaceRecipes(RecipeOutput output) {
+        // Powered Furnace も Furnace と同じ 1 入力 1 出力ですが、
+        // 処理時間の代わりに総消費 CP と tick ごとの消費 CP を持ちます。
+        // 既存の Furnace と並べて見比べやすいよう、まずは同じ材料・出力を流し、
+        // 処理時間 100 tick は total CP 100 / 1 tick あたり 1 CP として扱います。
+        saveCobblestonePoweredFurnaceRecipe(output, "cobblestone_to_stone", Items.COBBLESTONE, Items.STONE, 100, 1);
+
+        for (MachineRecipeDefinition recipe : COMPRESSED_STONE_MACHINE_RECIPES) {
+            saveCobblestonePoweredFurnaceRecipe(
+                output,
+                recipe.recipeName,
+                recipe.ingredient,
+                recipe.result,
+                recipe.processingTime,
+                1
+            );
+        }
+    }
+
     private void buildCobblestoneExtremeCompressorRecipes(RecipeOutput output) {
         for (ExtremeCompressorRecipeDefinition recipe : COBBLESTONE_EXTREME_COMPRESSOR_RECIPES) {
             saveCobblestoneExtremeCompressorRecipe(
@@ -949,6 +970,28 @@ public class ModRecipeProvider extends RecipeProvider {
 
         output.accept(
             modRecipeId("cobblestone_furnace/" + recipeName),
+            recipe,
+            null
+        );
+    }
+
+    private void saveCobblestonePoweredFurnaceRecipe(
+        RecipeOutput output,
+        String recipeName,
+        ItemLike ingredient,
+        ItemLike result,
+        int totalCobblestonePower,
+        int cobblestonePowerPerTick
+    ) {
+        CobblestonePoweredFurnaceRecipe recipe = new CobblestonePoweredFurnaceRecipe(
+            Ingredient.of(ingredient),
+            new ItemStack(result),
+            totalCobblestonePower,
+            cobblestonePowerPerTick
+        );
+
+        output.accept(
+            modRecipeId("cobblestone_powered_furnace/" + recipeName),
             recipe,
             null
         );
