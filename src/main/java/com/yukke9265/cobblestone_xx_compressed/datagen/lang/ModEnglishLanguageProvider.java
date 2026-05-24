@@ -134,17 +134,27 @@ public class ModEnglishLanguageProvider extends LanguageProvider {
         }
 
         add("fluid_type.cobblestonexxcompressed.molten_compressed_cobblestone", "Molten Compressed Cobblestone");
+        addBlock(ModFluids.MOLTEN_COMPRESSED_COBBLESTONE.getFluidBlock(), "Molten Compressed Cobblestone");
         addItem(ModFluids.MOLTEN_COMPRESSED_COBBLESTONE.getBucketItem(), "Molten Compressed Cobblestone Bucket");
         for (ModFluids.TierMoltenCompressedCobblestone tier : ModFluids.TierMoltenCompressedCobblestone.values()) {
             add("fluid_type.cobblestonexxcompressed." + tier.getRegistryName(), tier.getEnglishDisplayName());
+            addBlock(tier.getFluidEntry().getFluidBlock(), tier.getEnglishDisplayName());
             addItem(tier.getFluidEntry().getBucketItem(), tier.getBucketEnglishDisplayName());
         }
 
         add("fluid_type.cobblestonexxcompressed.molten_dirty_compressed_cobblestone", "Molten Dirty Compressed Cobblestone");
+        addBlock(ModFluids.MOLTEN_DIRTY_COMPRESSED_COBBLESTONE.getFluidBlock(), "Molten Dirty Compressed Cobblestone");
         addItem(ModFluids.MOLTEN_DIRTY_COMPRESSED_COBBLESTONE.getBucketItem(), "Molten Dirty Compressed Cobblestone Bucket");
         for (ModFluids.TierMoltenDirtyCompressedCobblestone tier : ModFluids.TierMoltenDirtyCompressedCobblestone.values()) {
             add("fluid_type.cobblestonexxcompressed." + tier.getRegistryName(), tier.getEnglishDisplayName());
+            addBlock(tier.getFluidEntry().getFluidBlock(), tier.getEnglishDisplayName());
             addItem(tier.getFluidEntry().getBucketItem(), tier.getBucketEnglishDisplayName());
+        }
+
+        for (ModFluids.WaterBasedFluid fluid : ModFluids.WaterBasedFluid.values()) {
+            add("fluid_type.cobblestonexxcompressed." + fluid.getRegistryName(), fluid.getEnglishDisplayName());
+            addBlock(fluid.getFluidEntry().getFluidBlock(), fluid.getEnglishDisplayName());
+            addItem(fluid.getFluidEntry().getBucketItem(), fluid.getBucketEnglishDisplayName());
         }
 
         addBlock(ModBlocks.COMPRESSED_COBBLESTONE, "Compressed Cobblestone");

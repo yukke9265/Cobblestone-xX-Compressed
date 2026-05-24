@@ -37,6 +37,10 @@ public class ModFluidTypes {
         CobblestonexXCompressed.MODID,
         "block/fluid/molten_dirty_compressed_cobblestone_flow"
     );
+    public static final ResourceLocation WATER_OVERLAY_TEXTURE = ResourceLocation.fromNamespaceAndPath(
+        CobblestonexXCompressed.MODID,
+        "block/fluid/water_overlay"
+    );
 
     public static final int BASE_COMPRESSED_COBBLESTONE_TINT = 0xFFB3B1AF;
     public static final int COPPER_COMPRESSED_COBBLESTONE_TINT = 0xFFC78357;
@@ -53,6 +57,57 @@ public class ModFluidTypes {
     public static final int OBSIDIAN_COMPRESSED_COBBLESTONE_TINT = 0xFF4B3B63;
 
     public static final DeferredRegister<FluidType> FLUID_TYPES = DeferredRegister.create(NeoForgeRegistries.Keys.FLUID_TYPES, CobblestonexXCompressed.MODID);
+
+    // 水ベースの色付き液体は、texture 名、tint、表示名を 1 か所へまとめておくと
+    // 登録、lang、datagen の対応関係を追いやすくなります。
+    public enum WaterBasedFluid {
+        GLOW_TOPAZ("glow_topaz", 0xFFF1A969, "Glow Topaz"),
+        HOT_UNSTABLE_EMERALD("hot_unstable_emerald", 0xFF77CB97, "Hot Unstable Emerald"),
+        HOT_UNSTABLE_ENDERITE("hot_unstable_enderite", 0xFF9BADA9, "Hot Unstable Enderite"),
+        MOLTEN_ENDER("molten_ender", 0xFF1F695D, "Molten Ender"),
+        MOLTEN_NETHERITE("molten_netherite", 0xFF696767, "Molten Netherite"),
+        RED_RUBY("red_ruby", 0xFFFF4F4F, "Red Ruby"),
+        SHINY_BLAZE("shiny_blaze", 0xFFFFB32F, "Shiny Blaze"),
+        SHINY_SAPPHIRE("shiny_sapphire", 0xFF7593EB, "Shiny Sapphire"),
+        SHINY_WATER("shiny_water", 0xFF345FDA, "Shiny Water"),
+        UNSTABLE_EMERALD("unstable_emerald", 0xFF77CB97, "Unstable Emerald"),
+        UNSTABLE_ENDERITE("unstable_enderite", 0xFF9BADA9, "Unstable Enderite");
+
+        private final String registryName;
+        private final int tintColor;
+        private final String englishDisplayName;
+        private DeferredHolder<FluidType, FluidType> fluidType;
+
+        WaterBasedFluid(String registryName, int tintColor, String englishDisplayName) {
+            this.registryName = registryName;
+            this.tintColor = tintColor;
+            this.englishDisplayName = englishDisplayName;
+        }
+
+        public String getRegistryName() {
+            return this.registryName;
+        }
+
+        public int getTintColor() {
+            return this.tintColor;
+        }
+
+        public String getEnglishDisplayName() {
+            return this.englishDisplayName;
+        }
+
+        public String getBucketEnglishDisplayName() {
+            return this.englishDisplayName + " Bucket";
+        }
+
+        public DeferredHolder<FluidType, FluidType> getFluidType() {
+            return this.fluidType;
+        }
+
+        private void setFluidType(DeferredHolder<FluidType, FluidType> fluidType) {
+            this.fluidType = fluidType;
+        }
+    }
 
     // tier 版 molten fluid は block/item/datagen 側でも同じ順番で回したいため、
     // registry 名と tint 色をここへまとめます。
@@ -187,6 +242,10 @@ public class ModFluidTypes {
                 MOLTEN_DIRTY_COMPRESSED_COBBLESTONE_FLOWING_TEXTURE
             ));
         }
+
+        for (WaterBasedFluid fluid : WaterBasedFluid.values()) {
+            fluid.setFluidType(registerWaterBasedFluidType(fluid.getRegistryName(), fluid.getTintColor()));
+        }
     }
 
     private ModFluidTypes() {
@@ -198,7 +257,39 @@ public class ModFluidTypes {
         ResourceLocation stillTexture,
         ResourceLocation flowingTexture
     ) {
-        return FLUID_TYPES.register(name, resourceLocation -> new MoltenFluidType(createMoltenProperties(resourceLocation), tintColor, stillTexture, flowingTexture));
+        ResourceLocation resourceLocation = ResourceLocation.fromNamespaceAndPath(CobblestonexXCompressed.MODID, name);
+        return registerColoredFluidType(
+            name,
+            tintColor,
+            stillTexture,
+            flowingTexture,
+            null,
+            createMoltenProperties(resourceLocation)
+        );
+    }
+
+    private static DeferredHolder<FluidType, FluidType> registerWaterBasedFluidType(String name, int tintColor) {
+        ResourceLocation resourceLocation = ResourceLocation.fromNamespaceAndPath(CobblestonexXCompressed.MODID, name);
+
+        return registerColoredFluidType(
+            name,
+            tintColor,
+            getStillTextureLocation(name),
+            getFlowingTextureLocation(name),
+            WATER_OVERLAY_TEXTURE,
+            createWaterBasedProperties(resourceLocation)
+        );
+    }
+
+    private static DeferredHolder<FluidType, FluidType> registerColoredFluidType(
+        String name,
+        int tintColor,
+        ResourceLocation stillTexture,
+        ResourceLocation flowingTexture,
+        ResourceLocation overlayTexture,
+        FluidType.Properties properties
+    ) {
+        return FLUID_TYPES.register(name, resourceLocation -> new ColoredFluidType(properties, tintColor, stillTexture, flowingTexture, overlayTexture));
     }
 
     private static FluidType.Properties createMoltenProperties(ResourceLocation resourceLocation) {
@@ -220,8 +311,38 @@ public class ModFluidTypes {
             .pathType(null);
     }
 
+    private static FluidType.Properties createWaterBasedProperties(ResourceLocation resourceLocation) {
+        return FluidType.Properties.create()
+            .descriptionId(Util.makeDescriptionId("fluid_type", resourceLocation))
+            .sound(SoundActions.BUCKET_FILL, SoundEvents.BUCKET_FILL)
+            .sound(SoundActions.BUCKET_EMPTY, SoundEvents.BUCKET_EMPTY)
+            .density(1_000)
+            .viscosity(1_000)
+            .temperature(300)
+            .canExtinguish(true)
+            .fallDistanceModifier(0.0F)
+            .canHydrate(true)
+            .motionScale(0.014D)
+            .supportsBoating(true)
+            .rarity(net.minecraft.world.item.Rarity.COMMON)
+            .adjacentPathType(null)
+            .pathType(null);
+    }
+
     public static MapColor getMoltenCompressedCobblestoneMapColor() {
         return MapColor.COLOR_LIGHT_GRAY;
+    }
+
+    public static MapColor getWaterBasedFluidMapColor() {
+        return MapColor.COLOR_LIGHT_BLUE;
+    }
+
+    public static ResourceLocation getStillTextureLocation(String fluidName) {
+        return ResourceLocation.fromNamespaceAndPath(CobblestonexXCompressed.MODID, "block/fluid/" + fluidName + "_still");
+    }
+
+    public static ResourceLocation getFlowingTextureLocation(String fluidName) {
+        return ResourceLocation.fromNamespaceAndPath(CobblestonexXCompressed.MODID, "block/fluid/" + fluidName + "_flow");
     }
 
     public static void registerClientExtensions(RegisterClientExtensionsEvent event) {
@@ -235,56 +356,73 @@ public class ModFluidTypes {
         for (TierMoltenDirtyCompressedCobblestone tier : TierMoltenDirtyCompressedCobblestone.values()) {
             registerClientExtension(event, tier.getFluidType().get(), tier.getRegistryName());
         }
+
+        for (WaterBasedFluid fluid : WaterBasedFluid.values()) {
+            registerClientExtension(event, fluid.getFluidType().get(), fluid.getRegistryName());
+        }
     }
 
     private static void registerClientExtension(RegisterClientExtensionsEvent event, FluidType fluidType, String registryName) {
-        if (!(fluidType instanceof MoltenFluidType moltenFluidType)) {
+        if (!(fluidType instanceof ColoredFluidType coloredFluidType)) {
             return;
         }
 
         CobblestonexXCompressed.LOGGER.info(
-            "Register molten fluid client tint: {} -> world={}",
+            "Register fluid client tint: {} -> world={}",
             registryName,
-            String.format("0x%08X", moltenFluidType.tintColor)
+            String.format("0x%08X", coloredFluidType.tintColor)
         );
 
         event.registerFluidType(new IClientFluidTypeExtensions() {
             @Override
             public ResourceLocation getStillTexture() {
-                return moltenFluidType.stillTexture;
+                return coloredFluidType.stillTexture;
             }
 
             @Override
             public ResourceLocation getFlowingTexture() {
-                return moltenFluidType.flowingTexture;
+                return coloredFluidType.flowingTexture;
+            }
+
+            @Override
+            public ResourceLocation getOverlayTexture() {
+                return coloredFluidType.overlayTexture;
             }
 
             @Override
             public int getTintColor() {
-                return moltenFluidType.tintColor;
+                return coloredFluidType.tintColor;
             }
 
             @Override
             public int getTintColor(@Nonnull FluidState fluidState, @Nonnull BlockAndTintGetter getter, @Nonnull BlockPos position) {
-                return moltenFluidType.tintColor;
+                return coloredFluidType.tintColor;
             }
 
             @Override
             public int getTintColor(@Nonnull FluidStack fluidStack) {
-                return moltenFluidType.tintColor;
+                return coloredFluidType.tintColor;
             }
         }, fluidType);
     }
 
-    private static class MoltenFluidType extends FluidType {
+    private static class ColoredFluidType extends FluidType {
         private final ResourceLocation stillTexture;
         private final ResourceLocation flowingTexture;
+        private final ResourceLocation overlayTexture;
         private final int tintColor;
 
-        private MoltenFluidType(Properties properties, int tintColor, ResourceLocation stillTexture, ResourceLocation flowingTexture) {
+        private ColoredFluidType(
+            Properties properties,
+            int tintColor,
+            ResourceLocation stillTexture,
+            ResourceLocation flowingTexture,
+            ResourceLocation overlayTexture
+        ) {
             super(properties);
             this.stillTexture = stillTexture;
             this.flowingTexture = flowingTexture;
+            this.overlayTexture = overlayTexture;
             this.tintColor = tintColor;
         }
     }

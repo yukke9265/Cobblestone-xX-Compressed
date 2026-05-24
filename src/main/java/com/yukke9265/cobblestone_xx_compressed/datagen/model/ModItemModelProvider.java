@@ -157,6 +157,10 @@ public class ModItemModelProvider extends ItemModelProvider {
         for (ModFluids.TierMoltenDirtyCompressedCobblestone tier : ModFluids.TierMoltenDirtyCompressedCobblestone.values()) {
             registerFluidBucketItemModel(tier.getFluidEntry().getBucketItem());
         }
+
+        for (ModFluids.WaterBasedFluid fluid : ModFluids.WaterBasedFluid.values()) {
+            registerFluidBucketItemModel(fluid.getFluidEntry().getBucketItem());
+        }
     }
 
     // 丸石パン系は、登録名と PNG ファイル名を同じにしておくと管理がかなり楽です。

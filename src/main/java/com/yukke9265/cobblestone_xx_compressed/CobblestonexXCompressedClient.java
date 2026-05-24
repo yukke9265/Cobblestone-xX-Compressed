@@ -20,6 +20,8 @@ import com.yukke9265.cobblestone_xx_compressed.screen.CobblestoneTankScreen;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModMenuType;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
+import net.minecraft.client.renderer.RenderType;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModContainer;
@@ -30,6 +32,7 @@ import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsE
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
+import com.yukke9265.cobblestone_xx_compressed.registry.ModFluids;
 
 // このクラスは専用サーバーでは読み込まれません。ここからクライアント側コードへアクセスしても安全です。
 @Mod(value = CobblestonexXCompressed.MODID, dist = Dist.CLIENT)
@@ -48,6 +51,14 @@ public class CobblestonexXCompressedClient {
         // クライアント側のセットアップ処理
         CobblestonexXCompressed.LOGGER.info("HELLO FROM CLIENT SETUP");
         CobblestonexXCompressed.LOGGER.info("MINECRAFT NAME >> {}", Minecraft.getInstance().getUser().getName());
+
+        event.enqueueWork(() -> {
+            // 水系液体は透過ピクセルを持つ water ベース texture を使うため、
+            // liquid block を translucent で描画する必要があります。
+            for (ModFluids.WaterBasedFluid fluid : ModFluids.WaterBasedFluid.values()) {
+                ItemBlockRenderTypes.setRenderLayer(fluid.getFluidEntry().getFluidBlock().get(), RenderType.translucent());
+            }
+        });
     }
 
     @SubscribeEvent

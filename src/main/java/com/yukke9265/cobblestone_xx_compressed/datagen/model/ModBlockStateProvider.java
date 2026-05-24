@@ -61,23 +61,31 @@ public class ModBlockStateProvider extends BlockStateProvider {
 
         // LiquidBlock は level ごとに状態を持ちますが、見た目は fluid renderer が担当します。
         // そのため blockstate 側では、粒子テクスチャだけ持つ最小の model を全状態で共有すれば十分です。
-        registerMoltenFluidBlock(ModFluids.MOLTEN_COMPRESSED_COBBLESTONE.getFluidBlock().get(), ModFluids.MOLTEN_COMPRESSED_COBBLESTONE.getFluidBlock().getId().getPath());
+        registerFluidBlock(ModFluids.MOLTEN_COMPRESSED_COBBLESTONE.getFluidBlock().get(), ModFluids.MOLTEN_COMPRESSED_COBBLESTONE.getFluidBlock().getId().getPath());
 
         for (ModFluids.TierMoltenCompressedCobblestone tier : ModFluids.TierMoltenCompressedCobblestone.values()) {
-            registerMoltenFluidBlock(tier.getFluidEntry().getFluidBlock().get(), tier.getFluidEntry().getFluidBlock().getId().getPath());
+            registerFluidBlock(tier.getFluidEntry().getFluidBlock().get(), tier.getFluidEntry().getFluidBlock().getId().getPath());
         }
 
-        registerMoltenFluidBlock(
+        registerFluidBlock(
             ModFluids.MOLTEN_DIRTY_COMPRESSED_COBBLESTONE.getFluidBlock().get(),
             ModFluids.MOLTEN_DIRTY_COMPRESSED_COBBLESTONE.getFluidBlock().getId().getPath(),
             ModFluidTypes.MOLTEN_DIRTY_COMPRESSED_COBBLESTONE_STILL_TEXTURE
         );
 
         for (ModFluids.TierMoltenDirtyCompressedCobblestone tier : ModFluids.TierMoltenDirtyCompressedCobblestone.values()) {
-            registerMoltenFluidBlock(
+            registerFluidBlock(
                 tier.getFluidEntry().getFluidBlock().get(),
                 tier.getFluidEntry().getFluidBlock().getId().getPath(),
                 ModFluidTypes.MOLTEN_DIRTY_COMPRESSED_COBBLESTONE_STILL_TEXTURE
+            );
+        }
+
+        for (ModFluids.WaterBasedFluid fluid : ModFluids.WaterBasedFluid.values()) {
+            registerFluidBlock(
+                fluid.getFluidEntry().getFluidBlock().get(),
+                fluid.getFluidEntry().getFluidBlock().getId().getPath(),
+                ModFluidTypes.getStillTextureLocation(fluid.getRegistryName())
             );
         }
     }
@@ -322,11 +330,11 @@ public class ModBlockStateProvider extends BlockStateProvider {
         this.simpleBlockItem(block, offModel);
     }
 
-    private void registerMoltenFluidBlock(net.minecraft.world.level.block.Block block, String modelName) {
-        registerMoltenFluidBlock(block, modelName, ModFluidTypes.MOLTEN_COMPRESSED_COBBLESTONE_STILL_TEXTURE);
+    private void registerFluidBlock(net.minecraft.world.level.block.Block block, String modelName) {
+        registerFluidBlock(block, modelName, ModFluidTypes.MOLTEN_COMPRESSED_COBBLESTONE_STILL_TEXTURE);
     }
 
-    private void registerMoltenFluidBlock(net.minecraft.world.level.block.Block block, String modelName, net.minecraft.resources.ResourceLocation particleTexture) {
+    private void registerFluidBlock(net.minecraft.world.level.block.Block block, String modelName, net.minecraft.resources.ResourceLocation particleTexture) {
         this.simpleBlock(
             block,
             this.models().getBuilder(modelName).texture("particle", particleTexture)
