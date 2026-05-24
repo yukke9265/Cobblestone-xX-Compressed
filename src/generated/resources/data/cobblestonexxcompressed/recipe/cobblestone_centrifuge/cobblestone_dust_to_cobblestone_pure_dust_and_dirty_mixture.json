@@ -2,7 +2,7 @@
   "type": "cobblestonexxcompressed:cobblestone_centrifuge",
   "cobblestone_power_per_tick": 64,
   "ingredient": {
-    "item": "cobblestonexxcompressed:cobblestone_dirty_dust"
+    "item": "cobblestonexxcompressed:cobblestone_dust"
   },
   "result_1": {
     "count": 1,
