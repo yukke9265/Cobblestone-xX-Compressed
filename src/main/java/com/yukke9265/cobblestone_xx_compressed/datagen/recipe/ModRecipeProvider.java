@@ -115,11 +115,35 @@ public class ModRecipeProvider extends RecipeProvider {
     };
 
     //粉砕機の基本レシピ設定は800CP 4CP/tで統一しますが、将来個別に変える可能性もあるので、レシピごとに定義しておきます。
+    
+    // 丸石 銅 金 アメジスト ティア  圧縮丸石 → 汚い粉
+    // 宝石類 金属類 ブレイズロッド 黒曜石 古代の残骸 エンダーパール→ 粉
     private static final CrusherRecipeDefinition[] COBBLESTONE_CRUSHER_RECIPES = new CrusherRecipeDefinition[] {
         new CrusherRecipeDefinition(
-            "tier_copper_compressed_cobblestone_to_tier_copper_cobblestone_dust",
+            "tier_copper_compressed_cobblestone_to_tier_copper_dirty_cobblestone_dust",
             ModBlocks.TierCompressedCobblestone.COPPER.getBlock().get(),
-            ModItems.TIER_COPPER_COBBLESTONE_DUST.get(),
+            ModItems.TIER_COPPER_COBBLESTONE_DIRTY_DUST.get(),
+            800,
+            4
+        ),
+        new CrusherRecipeDefinition(
+            "tier_iron_compressed_cobblestone_to_tier_iron_dirty_cobblestone_dust",
+            ModBlocks.TierCompressedCobblestone.IRON.getBlock().get(),
+            ModItems.TIER_IRON_COBBLESTONE_DIRTY_DUST.get(),
+            800,
+            4
+        ),
+        new CrusherRecipeDefinition(
+            "tier_gold_compressed_cobblestone_to_tier_gold_dirty_cobblestone_dust",
+            ModBlocks.TierCompressedCobblestone.GOLD.getBlock().get(),
+            ModItems.TIER_GOLD_COBBLESTONE_DIRTY_DUST.get(),
+            800,
+            4
+        ),
+        new CrusherRecipeDefinition(
+            "tier_amethyst_compressed_cobblestone_to_tier_amethyst_dirty_cobblestone_dust",
+            ModBlocks.TierCompressedCobblestone.AMETHYST.getBlock().get(),
+            ModItems.TIER_AMETHYST_COBBLESTONE_DIRTY_DUST.get(),
             800,
             4
         ),
@@ -238,16 +262,238 @@ public class ModRecipeProvider extends RecipeProvider {
         )
     };
 
+    //mixerレシピは6400CP 16CP/tで統一しますが、将来個別に変える可能性もあるので、レシピごとに定義しておきます。
+    /*ミキサー加工
+    汚い鉄丸石粉 + 石炭粉 → 鉄丸石混合物
+    汚い金丸石粉 + レッドストーン → 金丸石混合物
+    汚いアメジスト丸石粉 + アメジスト粉 → アメジスト丸石混合物
+
+    アクアマリン粉 + ラピス粉 → アクアマリン混合物
+    トパーズ粉 + グロウストーン粉 → トパーズ混合物
+    ルビー粉 + レッドストーン → ルビー混合物
+    サファイア粉 + ダイヤ粉 → サファイア混合物 
+    ダイヤモンド粉 + ブレイズパウダー → ブレイズ混合物
+    エメラルド粉 + エンダー粉 → エメラルド混合物
+    古代粉 + 金粉 → 古代混合物 
+    */
+    private static final MixerRecipeDefinition[] COBBLESTONE_MIXER_RECIPES = new MixerRecipeDefinition[] {
+        new MixerRecipeDefinition(
+            "tier_iron_dirty_cobblestone_dust_and_coal_dust_to_tier_iron_cobblestone_mixed_dust",
+            new ItemStack(ModItems.TIER_IRON_COBBLESTONE_DIRTY_DUST.get()),
+            new ItemStack(ModItems.COAL_DUST.get()),
+            new ItemStack(ModItems.TIER_IRON_COBBLESTONE_MIXED_DUST.get()),
+            6400,
+            16
+        ),
+        new MixerRecipeDefinition(
+            "tier_gold_cobblestone_dust_and_redstone_dust_to_tier_gold_cobblestone_mixed_dust",
+            new ItemStack(ModItems.TIER_GOLD_COBBLESTONE_DUST.get()),
+            new ItemStack(Items.REDSTONE),
+            new ItemStack(ModItems.TIER_GOLD_COBBLESTONE_MIXED_DUST.get()),
+            6400,
+            16
+        ),
+        new MixerRecipeDefinition(
+            "tier_amethyst_cobblestone_dust_and_amethyst_dust_to_tier_amethyst_cobblestone_mixed_dust",
+            new ItemStack(ModItems.TIER_AMETHYST_COBBLESTONE_DUST.get()),
+            new ItemStack(ModItems.AMETHYST_DUST.get()),
+            new ItemStack(ModItems.TIER_AMETHYST_COBBLESTONE_MIXED_DUST.get()),
+            6400,
+            16
+        ),
+        new MixerRecipeDefinition(
+            "ancient_debris_dust_and_gold_dust_to_ancient_mixtures",
+            new ItemStack(ModItems.ANCIENT_DEBRIS_DUST.get()),
+            new ItemStack(ModItems.GOLD_DUST.get()),
+            new ItemStack(ModItems.ANCIENT_MIXTURES.get(), 2),
+            6400,
+            16
+        ),
+        new MixerRecipeDefinition(
+            "aquamarine_dust_and_lapis_dust_to_aquamarine_mixture",
+            new ItemStack(ModItems.AQUAMARINE_DUST.get()),
+            new ItemStack(ModItems.LAPIS_DUST.get()),
+            new ItemStack(ModItems.AQUAMARINE_MIXTURE.get(), 2),
+            6400,
+            16
+        ),
+        new MixerRecipeDefinition(
+            "blaze_powder_and_diamond_dust_to_blaze_mixtures",
+            new ItemStack(Items.BLAZE_POWDER, 2),
+            new ItemStack(ModItems.DIAMOND_DUST.get()),
+            new ItemStack(ModItems.BLAZE_MIXTURES.get(), 3),
+            6400,
+            16
+        ),
+        new MixerRecipeDefinition(
+            "emerald_dust_and_ender_dust_to_emerald_mixtures",
+            new ItemStack(ModItems.EMERALD_DUST.get()),
+            new ItemStack(ModItems.ENDER_DUST.get()),
+            new ItemStack(ModItems.EMERALD_MIXTURES.get(), 2),
+            6400,
+            16
+        ),
+        new MixerRecipeDefinition(
+            "ruby_dust_and_redstone_to_ruby_mixtures",
+            new ItemStack(ModItems.RUBY_DUST.get()),
+            new ItemStack(Items.REDSTONE),
+            new ItemStack(ModItems.RUBY_MIXTURES.get(), 2),
+            6400,
+            16
+        ),
+        new MixerRecipeDefinition(
+            "sapphire_dust_and_diamond_dust_to_sapphire_mixture",
+            new ItemStack(ModItems.SAPPHIRE_DUST.get()),
+            new ItemStack(ModItems.DIAMOND_DUST.get()),
+            new ItemStack(ModItems.SAPPHIRE_MIXTURE.get(), 2),
+            6400,
+            16
+        ),
+        new MixerRecipeDefinition(
+            "topaz_dust_and_glowstone_dust_to_topaz_mixtures",
+            new ItemStack(ModItems.TOPAZ_DUST.get()),
+            new ItemStack(Items.GLOWSTONE_DUST),
+            new ItemStack(ModItems.TOPAZ_MIXTURES.get(), 2),
+            6400,
+            16
+        )
+    };
+
+    //遠心分離の基本レシピは51200CP 64CP/tで統一しますが、将来個別に変える可能性もあるので、レシピごとに定義しておきます。
+    /*
+    金とアメジストティア 汚い丸石粉 → 丸石粉 + 副産物
+    それ以外のティア 丸石粉 → 純粋な丸石粉 + 副産物 
+    */
     private static final CentrifugeRecipeDefinition[] COBBLESTONE_CENTRIFUGE_RECIPES = new CentrifugeRecipeDefinition[] {
         new CentrifugeRecipeDefinition(
-            "tier_gold_cobblestone_dust_to_tier_gold_cobblestone_dirty_dust_and_dirty_mixture",
-            ModItems.TIER_GOLD_COBBLESTONE_DUST.get(),
-            new ItemStack(ModItems.TIER_GOLD_COBBLESTONE_DIRTY_DUST.get()),
+            "cobblestone_dust_to_cobblestone_pure_dust_and_dirty_mixture",
+            ModItems.COBBLESTONE_DUST.get(),
+            new ItemStack(ModItems.COBBLESTONE_PURE_DUST.get()),
             1.0F,
             new ItemStack(ModItems.DIRTY_MIXTURE.get()),
-            0.3F,
-            400,
-            4
+            0.1F,
+            51200,
+            64
+        ),
+        new CentrifugeRecipeDefinition(
+            "tier_copper_cobblestone_dust_to_tier_copper_cobblestone_pure_dust_and_dirty_mixture",
+            ModItems.TIER_COPPER_COBBLESTONE_DUST.get(),
+            new ItemStack(ModItems.TIER_COPPER_COBBLESTONE_PURE_DUST.get()),
+            1.0F,
+            new ItemStack(ModItems.DIRTY_MIXTURE.get()),
+            0.1F,
+            51200,
+            64
+        ),
+        new CentrifugeRecipeDefinition(
+            "tier_iron_cobblestone_dust_to_tier_iron_cobblestone_pure_dust_and_dirty_mixture",
+            ModItems.TIER_IRON_COBBLESTONE_DUST.get(),
+            new ItemStack(ModItems.TIER_IRON_COBBLESTONE_PURE_DUST.get()),
+            1.0F,
+            new ItemStack(ModItems.DIRTY_MIXTURE.get()),
+            0.1F,
+            51200,
+            64
+        ),
+        new CentrifugeRecipeDefinition(
+            "tier_gold_dirty_cobblestone_dust_to_tier_gold_cobblestone_dust_and_dirty_mixture",
+            ModItems.TIER_GOLD_COBBLESTONE_DIRTY_DUST.get(),
+            new ItemStack(ModItems.TIER_GOLD_COBBLESTONE_DUST.get()),
+            1.0F,
+            new ItemStack(ModItems.DIRTY_MIXTURE.get()),
+            0.1F,
+            51200,
+            64
+        ),
+        new CentrifugeRecipeDefinition(
+            "tier_amethyst_dirty_cobblestone_dust_to_tier_amethyst_cobblestone_dust_and_dirty_mixture",
+            ModItems.TIER_AMETHYST_COBBLESTONE_DIRTY_DUST.get(),
+            new ItemStack(ModItems.TIER_AMETHYST_COBBLESTONE_DUST.get()),
+            1.0F,
+            new ItemStack(ModItems.DIRTY_MIXTURE.get()),
+            0.1F,
+            51200,
+            64
+        ),
+        new CentrifugeRecipeDefinition(
+            "tier_aquamarine_cobblestone_dust_to_tier_aquamarine_cobblestone_pure_dust_and_dirty_mixture",
+            ModItems.TIER_AQUAMARINE_COBBLESTONE_DUST.get(),
+            new ItemStack(ModItems.TIER_AQUAMARINE_COBBLESTONE_PURE_DUST.get()),
+            1.0F,
+            new ItemStack(ModItems.DIRTY_MIXTURE.get()),
+            0.1F,
+            51200,
+            64
+        ),
+        new CentrifugeRecipeDefinition(
+            "tier_topaz_cobblestone_dust_to_tier_topaz_cobblestone_pure_dust_and_dirty_mixture",
+            ModItems.TIER_TOPAZ_COBBLESTONE_DUST.get(),
+            new ItemStack(ModItems.TIER_TOPAZ_COBBLESTONE_PURE_DUST.get()),
+            1.0F,
+            new ItemStack(ModItems.DIRTY_MIXTURE.get()),
+            0.1F,
+            51200,
+            64
+        ),
+        new CentrifugeRecipeDefinition(
+            "tier_ruby_cobblestone_dust_to_tier_ruby_cobblestone_pure_dust_and_dirty_mixture",
+            ModItems.TIER_RUBY_COBBLESTONE_DUST.get(),
+            new ItemStack(ModItems.TIER_RUBY_COBBLESTONE_PURE_DUST.get()),
+            1.0F,
+            new ItemStack(ModItems.DIRTY_MIXTURE.get()),
+            0.1F,
+            51200,
+            64
+        ),
+        new CentrifugeRecipeDefinition(
+            "tier_sapphire_cobblestone_dust_to_tier_sapphire_cobblestone_pure_dust_and_dirty_mixture",
+            ModItems.TIER_SAPPHIRE_COBBLESTONE_DUST.get(),
+            new ItemStack(ModItems.TIER_SAPPHIRE_COBBLESTONE_PURE_DUST.get()),
+            1.0F,
+            new ItemStack(ModItems.DIRTY_MIXTURE.get()),
+            0.1F,
+            51200,
+            64
+        ),
+        new CentrifugeRecipeDefinition(
+            "tier_diamond_cobblestone_dust_to_tier_diamond_cobblestone_pure_dust_and_dirty_mixture",
+            ModItems.TIER_DIAMOND_COBBLESTONE_DUST.get(),
+            new ItemStack(ModItems.TIER_DIAMOND_COBBLESTONE_PURE_DUST.get()),
+            1.0F,
+            new ItemStack(ModItems.DIRTY_MIXTURE.get()),
+            0.1F,
+            51200,
+            64
+        ),
+        new CentrifugeRecipeDefinition(
+            "tier_emerald_cobblestone_dust_to_tier_emerald_cobblestone_pure_dust_and_dirty_mixture",
+            ModItems.TIER_EMERALD_COBBLESTONE_DUST.get(),
+            new ItemStack(ModItems.TIER_EMERALD_COBBLESTONE_PURE_DUST.get()),
+            1.0F,
+            new ItemStack(ModItems.DIRTY_MIXTURE.get()),
+            0.1F,
+            51200,
+            64
+        ),
+        new CentrifugeRecipeDefinition(
+            "tier_netherite_cobblestone_dust_to_tier_netherite_cobblestone_pure_dust_and_dirty_mixture",
+            ModItems.TIER_NETHERITE_COBBLESTONE_DUST.get(),
+            new ItemStack(ModItems.TIER_NETHERITE_COBBLESTONE_PURE_DUST.get()),
+            1.0F,
+            new ItemStack(ModItems.DIRTY_MIXTURE.get()),
+            0.1F,
+            51200,
+            64
+        ),
+        new CentrifugeRecipeDefinition(
+            "tier_obsidian_cobblestone_dust_to_tier_obsidian_cobblestone_pure_dust_and_dirty_mixture",
+            ModItems.TIER_OBSIDIAN_COBBLESTONE_DUST.get(),
+            new ItemStack(ModItems.TIER_OBSIDIAN_COBBLESTONE_PURE_DUST.get()),
+            1.0F,
+            new ItemStack(ModItems.DIRTY_MIXTURE.get()),
+            0.1F,
+            51200,
+            64
         )
     };
 
@@ -274,73 +520,6 @@ public class ModRecipeProvider extends RecipeProvider {
             5000,
             409600,
             4096
-        )
-    };
-
-    private static final MixerRecipeDefinition[] COBBLESTONE_MIXER_RECIPES = new MixerRecipeDefinition[] {
-        new MixerRecipeDefinition(
-            "tier_iron_cobblestone_dust_and_coal_dust_to_tier_iron_cobblestone_mixed_dust",
-            new ItemStack(ModItems.TIER_IRON_COBBLESTONE_DUST.get()),
-            new ItemStack(ModItems.COAL_DUST.get()),
-            new ItemStack(ModItems.TIER_IRON_COBBLESTONE_MIXED_DUST.get()),
-            200,
-            2
-        ),
-        new MixerRecipeDefinition(
-            "ancient_debris_dust_and_gold_dust_to_ancient_mixtures",
-            new ItemStack(ModItems.ANCIENT_DEBRIS_DUST.get()),
-            new ItemStack(ModItems.GOLD_DUST.get()),
-            new ItemStack(ModItems.ANCIENT_MIXTURES.get(), 2),
-            200,
-            2
-        ),
-        new MixerRecipeDefinition(
-            "aquamarine_dust_and_lapis_dust_to_aquamarine_mixture",
-            new ItemStack(ModItems.AQUAMARINE_DUST.get()),
-            new ItemStack(ModItems.LAPIS_DUST.get()),
-            new ItemStack(ModItems.AQUAMARINE_MIXTURE.get(), 2),
-            200,
-            2
-        ),
-        new MixerRecipeDefinition(
-            "blaze_powder_and_diamond_dust_to_blaze_mixtures",
-            new ItemStack(Items.BLAZE_POWDER, 2),
-            new ItemStack(ModItems.DIAMOND_DUST.get()),
-            new ItemStack(ModItems.BLAZE_MIXTURES.get(), 3),
-            200,
-            2
-        ),
-        new MixerRecipeDefinition(
-            "emerald_dust_and_ender_dust_to_emerald_mixtures",
-            new ItemStack(ModItems.EMERALD_DUST.get()),
-            new ItemStack(ModItems.ENDER_DUST.get()),
-            new ItemStack(ModItems.EMERALD_MIXTURES.get(), 2),
-            200,
-            2
-        ),
-        new MixerRecipeDefinition(
-            "ruby_dust_and_redstone_to_ruby_mixtures",
-            new ItemStack(ModItems.RUBY_DUST.get()),
-            new ItemStack(Items.REDSTONE),
-            new ItemStack(ModItems.RUBY_MIXTURES.get(), 2),
-            200,
-            2
-        ),
-        new MixerRecipeDefinition(
-            "sapphire_dust_and_diamond_dust_to_sapphire_mixture",
-            new ItemStack(ModItems.SAPPHIRE_DUST.get()),
-            new ItemStack(ModItems.DIAMOND_DUST.get()),
-            new ItemStack(ModItems.SAPPHIRE_MIXTURE.get(), 2),
-            200,
-            2
-        ),
-        new MixerRecipeDefinition(
-            "topaz_dust_and_glowstone_dust_to_topaz_mixtures",
-            new ItemStack(ModItems.TOPAZ_DUST.get()),
-            new ItemStack(Items.GLOWSTONE_DUST),
-            new ItemStack(ModItems.TOPAZ_MIXTURES.get(), 2),
-            200,
-            2
         )
     };
 

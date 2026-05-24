@@ -1,0 +1,12 @@
+{
+  "type": "cobblestonexxcompressed:cobblestone_crusher",
+  "cobblestone_power_per_tick": 4,
+  "ingredient": {
+    "item": "cobblestonexxcompressed:tier_iron_compressed_cobblestone"
+  },
+  "result": {
+    "count": 1,
+    "id": "cobblestonexxcompressed:tier_iron_cobblestone_dirty_dust"
+  },
+  "total_cobblestone_power": 800
+}

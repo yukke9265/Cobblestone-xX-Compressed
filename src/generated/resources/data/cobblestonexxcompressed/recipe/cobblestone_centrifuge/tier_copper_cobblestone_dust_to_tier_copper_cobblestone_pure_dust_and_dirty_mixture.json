@@ -1,0 +1,17 @@
+{
+  "type": "cobblestonexxcompressed:cobblestone_centrifuge",
+  "cobblestone_power_per_tick": 64,
+  "ingredient": {
+    "item": "cobblestonexxcompressed:tier_copper_cobblestone_dust"
+  },
+  "result_1": {
+    "count": 1,
+    "id": "cobblestonexxcompressed:tier_copper_cobblestone_pure_dust"
+  },
+  "result_2": {
+    "count": 1,
+    "id": "cobblestonexxcompressed:dirty_mixture"
+  },
+  "result_2_chance": 0.1,
+  "total_cobblestone_power": 51200
+}

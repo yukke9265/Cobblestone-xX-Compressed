@@ -3,15 +3,15 @@
   "cobblestone_power_per_tick": 16,
   "item_input_1": {
     "count": 1,
-    "id": "cobblestonexxcompressed:topaz_dust"
+    "id": "cobblestonexxcompressed:tier_amethyst_cobblestone_dust"
   },
   "item_input_2": {
     "count": 1,
-    "id": "minecraft:glowstone_dust"
+    "id": "cobblestonexxcompressed:amethyst_dust"
   },
   "result": {
-    "count": 2,
-    "id": "cobblestonexxcompressed:topaz_mixtures"
+    "count": 1,
+    "id": "cobblestonexxcompressed:tier_amethyst_cobblestone_mixed_dust"
   },
   "total_cobblestone_power": 6400
 }

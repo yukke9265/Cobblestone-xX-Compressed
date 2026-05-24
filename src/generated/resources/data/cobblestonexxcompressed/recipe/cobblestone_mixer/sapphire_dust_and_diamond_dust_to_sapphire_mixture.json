@@ -1,6 +1,6 @@
 {
   "type": "cobblestonexxcompressed:cobblestone_mixer",
-  "cobblestone_power_per_tick": 2,
+  "cobblestone_power_per_tick": 16,
   "item_input_1": {
     "count": 1,
     "id": "cobblestonexxcompressed:sapphire_dust"
@@ -13,5 +13,5 @@
     "count": 2,
     "id": "cobblestonexxcompressed:sapphire_mixture"
   },
-  "total_cobblestone_power": 200
+  "total_cobblestone_power": 6400
 }

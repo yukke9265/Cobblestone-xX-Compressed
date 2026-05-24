@@ -1,9 +1,9 @@
 {
   "type": "cobblestonexxcompressed:cobblestone_mixer",
-  "cobblestone_power_per_tick": 2,
+  "cobblestone_power_per_tick": 16,
   "item_input_1": {
     "count": 1,
-    "id": "cobblestonexxcompressed:tier_iron_cobblestone_dust"
+    "id": "cobblestonexxcompressed:tier_iron_cobblestone_dirty_dust"
   },
   "item_input_2": {
     "count": 1,
@@ -13,5 +13,5 @@
     "count": 1,
     "id": "cobblestonexxcompressed:tier_iron_cobblestone_mixed_dust"
   },
-  "total_cobblestone_power": 200
+  "total_cobblestone_power": 6400
 }
