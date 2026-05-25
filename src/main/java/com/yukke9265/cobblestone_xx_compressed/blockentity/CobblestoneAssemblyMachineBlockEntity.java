@@ -66,7 +66,9 @@ public class CobblestoneAssemblyMachineBlockEntity extends BaseBlockEntity imple
     private static final int DATA_INDEX_INPUT_FLUID_ID = 10;
     private static final int DATA_INDEX_ITEM_AUTOMATION_START = 11;
     private static final int DATA_INDEX_FLUID_AUTOMATION_START = DATA_INDEX_ITEM_AUTOMATION_START + AUTOMATION_FACE_COUNT;
-    private static final int DATA_INDEX_AUTO_EXPORT = DATA_INDEX_FLUID_AUTOMATION_START + AUTOMATION_FACE_COUNT;
+    private static final int DATA_INDEX_CURRENT_POWER_RATE = DATA_INDEX_FLUID_AUTOMATION_START + AUTOMATION_FACE_COUNT;
+    private static final int DATA_INDEX_CURRENT_POWER_RATE_UPPER = DATA_INDEX_CURRENT_POWER_RATE + 1;
+    private static final int DATA_INDEX_AUTO_EXPORT = DATA_INDEX_CURRENT_POWER_RATE_UPPER + 1;
 
     private int progress;
     private int maxProgress;
@@ -242,6 +244,30 @@ public class CobblestoneAssemblyMachineBlockEntity extends BaseBlockEntity imple
 
     public long getMaxCobblestonePower() {
         return MAX_COBBLESTONE_POWER * this.getEnergizedCubeMultiplier();
+    }
+
+    public long getCurrentCobblestonePowerConsumption() {
+        if (!this.isAvailable) {
+            return 0L;
+        }
+
+        var recipeHolder = this.getCurrentRecipe();
+        if (recipeHolder.isEmpty()) {
+            return 0L;
+        }
+
+        var recipe = recipeHolder.get().value();
+        if (!this.hasRequiredInputs(recipe) || !this.canOutputItem(recipe)) {
+            return 0L;
+        }
+
+        long cobblestonePowerPerTick = recipe.getCobblestonePowerPerTick();
+        int progressStep = this.getProgressStep(cobblestonePowerPerTick);
+        if (progressStep <= 0) {
+            return 0L;
+        }
+
+        return cobblestonePowerPerTick * progressStep;
     }
 
     public long getStoredInputFluidAmount() {
@@ -479,8 +505,14 @@ public class CobblestoneAssemblyMachineBlockEntity extends BaseBlockEntity imple
                 if (index >= DATA_INDEX_ITEM_AUTOMATION_START && index < DATA_INDEX_FLUID_AUTOMATION_START) {
                     return CobblestoneAssemblyMachineBlockEntity.this.getAutomationModeId(index - DATA_INDEX_ITEM_AUTOMATION_START);
                 }
-                if (index >= DATA_INDEX_FLUID_AUTOMATION_START && index < DATA_INDEX_AUTO_EXPORT) {
+                if (index >= DATA_INDEX_FLUID_AUTOMATION_START && index < DATA_INDEX_CURRENT_POWER_RATE) {
                     return CobblestoneAssemblyMachineBlockEntity.this.getFluidAutomationModeId(index - DATA_INDEX_FLUID_AUTOMATION_START);
+                }
+                if (index == DATA_INDEX_CURRENT_POWER_RATE) {
+                    return LongDataHelper.lowerInt(getCurrentCobblestonePowerConsumption());
+                }
+                if (index == DATA_INDEX_CURRENT_POWER_RATE_UPPER) {
+                    return LongDataHelper.upperInt(getCurrentCobblestonePowerConsumption());
                 }
                 if (index == DATA_INDEX_AUTO_EXPORT) {
                     return CobblestoneAssemblyMachineBlockEntity.this.getAutoExportEnabledId();

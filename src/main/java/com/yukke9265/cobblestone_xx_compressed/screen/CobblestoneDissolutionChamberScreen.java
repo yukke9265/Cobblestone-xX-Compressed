@@ -273,6 +273,7 @@ public class CobblestoneDissolutionChamberScreen extends BaseScreen<CobblestoneD
 
     @Override
     protected void renderHoverLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        this.renderCobblestonePowerHoverLabel(guiGraphics, mouseX, mouseY, MachineGuiLayouts.DissolutionChamber.POWER_BAR_X, MachineGuiLayouts.DissolutionChamber.POWER_BAR_Y, MachineGuiLayouts.DissolutionChamber.POWER_BAR_WIDTH, MachineGuiLayouts.DissolutionChamber.POWER_BAR_HEIGHT);
         for (AutomationSide side : AUTOMATION_SIDES) {
             int index = side.getIndex();
             this.renderButtonHoverLabel(

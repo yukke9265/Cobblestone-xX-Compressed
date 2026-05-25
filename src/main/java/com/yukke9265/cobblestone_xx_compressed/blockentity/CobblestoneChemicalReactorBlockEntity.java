@@ -81,7 +81,9 @@ public class CobblestoneChemicalReactorBlockEntity extends BaseBlockEntity imple
     private static final int DATA_INDEX_OUTPUT_FLUID_2_ID = 25;
     private static final int DATA_INDEX_ITEM_AUTOMATION_START = 26;
     private static final int DATA_INDEX_FLUID_AUTOMATION_START = DATA_INDEX_ITEM_AUTOMATION_START + AUTOMATION_FACE_COUNT;
-    private static final int DATA_INDEX_AUTO_EXPORT = DATA_INDEX_FLUID_AUTOMATION_START + AUTOMATION_FACE_COUNT;
+    private static final int DATA_INDEX_CURRENT_POWER_RATE = DATA_INDEX_FLUID_AUTOMATION_START + AUTOMATION_FACE_COUNT;
+    private static final int DATA_INDEX_CURRENT_POWER_RATE_UPPER = DATA_INDEX_CURRENT_POWER_RATE + 1;
+    private static final int DATA_INDEX_AUTO_EXPORT = DATA_INDEX_CURRENT_POWER_RATE_UPPER + 1;
 
     private int progress;
     private int maxProgress;
@@ -325,6 +327,25 @@ public class CobblestoneChemicalReactorBlockEntity extends BaseBlockEntity imple
 
     public long getMaxCobblestonePower() {
         return MAX_COBBLESTONE_POWER * this.getEnergizedCubeMultiplier();
+    }
+
+    public long getCurrentCobblestonePowerConsumption() {
+        if (!this.isAvailable) {
+            return 0L;
+        }
+
+        var recipeHolder = this.getCurrentRecipe();
+        if (recipeHolder.isEmpty()) {
+            return 0L;
+        }
+
+        var recipe = recipeHolder.get().value();
+        if (!this.canProcess(recipe)) {
+            return 0L;
+        }
+
+        long cobblestonePowerPerTick = recipe.getCobblestonePowerPerTick();
+        return cobblestonePowerPerTick * this.getProgressStep(cobblestonePowerPerTick);
     }
 
     public long getStoredInputFluid1Amount() {
@@ -664,8 +685,14 @@ public class CobblestoneChemicalReactorBlockEntity extends BaseBlockEntity imple
                 if (index >= DATA_INDEX_ITEM_AUTOMATION_START && index < DATA_INDEX_FLUID_AUTOMATION_START) {
                     return CobblestoneChemicalReactorBlockEntity.this.getAutomationModeId(index - DATA_INDEX_ITEM_AUTOMATION_START);
                 }
-                if (index >= DATA_INDEX_FLUID_AUTOMATION_START && index < DATA_INDEX_AUTO_EXPORT) {
+                if (index >= DATA_INDEX_FLUID_AUTOMATION_START && index < DATA_INDEX_CURRENT_POWER_RATE) {
                     return CobblestoneChemicalReactorBlockEntity.this.getFluidAutomationModeId(index - DATA_INDEX_FLUID_AUTOMATION_START);
+                }
+                if (index == DATA_INDEX_CURRENT_POWER_RATE) {
+                    return LongDataHelper.lowerInt(CobblestoneChemicalReactorBlockEntity.this.getCurrentCobblestonePowerConsumption());
+                }
+                if (index == DATA_INDEX_CURRENT_POWER_RATE_UPPER) {
+                    return LongDataHelper.upperInt(CobblestoneChemicalReactorBlockEntity.this.getCurrentCobblestonePowerConsumption());
                 }
                 if (index == DATA_INDEX_AUTO_EXPORT) {
                     return CobblestoneChemicalReactorBlockEntity.this.getAutoExportEnabledId();

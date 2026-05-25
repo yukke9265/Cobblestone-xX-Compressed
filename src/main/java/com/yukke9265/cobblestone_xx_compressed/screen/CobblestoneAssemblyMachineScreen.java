@@ -248,6 +248,7 @@ public class CobblestoneAssemblyMachineScreen extends BaseScreen<CobblestoneAsse
 
     @Override
     protected void renderHoverLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        this.renderCobblestonePowerHoverLabel(guiGraphics, mouseX, mouseY, MachineGuiLayouts.AssemblyMachine.POWER_BAR_X, MachineGuiLayouts.AssemblyMachine.POWER_BAR_Y, MachineGuiLayouts.AssemblyMachine.POWER_BAR_WIDTH, MachineGuiLayouts.AssemblyMachine.POWER_BAR_HEIGHT);
         for (AutomationSide side : AUTOMATION_SIDES) {
             int index = side.getIndex();
             this.renderButtonHoverLabel(guiGraphics, mouseX, mouseY, this.itemAutomationButtons[index], this.createAutomationHoverLabel(Component.translatable("gui.cobblestonexxcompressed.item"), side, this.menu.getItemAutomationMode(side)));

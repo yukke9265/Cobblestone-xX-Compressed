@@ -251,6 +251,7 @@ public class CobblestoneMelterScreen extends BaseScreen<CobblestoneMelterMenu> {
 
     @Override
     protected void renderHoverLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        this.renderCobblestonePowerHoverLabel(guiGraphics, mouseX, mouseY, MachineGuiLayouts.PoweredMachine.POWER_BAR_X, MachineGuiLayouts.PoweredMachine.POWER_BAR_Y, MachineGuiLayouts.PoweredMachine.POWER_BAR_WIDTH, MachineGuiLayouts.PoweredMachine.POWER_BAR_HEIGHT);
         for (AutomationSide side : AUTOMATION_SIDES) {
             int index = side.getIndex();
             this.renderButtonHoverLabel(

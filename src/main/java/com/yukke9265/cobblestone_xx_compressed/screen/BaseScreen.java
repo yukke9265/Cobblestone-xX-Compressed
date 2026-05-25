@@ -1,8 +1,10 @@
 package com.yukke9265.cobblestone_xx_compressed.screen;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.yukke9265.cobblestone_xx_compressed.compat.jei.JeiClickableAreaDefinition;
+import com.yukke9265.cobblestone_xx_compressed.blockentity.AutomationMode;
 import com.yukke9265.cobblestone_xx_compressed.menu.BaseMenu;
 import com.yukke9265.cobblestone_xx_compressed.util.GuiPartRenderer;
 
@@ -114,6 +116,37 @@ public class BaseScreen<T extends BaseMenu> extends AbstractContainerScreen<T> {
         // 自作ラベルも通常のツールチップ描画 API を使って、
         // アイテムや他の GUI 要素より前面に出るようにします。
         guiGraphics.renderTooltip(this.font, text, mouseX, mouseY);
+    }
+
+    protected final void renderHoverLabel(GuiGraphics guiGraphics, int mouseX, int mouseY, List<Component> textLines) {
+        guiGraphics.renderTooltip(this.font, textLines, Optional.empty(), mouseX, mouseY);
+    }
+
+    protected final void renderCobblestonePowerHoverLabel(
+        GuiGraphics guiGraphics,
+        int mouseX,
+        int mouseY,
+        int x,
+        int y,
+        int width,
+        int height
+    ) {
+        if (!this.isHovering(x, y, width, height, mouseX, mouseY)) {
+            return;
+        }
+
+        List<Component> tooltipLines = List.of(
+            Component.translatable("gui.cobblestonexxcompressed.cobblestone_power")
+                .append(": ")
+                .append(String.valueOf(this.menu.getStoredCobblestonePower()))
+                .append(" / ")
+                .append(String.valueOf(this.menu.getMaxCobblestonePower()))
+                .withStyle(AutomationMode.COBBLESTONE_INPUT.createLabelComponent().getStyle()),
+            Component.literal("CP/t: ")
+                .append(String.valueOf(this.menu.getCurrentCobblestonePowerRate()))
+                .withStyle(AutomationMode.COBBLESTONE_INPUT.createLabelComponent().getStyle())
+        );
+        this.renderHoverLabel(guiGraphics, mouseX, mouseY, tooltipLines);
     }
 
     protected final void renderButtonHoverLabel(

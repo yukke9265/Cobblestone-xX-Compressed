@@ -37,14 +37,16 @@ public class CobblestoneLaserDrillMenu extends BaseMenu {
         AutomationMode.COBBLESTONE_INPUT
     };
 
-    private static final int DATA_COUNT = 7 + BaseBlockEntity.AUTOMATION_FACE_COUNT;
+    private static final int DATA_COUNT = 9 + BaseBlockEntity.AUTOMATION_FACE_COUNT;
     private static final int DATA_INDEX_PROGRESS = 0;
     private static final int DATA_INDEX_MAX_PROGRESS = 1;
     private static final int DATA_INDEX_STORED_POWER = 2;
     private static final int DATA_INDEX_STORED_POWER_UPPER = 3;
     private static final int DATA_INDEX_MAX_STORED_POWER = 4;
     private static final int DATA_INDEX_MAX_STORED_POWER_UPPER = 5;
-    private static final int DATA_INDEX_AUTO_EXPORT = 6 + BaseBlockEntity.AUTOMATION_FACE_COUNT;
+    private static final int DATA_INDEX_CURRENT_POWER_RATE = 6 + BaseBlockEntity.AUTOMATION_FACE_COUNT;
+    private static final int DATA_INDEX_CURRENT_POWER_RATE_UPPER = DATA_INDEX_CURRENT_POWER_RATE + 1;
+    private static final int DATA_INDEX_AUTO_EXPORT = DATA_INDEX_CURRENT_POWER_RATE_UPPER + 1;
     private static final int PLAYER_INVENTORY_COLUMNS = 9;
     private static final int PLAYER_INVENTORY_ROWS = 3;
     private static final int HOTBAR_SLOT_COUNT = 9;
@@ -93,6 +95,11 @@ public class CobblestoneLaserDrillMenu extends BaseMenu {
 
     public long getMaxCobblestonePower() {
         return this.getLongFromData(this.laserDrillData, DATA_INDEX_MAX_STORED_POWER);
+    }
+
+    @Override
+    public long getCurrentCobblestonePowerRate() {
+        return this.getLongFromData(this.laserDrillData, DATA_INDEX_CURRENT_POWER_RATE);
     }
 
     public boolean getIsAvailable() {

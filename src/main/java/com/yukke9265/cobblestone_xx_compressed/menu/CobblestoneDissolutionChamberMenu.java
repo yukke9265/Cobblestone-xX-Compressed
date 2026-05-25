@@ -41,7 +41,7 @@ public class CobblestoneDissolutionChamberMenu extends BaseMenu {
         AutomationMode.IN_OUT
     };
 
-    private static final int DATA_COUNT = 17 + BaseBlockEntity.AUTOMATION_FACE_COUNT * 2;
+    private static final int DATA_COUNT = 19 + BaseBlockEntity.AUTOMATION_FACE_COUNT * 2;
     private static final int DATA_INDEX_PROGRESS = 0;
     private static final int DATA_INDEX_MAX_PROGRESS = 1;
     private static final int DATA_INDEX_STORED_POWER = 2;
@@ -54,7 +54,9 @@ public class CobblestoneDissolutionChamberMenu extends BaseMenu {
     private static final int DATA_INDEX_OUTPUT_FLUID_ID = 15;
     private static final int DATA_INDEX_ITEM_AUTOMATION_START = 16;
     private static final int DATA_INDEX_FLUID_AUTOMATION_START = DATA_INDEX_ITEM_AUTOMATION_START + BaseBlockEntity.AUTOMATION_FACE_COUNT;
-    private static final int DATA_INDEX_AUTO_EXPORT = DATA_INDEX_FLUID_AUTOMATION_START + BaseBlockEntity.AUTOMATION_FACE_COUNT;
+    private static final int DATA_INDEX_CURRENT_POWER_RATE = DATA_INDEX_FLUID_AUTOMATION_START + BaseBlockEntity.AUTOMATION_FACE_COUNT;
+    private static final int DATA_INDEX_CURRENT_POWER_RATE_UPPER = DATA_INDEX_CURRENT_POWER_RATE + 1;
+    private static final int DATA_INDEX_AUTO_EXPORT = DATA_INDEX_CURRENT_POWER_RATE_UPPER + 1;
 
     private static final int OUTPUT_FLUID_INDICATOR_BUTTON_ID = 402;
     private static final int OUTPUT_FLUID_INDICATOR_SHIFT_BUTTON_ID = 403;
@@ -106,6 +108,11 @@ public class CobblestoneDissolutionChamberMenu extends BaseMenu {
 
     public long getMaxCobblestonePower() {
         return this.getLongFromData(this.dissolutionChamberData, DATA_INDEX_MAX_STORED_POWER);
+    }
+
+    @Override
+    public long getCurrentCobblestonePowerRate() {
+        return this.getLongFromData(this.dissolutionChamberData, DATA_INDEX_CURRENT_POWER_RATE);
     }
 
     public long getStoredInputFluidAmount() {

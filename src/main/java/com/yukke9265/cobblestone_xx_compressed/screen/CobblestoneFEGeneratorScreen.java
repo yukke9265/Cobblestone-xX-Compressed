@@ -249,6 +249,7 @@ public class CobblestoneFEGeneratorScreen extends BaseScreen<CobblestoneFEGenera
 
     @Override
     protected void renderHoverLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        this.renderCobblestonePowerHoverLabel(guiGraphics, mouseX, mouseY, CP_INDICATOR_X, CP_INDICATOR_Y, CP_INDICATOR_WIDTH, CP_INDICATOR_HEIGHT);
         for (AutomationSide side : AUTOMATION_SIDES) {
             this.renderButtonHoverLabel(guiGraphics, mouseX, mouseY, this.automationButtons[side.getIndex()], this.createAutomationHoverLabel(side));
         }

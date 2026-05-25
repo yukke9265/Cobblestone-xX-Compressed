@@ -20,7 +20,7 @@ public final class CobblestoneAssemblyMachineRecipeDatagen {
             ItemStack.EMPTY,
             ItemStack.EMPTY,
             new FluidStack(ModFluids.WaterBasedFluid.MOLTEN_NETHERITE.getFluidEntry().getStillFluid().get(), 1000),
-            new ItemStack(ModItems.TierCobblestoneProcessor.NETHERITE.getItem().get(), 1),
+            new ItemStack(ModItems.TierCobblestoneProcessor.NETHERITE.getItem().get(), 16),
             91912300134400L,
             4194304
         ),
@@ -33,7 +33,7 @@ public final class CobblestoneAssemblyMachineRecipeDatagen {
             new ItemStack(ModItems.TierCobblestoneCircuitPackage.OBSIDIAN.getItem().get(), 1),
             ItemStack.EMPTY,
             new FluidStack(ModFluids.WaterBasedFluid.UNSTABLE_ENDERITE.getFluidEntry().getStillFluid().get(), 1000),
-            new ItemStack(ModItems.TierCobblestoneProcessor.OBSIDIAN.getItem().get(), 1),
+            new ItemStack(ModItems.TierCobblestoneProcessor.OBSIDIAN.getItem().get(), 16),
             91912300134400L,
             4194304
         ),

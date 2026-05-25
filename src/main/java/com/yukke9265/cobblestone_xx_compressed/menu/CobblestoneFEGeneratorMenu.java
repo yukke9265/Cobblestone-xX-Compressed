@@ -30,14 +30,16 @@ public class CobblestoneFEGeneratorMenu extends BaseMenu {
         AutomationMode.IN_OUT
     };
 
-    private static final int DATA_COUNT = 13 + BaseBlockEntity.AUTOMATION_FACE_COUNT;
+    private static final int DATA_COUNT = 15 + BaseBlockEntity.AUTOMATION_FACE_COUNT;
     private static final int DATA_INDEX_STORED_POWER = 0;
     private static final int DATA_INDEX_MAX_STORED_POWER = 2;
     private static final int DATA_INDEX_STORED_ENERGY = 4;
     private static final int DATA_INDEX_MAX_STORED_ENERGY = 6;
     private static final int DATA_INDEX_CONVERTED_ENERGY = 8;
     private static final int DATA_INDEX_EXPORTED_ENERGY = 10;
-    private static final int DATA_INDEX_AUTO_EXPORT = 12 + BaseBlockEntity.AUTOMATION_FACE_COUNT;
+    private static final int DATA_INDEX_CURRENT_POWER_RATE = 12 + BaseBlockEntity.AUTOMATION_FACE_COUNT;
+    private static final int DATA_INDEX_CURRENT_POWER_RATE_UPPER = DATA_INDEX_CURRENT_POWER_RATE + 1;
+    private static final int DATA_INDEX_AUTO_EXPORT = DATA_INDEX_CURRENT_POWER_RATE_UPPER + 1;
 
     private static final int MACHINE_SLOT_COUNT = 1;
     private static final int PLAYER_INVENTORY_COLUMNS = 9;
@@ -101,6 +103,11 @@ public class CobblestoneFEGeneratorMenu extends BaseMenu {
 
     public long getLastExportedForgeEnergy() {
         return this.getLongFromData(this.generatorData, DATA_INDEX_EXPORTED_ENERGY);
+    }
+
+    @Override
+    public long getCurrentCobblestonePowerRate() {
+        return this.getLongFromData(this.generatorData, DATA_INDEX_CURRENT_POWER_RATE);
     }
 
     public boolean getIsAvailable() {

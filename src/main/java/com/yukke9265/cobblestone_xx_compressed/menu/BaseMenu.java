@@ -129,6 +129,18 @@ public class BaseMenu extends AbstractContainerMenu {
         return new FluidStack(fluid, (int) Math.min(storedAmount, Integer.MAX_VALUE));
     }
 
+    public long getStoredCobblestonePower() {
+        return 0L;
+    }
+
+    public long getMaxCobblestonePower() {
+        return 0L;
+    }
+
+    public long getCurrentCobblestonePowerRate() {
+        return 0L;
+    }
+
     // JEI 連携では毎回同じ形の definition を組み立てるので、
     // 継承先は「どのカテゴリに、どの範囲を渡すか」だけを書けば済むようにします。
     protected final List<JeiRecipeTransferDefinition> createSingleJeiRecipeTransferDefinition(

@@ -53,7 +53,9 @@ public class CobblestoneFEGeneratorBlockEntity extends BaseBlockEntity implement
     private static final int DATA_INDEX_EXPORTED_ENERGY = 10;
     private static final int DATA_INDEX_EXPORTED_ENERGY_UPPER = 11;
     private static final int DATA_INDEX_AUTOMATION_START = 12;
-    private static final int DATA_INDEX_AUTO_EXPORT = DATA_INDEX_AUTOMATION_START + AUTOMATION_FACE_COUNT;
+    private static final int DATA_INDEX_CURRENT_POWER_RATE = DATA_INDEX_AUTOMATION_START + AUTOMATION_FACE_COUNT;
+    private static final int DATA_INDEX_CURRENT_POWER_RATE_UPPER = DATA_INDEX_CURRENT_POWER_RATE + 1;
+    private static final int DATA_INDEX_AUTO_EXPORT = DATA_INDEX_CURRENT_POWER_RATE_UPPER + 1;
 
     private long storedCobblestonePower;
     private long storedForgeEnergy;
@@ -138,6 +140,19 @@ public class CobblestoneFEGeneratorBlockEntity extends BaseBlockEntity implement
 
     public long getMaxCobblestonePower() {
         return MAX_COBBLESTONE_POWER;
+    }
+
+    public long getCurrentCobblestonePowerConsumption() {
+        if (!this.isAvailable) {
+            return 0L;
+        }
+
+        long neededEnergy = this.getMaxForgeEnergy() - this.storedForgeEnergy;
+        if (neededEnergy <= 0L || this.storedCobblestonePower <= 0L) {
+            return 0L;
+        }
+
+        return Math.min(this.storedCobblestonePower, neededEnergy);
     }
 
     public long getStoredForgeEnergy() {
@@ -459,6 +474,14 @@ public class CobblestoneFEGeneratorBlockEntity extends BaseBlockEntity implement
 
                 if (index == DATA_INDEX_EXPORTED_ENERGY_UPPER) {
                     return LongDataHelper.upperInt(lastExportedForgeEnergy);
+                }
+
+                if (index == DATA_INDEX_CURRENT_POWER_RATE) {
+                    return LongDataHelper.lowerInt(getCurrentCobblestonePowerConsumption());
+                }
+
+                if (index == DATA_INDEX_CURRENT_POWER_RATE_UPPER) {
+                    return LongDataHelper.upperInt(getCurrentCobblestonePowerConsumption());
                 }
 
                 int automationIndex = index - DATA_INDEX_AUTOMATION_START;

@@ -254,6 +254,7 @@ public class CobblestoneMixerScreen extends BaseScreen<CobblestoneMixerMenu> {
 
     @Override
     protected void renderHoverLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        this.renderCobblestonePowerHoverLabel(guiGraphics, mouseX, mouseY, POWER_BAR_X, POWER_BAR_Y, POWER_BAR_WIDTH, POWER_BAR_HEIGHT);
         for (AutomationSide side : AUTOMATION_SIDES) {
             this.renderButtonHoverLabel(guiGraphics, mouseX, mouseY, this.automationButtons[side.getIndex()], this.createAutomationHoverLabel(side));
         }

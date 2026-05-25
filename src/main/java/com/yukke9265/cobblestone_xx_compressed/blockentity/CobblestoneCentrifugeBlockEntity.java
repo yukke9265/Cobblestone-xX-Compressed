@@ -49,7 +49,9 @@ public class CobblestoneCentrifugeBlockEntity extends BaseBlockEntity implements
     private static final int DATA_INDEX_MAX_STORED_POWER = 4;
     private static final int DATA_INDEX_MAX_STORED_POWER_UPPER = 5;
     private static final int DATA_INDEX_AUTOMATION_START = 6;
-    private static final int DATA_INDEX_AUTO_EXPORT = DATA_INDEX_AUTOMATION_START + AUTOMATION_FACE_COUNT;
+    private static final int DATA_INDEX_CURRENT_POWER_RATE = DATA_INDEX_AUTOMATION_START + AUTOMATION_FACE_COUNT;
+    private static final int DATA_INDEX_CURRENT_POWER_RATE_UPPER = DATA_INDEX_CURRENT_POWER_RATE + 1;
+    private static final int DATA_INDEX_AUTO_EXPORT = DATA_INDEX_CURRENT_POWER_RATE_UPPER + 1;
 
     private int progress = 0;
     private int maxProgress = 0;
@@ -224,6 +226,25 @@ public class CobblestoneCentrifugeBlockEntity extends BaseBlockEntity implements
 
     public long getMaxCobblestonePower() {
         return MAX_COBBLESTONE_POWER * this.getEnergizedCubeMultiplier();
+    }
+
+    public long getCurrentCobblestonePowerConsumption() {
+        if (!this.isAvailable) {
+            return 0L;
+        }
+
+        var recipeHolder = this.getCurrentRecipe();
+        if (recipeHolder.isEmpty()) {
+            return 0L;
+        }
+
+        var recipe = recipeHolder.get().value();
+        if (!this.canProcess(recipe)) {
+            return 0L;
+        }
+
+        long cobblestonePowerPerTick = recipe.getCobblestonePowerPerTick();
+        return cobblestonePowerPerTick * this.getProgressStep(cobblestonePowerPerTick);
     }
 
     public boolean getIsAvailable() {
@@ -545,6 +566,14 @@ public class CobblestoneCentrifugeBlockEntity extends BaseBlockEntity implements
 
                 if (index == DATA_INDEX_MAX_STORED_POWER_UPPER) {
                     return LongDataHelper.upperInt(getMaxCobblestonePower());
+                }
+
+                if (index == DATA_INDEX_CURRENT_POWER_RATE) {
+                    return LongDataHelper.lowerInt(getCurrentCobblestonePowerConsumption());
+                }
+
+                if (index == DATA_INDEX_CURRENT_POWER_RATE_UPPER) {
+                    return LongDataHelper.upperInt(getCurrentCobblestonePowerConsumption());
                 }
 
                 int automationIndex = index - DATA_INDEX_AUTOMATION_START;

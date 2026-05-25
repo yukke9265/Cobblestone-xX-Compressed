@@ -251,6 +251,7 @@ public class CobblestoneCrystallizationChamberScreen extends BaseScreen<Cobblest
 
     @Override
     protected void renderHoverLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        this.renderCobblestonePowerHoverLabel(guiGraphics, mouseX, mouseY, MachineGuiLayouts.CrystallizationChamber.POWER_BAR_X, MachineGuiLayouts.CrystallizationChamber.POWER_BAR_Y, MachineGuiLayouts.CrystallizationChamber.POWER_BAR_WIDTH, MachineGuiLayouts.CrystallizationChamber.POWER_BAR_HEIGHT);
         for (AutomationSide side : AUTOMATION_SIDES) {
             int index = side.getIndex();
             this.renderButtonHoverLabel(

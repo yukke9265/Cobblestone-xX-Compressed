@@ -62,7 +62,9 @@ public class CobblestoneReactionChamberBlockEntity extends BaseBlockEntity imple
     private static final int DATA_INDEX_FLUID_ID = 10;
     private static final int DATA_INDEX_ITEM_AUTOMATION_START = 11;
     private static final int DATA_INDEX_FLUID_AUTOMATION_START = DATA_INDEX_ITEM_AUTOMATION_START + AUTOMATION_FACE_COUNT;
-    private static final int DATA_INDEX_AUTO_EXPORT = DATA_INDEX_FLUID_AUTOMATION_START + AUTOMATION_FACE_COUNT;
+    private static final int DATA_INDEX_CURRENT_POWER_RATE = DATA_INDEX_FLUID_AUTOMATION_START + AUTOMATION_FACE_COUNT;
+    private static final int DATA_INDEX_CURRENT_POWER_RATE_UPPER = DATA_INDEX_CURRENT_POWER_RATE + 1;
+    private static final int DATA_INDEX_AUTO_EXPORT = DATA_INDEX_CURRENT_POWER_RATE_UPPER + 1;
 
     private int progress;
     private int maxProgress;
@@ -231,6 +233,25 @@ public class CobblestoneReactionChamberBlockEntity extends BaseBlockEntity imple
 
     public long getMaxCobblestonePower() {
         return MAX_COBBLESTONE_POWER * this.getEnergizedCubeMultiplier();
+    }
+
+    public long getCurrentCobblestonePowerConsumption() {
+        if (!this.isAvailable) {
+            return 0L;
+        }
+
+        var recipeHolder = this.getCurrentRecipe();
+        if (recipeHolder.isEmpty()) {
+            return 0L;
+        }
+
+        var recipe = recipeHolder.get().value();
+        if (!this.canProcess(recipe)) {
+            return 0L;
+        }
+
+        long cobblestonePowerPerTick = recipe.getCobblestonePowerPerTick();
+        return cobblestonePowerPerTick * this.getProgressStep(cobblestonePowerPerTick);
     }
 
     public boolean getIsAvailable() {
@@ -802,8 +823,16 @@ public class CobblestoneReactionChamberBlockEntity extends BaseBlockEntity imple
                     return CobblestoneReactionChamberBlockEntity.this.getAutomationModeId(index - DATA_INDEX_ITEM_AUTOMATION_START);
                 }
 
-                if (index >= DATA_INDEX_FLUID_AUTOMATION_START && index < DATA_INDEX_AUTO_EXPORT) {
+                if (index >= DATA_INDEX_FLUID_AUTOMATION_START && index < DATA_INDEX_CURRENT_POWER_RATE) {
                     return CobblestoneReactionChamberBlockEntity.this.getFluidAutomationModeId(index - DATA_INDEX_FLUID_AUTOMATION_START);
+                }
+
+                if (index == DATA_INDEX_CURRENT_POWER_RATE) {
+                    return LongDataHelper.lowerInt(getCurrentCobblestonePowerConsumption());
+                }
+
+                if (index == DATA_INDEX_CURRENT_POWER_RATE_UPPER) {
+                    return LongDataHelper.upperInt(getCurrentCobblestonePowerConsumption());
                 }
 
                 if (index == DATA_INDEX_AUTO_EXPORT) {

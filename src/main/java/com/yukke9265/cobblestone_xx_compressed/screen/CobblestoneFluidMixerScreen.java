@@ -281,6 +281,7 @@ public class CobblestoneFluidMixerScreen extends BaseScreen<CobblestoneFluidMixe
 
     @Override
     protected void renderHoverLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        this.renderCobblestonePowerHoverLabel(guiGraphics, mouseX, mouseY, MachineGuiLayouts.FluidMixer.POWER_BAR_X, MachineGuiLayouts.FluidMixer.POWER_BAR_Y, MachineGuiLayouts.FluidMixer.POWER_BAR_WIDTH, MachineGuiLayouts.FluidMixer.POWER_BAR_HEIGHT);
         for (AutomationSide side : AUTOMATION_SIDES) {
             int index = side.getIndex();
             this.renderButtonHoverLabel(
