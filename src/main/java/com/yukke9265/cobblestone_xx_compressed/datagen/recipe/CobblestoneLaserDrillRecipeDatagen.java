@@ -62,6 +62,16 @@ public final class CobblestoneLaserDrillRecipeDatagen {
             256
         ),
         new LaserDrillRecipeDefinition(
+            "sapphire_compressed_cobblestone_to_sapphire_shard_and_diamond",
+            ModBlocks.TierCompressedCobblestone.SAPPHIRE.getBlock().get(),
+            new ItemStack(ModItems.SAPPHIRE_SHARD.get()),
+            0.5F,
+            new ItemStack(Items.DIAMOND),
+            0.01F,
+            4096000,
+            256
+        ),
+        new LaserDrillRecipeDefinition(
             "diamond_compressed_cobblestone_to_diamond_and_ancient_debris",
             ModBlocks.TierCompressedCobblestone.DIAMOND.getBlock().get(),
             new ItemStack(Items.DIAMOND),

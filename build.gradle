@@ -34,7 +34,10 @@ repositories {
 }
 
 base {
-    archivesName = mod_id
+    // jar のファイル名だけに Minecraft バージョンを含めます。
+    // こうしておくと、ゲーム内の Mod version 表示は 1.0.0 のまま維持しつつ、
+    // 配布ファイル名では 1.21.1 向けであることがすぐ分かります。
+    archivesName = "${mod_id}-${minecraft_version}"
 }
 
 // Minecraft 1.21.1 の利用者向けには Java 21 が同梱されるため、mod も Java 21 を対象にします。
