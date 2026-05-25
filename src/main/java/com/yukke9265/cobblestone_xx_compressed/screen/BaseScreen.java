@@ -10,6 +10,7 @@ import com.yukke9265.cobblestone_xx_compressed.util.GuiPartRenderer;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.Slot;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -104,9 +105,16 @@ public class BaseScreen<T extends BaseMenu> extends AbstractContainerScreen<T> {
         int slotY,
         Component tooltip
     ) {
-        if (this.isHovering(slotX, slotY, EXTERNAL_SLOT_SIZE, EXTERNAL_SLOT_SIZE, mouseX, mouseY)) {
-            this.renderHoverLabel(guiGraphics, mouseX, mouseY, tooltip);
+        if (!this.isHovering(slotX, slotY, EXTERNAL_SLOT_SIZE, EXTERNAL_SLOT_SIZE, mouseX, mouseY)) {
+            return;
         }
+
+        Slot hoveredSlot = this.getSlotUnderMouse();
+        if (hoveredSlot != null && hoveredSlot.hasItem()) {
+            return;
+        }
+
+        this.renderHoverLabel(guiGraphics, mouseX, mouseY, tooltip);
     }
 
     protected void renderHoverLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {

@@ -38,5 +38,8 @@
   "gui.cobblestonexxcompressed.fluid_amount": "液体量",
   "gui.cobblestonexxcompressed.item": "アイテム",
   "gui.cobblestonexxcompressed.output_fe_rate": "FE 出力量",
-  "gui.cobblestonexxcompressed.start_stop": "開始/停止"
+  "gui.cobblestonexxcompressed.start_stop": "開始/停止",
+  "tooltip.cobblestonexxcompressed.cobblestone_acceleration_chip.rate": "x%s CP/t",
+  "tooltip.cobblestonexxcompressed.cobblestone_energized_cube.capacity": "x%s CP容量",
+  "tooltip.cobblestonexxcompressed.compressed_cobblestone.compression": "x%s 圧縮"
 }

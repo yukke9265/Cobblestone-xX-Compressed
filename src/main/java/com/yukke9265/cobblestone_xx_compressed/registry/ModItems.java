@@ -1,6 +1,9 @@
 package com.yukke9265.cobblestone_xx_compressed.registry;
 
 import com.yukke9265.cobblestone_xx_compressed.CobblestonexXCompressed;
+import com.yukke9265.cobblestone_xx_compressed.blockitem.CompressedCobblestoneBlockItem;
+import com.yukke9265.cobblestone_xx_compressed.item.CobblestoneAccelerationChipItem;
+import com.yukke9265.cobblestone_xx_compressed.item.CobblestoneEnergizedCubeItem;
 
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -429,15 +432,19 @@ public class ModItems {
     }
 
     private static DeferredItem<Item> registerTierCobblestoneAccelerationChip(String name) {
-        return ITEMS.registerSimpleItem(name, createCobblestoneComponentProperties());
+        return ITEMS.register(name, () -> new CobblestoneAccelerationChipItem(createCobblestoneComponentProperties()));
     }
 
     private static DeferredItem<Item> registerTierCobblestoneEnergizedCube(String name) {
-        return ITEMS.registerSimpleItem(name, createCobblestoneComponentProperties());
+        return ITEMS.register(name, () -> new CobblestoneEnergizedCubeItem(createCobblestoneComponentProperties()));
     }
 
     private static DeferredItem<BlockItem> registerCompressedCobblestoneBlockItem(String name, DeferredBlock<Block> block) {
         return ITEMS.registerSimpleBlockItem(name, block);
+    }
+
+    private static DeferredItem<BlockItem> registerCompressedCobblestoneTooltipBlockItem(String name, DeferredBlock<Block> block) {
+        return ITEMS.register(name, () -> new CompressedCobblestoneBlockItem(block.get(), new Item.Properties()));
     }
 
     // 丸石パン系は、今の段階では通常版も tier 版も同じ食べ物設定を使います。
@@ -580,10 +587,10 @@ public class ModItems {
         ITEMS.registerSimpleItem("cobblestone_circuit_package", createCobblestoneComponentProperties());
 
     public static final DeferredItem<Item> COBBLESTONE_ACCELERATION_CHIP =
-        ITEMS.registerSimpleItem("cobblestone_acceleration_chip", createCobblestoneComponentProperties());
+        ITEMS.register("cobblestone_acceleration_chip", () -> new CobblestoneAccelerationChipItem(createCobblestoneComponentProperties()));
 
     public static final DeferredItem<Item> COBBLESTONE_ENERGIZED_CUBE =
-        ITEMS.registerSimpleItem("cobblestone_energized_cube", createCobblestoneComponentProperties());
+        ITEMS.register("cobblestone_energized_cube", () -> new CobblestoneEnergizedCubeItem(createCobblestoneComponentProperties()));
 
     // 丸石ワイヤー系は tier ごとに登録名と英語名の規則がそろっているため、
     // enum にまとめておくと lang・model・creative tab 側で同じ順番を再利用できます。
@@ -1415,7 +1422,7 @@ public class ModItems {
         TierCobblestoneMotor.OBSIDIAN.getItem();
 
     public static final DeferredItem<BlockItem> COMPRESSED_COBBLESTONE_ITEM =
-        registerCompressedCobblestoneBlockItem("compressed_cobblestone", ModBlocks.COMPRESSED_COBBLESTONE);
+        registerCompressedCobblestoneTooltipBlockItem("compressed_cobblestone", ModBlocks.COMPRESSED_COBBLESTONE);
 
     public static final DeferredItem<BlockItem> COMPRESSED_STONE_ITEM =
         registerCompressedCobblestoneBlockItem("compressed_stone", ModBlocks.COMPRESSED_STONE);
@@ -1631,7 +1638,7 @@ public class ModItems {
 
     static {
         for (TierCompressedCobblestoneItem tier : TierCompressedCobblestoneItem.values()) {
-            tier.setItem(registerCompressedCobblestoneBlockItem(
+            tier.setItem(registerCompressedCobblestoneTooltipBlockItem(
                 tier.getBlockTier().getRegistryName(),
                 tier.getBlockTier().getBlock()
             ));
