@@ -1,0 +1,37 @@
+{
+  "type": "cobblestonexxcompressed:cobblestone_assembly_machine",
+  "cobblestone_power_per_tick": 4194304,
+  "fluid_input": {
+    "amount": 1000,
+    "id": "cobblestonexxcompressed:unstable_enderite"
+  },
+  "item_input_1": {
+    "count": 64,
+    "id": "minecraft:obsidian"
+  },
+  "item_input_2": {
+    "count": 64,
+    "id": "minecraft:obsidian"
+  },
+  "item_input_3": {
+    "count": 16,
+    "id": "cobblestonexxcompressed:tier_obsidian_cobblestone_wire"
+  },
+  "item_input_4": {
+    "count": 16,
+    "id": "cobblestonexxcompressed:tier_obsidian_cobblestone_gem"
+  },
+  "item_input_5": {
+    "count": 4,
+    "id": "cobblestonexxcompressed:tier_obsidian_cobblestone_circuit"
+  },
+  "item_input_6": {
+    "count": 1,
+    "id": "cobblestonexxcompressed:tier_obsidian_cobblestone_circuit_package"
+  },
+  "result_item": {
+    "count": 1,
+    "id": "cobblestonexxcompressed:tier_obsidian_cobblestone_processor"
+  },
+  "total_cobblestone_power": 91912300134400
+}

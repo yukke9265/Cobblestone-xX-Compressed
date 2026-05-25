@@ -1,33 +1,33 @@
 {
   "type": "cobblestonexxcompressed:cobblestone_assembly_machine",
-  "cobblestone_power_per_tick": 2048,
+  "cobblestone_power_per_tick": 4194304,
   "fluid_input": {
     "amount": 1000,
-    "id": "cobblestonexxcompressed:molten_tier_netherite_compressed_cobblestone"
+    "id": "cobblestonexxcompressed:molten_netherite"
   },
   "item_input_1": {
-    "count": 4,
-    "id": "cobblestonexxcompressed:tier_netherite_cobblestone_circuit"
+    "count": 64,
+    "id": "minecraft:netherite_ingot"
   },
   "item_input_2": {
-    "count": 4,
-    "id": "cobblestonexxcompressed:tier_emerald_cobblestone_circuit"
-  },
-  "item_input_3": {
-    "count": 1,
-    "id": "cobblestonexxcompressed:tier_netherite_cobblestone_circuit_package"
-  },
-  "item_input_4": {
     "count": 16,
     "id": "cobblestonexxcompressed:tier_netherite_cobblestone_wire"
   },
-  "item_input_5": {
+  "item_input_3": {
     "count": 16,
     "id": "cobblestonexxcompressed:tier_netherite_cobblestone_gem"
+  },
+  "item_input_4": {
+    "count": 4,
+    "id": "cobblestonexxcompressed:tier_netherite_cobblestone_circuit"
+  },
+  "item_input_5": {
+    "count": 1,
+    "id": "cobblestonexxcompressed:tier_netherite_cobblestone_circuit_package"
   },
   "result_item": {
     "count": 1,
     "id": "cobblestonexxcompressed:tier_netherite_cobblestone_processor"
   },
-  "total_cobblestone_power": 204800
+  "total_cobblestone_power": 91912300134400
 }

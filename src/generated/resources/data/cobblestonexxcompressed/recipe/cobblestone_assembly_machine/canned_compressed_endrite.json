@@ -1,0 +1,25 @@
+{
+  "type": "cobblestonexxcompressed:cobblestone_assembly_machine",
+  "cobblestone_power_per_tick": 4194304,
+  "fluid_input": {
+    "amount": 64000,
+    "id": "cobblestonexxcompressed:unstable_enderite"
+  },
+  "item_input_1": {
+    "count": 1,
+    "id": "cobblestonexxcompressed:extreme_compressed_obsidian"
+  },
+  "item_input_2": {
+    "count": 1,
+    "id": "cobblestonexxcompressed:tier_obsidian_cobblestone_processor"
+  },
+  "item_input_3": {
+    "count": 1,
+    "id": "cobblestonexxcompressed:tier_obsidian_cobblestone_machine_casing"
+  },
+  "result_item": {
+    "count": 1,
+    "id": "cobblestonexxcompressed:extreme_compressed_canned_enderite"
+  },
+  "total_cobblestone_power": 91912300134400
+}

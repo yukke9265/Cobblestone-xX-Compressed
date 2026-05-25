@@ -5,22 +5,63 @@ import com.yukke9265.cobblestone_xx_compressed.registry.ModItems;
 
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.fluids.FluidStack;
 
 public final class CobblestoneAssemblyMachineRecipeDatagen {
     private static final AssemblyMachineRecipeDefinition[] RECIPES = new AssemblyMachineRecipeDefinition[] {
         new AssemblyMachineRecipeDefinition(
             "netherite_processor",
-            new ItemStack(ModItems.TierCobblestoneCircuit.NETHERITE.getItem().get(), 4),
-            new ItemStack(ModItems.TierCobblestoneCircuit.EMERALD.getItem().get(), 4),
-            new ItemStack(ModItems.TierCobblestoneCircuitPackage.NETHERITE.getItem().get(), 1),
+            new ItemStack(Items.NETHERITE_INGOT, 64),
             new ItemStack(ModItems.TierCobblestoneWire.NETHERITE.getItem().get(), 16),
             new ItemStack(ModItems.TIER_NETHERITE_COBBLESTONE_GEM.get(), 16),
+            new ItemStack(ModItems.TierCobblestoneCircuit.NETHERITE.getItem().get(), 4),
+            new ItemStack(ModItems.TierCobblestoneCircuitPackage.NETHERITE.getItem().get(), 1),
             ItemStack.EMPTY,
-            new FluidStack(ModFluids.TierMoltenCompressedCobblestone.NETHERITE.getFluidEntry().getStillFluid().get(), 1000),
+            new FluidStack(ModFluids.WaterBasedFluid.MOLTEN_NETHERITE.getFluidEntry().getStillFluid().get(), 1000),
             new ItemStack(ModItems.TierCobblestoneProcessor.NETHERITE.getItem().get(), 1),
-            204800,
-            2048
+            91912300134400L,
+            4194304
+        ),
+        new AssemblyMachineRecipeDefinition(
+            "obsidian_processor",
+            new ItemStack(Blocks.OBSIDIAN, 64),
+            new ItemStack(Blocks.OBSIDIAN, 64),
+            new ItemStack(ModItems.TierCobblestoneWire.OBSIDIAN.getItem().get(), 16),
+            new ItemStack(ModItems.TIER_OBSIDIAN_COBBLESTONE_GEM.get(), 16),
+            new ItemStack(ModItems.TierCobblestoneCircuit.OBSIDIAN.getItem().get(), 4),
+            new ItemStack(ModItems.TierCobblestoneCircuitPackage.OBSIDIAN.getItem().get(), 1),
+            new FluidStack(ModFluids.WaterBasedFluid.UNSTABLE_ENDERITE.getFluidEntry().getStillFluid().get(), 1000),
+            new ItemStack(ModItems.TierCobblestoneProcessor.OBSIDIAN.getItem().get(), 1),
+            91912300134400L,
+            4194304
+        ),
+        new AssemblyMachineRecipeDefinition(
+            "canned_stable_endrite",
+            new ItemStack(Items.NETHERITE_INGOT, 64),
+            new ItemStack(ModItems.TierCobblestoneProcessor.NETHERITE.getItem().get(), 1),
+            new ItemStack(ModItems.TierCobblestoneMachineCasingItem.NETHERITE.getItem().get(), 1),
+            ItemStack.EMPTY,
+            ItemStack.EMPTY,
+            ItemStack.EMPTY,
+            new FluidStack(ModFluids.WaterBasedFluid.UNSTABLE_ENDERITE.getFluidEntry().getStillFluid().get(), 10000),
+            new ItemStack(ModItems.CANNED_STABLE_ENDERITE.get(), 1),
+            91912300134400L,
+            4194304
+        ),
+        new AssemblyMachineRecipeDefinition(
+            "canned_compressed_endrite",
+            new ItemStack(ModItems.EXTREME_COMPRESSED_OBSIDIAN.get(), 1),
+            new ItemStack(ModItems.TierCobblestoneProcessor.OBSIDIAN.getItem().get(), 1),
+            new ItemStack(ModItems.TierCobblestoneMachineCasingItem.OBSIDIAN.getItem().get(), 1),
+            ItemStack.EMPTY,
+            ItemStack.EMPTY,
+            ItemStack.EMPTY,
+            new FluidStack(ModFluids.WaterBasedFluid.UNSTABLE_ENDERITE.getFluidEntry().getStillFluid().get(), 64000),
+            new ItemStack(ModItems.EXTREME_COMPRESSED_CANNED_ENDERITE.get(), 1),
+            91912300134400L,
+            4194304
         )
     };
 
