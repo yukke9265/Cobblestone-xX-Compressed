@@ -6,6 +6,7 @@
 - [レシピ設定手順](./recipe-setup.md)
 - [ブロック追加手順](./block-addition.md)
 - [リソース配置ルール](./resource-layout.md)
+- [Mod アイコンとメタ情報の設定](./mod-metadata-guide.md)
 - [開発時の確認手順](./development-checks.md)
 - [タグ追加手順](./tag-setup.md)
 - [Data Generator 導入手順](./datagen-introduction.md)

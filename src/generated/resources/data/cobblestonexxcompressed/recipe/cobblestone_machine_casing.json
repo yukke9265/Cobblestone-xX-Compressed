@@ -7,15 +7,12 @@
     },
     "G": {
       "item": "cobblestonexxcompressed:cobblestone_gem"
-    },
-    "S": {
-      "item": "cobblestonexxcompressed:compressed_stone"
     }
   },
   "pattern": [
-    "CSC",
-    "SGS",
-    "CSC"
+    "CGC",
+    "GCG",
+    "CGC"
   ],
   "result": {
     "count": 1,

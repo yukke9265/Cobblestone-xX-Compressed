@@ -7,15 +7,12 @@
     },
     "G": {
       "item": "cobblestonexxcompressed:tier_emerald_cobblestone_gem"
-    },
-    "S": {
-      "item": "cobblestonexxcompressed:tier_emerald_compressed_stone"
     }
   },
   "pattern": [
-    "CSC",
-    "SGS",
-    "CSC"
+    "CGC",
+    "GCG",
+    "CGC"
   ],
   "result": {
     "count": 1,
