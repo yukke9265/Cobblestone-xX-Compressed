@@ -44,7 +44,14 @@ public final class CobblestoneCrusherRecipeDatagen {
         new CrusherRecipeDefinition("tier_diamond_cobblestone_wire_to_string", ModItems.TierCobblestoneWire.DIAMOND.getItem().get(), Items.STRING, 800, 4),
         new CrusherRecipeDefinition("tier_emerald_cobblestone_wire_to_string", ModItems.TierCobblestoneWire.EMERALD.getItem().get(), Items.STRING, 800, 4),
         new CrusherRecipeDefinition("tier_netherite_cobblestone_wire_to_string", ModItems.TierCobblestoneWire.NETHERITE.getItem().get(), Items.STRING, 800, 4),
-        new CrusherRecipeDefinition("tier_obsidian_cobblestone_wire_to_string", ModItems.TierCobblestoneWire.OBSIDIAN.getItem().get(), Items.STRING, 800, 4)
+        new CrusherRecipeDefinition("tier_obsidian_cobblestone_wire_to_string", ModItems.TierCobblestoneWire.OBSIDIAN.getItem().get(), Items.STRING, 800, 4),
+        new CrusherRecipeDefinition("coal_ore_to_coal", Blocks.COAL_ORE, new ItemStack(Items.COAL,2), 800, 4),
+        new CrusherRecipeDefinition("redstone_ore_to_redstone", Blocks.REDSTONE_ORE, new ItemStack(Items.REDSTONE,6), 800, 4),
+        new CrusherRecipeDefinition("lapis_ore_to_lapis_lazuli", Blocks.LAPIS_ORE, new ItemStack(Items.LAPIS_LAZULI,6), 800, 4),
+        new CrusherRecipeDefinition("diamond_ore_to_diamond", Blocks.DIAMOND_ORE, new ItemStack(Items.DIAMOND,2), 800, 4),
+        new CrusherRecipeDefinition("emerald_ore_to_emerald", Blocks.EMERALD_ORE, new ItemStack(Items.EMERALD,2), 800, 4),
+        new CrusherRecipeDefinition("nether_quartz_ore_to_quartz", Blocks.NETHER_QUARTZ_ORE, new ItemStack(Items.QUARTZ,3), 800, 4),
+        new CrusherRecipeDefinition("glowstone_to_glowstone_dust", Blocks.GLOWSTONE, new ItemStack(Items.GLOWSTONE_DUST,4), 800, 4)
     };
 
     private CobblestoneCrusherRecipeDatagen() {

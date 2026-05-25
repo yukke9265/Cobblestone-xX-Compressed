@@ -4,6 +4,7 @@ import com.yukke9265.cobblestone_xx_compressed.registry.ModItems;
 
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
 
 public final class CobblestoneCentrifugeRecipeDatagen {
@@ -20,7 +21,8 @@ public final class CobblestoneCentrifugeRecipeDatagen {
         new CentrifugeRecipeDefinition("tier_diamond_cobblestone_dust_to_tier_diamond_cobblestone_pure_dust_and_dirty_mixture", ModItems.TIER_DIAMOND_COBBLESTONE_DUST.get(), new ItemStack(ModItems.TIER_DIAMOND_COBBLESTONE_PURE_DUST.get()), 1.0F, new ItemStack(ModItems.DIRTY_MIXTURE.get()), 0.1F, 51200, 64),
         new CentrifugeRecipeDefinition("tier_emerald_cobblestone_dust_to_tier_emerald_cobblestone_pure_dust_and_dirty_mixture", ModItems.TIER_EMERALD_COBBLESTONE_DUST.get(), new ItemStack(ModItems.TIER_EMERALD_COBBLESTONE_PURE_DUST.get()), 1.0F, new ItemStack(ModItems.DIRTY_MIXTURE.get()), 0.1F, 51200, 64),
         new CentrifugeRecipeDefinition("tier_netherite_cobblestone_dust_to_tier_netherite_cobblestone_pure_dust_and_dirty_mixture", ModItems.TIER_NETHERITE_COBBLESTONE_DUST.get(), new ItemStack(ModItems.TIER_NETHERITE_COBBLESTONE_PURE_DUST.get()), 1.0F, new ItemStack(ModItems.DIRTY_MIXTURE.get()), 0.1F, 51200, 64),
-        new CentrifugeRecipeDefinition("tier_obsidian_cobblestone_dust_to_tier_obsidian_cobblestone_pure_dust_and_dirty_mixture", ModItems.TIER_OBSIDIAN_COBBLESTONE_DUST.get(), new ItemStack(ModItems.TIER_OBSIDIAN_COBBLESTONE_PURE_DUST.get()), 1.0F, new ItemStack(ModItems.DIRTY_MIXTURE.get()), 0.1F, 51200, 64)
+        new CentrifugeRecipeDefinition("tier_obsidian_cobblestone_dust_to_tier_obsidian_cobblestone_pure_dust_and_dirty_mixture", ModItems.TIER_OBSIDIAN_COBBLESTONE_DUST.get(), new ItemStack(ModItems.TIER_OBSIDIAN_COBBLESTONE_PURE_DUST.get()), 1.0F, new ItemStack(ModItems.DIRTY_MIXTURE.get()), 0.1F, 51200, 64),
+        new CentrifugeRecipeDefinition("dirty_mixture_to_redstone", ModItems.DIRTY_MIXTURE.get(), new ItemStack(Items.REDSTONE), 1.0F, new ItemStack(Items.REDSTONE), 0.5F, 51200, 64)
     };
 
     private CobblestoneCentrifugeRecipeDatagen() {

@@ -1,0 +1,17 @@
+{
+  "type": "cobblestonexxcompressed:cobblestone_centrifuge",
+  "cobblestone_power_per_tick": 64,
+  "ingredient": {
+    "item": "cobblestonexxcompressed:dirty_mixture"
+  },
+  "result_1": {
+    "count": 1,
+    "id": "minecraft:redstone"
+  },
+  "result_2": {
+    "count": 1,
+    "id": "minecraft:redstone"
+  },
+  "result_2_chance": 0.5,
+  "total_cobblestone_power": 51200
+}
