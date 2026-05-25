@@ -40,7 +40,7 @@ public final class CobblestoneChemicalReactorRecipeDatagen {
             new ItemStack(ModItems.TierCobblestoneDirtyDust.EMERALD.getItem().get(), 4),
             ItemStack.EMPTY,
             new FluidStack(ModFluids.TierMoltenCompressedCobblestone.NETHERITE.getFluidEntry().getStillFluid().get(), 1000),
-            new FluidStack(ModFluids.TierMoltenDirtyCompressedCobblestone.DIAMOND.getFluidEntry().getStillFluid().get(), 1000),
+            new FluidStack(ModFluids.TierMoltenDirtyCompressedCobblestone.DIAMOND.getFluidEntry().getStillFluid().get(), 4000),
             107374182400L,
             1048576
         ),
@@ -53,7 +53,7 @@ public final class CobblestoneChemicalReactorRecipeDatagen {
             new ItemStack(ModItems.TierCobblestoneDirtyDust.EMERALD.getItem().get(), 4),
             ItemStack.EMPTY,
             new FluidStack(ModFluids.TierMoltenCompressedCobblestone.OBSIDIAN.getFluidEntry().getStillFluid().get(), 1000),
-            new FluidStack(ModFluids.TierMoltenDirtyCompressedCobblestone.DIAMOND.getFluidEntry().getStillFluid().get(), 1000),
+            new FluidStack(ModFluids.TierMoltenDirtyCompressedCobblestone.DIAMOND.getFluidEntry().getStillFluid().get(), 4000),
             107374182400L,
             1048576
         )

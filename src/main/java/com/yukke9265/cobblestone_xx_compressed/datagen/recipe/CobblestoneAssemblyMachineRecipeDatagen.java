@@ -10,6 +10,8 @@ import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.fluids.FluidStack;
 
 public final class CobblestoneAssemblyMachineRecipeDatagen {
+    private static final long TOTAL_CP = MachineRecipePowerTiers.ASSEMBLY_MACHINE_TOTAL_CP;
+
     private static final AssemblyMachineRecipeDefinition[] RECIPES = new AssemblyMachineRecipeDefinition[] {
         new AssemblyMachineRecipeDefinition(
             "netherite_processor",
@@ -21,7 +23,7 @@ public final class CobblestoneAssemblyMachineRecipeDatagen {
             ItemStack.EMPTY,
             new FluidStack(ModFluids.WaterBasedFluid.MOLTEN_NETHERITE.getFluidEntry().getStillFluid().get(), 1000),
             new ItemStack(ModItems.TierCobblestoneProcessor.NETHERITE.getItem().get(), 16),
-            91912300134400L,
+            TOTAL_CP,
             4194304
         ),
         new AssemblyMachineRecipeDefinition(
@@ -34,7 +36,7 @@ public final class CobblestoneAssemblyMachineRecipeDatagen {
             ItemStack.EMPTY,
             new FluidStack(ModFluids.WaterBasedFluid.UNSTABLE_ENDERITE.getFluidEntry().getStillFluid().get(), 1000),
             new ItemStack(ModItems.TierCobblestoneProcessor.OBSIDIAN.getItem().get(), 16),
-            91912300134400L,
+            TOTAL_CP,
             4194304
         ),
         new AssemblyMachineRecipeDefinition(
@@ -47,7 +49,7 @@ public final class CobblestoneAssemblyMachineRecipeDatagen {
             ItemStack.EMPTY,
             new FluidStack(ModFluids.WaterBasedFluid.UNSTABLE_ENDERITE.getFluidEntry().getStillFluid().get(), 10000),
             new ItemStack(ModItems.CANNED_STABLE_ENDERITE.get(), 1),
-            91912300134400L,
+            TOTAL_CP,
             4194304
         ),
         new AssemblyMachineRecipeDefinition(
@@ -60,7 +62,7 @@ public final class CobblestoneAssemblyMachineRecipeDatagen {
             ItemStack.EMPTY,
             new FluidStack(ModFluids.WaterBasedFluid.UNSTABLE_ENDERITE.getFluidEntry().getStillFluid().get(), 64000),
             new ItemStack(ModItems.EXTREME_COMPRESSED_CANNED_ENDERITE.get(), 1),
-            91912300134400L,
+            TOTAL_CP,
             4194304
         )
     };

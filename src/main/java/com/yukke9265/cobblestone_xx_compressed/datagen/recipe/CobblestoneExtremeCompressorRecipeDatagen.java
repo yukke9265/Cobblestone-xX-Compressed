@@ -8,13 +8,15 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.ItemLike;
 
 public final class CobblestoneExtremeCompressorRecipeDatagen {
+    private static final long TOTAL_CP = MachineRecipePowerTiers.EXTREME_COMPRESSOR_TOTAL_CP;
+
     private static final ExtremeCompressorRecipeDefinition[] RECIPES = new ExtremeCompressorRecipeDefinition[] {
         new ExtremeCompressorRecipeDefinition(
             "obsidian_to_extreme_compressed_obsidian",
             Blocks.OBSIDIAN,
             ModItems.EXTREME_COMPRESSED_OBSIDIAN.get(),
             5000,
-            735298401075200L,
+            TOTAL_CP,
             33554432
         ),
         // 同じ入力素材に複数レシピをぶら下げると、RecipeManager が先に見つけた 1 件だけを返します。
@@ -24,7 +26,7 @@ public final class CobblestoneExtremeCompressorRecipeDatagen {
             ModItems.TIER_OBSIDIAN_COBBLESTONE_GEM.get(),
             Blocks.BEDROCK,
             5000,
-            735298401075200L,
+            TOTAL_CP,
             33554432
         )
     };
