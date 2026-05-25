@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "A": {
+      "item": "cobblestonexxcompressed:cobblestone_machine_casing"
+    },
+    "C": {
+      "item": "cobblestonexxcompressed:compressed_cobblestone"
+    },
+    "M": {
+      "item": "cobblestonexxcompressed:cobblestone_motor"
+    },
+    "P": {
+      "item": "cobblestonexxcompressed:cobblestone_processor"
+    }
+  },
+  "pattern": [
+    "CCC",
+    "MAP",
+    "CCC"
+  ],
+  "result": {
+    "count": 1,
+    "id": "cobblestonexxcompressed:cobblestone_powered_furnace"
+  }
+}

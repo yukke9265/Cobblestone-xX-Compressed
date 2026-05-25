@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_cobblestone_powered_furnace": {
+      "conditions": {
+        "items": [
+          {
+            "items": "cobblestonexxcompressed:cobblestone_processor"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "cobblestonexxcompressed:cobblestone_powered_furnace"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_cobblestone_powered_furnace"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "cobblestonexxcompressed:cobblestone_powered_furnace"
+    ]
+  }
+}

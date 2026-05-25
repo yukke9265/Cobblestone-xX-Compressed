@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": {
+      "item": "cobblestonexxcompressed:cobblestone_circuit"
+    },
+    "P": {
+      "item": "cobblestonexxcompressed:cobblestone_circuit_package"
+    },
+    "W": {
+      "item": "cobblestonexxcompressed:cobblestone_wire"
+    }
+  },
+  "pattern": [
+    "WCW",
+    "WPW",
+    "WCW"
+  ],
+  "result": {
+    "count": 1,
+    "id": "cobblestonexxcompressed:cobblestone_processor"
+  }
+}

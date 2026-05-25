@@ -8,6 +8,8 @@ import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.material.Fluids;
 
 public final class CobblestoneMelterRecipeDatagen {
     private static final MelterRecipeDefinition[] RECIPES = new MelterRecipeDefinition[] {
@@ -64,6 +66,48 @@ public final class CobblestoneMelterRecipeDatagen {
             "diamond_cobblestone_to_molten_diamond_cobblestone",
              ModItems.TIER_DIAMOND_COBBLESTONE_DUST.get(),
             new FluidStack(ModFluids.TierMoltenCompressedCobblestone.DIAMOND.getFluidEntry().getStillFluid().get(), 500),
+             26214400,
+             4096
+        ),
+        new MelterRecipeDefinition(
+            "compressed_cobblestone_to_4mblava",
+             ModBlocks.COMPRESSED_COBBLESTONE.get(),
+            new FluidStack(Fluids.LAVA, 4),
+             26214400,
+             4096
+        ),
+        new MelterRecipeDefinition(
+            "copper_compressed_cobblestone_to_32mblava",
+             ModBlocks.TierCompressedStone.COPPER.getBlock().get(),
+            new FluidStack(Fluids.LAVA, 32),
+             26214400,
+             4096
+        ),
+        new MelterRecipeDefinition(
+            "iron_compressed_cobblestone_to_256mblava",
+             ModBlocks.TierCompressedStone.IRON.getBlock().get(),
+            new FluidStack(Fluids.LAVA, 256),
+             26214400,
+             4096
+        ),
+        new MelterRecipeDefinition(
+            "gold_compressed_cobblestone_to_2048mblava",
+             ModBlocks.TierCompressedStone.GOLD.getBlock().get(),
+            new FluidStack(Fluids.LAVA, 2048),
+             26214400,
+             4096
+        ),
+        new MelterRecipeDefinition(
+            "amethyst_compressed_cobblestone_to_16384mblava",
+             ModBlocks.TierCompressedStone.AMETHYST.getBlock().get(),
+            new FluidStack(Fluids.LAVA, 16384),
+             26214400,
+             4096
+        ),
+        new MelterRecipeDefinition(
+            "aquamarine_compressed_cobblestone_to_64000mblava",
+             ModBlocks.TierCompressedStone.AQUAMARINE.getBlock().get(),
+            new FluidStack(Fluids.LAVA, 64000),
              26214400,
              4096
         )

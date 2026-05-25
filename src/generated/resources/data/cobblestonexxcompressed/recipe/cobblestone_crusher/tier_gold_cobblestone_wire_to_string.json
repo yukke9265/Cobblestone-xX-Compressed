@@ -1,0 +1,12 @@
+{
+  "type": "cobblestonexxcompressed:cobblestone_crusher",
+  "cobblestone_power_per_tick": 4,
+  "ingredient": {
+    "item": "cobblestonexxcompressed:tier_gold_cobblestone_wire"
+  },
+  "result": {
+    "count": 1,
+    "id": "minecraft:string"
+  },
+  "total_cobblestone_power": 800
+}

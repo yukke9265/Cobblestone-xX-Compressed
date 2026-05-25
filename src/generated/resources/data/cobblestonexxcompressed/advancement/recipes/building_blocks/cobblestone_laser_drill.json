@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_cobblestone_laser_drill": {
+      "conditions": {
+        "items": [
+          {
+            "items": "cobblestonexxcompressed:tier_amethyst_cobblestone_processor"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "cobblestonexxcompressed:cobblestone_laser_drill"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_cobblestone_laser_drill"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "cobblestonexxcompressed:cobblestone_laser_drill"
+    ]
+  }
+}

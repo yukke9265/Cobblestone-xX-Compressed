@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": {
+      "item": "cobblestonexxcompressed:compressed_cobblestone"
+    },
+    "S": {
+      "item": "minecraft:string"
+    }
+  },
+  "pattern": [
+    "SSS",
+    "CCC",
+    "SSS"
+  ],
+  "result": {
+    "count": 9,
+    "id": "cobblestonexxcompressed:cobblestone_wire"
+  }
+}

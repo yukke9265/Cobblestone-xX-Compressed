@@ -7,6 +7,7 @@ import com.yukke9265.cobblestone_xx_compressed.datagen.model.ModBlockStateProvid
 import com.yukke9265.cobblestone_xx_compressed.datagen.model.ModItemModelProvider;
 import com.yukke9265.cobblestone_xx_compressed.datagen.recipe.ModRecipeProvider;
 import com.yukke9265.cobblestone_xx_compressed.datagen.tag.ModBlockTagProvider;
+import com.yukke9265.cobblestone_xx_compressed.datagen.tag.ModItemTagProvider;
 
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 
@@ -41,7 +42,13 @@ public class ModDatagen {
 
             // ブロックタグを datagen 側に寄せます。
             // これで適正ツールの指定も Java 側からまとめて更新できます。
-            event.createProvider((output, lookupProvider) -> new ModBlockTagProvider(output, lookupProvider, event.getExistingFileHelper()));
+            var blockTagProvider = event.createProvider(
+                (output, lookupProvider) -> new ModBlockTagProvider(output, lookupProvider, event.getExistingFileHelper()));
+
+            // item 側の互換タグも datagen でまとめて管理します。
+            // forge / c の dust タグへ粉アイテムを流して、外部 mod の材料指定に合わせます。
+            event.createProvider(
+                (output, lookupProvider) -> new ModItemTagProvider(output, lookupProvider, blockTagProvider.contentsGetter(), event.getExistingFileHelper()));
 
             // ルートテーブルも provider から出すようにして、
             // generated JSON を直接編集しなくても済むようにします。

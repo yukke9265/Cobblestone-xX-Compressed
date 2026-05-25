@@ -7,6 +7,7 @@ import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.Blocks;
 
 public final class CobblestoneCrusherRecipeDatagen {
     private static final CrusherRecipeDefinition[] RECIPES = new CrusherRecipeDefinition[] {
@@ -29,7 +30,21 @@ public final class CobblestoneCrusherRecipeDatagen {
         new CrusherRecipeDefinition("aquamarine_shard_to_aquamarine_dust", ModItems.AQUAMARINE_SHARD.get(), ModItems.AQUAMARINE_DUST.get(), 800, 4),
         new CrusherRecipeDefinition("topaz_shard_to_topaz_dust", ModItems.TOPAZ_SHARD.get(), ModItems.TOPAZ_DUST.get(), 800, 4),
         new CrusherRecipeDefinition("ruby_shard_to_ruby_dust", ModItems.RUBY_SHARD.get(), ModItems.RUBY_DUST.get(), 800, 4),
-        new CrusherRecipeDefinition("sapphire_shard_to_sapphire_dust", ModItems.SAPPHIRE_SHARD.get(), ModItems.SAPPHIRE_DUST.get(), 800, 4)
+        new CrusherRecipeDefinition("sapphire_shard_to_sapphire_dust", ModItems.SAPPHIRE_SHARD.get(), ModItems.SAPPHIRE_DUST.get(), 800, 4),
+        new CrusherRecipeDefinition("wool_to_string", Blocks.WHITE_WOOL, new ItemStack(Items.STRING, 4), 800, 4),
+        new CrusherRecipeDefinition("compressed_cobblestone_to_string", ModBlocks.COMPRESSED_COBBLESTONE.get(), Items.STRING, 800, 4),
+        new CrusherRecipeDefinition("tier_copper_cobblestone_wire_to_string", ModItems.TierCobblestoneWire.COPPER.getItem().get(), Items.STRING, 800, 4),
+        new CrusherRecipeDefinition("tier_iron_cobblestone_wire_to_string", ModItems.TierCobblestoneWire.IRON.getItem().get(), Items.STRING, 800, 4),
+        new CrusherRecipeDefinition("tier_gold_cobblestone_wire_to_string", ModItems.TierCobblestoneWire.GOLD.getItem().get(), Items.STRING, 800, 4),
+        new CrusherRecipeDefinition("tier_amethyst_cobblestone_wire_to_string", ModItems.TierCobblestoneWire.AMETHYST.getItem().get(), Items.STRING, 800, 4),
+        new CrusherRecipeDefinition("tier_aquamarine_cobblestone_wire_to_string", ModItems.TierCobblestoneWire.AQUAMARINE.getItem().get(), Items.STRING, 800, 4),
+        new CrusherRecipeDefinition("tier_topaz_cobblestone_wire_to_string", ModItems.TierCobblestoneWire.TOPAZ.getItem().get(), Items.STRING, 800, 4),
+        new CrusherRecipeDefinition("tier_ruby_cobblestone_wire_to_string", ModItems.TierCobblestoneWire.RUBY.getItem().get(), Items.STRING, 800, 4),
+        new CrusherRecipeDefinition("tier_sapphire_cobblestone_wire_to_string", ModItems.TierCobblestoneWire.SAPPHIRE.getItem().get(), Items.STRING, 800, 4),
+        new CrusherRecipeDefinition("tier_diamond_cobblestone_wire_to_string", ModItems.TierCobblestoneWire.DIAMOND.getItem().get(), Items.STRING, 800, 4),
+        new CrusherRecipeDefinition("tier_emerald_cobblestone_wire_to_string", ModItems.TierCobblestoneWire.EMERALD.getItem().get(), Items.STRING, 800, 4),
+        new CrusherRecipeDefinition("tier_netherite_cobblestone_wire_to_string", ModItems.TierCobblestoneWire.NETHERITE.getItem().get(), Items.STRING, 800, 4),
+        new CrusherRecipeDefinition("tier_obsidian_cobblestone_wire_to_string", ModItems.TierCobblestoneWire.OBSIDIAN.getItem().get(), Items.STRING, 800, 4)
     };
 
     private CobblestoneCrusherRecipeDatagen() {

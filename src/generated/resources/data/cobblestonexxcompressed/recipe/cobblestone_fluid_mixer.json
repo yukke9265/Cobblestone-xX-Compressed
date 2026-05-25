@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "A": {
+      "item": "cobblestonexxcompressed:tier_sapphire_cobblestone_machine_casing"
+    },
+    "C": {
+      "item": "cobblestonexxcompressed:tier_sapphire_compressed_cobblestone"
+    },
+    "M": {
+      "item": "cobblestonexxcompressed:tier_sapphire_cobblestone_motor"
+    },
+    "P": {
+      "item": "cobblestonexxcompressed:tier_sapphire_cobblestone_processor"
+    }
+  },
+  "pattern": [
+    "CCC",
+    "MAP",
+    "CCC"
+  ],
+  "result": {
+    "count": 1,
+    "id": "cobblestonexxcompressed:cobblestone_fluid_mixer"
+  }
+}
