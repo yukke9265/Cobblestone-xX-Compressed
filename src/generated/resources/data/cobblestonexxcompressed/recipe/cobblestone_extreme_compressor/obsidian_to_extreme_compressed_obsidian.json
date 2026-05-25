@@ -1,0 +1,13 @@
+{
+  "type": "cobblestonexxcompressed:cobblestone_extreme_compressor",
+  "cobblestone_power_per_tick": 33554432,
+  "ingredient": {
+    "item": "minecraft:obsidian"
+  },
+  "required_item_count": 5000,
+  "result": {
+    "count": 1,
+    "id": "cobblestonexxcompressed:extreme_compressed_obsidian"
+  },
+  "total_cobblestone_power": 735298401075200
+}

@@ -18,14 +18,10 @@
     "id": "cobblestonexxcompressed:tier_obsidian_cobblestone_wire"
   },
   "item_input_4": {
-    "count": 16,
-    "id": "cobblestonexxcompressed:tier_obsidian_cobblestone_gem"
-  },
-  "item_input_5": {
     "count": 4,
     "id": "cobblestonexxcompressed:tier_obsidian_cobblestone_circuit"
   },
-  "item_input_6": {
+  "item_input_5": {
     "count": 1,
     "id": "cobblestonexxcompressed:tier_obsidian_cobblestone_circuit_package"
   },
