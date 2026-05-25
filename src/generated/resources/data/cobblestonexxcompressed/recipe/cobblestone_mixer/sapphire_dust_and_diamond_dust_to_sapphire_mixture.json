@@ -3,11 +3,11 @@
   "cobblestone_power_per_tick": 16,
   "item_input_1": {
     "count": 1,
-    "id": "cobblestonexxcompressed:sapphire_dust"
+    "tag": "c:dusts/sapphire"
   },
   "item_input_2": {
     "count": 1,
-    "id": "cobblestonexxcompressed:diamond_dust"
+    "tag": "c:dusts/diamond"
   },
   "result": {
     "count": 2,

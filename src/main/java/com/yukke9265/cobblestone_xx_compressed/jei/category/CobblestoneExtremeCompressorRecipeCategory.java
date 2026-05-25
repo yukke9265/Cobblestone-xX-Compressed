@@ -81,11 +81,7 @@ public class CobblestoneExtremeCompressorRecipeCategory implements IRecipeCatego
             .addIngredients(recipe.getIngredient());
 
         builder.addSlot(RecipeIngredientRole.CATALYST, POWER_SLOT_X, POWER_SLOT_Y)
-            .addItemStacks(List.of(
-                new ItemStack(Items.COBBLESTONE),
-                new ItemStack(ModBlocks.COMPRESSED_COBBLESTONE.get()),
-                new ItemStack(ModBlocks.TierCompressedCobblestone.OBSIDIAN.getBlock().get())
-            ));
+            .addItemStacks(JeiCobblestonePowerItems.getCatalystItems());
 
         builder.addSlot(RecipeIngredientRole.OUTPUT, OUTPUT_SLOT_X, OUTPUT_SLOT_Y)
             .addItemStack(recipe.getResult().copy());

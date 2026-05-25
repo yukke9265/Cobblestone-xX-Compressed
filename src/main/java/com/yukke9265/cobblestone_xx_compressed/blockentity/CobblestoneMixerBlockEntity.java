@@ -34,6 +34,7 @@ import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import net.neoforged.neoforge.items.wrapper.EmptyItemHandler;
 
+@SuppressWarnings("null")
 public class CobblestoneMixerBlockEntity extends BaseBlockEntity implements MenuProvider {
     public static final int INPUT_SLOT_1_INDEX = 0;
     public static final int INPUT_SLOT_2_INDEX = 1;
@@ -678,8 +679,8 @@ public class CobblestoneMixerBlockEntity extends BaseBlockEntity implements Menu
         ItemStack resultStack = recipe.getResultItem(currentLevel.registryAccess());
         ItemStack outputStack = this.itemStackHandler.getStackInSlot(OUTPUT_SLOT_INDEX);
 
-        firstInputStack.shrink(recipe.getFirstInput().getCount());
-        secondInputStack.shrink(recipe.getSecondInput().getCount());
+        firstInputStack.shrink(recipe.getFirstInput().count());
+        secondInputStack.shrink(recipe.getSecondInput().count());
 
         if (outputStack.isEmpty()) {
             this.itemStackHandler.setStackInSlot(OUTPUT_SLOT_INDEX, resultStack.copy());

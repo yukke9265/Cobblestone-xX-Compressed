@@ -6,10 +6,10 @@
     "id": "cobblestonexxcompressed:molten_dirty_tier_sapphire_compressed_cobblestone"
   },
   "ingredient_1": {
-    "item": "cobblestonexxcompressed:obsidian_dust"
+    "tag": "c:dusts/obsidian"
   },
   "ingredient_2": {
-    "item": "cobblestonexxcompressed:amethyst_dust"
+    "tag": "c:dusts/amethyst"
   },
   "result": {
     "count": 1,

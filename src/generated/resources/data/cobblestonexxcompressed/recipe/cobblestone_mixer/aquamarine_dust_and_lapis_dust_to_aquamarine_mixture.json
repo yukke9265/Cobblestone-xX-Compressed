@@ -3,11 +3,11 @@
   "cobblestone_power_per_tick": 16,
   "item_input_1": {
     "count": 1,
-    "id": "cobblestonexxcompressed:aquamarine_dust"
+    "tag": "c:dusts/aquamarine"
   },
   "item_input_2": {
     "count": 1,
-    "id": "cobblestonexxcompressed:lapis_dust"
+    "tag": "c:dusts/lapis"
   },
   "result": {
     "count": 2,

@@ -1,7 +1,9 @@
 package com.yukke9265.cobblestone_xx_compressed.jei.category;
 
+import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
+
+import javax.annotation.Nonnull;
 
 import com.yukke9265.cobblestone_xx_compressed.CobblestonexXCompressed;
 import com.yukke9265.cobblestone_xx_compressed.jei.ModJeiPlugin;
@@ -24,7 +26,9 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.neoforged.neoforge.common.crafting.SizedIngredient;
 
+@SuppressWarnings("null")
 public class CobblestoneMixerRecipeCategory implements IRecipeCategory<CobblestoneMixerRecipe> {
     private static final ResourceLocation BACKGROUND_TEXTURE =
         ResourceLocation.fromNamespaceAndPath(CobblestonexXCompressed.MODID, "textures/gui/cobblestone_mixer.png");
@@ -80,26 +84,22 @@ public class CobblestoneMixerRecipeCategory implements IRecipeCategory<Cobblesto
     }
 
     @Override
-    public void setRecipe(IRecipeLayoutBuilder builder, CobblestoneMixerRecipe recipe, IFocusGroup focuses) {
+    public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, @Nonnull CobblestoneMixerRecipe recipe, @Nonnull IFocusGroup focuses) {
         builder.addSlot(RecipeIngredientRole.CATALYST, POWER_SLOT_X, POWER_SLOT_Y)
-            .addItemStacks(List.of(
-                new ItemStack(Items.COBBLESTONE),
-                new ItemStack(ModBlocks.COMPRESSED_COBBLESTONE.get()),
-                new ItemStack(ModBlocks.TierCompressedCobblestone.COPPER.getBlock().get())
-            ));
+            .addItemStacks(JeiCobblestonePowerItems.getCatalystItems());
 
         builder.addSlot(RecipeIngredientRole.INPUT, INPUT_SLOT_1_X, INPUT_SLOT_1_Y)
-            .addItemStack(Objects.requireNonNull(recipe.getFirstInput()));
+            .addItemStacks(getDisplayStacks(recipe.getFirstInput()));
 
         builder.addSlot(RecipeIngredientRole.INPUT, INPUT_SLOT_2_X, INPUT_SLOT_2_Y)
-            .addItemStack(Objects.requireNonNull(recipe.getSecondInput()));
+            .addItemStacks(getDisplayStacks(recipe.getSecondInput()));
 
         builder.addSlot(RecipeIngredientRole.OUTPUT, OUTPUT_SLOT_X, OUTPUT_SLOT_Y)
             .addItemStack(recipe.getResult().copy());
     }
 
     @Override
-    public void draw(CobblestoneMixerRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
+    public void draw(@Nonnull CobblestoneMixerRecipe recipe, @Nonnull IRecipeSlotsView recipeSlotsView, @Nonnull GuiGraphics guiGraphics, double mouseX, double mouseY) {
         GuiPartRenderer.renderCobblestoneSlot(guiGraphics, POWER_SLOT_X, POWER_SLOT_Y);
         GuiPartRenderer.renderNormalSlot(guiGraphics, INPUT_SLOT_1_X, INPUT_SLOT_1_Y);
         GuiPartRenderer.renderNormalSlot(guiGraphics, INPUT_SLOT_2_X, INPUT_SLOT_2_Y);
@@ -107,5 +107,11 @@ public class CobblestoneMixerRecipeCategory implements IRecipeCategory<Cobblesto
         GuiPartRenderer.renderProgressFrame(guiGraphics, PROGRESS_FRAME_X, PROGRESS_FRAME_Y);
         guiGraphics.drawString(Minecraft.getInstance().font, recipe.getCobblestonePowerPerTick() + " CP/t", CPPt_LABEL_X, CPPt_LABEL_Y, 0x404040, false);
         guiGraphics.drawString(Minecraft.getInstance().font, recipe.getTotalCobblestonePower() + " total CP", TOTAL_CP_LABEL_X, TOTAL_CP_LABEL_Y, 0x404040, false);
+    }
+
+    private static List<ItemStack> getDisplayStacks(SizedIngredient ingredient) {
+        return Arrays.stream(ingredient.getItems())
+            .map(stack -> stack.copyWithCount(ingredient.count()))
+            .toList();
     }
 }

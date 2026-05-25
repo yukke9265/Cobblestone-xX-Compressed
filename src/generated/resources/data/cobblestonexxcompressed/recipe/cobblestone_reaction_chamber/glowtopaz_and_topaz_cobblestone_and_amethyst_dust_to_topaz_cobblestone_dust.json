@@ -9,7 +9,7 @@
     "item": "cobblestonexxcompressed:tier_topaz_compressed_cobblestone"
   },
   "ingredient_2": {
-    "item": "cobblestonexxcompressed:amethyst_dust"
+    "tag": "c:dusts/amethyst"
   },
   "result": {
     "count": 1,

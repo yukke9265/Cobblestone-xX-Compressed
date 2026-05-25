@@ -73,7 +73,7 @@ public class CobblestoneAssemblyMachineRecipeCategory implements IRecipeCategory
     @Override
     public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, @Nonnull CobblestoneAssemblyMachineRecipe recipe, @Nonnull IFocusGroup focuses) {
         builder.addSlot(RecipeIngredientRole.CATALYST, MachineGuiLayouts.AssemblyMachine.POWER_SLOT_X - BACKGROUND_U, MachineGuiLayouts.AssemblyMachine.POWER_SLOT_Y - BACKGROUND_V)
-            .addItemStacks(List.of(new ItemStack(Items.COBBLESTONE), new ItemStack(ModBlocks.COMPRESSED_COBBLESTONE.get())));
+            .addItemStacks(JeiCobblestonePowerItems.getCatalystItems());
 
         this.addInputItemSlot(builder, recipe.getFirstItemInput(), MachineGuiLayouts.AssemblyMachine.INPUT_ITEM_1_SLOT_X, MachineGuiLayouts.AssemblyMachine.INPUT_ITEM_1_SLOT_Y);
         this.addInputItemSlot(builder, recipe.getSecondItemInput(), MachineGuiLayouts.AssemblyMachine.INPUT_ITEM_2_SLOT_X, MachineGuiLayouts.AssemblyMachine.INPUT_ITEM_2_SLOT_Y);

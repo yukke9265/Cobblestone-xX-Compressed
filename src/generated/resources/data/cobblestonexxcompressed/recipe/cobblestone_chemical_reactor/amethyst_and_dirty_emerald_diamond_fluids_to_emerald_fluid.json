@@ -11,7 +11,7 @@
   },
   "item_input_1": {
     "count": 16,
-    "id": "cobblestonexxcompressed:amethyst_dust"
+    "tag": "c:dusts/amethyst"
   },
   "result_fluid_1": {
     "amount": 1000,

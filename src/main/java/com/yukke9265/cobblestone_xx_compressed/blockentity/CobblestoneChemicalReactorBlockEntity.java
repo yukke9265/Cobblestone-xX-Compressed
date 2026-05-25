@@ -31,6 +31,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidUtil;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
@@ -39,6 +40,7 @@ import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import net.neoforged.neoforge.items.wrapper.EmptyItemHandler;
 
+@SuppressWarnings("null")
 public class CobblestoneChemicalReactorBlockEntity extends BaseBlockEntity implements MenuProvider {
     public static final int INPUT_SLOT_1_INDEX = 0;
     public static final int INPUT_SLOT_2_INDEX = 1;
@@ -819,15 +821,12 @@ public class CobblestoneChemicalReactorBlockEntity extends BaseBlockEntity imple
         return true;
     }
 
-    private boolean hasEnoughItems(int slotIndex, ItemStack requiredStack) {
+    private boolean hasEnoughItems(int slotIndex, SizedIngredient requiredStack) {
         ItemStack slotStack = this.itemStackHandler.getStackInSlot(slotIndex);
         if (slotStack.isEmpty()) {
             return false;
         }
-        if (!ItemStack.isSameItemSameComponents(slotStack, requiredStack)) {
-            return false;
-        }
-        return slotStack.getCount() >= requiredStack.getCount();
+        return requiredStack.test(slotStack);
     }
 
     private boolean canOutputItems(CobblestoneChemicalReactorRecipe recipe) {
@@ -869,10 +868,10 @@ public class CobblestoneChemicalReactorBlockEntity extends BaseBlockEntity imple
 
     private void craft(CobblestoneChemicalReactorRecipe recipe) {
         if (recipe.hasFirstItemInput()) {
-            this.itemStackHandler.getStackInSlot(INPUT_SLOT_1_INDEX).shrink(recipe.getFirstItemInput().getCount());
+            this.itemStackHandler.getStackInSlot(INPUT_SLOT_1_INDEX).shrink(recipe.getFirstItemInput().count());
         }
         if (recipe.hasSecondItemInput()) {
-            this.itemStackHandler.getStackInSlot(INPUT_SLOT_2_INDEX).shrink(recipe.getSecondItemInput().getCount());
+            this.itemStackHandler.getStackInSlot(INPUT_SLOT_2_INDEX).shrink(recipe.getSecondItemInput().count());
         }
         if (recipe.hasFirstFluidInput()) {
             this.drainTankInternal(0, recipe.getFirstFluidInput().getAmount(), IFluidHandler.FluidAction.EXECUTE);

@@ -3,11 +3,11 @@
   "cobblestone_power_per_tick": 16,
   "item_input_1": {
     "count": 1,
-    "id": "cobblestonexxcompressed:topaz_dust"
+    "tag": "c:dusts/topaz"
   },
   "item_input_2": {
     "count": 1,
-    "id": "minecraft:glowstone_dust"
+    "item": "minecraft:glowstone_dust"
   },
   "result": {
     "count": 2,

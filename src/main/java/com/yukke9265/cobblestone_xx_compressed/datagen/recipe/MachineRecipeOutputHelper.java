@@ -1,5 +1,7 @@
 package com.yukke9265.cobblestone_xx_compressed.datagen.recipe;
 
+import java.util.Optional;
+
 import com.yukke9265.cobblestone_xx_compressed.CobblestonexXCompressed;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneAssemblyMachineRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneCentrifugeRecipe;
@@ -21,8 +23,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
+import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import net.neoforged.neoforge.fluids.FluidStack;
 
+@SuppressWarnings("null")
 final class MachineRecipeOutputHelper {
     private MachineRecipeOutputHelper() {
     }
@@ -144,8 +148,8 @@ final class MachineRecipeOutputHelper {
     public static void saveCobblestoneMixerRecipe(
         RecipeOutput output,
         String recipeName,
-        ItemStack firstIngredient,
-        ItemStack secondIngredient,
+        SizedIngredient firstIngredient,
+        SizedIngredient secondIngredient,
         ItemStack result,
         long totalCobblestonePower,
         long cobblestonePowerPerTick
@@ -182,8 +186,8 @@ final class MachineRecipeOutputHelper {
     public static void saveCobblestoneChemicalReactorRecipe(
         RecipeOutput output,
         String recipeName,
-        ItemStack firstItemInput,
-        ItemStack secondItemInput,
+        Optional<SizedIngredient> firstItemInput,
+        Optional<SizedIngredient> secondItemInput,
         FluidStack firstFluidInput,
         FluidStack secondFluidInput,
         ItemStack firstResultItem,
@@ -213,16 +217,16 @@ final class MachineRecipeOutputHelper {
         RecipeOutput output,
         String recipeName,
         FluidStack fluidInput,
-        ItemLike firstIngredient,
-        ItemLike secondIngredient,
+        Ingredient firstIngredient,
+        Ingredient secondIngredient,
         ItemStack result,
         long totalCobblestonePower,
         long cobblestonePowerPerTick
     ) {
         CobblestoneReactionChamberRecipe recipe = new CobblestoneReactionChamberRecipe(
             fluidInput,
-            Ingredient.of(firstIngredient),
-            Ingredient.of(secondIngredient),
+            firstIngredient,
+            secondIngredient,
             result,
             totalCobblestonePower,
             cobblestonePowerPerTick

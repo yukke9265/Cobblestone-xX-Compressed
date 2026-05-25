@@ -3,11 +3,11 @@
   "cobblestone_power_per_tick": 16,
   "item_input_1": {
     "count": 1,
-    "id": "cobblestonexxcompressed:tier_amethyst_cobblestone_dust"
+    "item": "cobblestonexxcompressed:tier_amethyst_cobblestone_dust"
   },
   "item_input_2": {
     "count": 1,
-    "id": "cobblestonexxcompressed:amethyst_dust"
+    "tag": "c:dusts/amethyst"
   },
   "result": {
     "count": 1,

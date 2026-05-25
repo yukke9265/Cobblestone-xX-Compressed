@@ -11,11 +11,11 @@
   },
   "item_input_1": {
     "count": 4,
-    "id": "cobblestonexxcompressed:tier_emerald_cobblestone_dust"
+    "item": "cobblestonexxcompressed:tier_emerald_cobblestone_dust"
   },
   "item_input_2": {
     "count": 1,
-    "id": "cobblestonexxcompressed:canned_stable_enderite"
+    "item": "cobblestonexxcompressed:canned_stable_enderite"
   },
   "result_fluid_1": {
     "amount": 1000,

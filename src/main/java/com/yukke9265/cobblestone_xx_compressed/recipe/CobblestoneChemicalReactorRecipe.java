@@ -1,5 +1,7 @@
 package com.yukke9265.cobblestone_xx_compressed.recipe;
 
+import java.util.Optional;
+
 import javax.annotation.Nonnull;
 
 import com.mojang.serialization.Codec;
@@ -16,12 +18,14 @@ import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import net.neoforged.neoforge.fluids.FluidStack;
 
+@SuppressWarnings("null")
 public class CobblestoneChemicalReactorRecipe implements Recipe<ChemicalReactorRecipeInput> {
     public static final MapCodec<CobblestoneChemicalReactorRecipe> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-        ItemStack.CODEC.optionalFieldOf("item_input_1", ItemStack.EMPTY).forGetter(CobblestoneChemicalReactorRecipe::getFirstItemInput),
-        ItemStack.CODEC.optionalFieldOf("item_input_2", ItemStack.EMPTY).forGetter(CobblestoneChemicalReactorRecipe::getSecondItemInput),
+        SizedIngredient.FLAT_CODEC.optionalFieldOf("item_input_1").forGetter(CobblestoneChemicalReactorRecipe::getFirstItemInputOptional),
+        SizedIngredient.FLAT_CODEC.optionalFieldOf("item_input_2").forGetter(CobblestoneChemicalReactorRecipe::getSecondItemInputOptional),
         FluidStack.CODEC.optionalFieldOf("fluid_input_1", FluidStack.EMPTY).forGetter(CobblestoneChemicalReactorRecipe::getFirstFluidInput),
         FluidStack.CODEC.optionalFieldOf("fluid_input_2", FluidStack.EMPTY).forGetter(CobblestoneChemicalReactorRecipe::getSecondFluidInput),
         ItemStack.CODEC.optionalFieldOf("result_item_1", ItemStack.EMPTY).forGetter(CobblestoneChemicalReactorRecipe::getFirstResultItem),
@@ -47,8 +51,8 @@ public class CobblestoneChemicalReactorRecipe implements Recipe<ChemicalReactorR
     public static final StreamCodec<RegistryFriendlyByteBuf, CobblestoneChemicalReactorRecipe> STREAM_CODEC = new StreamCodec<>() {
         @Override
         public CobblestoneChemicalReactorRecipe decode(@Nonnull RegistryFriendlyByteBuf buf) {
-            ItemStack firstItemInput = decodeOptionalItemStack(buf);
-            ItemStack secondItemInput = decodeOptionalItemStack(buf);
+            Optional<SizedIngredient> firstItemInput = decodeOptionalSizedIngredient(buf);
+            Optional<SizedIngredient> secondItemInput = decodeOptionalSizedIngredient(buf);
             FluidStack firstFluidInput = FluidStack.STREAM_CODEC.decode(buf);
             FluidStack secondFluidInput = FluidStack.STREAM_CODEC.decode(buf);
             ItemStack firstResultItem = decodeOptionalItemStack(buf);
@@ -73,8 +77,8 @@ public class CobblestoneChemicalReactorRecipe implements Recipe<ChemicalReactorR
 
         @Override
         public void encode(@Nonnull RegistryFriendlyByteBuf buf, @Nonnull CobblestoneChemicalReactorRecipe recipe) {
-            encodeOptionalItemStack(buf, recipe.getFirstItemInput());
-            encodeOptionalItemStack(buf, recipe.getSecondItemInput());
+            encodeOptionalSizedIngredient(buf, recipe.getFirstItemInputOptional());
+            encodeOptionalSizedIngredient(buf, recipe.getSecondItemInputOptional());
             FluidStack.STREAM_CODEC.encode(buf, recipe.getFirstFluidInput());
             FluidStack.STREAM_CODEC.encode(buf, recipe.getSecondFluidInput());
             encodeOptionalItemStack(buf, recipe.getFirstResultItem());
@@ -83,6 +87,21 @@ public class CobblestoneChemicalReactorRecipe implements Recipe<ChemicalReactorR
             FluidStack.STREAM_CODEC.encode(buf, recipe.getSecondResultFluid());
             buf.writeLong(recipe.getTotalCobblestonePower());
             buf.writeLong(recipe.getCobblestonePowerPerTick());
+        }
+
+        private static Optional<SizedIngredient> decodeOptionalSizedIngredient(RegistryFriendlyByteBuf buf) {
+            if (!buf.readBoolean()) {
+                return Optional.empty();
+            }
+
+            return Optional.of(SizedIngredient.STREAM_CODEC.decode(buf));
+        }
+
+        private static void encodeOptionalSizedIngredient(RegistryFriendlyByteBuf buf, Optional<SizedIngredient> ingredient) {
+            buf.writeBoolean(ingredient.isPresent());
+            if (ingredient.isPresent()) {
+                SizedIngredient.STREAM_CODEC.encode(buf, ingredient.get());
+            }
         }
 
         private static ItemStack decodeOptionalItemStack(RegistryFriendlyByteBuf buf) {
@@ -102,8 +121,8 @@ public class CobblestoneChemicalReactorRecipe implements Recipe<ChemicalReactorR
         }
     };
 
-    private final ItemStack firstItemInput;
-    private final ItemStack secondItemInput;
+    private final Optional<SizedIngredient> firstItemInput;
+    private final Optional<SizedIngredient> secondItemInput;
     private final FluidStack firstFluidInput;
     private final FluidStack secondFluidInput;
     private final ItemStack firstResultItem;
@@ -114,8 +133,8 @@ public class CobblestoneChemicalReactorRecipe implements Recipe<ChemicalReactorR
     private final long cobblestonePowerPerTick;
 
     public CobblestoneChemicalReactorRecipe(
-        ItemStack firstItemInput,
-        ItemStack secondItemInput,
+        Optional<SizedIngredient> firstItemInput,
+        Optional<SizedIngredient> secondItemInput,
         FluidStack firstFluidInput,
         FluidStack secondFluidInput,
         ItemStack firstResultItem,
@@ -125,8 +144,8 @@ public class CobblestoneChemicalReactorRecipe implements Recipe<ChemicalReactorR
         long totalCobblestonePower,
         long cobblestonePowerPerTick
     ) {
-        this.firstItemInput = firstItemInput.copy();
-        this.secondItemInput = secondItemInput.copy();
+        this.firstItemInput = firstItemInput;
+        this.secondItemInput = secondItemInput;
         this.firstFluidInput = firstFluidInput.copy();
         this.secondFluidInput = secondFluidInput.copy();
         this.firstResultItem = firstResultItem.copy();
@@ -137,12 +156,20 @@ public class CobblestoneChemicalReactorRecipe implements Recipe<ChemicalReactorR
         this.totalCobblestonePower = Math.max(this.cobblestonePowerPerTick, totalCobblestonePower);
     }
 
-    public ItemStack getFirstItemInput() {
-        return this.firstItemInput.copy();
+    public SizedIngredient getFirstItemInput() {
+        return this.firstItemInput.orElseThrow();
     }
 
-    public ItemStack getSecondItemInput() {
-        return this.secondItemInput.copy();
+    public SizedIngredient getSecondItemInput() {
+        return this.secondItemInput.orElseThrow();
+    }
+
+    private Optional<SizedIngredient> getFirstItemInputOptional() {
+        return this.firstItemInput;
+    }
+
+    private Optional<SizedIngredient> getSecondItemInputOptional() {
+        return this.secondItemInput;
     }
 
     public FluidStack getFirstFluidInput() {
@@ -183,11 +210,11 @@ public class CobblestoneChemicalReactorRecipe implements Recipe<ChemicalReactorR
     }
 
     public boolean hasFirstItemInput() {
-        return !this.firstItemInput.isEmpty();
+        return this.firstItemInput.isPresent();
     }
 
     public boolean hasSecondItemInput() {
-        return !this.secondItemInput.isEmpty();
+        return this.secondItemInput.isPresent();
     }
 
     public boolean hasFirstFluidInput() {
@@ -283,20 +310,12 @@ public class CobblestoneChemicalReactorRecipe implements Recipe<ChemicalReactorR
             || this.hasSecondFluidInput();
     }
 
-    private boolean matchesItem(ItemStack expected, ItemStack actual) {
+    private boolean matchesItem(Optional<SizedIngredient> expected, ItemStack actual) {
         if (expected.isEmpty()) {
             return actual.isEmpty();
         }
 
-        if (actual.isEmpty()) {
-            return false;
-        }
-
-        if (!ItemStack.isSameItemSameComponents(expected, actual)) {
-            return false;
-        }
-
-        return actual.getCount() >= expected.getCount();
+        return expected.get().test(actual);
     }
 
     private boolean matchesFluid(FluidStack expected, FluidStack actual) {

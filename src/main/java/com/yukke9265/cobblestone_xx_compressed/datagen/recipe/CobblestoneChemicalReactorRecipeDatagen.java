@@ -1,18 +1,27 @@
 package com.yukke9265.cobblestone_xx_compressed.datagen.recipe;
 
+import java.util.Optional;
+
 import com.yukke9265.cobblestone_xx_compressed.registry.ModFluids;
+import com.yukke9265.cobblestone_xx_compressed.registry.ModItemTags;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModItems;
 
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.ItemLike;
+import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import net.neoforged.neoforge.fluids.FluidStack;
 
+@SuppressWarnings("null")
 public final class CobblestoneChemicalReactorRecipeDatagen {
     private static final ChemicalReactorRecipeDefinition[] RECIPES = new ChemicalReactorRecipeDefinition[] {
         new ChemicalReactorRecipeDefinition(
             "amethyst_and_dirty_emerald_diamond_fluids_to_emerald_fluid",
-            new ItemStack(ModItems.AMETHYST_DUST.get(), 16),
-            ItemStack.EMPTY,
+            Optional.of(sizedTag(ModItemTags.DUSTS_AMETHYST, 16)),
+            Optional.empty(),
             new FluidStack(ModFluids.TierMoltenDirtyCompressedCobblestone.EMERALD.getFluidEntry().getStillFluid().get(), 1000),
             new FluidStack(ModFluids.TierMoltenCompressedCobblestone.DIAMOND.getFluidEntry().getStillFluid().get(), 1000),
             ItemStack.EMPTY,
@@ -24,8 +33,8 @@ public final class CobblestoneChemicalReactorRecipeDatagen {
         ),
         new ChemicalReactorRecipeDefinition(
             "emerald_cobblestone_dust_and_dirty_netherite_diamond_fluids_and_canned_enderite_to_netherite_fluid",
-            new ItemStack(ModItems.TierCobblestoneDust.EMERALD.getItem().get(), 4),
-            new ItemStack(ModItems.CANNED_STABLE_ENDERITE.get()),
+            Optional.of(sizedItem(ModItems.TierCobblestoneDust.EMERALD.getItem().get(), 4)),
+            Optional.of(sizedItem(ModItems.CANNED_STABLE_ENDERITE.get())),
             new FluidStack(ModFluids.TierMoltenDirtyCompressedCobblestone.NETHERITE.getFluidEntry().getStillFluid().get(), 1000),
             new FluidStack(ModFluids.TierMoltenCompressedCobblestone.DIAMOND.getFluidEntry().getStillFluid().get(), 4000),
             new ItemStack(ModItems.TierCobblestoneDirtyDust.EMERALD.getItem().get(), 4),
@@ -37,8 +46,8 @@ public final class CobblestoneChemicalReactorRecipeDatagen {
         ),
         new ChemicalReactorRecipeDefinition(
             "emerald_cobblestone_dust_and_dirty_netherite_diamond_fluids_and_compressed_enderite_to_netherite_fluid",
-            new ItemStack(ModItems.TierCobblestoneDust.EMERALD.getItem().get(), 4),
-            new ItemStack(ModItems.EXTREME_COMPRESSED_CANNED_ENDERITE.get()),
+            Optional.of(sizedItem(ModItems.TierCobblestoneDust.EMERALD.getItem().get(), 4)),
+            Optional.of(sizedItem(ModItems.EXTREME_COMPRESSED_CANNED_ENDERITE.get())),
             new FluidStack(ModFluids.TierMoltenDirtyCompressedCobblestone.OBSIDIAN.getFluidEntry().getStillFluid().get(), 1000),
             new FluidStack(ModFluids.TierMoltenCompressedCobblestone.DIAMOND.getFluidEntry().getStillFluid().get(), 4000),
             new ItemStack(ModItems.TierCobblestoneDirtyDust.EMERALD.getItem().get(), 4),
@@ -72,10 +81,22 @@ public final class CobblestoneChemicalReactorRecipeDatagen {
         }
     }
 
+    private static SizedIngredient sizedItem(ItemLike item) {
+        return sizedItem(item, 1);
+    }
+
+    private static SizedIngredient sizedItem(ItemLike item, int count) {
+        return new SizedIngredient(Ingredient.of(item), count);
+    }
+
+    private static SizedIngredient sizedTag(TagKey<Item> tag, int count) {
+        return new SizedIngredient(Ingredient.of(tag), count);
+    }
+
     private static class ChemicalReactorRecipeDefinition {
         private final String recipeName;
-        private final ItemStack firstItemInput;
-        private final ItemStack secondItemInput;
+        private final Optional<SizedIngredient> firstItemInput;
+        private final Optional<SizedIngredient> secondItemInput;
         private final FluidStack firstFluidInput;
         private final FluidStack secondFluidInput;
         private final ItemStack firstResultItem;
@@ -87,8 +108,8 @@ public final class CobblestoneChemicalReactorRecipeDatagen {
 
         private ChemicalReactorRecipeDefinition(
             String recipeName,
-            ItemStack firstItemInput,
-            ItemStack secondItemInput,
+            Optional<SizedIngredient> firstItemInput,
+            Optional<SizedIngredient> secondItemInput,
             FluidStack firstFluidInput,
             FluidStack secondFluidInput,
             ItemStack firstResultItem,
@@ -99,8 +120,8 @@ public final class CobblestoneChemicalReactorRecipeDatagen {
             long cobblestonePowerPerTick
         ) {
             this.recipeName = recipeName;
-            this.firstItemInput = firstItemInput.copy();
-            this.secondItemInput = secondItemInput.copy();
+            this.firstItemInput = firstItemInput;
+            this.secondItemInput = secondItemInput;
             this.firstFluidInput = firstFluidInput.copy();
             this.secondFluidInput = secondFluidInput.copy();
             this.firstResultItem = firstResultItem.copy();

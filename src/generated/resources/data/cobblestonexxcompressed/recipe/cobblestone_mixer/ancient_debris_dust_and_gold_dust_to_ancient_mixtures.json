@@ -3,11 +3,11 @@
   "cobblestone_power_per_tick": 16,
   "item_input_1": {
     "count": 1,
-    "id": "cobblestonexxcompressed:ancient_debris_dust"
+    "tag": "c:dusts/ancient_debris"
   },
   "item_input_2": {
     "count": 1,
-    "id": "cobblestonexxcompressed:gold_dust"
+    "tag": "c:dusts/gold"
   },
   "result": {
     "count": 2,

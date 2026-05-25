@@ -3,11 +3,11 @@
   "cobblestone_power_per_tick": 16,
   "item_input_1": {
     "count": 1,
-    "id": "cobblestonexxcompressed:emerald_dust"
+    "tag": "c:dusts/emerald"
   },
   "item_input_2": {
     "count": 1,
-    "id": "cobblestonexxcompressed:ender_dust"
+    "tag": "c:dusts/ender"
   },
   "result": {
     "count": 2,

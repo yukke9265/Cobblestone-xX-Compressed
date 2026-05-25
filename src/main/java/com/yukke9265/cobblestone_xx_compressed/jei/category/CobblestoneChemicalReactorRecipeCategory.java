@@ -1,6 +1,9 @@
 package com.yukke9265.cobblestone_xx_compressed.jei.category;
 
+import java.util.Arrays;
 import java.util.List;
+
+import javax.annotation.Nonnull;
 
 import com.yukke9265.cobblestone_xx_compressed.CobblestonexXCompressed;
 import com.yukke9265.cobblestone_xx_compressed.jei.ModJeiPlugin;
@@ -24,8 +27,10 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import net.neoforged.neoforge.fluids.FluidType;
 
+@SuppressWarnings("null")
 public class CobblestoneChemicalReactorRecipeCategory implements IRecipeCategory<CobblestoneChemicalReactorRecipe> {
     private static final ResourceLocation BACKGROUND_TEXTURE =
         ResourceLocation.fromNamespaceAndPath(CobblestonexXCompressed.MODID, "textures/gui/cobblestone_chemical_reactor.png");
@@ -69,17 +74,17 @@ public class CobblestoneChemicalReactorRecipeCategory implements IRecipeCategory
     }
 
     @Override
-    public void setRecipe(IRecipeLayoutBuilder builder, CobblestoneChemicalReactorRecipe recipe, IFocusGroup focuses) {
+    public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, @Nonnull CobblestoneChemicalReactorRecipe recipe, @Nonnull IFocusGroup focuses) {
         builder.addSlot(RecipeIngredientRole.CATALYST, MachineGuiLayouts.ChemicalReactor.POWER_SLOT_X - BACKGROUND_U, MachineGuiLayouts.ChemicalReactor.POWER_SLOT_Y - BACKGROUND_V)
-            .addItemStacks(List.of(new ItemStack(Items.COBBLESTONE), new ItemStack(ModBlocks.COMPRESSED_COBBLESTONE.get())));
+            .addItemStacks(JeiCobblestonePowerItems.getCatalystItems());
 
         if (recipe.hasFirstItemInput()) {
             builder.addSlot(RecipeIngredientRole.INPUT, MachineGuiLayouts.ChemicalReactor.INPUT_ITEM_1_SLOT_X - BACKGROUND_U, MachineGuiLayouts.ChemicalReactor.INPUT_ITEM_1_SLOT_Y - BACKGROUND_V)
-                .addItemStack(recipe.getFirstItemInput());
+                .addItemStacks(getDisplayStacks(recipe.getFirstItemInput()));
         }
         if (recipe.hasSecondItemInput()) {
             builder.addSlot(RecipeIngredientRole.INPUT, MachineGuiLayouts.ChemicalReactor.INPUT_ITEM_2_SLOT_X - BACKGROUND_U, MachineGuiLayouts.ChemicalReactor.INPUT_ITEM_2_SLOT_Y - BACKGROUND_V)
-                .addItemStack(recipe.getSecondItemInput());
+                .addItemStacks(getDisplayStacks(recipe.getSecondItemInput()));
         }
         if (recipe.hasFirstFluidInput()) {
             builder.addSlot(RecipeIngredientRole.INPUT, MachineGuiLayouts.ChemicalReactor.INPUT_FLUID_1_SLOT_X - BACKGROUND_U, MachineGuiLayouts.ChemicalReactor.INPUT_FLUID_1_SLOT_Y - BACKGROUND_V)
@@ -112,7 +117,7 @@ public class CobblestoneChemicalReactorRecipeCategory implements IRecipeCategory
     }
 
     @Override
-    public void draw(CobblestoneChemicalReactorRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
+    public void draw(@Nonnull CobblestoneChemicalReactorRecipe recipe, @Nonnull IRecipeSlotsView recipeSlotsView, @Nonnull GuiGraphics guiGraphics, double mouseX, double mouseY) {
         GuiPartRenderer.renderNormalSlot(guiGraphics, MachineGuiLayouts.ChemicalReactor.INPUT_ITEM_1_SLOT_X - BACKGROUND_U, MachineGuiLayouts.ChemicalReactor.INPUT_ITEM_1_SLOT_Y - BACKGROUND_V);
         GuiPartRenderer.renderNormalSlot(guiGraphics, MachineGuiLayouts.ChemicalReactor.INPUT_ITEM_2_SLOT_X - BACKGROUND_U, MachineGuiLayouts.ChemicalReactor.INPUT_ITEM_2_SLOT_Y - BACKGROUND_V);
         GuiPartRenderer.renderNormalSlot(guiGraphics, MachineGuiLayouts.ChemicalReactor.INPUT_FLUID_1_SLOT_X - BACKGROUND_U, MachineGuiLayouts.ChemicalReactor.INPUT_FLUID_1_SLOT_Y - BACKGROUND_V);
@@ -125,5 +130,11 @@ public class CobblestoneChemicalReactorRecipeCategory implements IRecipeCategory
         GuiPartRenderer.renderProgressFrame(guiGraphics, MachineGuiLayouts.ChemicalReactor.PROGRESS_BAR_X - BACKGROUND_U, MachineGuiLayouts.ChemicalReactor.PROGRESS_BAR_Y - BACKGROUND_V);
         guiGraphics.drawString(Minecraft.getInstance().font, recipe.getCobblestonePowerPerTick() + " CP/t", CPPT_LABEL_X, CPPT_LABEL_Y, 0x404040, false);
         guiGraphics.drawString(Minecraft.getInstance().font, recipe.getTotalCobblestonePower() + " total CP", TOTAL_CP_LABEL_X, TOTAL_CP_LABEL_Y, 0x404040, false);
+    }
+
+    private static List<ItemStack> getDisplayStacks(SizedIngredient ingredient) {
+        return Arrays.stream(ingredient.getItems())
+            .map(stack -> stack.copyWithCount(ingredient.count()))
+            .toList();
     }
 }
