@@ -3,6 +3,7 @@ package com.yukke9265.cobblestone_xx_compressed.datagen;
 import com.yukke9265.cobblestone_xx_compressed.datagen.lang.ModEnglishLanguageProvider;
 import com.yukke9265.cobblestone_xx_compressed.datagen.lang.ModJapaneseLanguageProvider;
 import com.yukke9265.cobblestone_xx_compressed.datagen.loot.ModBlockLootTableProvider;
+import com.yukke9265.cobblestone_xx_compressed.datagen.loot.ModGlobalLootModifierProvider;
 import com.yukke9265.cobblestone_xx_compressed.datagen.model.ModBlockStateProvider;
 import com.yukke9265.cobblestone_xx_compressed.datagen.model.ModItemModelProvider;
 import com.yukke9265.cobblestone_xx_compressed.datagen.recipe.ModRecipeProvider;
@@ -53,6 +54,11 @@ public class ModDatagen {
             // ルートテーブルも provider から出すようにして、
             // generated JSON を直接編集しなくても済むようにします。
             event.createProvider(ModBlockLootTableProvider::new);
+
+            // 外部 mod 連携で追加するドロップは、block loot table を直接上書きせず、
+            // builtin の global loot modifier で上乗せします。
+            // これなら Mekanism 未導入環境では何も起こらず、導入時だけ対象 tier に追加できます。
+            event.createProvider(ModGlobalLootModifierProvider::new);
         }
     }
 }

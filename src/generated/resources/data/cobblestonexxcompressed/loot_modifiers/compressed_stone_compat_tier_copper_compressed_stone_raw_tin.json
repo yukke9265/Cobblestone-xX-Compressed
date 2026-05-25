@@ -1,0 +1,16 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "mekanism"
+    }
+  ],
+  "type": "neoforge:add_table",
+  "conditions": [
+    {
+      "condition": "neoforge:loot_table_id",
+      "loot_table_id": "cobblestonexxcompressed:blocks/tier_copper_compressed_stone"
+    }
+  ],
+  "table": "cobblestonexxcompressed:compat/compressed_stone/tier_copper_compressed_stone/raw_tin"
+}

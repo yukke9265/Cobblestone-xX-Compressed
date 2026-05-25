@@ -10,6 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.yukke9265.cobblestone_xx_compressed.CobblestonexXCompressed;
+import com.yukke9265.cobblestone_xx_compressed.loot.CompressedStoneCompatLootDefinition;
 import com.yukke9265.cobblestone_xx_compressed.loot.CompressedStoneLootDefinition;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModBlocks;
 
@@ -20,6 +21,7 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 
+@SuppressWarnings("null")
 public class ModBlockLootTableProvider implements DataProvider {
     private static final String MODID = CobblestonexXCompressed.MODID;
 
@@ -75,6 +77,14 @@ public class ModBlockLootTableProvider implements DataProvider {
             futures.add(DataProvider.saveStable(cache, createCompressedStoneLoot(definition), rootPath.resolve(getBlockPath(definition.getStoneBlock().get()) + ".json")));
         }
 
+        for (CompressedStoneCompatLootDefinition definition : CompressedStoneCompatLootDefinition.getDefinitions()) {
+            futures.add(DataProvider.saveStable(
+                cache,
+                createCompatCompressedStoneLoot(definition),
+                rootPath.getParent().resolve(definition.getCompatLootTableId().getPath() + ".json")
+            ));
+        }
+
         return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
     }
 
@@ -113,15 +123,24 @@ public class ModBlockLootTableProvider implements DataProvider {
         mainPool.addProperty("rolls", 1.0d);
         pools.add(mainPool);
 
-        pools.add(createBonusPool(getItemName(definition.getGemItem().get()), definition.getGemChance(), false, 0.0d, 0.0d));
-        pools.add(createBonusPool(
-            getItemName(definition.getResourceItem().get()),
-            definition.getResourceChance(),
-            definition.hasCountRange(),
-            definition.getMinCount(),
-            definition.getMaxCount()
-        ));
+        for (CompressedStoneLootDefinition.BonusLootEntry bonusDrop : definition.getBonusDrops()) {
+            pools.add(createBonusPool(
+                getItemName(bonusDrop.getItem().get()),
+                bonusDrop.getChance(),
+                bonusDrop.hasCountRange(),
+                bonusDrop.getMinCount(),
+                bonusDrop.getMaxCount()
+            ));
+        }
 
+        root.add("pools", pools);
+        return root;
+    }
+
+    private JsonObject createCompatCompressedStoneLoot(CompressedStoneCompatLootDefinition definition) {
+        JsonObject root = createLootRoot();
+        JsonArray pools = new JsonArray();
+        pools.add(createBonusPool(definition.getItemId().toString(), definition.getChance(), false, 0.0d, 0.0d));
         root.add("pools", pools);
         return root;
     }
@@ -242,9 +261,14 @@ public class ModBlockLootTableProvider implements DataProvider {
     }
 
     private JsonObject createBlockLootRoot(String blockName) {
+        JsonObject root = createLootRoot();
+        root.addProperty("random_sequence", MODID + ":blocks/" + blockName);
+        return root;
+    }
+
+    private JsonObject createLootRoot() {
         JsonObject root = new JsonObject();
         root.addProperty("type", "minecraft:block");
-        root.addProperty("random_sequence", MODID + ":blocks/" + blockName);
         return root;
     }
 

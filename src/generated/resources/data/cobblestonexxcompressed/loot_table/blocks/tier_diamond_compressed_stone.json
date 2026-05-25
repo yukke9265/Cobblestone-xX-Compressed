@@ -125,7 +125,7 @@
               "function": "minecraft:explosion_decay"
             }
           ],
-          "name": "minecraft:diamond"
+          "name": "minecraft:diamond_ore"
         }
       ],
       "rolls": 1.0

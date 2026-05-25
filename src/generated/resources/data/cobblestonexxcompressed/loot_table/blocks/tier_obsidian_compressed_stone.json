@@ -125,7 +125,7 @@
               "function": "minecraft:explosion_decay"
             }
           ],
-          "name": "minecraft:obsidian"
+          "name": "minecraft:nether_star"
         }
       ],
       "rolls": 1.0

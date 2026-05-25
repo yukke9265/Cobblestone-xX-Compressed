@@ -745,6 +745,29 @@ public class ModRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_" + recipe.recipeName, has(recipe.processor))
                 .save(output, modRecipeId(recipe.recipeName));
         }
+
+        // Cobblestone Furnace は最序盤で作れる基本機械なので、
+        // 圧縮丸石ではなくバニラの丸石とかまどだけで作れるようにします。
+        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ModBlocks.COBBLESTONE_FURNACE.get())
+            .pattern("CCC")
+            .pattern("CFC")
+            .pattern("CCC")
+            .define('C', Items.COBBLESTONE)
+            .define('F', Items.FURNACE)
+            .unlockedBy("has_cobblestone_furnace_material", has(Items.FURNACE))
+            .save(output, modRecipeId("cobblestone_furnace"));
+
+        // Cobblestone FE Generator は Cobblestone Furnace を土台に、
+        // 鉄ブロックとレッドストーンブロックで発電機へ強化する流れにします。
+        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ModBlocks.COBBLESTONE_FE_GENERATOR.get())
+            .pattern("IRI")
+            .pattern("RFR")
+            .pattern("IRI")
+            .define('I', Items.IRON_BLOCK)
+            .define('R', Items.REDSTONE_BLOCK)
+            .define('F', ModBlocks.COBBLESTONE_FURNACE.get())
+            .unlockedBy("has_cobblestone_fe_generator_material", has(ModBlocks.COBBLESTONE_FURNACE.get()))
+            .save(output, modRecipeId("cobblestone_fe_generator"));
     }
 
     private void buildCobblestoneTankRecipes(RecipeOutput output) {

@@ -1,5 +1,7 @@
 package com.yukke9265.cobblestone_xx_compressed.jei.category;
 
+import javax.annotation.Nonnull;
+
 import com.yukke9265.cobblestone_xx_compressed.jei.CompressedStoneLootJeiRecipe;
 import com.yukke9265.cobblestone_xx_compressed.jei.ModJeiPlugin;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModBlocks;
@@ -17,19 +19,16 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
+@SuppressWarnings("null")
 public class CompressedStoneLootRecipeCategory implements IRecipeCategory<CompressedStoneLootJeiRecipe> {
     private static final int BACKGROUND_WIDTH = 162;
-    private static final int BACKGROUND_HEIGHT = 76;
+    private static final int BACKGROUND_HEIGHT = 124;
     private static final int INPUT_SLOT_X = 6;
-    private static final int INPUT_SLOT_Y = 29;
-    private static final int SILK_TOUCH_SLOT_X = 58;
-    private static final int SILK_TOUCH_SLOT_Y = 11;
-    private static final int NORMAL_DROP_SLOT_X = 58;
-    private static final int NORMAL_DROP_SLOT_Y = 47;
-    private static final int GEM_SLOT_X = 116;
-    private static final int GEM_SLOT_Y = 11;
-    private static final int RESOURCE_SLOT_X = 116;
-    private static final int RESOURCE_SLOT_Y = 47;
+    private static final int INPUT_SLOT_Y = 42;
+    private static final int LIST_SLOT_X = 74;
+    private static final int LIST_TEXT_X = 96;
+    private static final int[] LIST_SLOT_Y = { 8, 30, 52, 74, 96 };
+    private static final int[] LIST_TEXT_Y = { 13, 35, 57, 79, 101 };
 
     private final IDrawable background;
     private final IDrawable icon;
@@ -62,55 +61,39 @@ public class CompressedStoneLootRecipeCategory implements IRecipeCategory<Compre
     }
 
     @Override
-    public void setRecipe(IRecipeLayoutBuilder builder, CompressedStoneLootJeiRecipe recipe, IFocusGroup focuses) {
+    public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, @Nonnull CompressedStoneLootJeiRecipe recipe, @Nonnull IFocusGroup focuses) {
         builder.addSlot(RecipeIngredientRole.INPUT, INPUT_SLOT_X, INPUT_SLOT_Y)
             .addItemStack(recipe.getInput());
 
-        builder.addSlot(RecipeIngredientRole.OUTPUT, SILK_TOUCH_SLOT_X, SILK_TOUCH_SLOT_Y)
-            .addItemStack(recipe.getSilkTouchDrop());
-
-        builder.addSlot(RecipeIngredientRole.OUTPUT, NORMAL_DROP_SLOT_X, NORMAL_DROP_SLOT_Y)
+        builder.addSlot(RecipeIngredientRole.OUTPUT, LIST_SLOT_X, LIST_SLOT_Y[0])
             .addItemStack(recipe.getNormalDrop());
 
-        builder.addSlot(RecipeIngredientRole.OUTPUT, GEM_SLOT_X, GEM_SLOT_Y)
-            .addItemStack(recipe.getGemDrop());
-
-        builder.addSlot(RecipeIngredientRole.OUTPUT, RESOURCE_SLOT_X, RESOURCE_SLOT_Y)
-            .addItemStack(recipe.getResourceDrop());
+        for (int index = 0; index < recipe.getBonusDrops().size(); index++) {
+            builder.addSlot(RecipeIngredientRole.OUTPUT, LIST_SLOT_X, LIST_SLOT_Y[index + 1])
+                .addItemStack(recipe.getBonusDrops().get(index).getDrop());
+        }
     }
 
     @Override
-    public void draw(CompressedStoneLootJeiRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
+    public void draw(@Nonnull CompressedStoneLootJeiRecipe recipe, @Nonnull IRecipeSlotsView recipeSlotsView, @Nonnull GuiGraphics guiGraphics, double mouseX, double mouseY) {
         Minecraft minecraft = Minecraft.getInstance();
-        guiGraphics.drawString(minecraft.font, Component.translatable("jei.cobblestonexxcompressed.silk_touch"), 44, 2, 0x404040, false);
-        guiGraphics.drawString(minecraft.font, Component.translatable("jei.cobblestonexxcompressed.no_silk_touch"), 34, 38, 0x404040, false);
         guiGraphics.drawString(
             minecraft.font,
-            Component.translatable("jei.cobblestonexxcompressed.chance", recipe.getGemChanceText()),
-            85,
-            2,
-            0x404040,
-            false
-        );
-        guiGraphics.drawString(
-            minecraft.font,
-            Component.translatable("jei.cobblestonexxcompressed.chance", recipe.getResourceChanceText()),
-            85,
-            38,
+            Component.translatable("jei.cobblestonexxcompressed.chance", "100%"),
+            LIST_TEXT_X,
+            LIST_TEXT_Y[0],
             0x404040,
             false
         );
 
-        if (recipe.hasCountRange()) {
+        for (int index = 0; index < recipe.getBonusDrops().size(); index++) {
+            CompressedStoneLootJeiRecipe.BonusDrop bonusDrop = recipe.getBonusDrops().get(index);
+
             guiGraphics.drawString(
                 minecraft.font,
-                Component.translatable(
-                    "jei.cobblestonexxcompressed.count_range_fortune",
-                    recipe.getMinCountText(),
-                    recipe.getMaxCountText()
-                ),
-                85,
-                58,
+                Component.translatable("jei.cobblestonexxcompressed.chance", bonusDrop.getChanceText()),
+                LIST_TEXT_X,
+                LIST_TEXT_Y[index + 1],
                 0x404040,
                 false
             );

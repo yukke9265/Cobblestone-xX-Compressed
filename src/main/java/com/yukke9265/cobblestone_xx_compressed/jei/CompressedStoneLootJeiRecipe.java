@@ -8,109 +8,87 @@ import com.yukke9265.cobblestone_xx_compressed.loot.CompressedStoneLootDefinitio
 
 import net.minecraft.world.item.ItemStack;
 
+@SuppressWarnings("null")
 public class CompressedStoneLootJeiRecipe {
     private final ItemStack input;
-    private final ItemStack silkTouchDrop;
     private final ItemStack normalDrop;
-    private final ItemStack gemDrop;
-    private final double gemChance;
-    private final ItemStack resourceDrop;
-    private final double resourceChance;
-    private final boolean hasCountRange;
-    private final double minCount;
-    private final double maxCount;
+    private final List<BonusDrop> bonusDrops;
 
     public CompressedStoneLootJeiRecipe(
         ItemStack input,
-        ItemStack silkTouchDrop,
         ItemStack normalDrop,
-        ItemStack gemDrop,
-        double gemChance,
-        ItemStack resourceDrop,
-        double resourceChance,
-        boolean hasCountRange,
-        double minCount,
-        double maxCount
+        List<BonusDrop> bonusDrops
     ) {
         this.input = input;
-        this.silkTouchDrop = silkTouchDrop;
         this.normalDrop = normalDrop;
-        this.gemDrop = gemDrop;
-        this.gemChance = gemChance;
-        this.resourceDrop = resourceDrop;
-        this.resourceChance = resourceChance;
-        this.hasCountRange = hasCountRange;
-        this.minCount = minCount;
-        this.maxCount = maxCount;
+        this.bonusDrops = List.copyOf(bonusDrops);
     }
 
     public ItemStack getInput() {
         return this.input;
     }
 
-    public ItemStack getSilkTouchDrop() {
-        return this.silkTouchDrop;
-    }
-
     public ItemStack getNormalDrop() {
         return this.normalDrop;
     }
 
-    public ItemStack getGemDrop() {
-        return this.gemDrop;
-    }
-
-    public double getGemChance() {
-        return this.gemChance;
-    }
-
-    public ItemStack getResourceDrop() {
-        return this.resourceDrop;
-    }
-
-    public double getResourceChance() {
-        return this.resourceChance;
-    }
-
-    public boolean hasCountRange() {
-        return this.hasCountRange;
-    }
-
-    public String getGemChanceText() {
-        return formatPercent(this.gemChance);
-    }
-
-    public String getResourceChanceText() {
-        return formatPercent(this.resourceChance);
-    }
-
-    public String getMinCountText() {
-        return formatNumber(this.minCount);
-    }
-
-    public String getMaxCountText() {
-        return formatNumber(this.maxCount);
+    public List<BonusDrop> getBonusDrops() {
+        return this.bonusDrops;
     }
 
     public static List<CompressedStoneLootJeiRecipe> createRecipes() {
         List<CompressedStoneLootJeiRecipe> recipes = new ArrayList<>();
 
         for (CompressedStoneLootDefinition definition : CompressedStoneLootDefinition.getDefinitions()) {
+            List<BonusDrop> bonusDrops = new ArrayList<>();
+            for (CompressedStoneLootDefinition.BonusLootEntry bonusDrop : definition.getBonusDrops()) {
+                bonusDrops.add(new BonusDrop(
+                    new ItemStack(bonusDrop.getItem().get()),
+                    bonusDrop.getChance(),
+                    bonusDrop.hasCountRange(),
+                    bonusDrop.getMinCount(),
+                    bonusDrop.getMaxCount()
+                ));
+            }
+
             recipes.add(new CompressedStoneLootJeiRecipe(
                 new ItemStack(definition.getStoneBlock().get()),
-                new ItemStack(definition.getStoneBlock().get()),
                 new ItemStack(definition.getCobblestoneBlock().get()),
-                new ItemStack(definition.getGemItem().get()),
-                definition.getGemChance(),
-                new ItemStack(definition.getResourceItem().get()),
-                definition.getResourceChance(),
-                definition.hasCountRange(),
-                definition.getMinCount(),
-                definition.getMaxCount()
+                bonusDrops
             ));
         }
 
         return recipes;
+    }
+
+    public static class BonusDrop {
+        private final ItemStack drop;
+        private final double chance;
+
+        public BonusDrop(ItemStack drop, double chance, boolean hasCountRange, double minCount, double maxCount) {
+            this.drop = drop;
+            this.chance = chance;
+        }
+
+        public ItemStack getDrop() {
+            return this.drop;
+        }
+
+        public boolean hasCountRange() {
+            return false;
+        }
+
+        public String getChanceText() {
+            return formatPercent(this.chance);
+        }
+
+        public String getMinCountText() {
+            return "0";
+        }
+
+        public String getMaxCountText() {
+            return "0";
+        }
     }
 
     private static String formatPercent(double chance) {
@@ -120,13 +98,5 @@ public class CompressedStoneLootJeiRecipe {
         }
 
         return String.format(Locale.ROOT, "%.1f%%", percent);
-    }
-
-    private static String formatNumber(double value) {
-        if (Math.rint(value) == value) {
-            return Integer.toString((int) value);
-        }
-
-        return String.format(Locale.ROOT, "%.1f", value);
     }
 }

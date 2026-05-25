@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "C": {
+      "item": "minecraft:cobblestone"
+    },
+    "F": {
+      "item": "minecraft:furnace"
+    }
+  },
+  "pattern": [
+    "CCC",
+    "CFC",
+    "CCC"
+  ],
+  "result": {
+    "count": 1,
+    "id": "cobblestonexxcompressed:cobblestone_furnace"
+  }
+}
