@@ -67,79 +67,79 @@ public class ModRecipeProvider extends RecipeProvider {
         new MachineCasingRecipeDefinition(
             "cobblestone_machine_casing",
             ModBlocks.COMPRESSED_COBBLESTONE.get(),
-            ModItems.COBBLESTONE_GEM.get(),
+            Items.FLINT,
             ModBlocks.COBBLESTONE_MACHINE_CASING.get()
         ),
         new MachineCasingRecipeDefinition(
             "tier_copper_cobblestone_machine_casing",
             ModBlocks.TierCompressedCobblestone.COPPER.getBlock().get(),
-            ModItems.TIER_COPPER_COBBLESTONE_GEM.get(),
+            ModItems.COBBLESTONE_GEM.get(),
             ModBlocks.TierCobblestoneMachineCasing.COPPER.getBlock().get()
         ),
         new MachineCasingRecipeDefinition(
             "tier_iron_cobblestone_machine_casing",
             ModBlocks.TierCompressedCobblestone.IRON.getBlock().get(),
-            ModItems.TIER_IRON_COBBLESTONE_GEM.get(),
+            ModItems.TIER_COPPER_COBBLESTONE_GEM.get(),
             ModBlocks.TierCobblestoneMachineCasing.IRON.getBlock().get()
         ),
         new MachineCasingRecipeDefinition(
             "tier_gold_cobblestone_machine_casing",
             ModBlocks.TierCompressedCobblestone.GOLD.getBlock().get(),
-            ModItems.TIER_GOLD_COBBLESTONE_GEM.get(),
+            ModItems.TIER_IRON_COBBLESTONE_GEM.get(),
             ModBlocks.TierCobblestoneMachineCasing.GOLD.getBlock().get()
         ),
         new MachineCasingRecipeDefinition(
             "tier_amethyst_cobblestone_machine_casing",
             ModBlocks.TierCompressedCobblestone.AMETHYST.getBlock().get(),
-            ModItems.TIER_AMETHYST_COBBLESTONE_GEM.get(),
+            ModItems.TIER_GOLD_COBBLESTONE_GEM.get(),
             ModBlocks.TierCobblestoneMachineCasing.AMETHYST.getBlock().get()
         ),
         new MachineCasingRecipeDefinition(
             "tier_aquamarine_cobblestone_machine_casing",
             ModBlocks.TierCompressedCobblestone.AQUAMARINE.getBlock().get(),
-            ModItems.TIER_AQUAMARINE_COBBLESTONE_GEM.get(),
+            ModItems.TIER_AMETHYST_COBBLESTONE_GEM.get(),
             ModBlocks.TierCobblestoneMachineCasing.AQUAMARINE.getBlock().get()
         ),
         new MachineCasingRecipeDefinition(
             "tier_topaz_cobblestone_machine_casing",
             ModBlocks.TierCompressedCobblestone.TOPAZ.getBlock().get(),
-            ModItems.TIER_TOPAZ_COBBLESTONE_GEM.get(),
+            ModItems.TIER_AQUAMARINE_COBBLESTONE_GEM.get(),
             ModBlocks.TierCobblestoneMachineCasing.TOPAZ.getBlock().get()
         ),
         new MachineCasingRecipeDefinition(
             "tier_ruby_cobblestone_machine_casing",
             ModBlocks.TierCompressedCobblestone.RUBY.getBlock().get(),
-            ModItems.TIER_RUBY_COBBLESTONE_GEM.get(),
+            ModItems.TIER_TOPAZ_COBBLESTONE_GEM.get(),
             ModBlocks.TierCobblestoneMachineCasing.RUBY.getBlock().get()
         ),
         new MachineCasingRecipeDefinition(
             "tier_sapphire_cobblestone_machine_casing",
             ModBlocks.TierCompressedCobblestone.SAPPHIRE.getBlock().get(),
-            ModItems.TIER_SAPPHIRE_COBBLESTONE_GEM.get(),
+            ModItems.TIER_RUBY_COBBLESTONE_GEM.get(),
             ModBlocks.TierCobblestoneMachineCasing.SAPPHIRE.getBlock().get()
         ),
         new MachineCasingRecipeDefinition(
             "tier_diamond_cobblestone_machine_casing",
             ModBlocks.TierCompressedCobblestone.DIAMOND.getBlock().get(),
-            ModItems.TIER_DIAMOND_COBBLESTONE_GEM.get(),
+            ModItems.TIER_SAPPHIRE_COBBLESTONE_GEM.get(),
             ModBlocks.TierCobblestoneMachineCasing.DIAMOND.getBlock().get()
         ),
         new MachineCasingRecipeDefinition(
             "tier_emerald_cobblestone_machine_casing",
             ModBlocks.TierCompressedCobblestone.EMERALD.getBlock().get(),
-            ModItems.TIER_EMERALD_COBBLESTONE_GEM.get(),
+            ModItems.TIER_DIAMOND_COBBLESTONE_GEM.get(),
             ModBlocks.TierCobblestoneMachineCasing.EMERALD.getBlock().get()
         ),
         new MachineCasingRecipeDefinition(
             "tier_netherite_cobblestone_machine_casing",
             ModBlocks.TierCompressedCobblestone.NETHERITE.getBlock().get(),
-            ModItems.TIER_NETHERITE_COBBLESTONE_GEM.get(),
+            ModItems.TIER_EMERALD_COBBLESTONE_GEM.get(),
             ModBlocks.TierCobblestoneMachineCasing.NETHERITE.getBlock().get()
         ),
         new MachineCasingRecipeDefinition(
             "tier_obsidian_cobblestone_machine_casing",
             ModBlocks.TierCompressedCobblestone.OBSIDIAN.getBlock().get(),
-            ModItems.TIER_OBSIDIAN_COBBLESTONE_GEM.get(),
+            ModItems.TIER_NETHERITE_COBBLESTONE_GEM.get(),
             ModBlocks.TierCobblestoneMachineCasing.OBSIDIAN.getBlock().get()
         )
     };

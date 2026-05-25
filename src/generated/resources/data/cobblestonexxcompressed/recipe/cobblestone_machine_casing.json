@@ -6,7 +6,7 @@
       "item": "cobblestonexxcompressed:compressed_cobblestone"
     },
     "G": {
-      "item": "cobblestonexxcompressed:cobblestone_gem"
+      "item": "minecraft:flint"
     }
   },
   "pattern": [
