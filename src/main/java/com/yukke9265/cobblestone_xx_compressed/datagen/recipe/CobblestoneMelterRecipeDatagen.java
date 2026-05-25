@@ -59,6 +59,13 @@ public final class CobblestoneMelterRecipeDatagen {
             new FluidStack(ModFluids.WaterBasedFluid.MOLTEN_ENDER.getFluidEntry().getStillFluid().get(), 500),
              26214400,
              4096
+        ),
+        new MelterRecipeDefinition(
+            "diamond_cobblestone_to_molten_diamond_cobblestone",
+             ModItems.TIER_DIAMOND_COBBLESTONE_DUST.get(),
+            new FluidStack(ModFluids.TierMoltenCompressedCobblestone.DIAMOND.getFluidEntry().getStillFluid().get(), 500),
+             26214400,
+             4096
         )
     };
 

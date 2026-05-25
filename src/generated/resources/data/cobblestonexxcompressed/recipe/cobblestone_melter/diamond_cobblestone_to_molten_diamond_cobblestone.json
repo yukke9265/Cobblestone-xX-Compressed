@@ -1,0 +1,12 @@
+{
+  "type": "cobblestonexxcompressed:cobblestone_melter",
+  "cobblestone_power_per_tick": 4096,
+  "fluid_output": {
+    "amount": 500,
+    "id": "cobblestonexxcompressed:molten_tier_diamond_compressed_cobblestone"
+  },
+  "ingredient": {
+    "item": "cobblestonexxcompressed:tier_diamond_cobblestone_dust"
+  },
+  "total_cobblestone_power": 26214400
+}

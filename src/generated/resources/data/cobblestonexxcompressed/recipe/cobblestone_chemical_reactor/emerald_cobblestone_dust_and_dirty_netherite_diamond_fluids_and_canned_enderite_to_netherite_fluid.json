@@ -1,0 +1,33 @@
+{
+  "type": "cobblestonexxcompressed:cobblestone_chemical_reactor",
+  "cobblestone_power_per_tick": 1048576,
+  "fluid_input_1": {
+    "amount": 1000,
+    "id": "cobblestonexxcompressed:molten_dirty_tier_netherite_compressed_cobblestone"
+  },
+  "fluid_input_2": {
+    "amount": 4000,
+    "id": "cobblestonexxcompressed:molten_tier_diamond_compressed_cobblestone"
+  },
+  "item_input_1": {
+    "count": 4,
+    "id": "cobblestonexxcompressed:tier_emerald_cobblestone_dust"
+  },
+  "item_input_2": {
+    "count": 1,
+    "id": "cobblestonexxcompressed:canned_stable_enderite"
+  },
+  "result_fluid_1": {
+    "amount": 1000,
+    "id": "cobblestonexxcompressed:molten_tier_netherite_compressed_cobblestone"
+  },
+  "result_fluid_2": {
+    "amount": 1000,
+    "id": "cobblestonexxcompressed:molten_dirty_tier_diamond_compressed_cobblestone"
+  },
+  "result_item_1": {
+    "count": 4,
+    "id": "cobblestonexxcompressed:tier_emerald_cobblestone_dirty_dust"
+  },
+  "total_cobblestone_power": 107374182400
+}

@@ -1,6 +1,6 @@
 {
   "type": "cobblestonexxcompressed:cobblestone_chemical_reactor",
-  "cobblestone_power_per_tick": 1024,
+  "cobblestone_power_per_tick": 1048576,
   "fluid_input_1": {
     "amount": 1000,
     "id": "cobblestonexxcompressed:molten_dirty_tier_emerald_compressed_cobblestone"
@@ -11,7 +11,7 @@
   },
   "item_input_1": {
     "count": 16,
-    "id": "minecraft:redstone"
+    "id": "cobblestonexxcompressed:amethyst_dust"
   },
   "result_fluid_1": {
     "amount": 1000,
@@ -21,13 +21,5 @@
     "amount": 1000,
     "id": "cobblestonexxcompressed:molten_dirty_tier_diamond_compressed_cobblestone"
   },
-  "result_item_1": {
-    "count": 1,
-    "id": "minecraft:obsidian"
-  },
-  "result_item_2": {
-    "count": 1,
-    "id": "cobblestonexxcompressed:dirty_mixture"
-  },
-  "total_cobblestone_power": 102400
+  "total_cobblestone_power": 107374182400
 }
