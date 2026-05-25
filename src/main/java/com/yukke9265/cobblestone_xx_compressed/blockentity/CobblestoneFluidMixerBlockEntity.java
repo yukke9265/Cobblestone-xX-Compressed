@@ -43,7 +43,7 @@ public class CobblestoneFluidMixerBlockEntity extends BaseBlockEntity implements
     public static final int POWER_SLOT_INDEX = 0;
     public static final int ACCELERATION_SLOT_INDEX = 1;
     public static final int ENERGIZED_CUBE_SLOT_INDEX = 2;
-    public static final long MAX_COBBLESTONE_POWER = CobblestoneCrusherBlockEntity.MAX_COBBLESTONE_POWER;
+    public static final long MAX_COBBLESTONE_POWER = 65536000L;
     public static final long MAX_INPUT_FLUID_1_AMOUNT = 64_000L;
     public static final long MAX_INPUT_FLUID_2_AMOUNT = 64_000L;
     public static final long MAX_OUTPUT_FLUID_AMOUNT = 64_000L;

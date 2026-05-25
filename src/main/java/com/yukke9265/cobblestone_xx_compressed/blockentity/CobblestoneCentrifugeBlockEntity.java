@@ -40,7 +40,7 @@ public class CobblestoneCentrifugeBlockEntity extends BaseBlockEntity implements
     public static final int OUTPUT_SLOT_2_INDEX = 3;
     public static final int ACCELERATION_SLOT_INDEX = 4;
     public static final int ENERGIZED_CUBE_SLOT_INDEX = 5;
-    public static final long MAX_COBBLESTONE_POWER = CobblestoneCrusherBlockEntity.MAX_COBBLESTONE_POWER;
+    public static final long MAX_COBBLESTONE_POWER = 64000L;
 
     private static final int DATA_INDEX_PROGRESS = 0;
     private static final int DATA_INDEX_MAX_PROGRESS = 1;

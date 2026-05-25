@@ -47,7 +47,7 @@ public class CobblestoneChemicalReactorBlockEntity extends BaseBlockEntity imple
     public static final int OUTPUT_SLOT_2_INDEX = 4;
     public static final int ACCELERATION_SLOT_INDEX = 5;
     public static final int ENERGIZED_CUBE_SLOT_INDEX = 6;
-    public static final long MAX_COBBLESTONE_POWER = CobblestoneCrusherBlockEntity.MAX_COBBLESTONE_POWER;
+    public static final long MAX_COBBLESTONE_POWER = 1048576000L;
     public static final long MAX_INPUT_FLUID_1_AMOUNT = 64_000L;
     public static final long MAX_INPUT_FLUID_2_AMOUNT = 64_000L;
     public static final long MAX_OUTPUT_FLUID_1_AMOUNT = 64_000L;

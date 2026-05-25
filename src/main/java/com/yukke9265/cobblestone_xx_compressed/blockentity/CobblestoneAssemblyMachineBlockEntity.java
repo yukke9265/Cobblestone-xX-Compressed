@@ -50,7 +50,7 @@ public class CobblestoneAssemblyMachineBlockEntity extends BaseBlockEntity imple
     public static final int OUTPUT_SLOT_INDEX = 7;
     public static final int ACCELERATION_SLOT_INDEX = 8;
     public static final int ENERGIZED_CUBE_SLOT_INDEX = 9;
-    public static final long MAX_COBBLESTONE_POWER = CobblestoneCrusherBlockEntity.MAX_COBBLESTONE_POWER;
+    public static final long MAX_COBBLESTONE_POWER = 4194304000L;
     public static final long MAX_INPUT_FLUID_AMOUNT = 64_000L;
 
     private static final int DATA_INDEX_PROGRESS = 0;

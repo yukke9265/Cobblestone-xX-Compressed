@@ -44,7 +44,7 @@ public class CobblestoneCrystallizationChamberBlockEntity extends BaseBlockEntit
     public static final int OUTPUT_SLOT_INDEX = 1;
     public static final int ACCELERATION_SLOT_INDEX = 2;
     public static final int ENERGIZED_CUBE_SLOT_INDEX = 3;
-    public static final long MAX_COBBLESTONE_POWER = CobblestoneCrusherBlockEntity.MAX_COBBLESTONE_POWER;
+    public static final long MAX_COBBLESTONE_POWER = 262144000L;
     public static final long MAX_FLUID_AMOUNT = 64_000L;
 
     private static final int DATA_INDEX_PROGRESS = 0;

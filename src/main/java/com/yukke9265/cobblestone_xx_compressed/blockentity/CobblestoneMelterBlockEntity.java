@@ -42,7 +42,7 @@ public class CobblestoneMelterBlockEntity extends BaseBlockEntity implements Men
     public static final int POWER_SLOT_INDEX = 1;
     public static final int ACCELERATION_SLOT_INDEX = 2;
     public static final int ENERGIZED_CUBE_SLOT_INDEX = 3;
-    public static final long MAX_COBBLESTONE_POWER = CobblestoneCrusherBlockEntity.MAX_COBBLESTONE_POWER;
+    public static final long MAX_COBBLESTONE_POWER = 4096000L;
     public static final long MAX_FLUID_AMOUNT = 64_000L;
 
     private static final int DATA_INDEX_PROGRESS = 0;
