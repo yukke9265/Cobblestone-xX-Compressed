@@ -40,6 +40,7 @@ public class ModBlockLootTableProvider implements DataProvider {
             .resolve("blocks");
 
         futures.add(DataProvider.saveStable(cache, createSimpleSelfDropLoot("cobblestone_furnace"), rootPath.resolve("cobblestone_furnace.json")));
+        futures.add(DataProvider.saveStable(cache, createSimpleSelfDropLoot("cobblestone_powered_furnace"), rootPath.resolve("cobblestone_powered_furnace.json")));
         futures.add(DataProvider.saveStable(cache, createSimpleSelfDropLoot("cobblestone_extreme_compressor"), rootPath.resolve("cobblestone_extreme_compressor.json")));
         futures.add(DataProvider.saveStable(cache, createSimpleSelfDropLoot("cobblestone_crusher"), rootPath.resolve("cobblestone_crusher.json")));
         futures.add(DataProvider.saveStable(cache, createSimpleSelfDropLoot("cobblestone_centrifuge"), rootPath.resolve("cobblestone_centrifuge.json")));
@@ -48,7 +49,11 @@ public class ModBlockLootTableProvider implements DataProvider {
         futures.add(DataProvider.saveStable(cache, createSimpleSelfDropLoot("cobblestone_assembly_machine"), rootPath.resolve("cobblestone_assembly_machine.json")));
         futures.add(DataProvider.saveStable(cache, createSimpleSelfDropLoot("cobblestone_chemical_reactor"), rootPath.resolve("cobblestone_chemical_reactor.json")));
         futures.add(DataProvider.saveStable(cache, createSimpleSelfDropLoot("cobblestone_mixer"), rootPath.resolve("cobblestone_mixer.json")));
+        futures.add(DataProvider.saveStable(cache, createSimpleSelfDropLoot("cobblestone_fluid_mixer"), rootPath.resolve("cobblestone_fluid_mixer.json")));
+        futures.add(DataProvider.saveStable(cache, createSimpleSelfDropLoot("cobblestone_reaction_chamber"), rootPath.resolve("cobblestone_reaction_chamber.json")));
+        futures.add(DataProvider.saveStable(cache, createSimpleSelfDropLoot("cobblestone_crystallization_chamber"), rootPath.resolve("cobblestone_crystallization_chamber.json")));
         futures.add(DataProvider.saveStable(cache, createSimpleSelfDropLoot("cobblestone_dissolution_chamber"), rootPath.resolve("cobblestone_dissolution_chamber.json")));
+        futures.add(DataProvider.saveStable(cache, createSimpleSelfDropLoot("cobblestone_fe_generator"), rootPath.resolve("cobblestone_fe_generator.json")));
         futures.add(DataProvider.saveStable(cache, createSimpleSelfDropLoot("compressed_cobblestone"), rootPath.resolve("compressed_cobblestone.json")));
         futures.add(DataProvider.saveStable(cache, createSimpleSelfDropLoot("cobblestone_machine_casing"), rootPath.resolve("cobblestone_machine_casing.json")));
         futures.add(DataProvider.saveStable(cache, createSimpleSelfDropLoot("cobblestone_tank"), rootPath.resolve("cobblestone_tank.json")));

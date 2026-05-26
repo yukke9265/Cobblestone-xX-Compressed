@@ -15,7 +15,7 @@ public final class CobblestoneExtremeCompressorRecipeDatagen {
             "obsidian_to_extreme_compressed_obsidian",
             Blocks.OBSIDIAN,
             ModItems.EXTREME_COMPRESSED_OBSIDIAN.get(),
-            5000,
+            4096,
             TOTAL_CP,
             33554432
         ),
@@ -25,7 +25,7 @@ public final class CobblestoneExtremeCompressorRecipeDatagen {
             "obsidian_cobblestone_gem_to_bedrock",
             ModItems.TIER_OBSIDIAN_COBBLESTONE_GEM.get(),
             Blocks.BEDROCK,
-            5000,
+            4096,
             TOTAL_CP,
             33554432
         )

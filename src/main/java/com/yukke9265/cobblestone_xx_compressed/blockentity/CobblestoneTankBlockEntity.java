@@ -422,6 +422,11 @@ public class CobblestoneTankBlockEntity extends BaseBlockEntity implements MenuP
     }
 
     private boolean tryDrainContainerIntoTank(ItemStack originalInputStack, IFluidHandlerItem fluidHandlerItem, boolean processAll) {
+        ItemStack processedContainerPreview = this.previewProcessedContainerAfterDraining(fluidHandlerItem, processAll);
+        if (processedContainerPreview.isEmpty() || !this.canMoveProcessedContainer(processedContainerPreview)) {
+            return false;
+        }
+
         int transferredAmount = 0;
         while (true) {
             int stepTransferredAmount = this.drainFluidHandlerIntoTank(fluidHandlerItem);
@@ -439,16 +444,16 @@ public class CobblestoneTankBlockEntity extends BaseBlockEntity implements MenuP
             return false;
         }
 
-        ItemStack processedContainer = fluidHandlerItem.getContainer().copy();
-        if (!this.canMoveProcessedContainer(processedContainer)) {
-            return false;
-        }
-
-        this.finishContainerProcessing(originalInputStack, processedContainer);
+        this.finishContainerProcessing(originalInputStack, fluidHandlerItem.getContainer().copy());
         return true;
     }
 
     private boolean tryFillContainerFromTank(ItemStack originalInputStack, IFluidHandlerItem fluidHandlerItem, boolean processAll) {
+        ItemStack processedContainerPreview = this.previewProcessedContainerAfterFilling(fluidHandlerItem, processAll);
+        if (processedContainerPreview.isEmpty() || !this.canMoveProcessedContainer(processedContainerPreview)) {
+            return false;
+        }
+
         int transferredAmount = 0;
         while (true) {
             int stepTransferredAmount = this.fillFluidHandlerFromTank(fluidHandlerItem);
@@ -466,13 +471,62 @@ public class CobblestoneTankBlockEntity extends BaseBlockEntity implements MenuP
             return false;
         }
 
-        ItemStack processedContainer = fluidHandlerItem.getContainer().copy();
-        if (!this.canMoveProcessedContainer(processedContainer)) {
-            return false;
+        this.finishContainerProcessing(originalInputStack, fluidHandlerItem.getContainer().copy());
+        return true;
+    }
+
+    private ItemStack previewProcessedContainerAfterDraining(IFluidHandlerItem fluidHandlerItem, boolean processAll) {
+        Optional<IFluidHandlerItem> optionalPreviewHandler = FluidUtil.getFluidHandler(fluidHandlerItem.getContainer().copy());
+        if (optionalPreviewHandler.isEmpty()) {
+            return ItemStack.EMPTY;
         }
 
-        this.finishContainerProcessing(originalInputStack, processedContainer);
-        return true;
+        IFluidHandlerItem previewHandler = optionalPreviewHandler.get();
+        int transferredAmount = 0;
+        while (true) {
+            int stepTransferredAmount = this.simulateDrainFluidHandlerIntoTank(previewHandler);
+            if (stepTransferredAmount <= 0) {
+                break;
+            }
+
+            transferredAmount += stepTransferredAmount;
+            if (!processAll) {
+                break;
+            }
+        }
+
+        if (transferredAmount <= 0) {
+            return ItemStack.EMPTY;
+        }
+
+        return previewHandler.getContainer().copy();
+    }
+
+    private ItemStack previewProcessedContainerAfterFilling(IFluidHandlerItem fluidHandlerItem, boolean processAll) {
+        Optional<IFluidHandlerItem> optionalPreviewHandler = FluidUtil.getFluidHandler(fluidHandlerItem.getContainer().copy());
+        if (optionalPreviewHandler.isEmpty()) {
+            return ItemStack.EMPTY;
+        }
+
+        IFluidHandlerItem previewHandler = optionalPreviewHandler.get();
+        int transferredAmount = 0;
+        while (true) {
+            int stepTransferredAmount = this.simulateFillFluidHandlerFromTank(previewHandler);
+            if (stepTransferredAmount <= 0) {
+                break;
+            }
+
+            transferredAmount += stepTransferredAmount;
+            if (!processAll) {
+                break;
+            }
+        }
+
+        if (transferredAmount <= 0) {
+            return ItemStack.EMPTY;
+        }
+
+        return previewHandler.getContainer().copy();
     }
 
     private int drainFluidHandlerIntoTank(IFluidHandlerItem fluidHandlerItem) {
@@ -499,6 +553,29 @@ public class CobblestoneTankBlockEntity extends BaseBlockEntity implements MenuP
         return 0;
     }
 
+    private int simulateDrainFluidHandlerIntoTank(IFluidHandlerItem fluidHandlerItem) {
+        for (int tankIndex = 0; tankIndex < fluidHandlerItem.getTanks(); tankIndex++) {
+            FluidStack fluidInItem = fluidHandlerItem.getFluidInTank(tankIndex);
+            if (fluidInItem.isEmpty()) {
+                continue;
+            }
+
+            int acceptedAmount = this.fillInternal(fluidInItem, IFluidHandler.FluidAction.SIMULATE);
+            if (acceptedAmount <= 0) {
+                continue;
+            }
+
+            FluidStack drainedFluid = fluidHandlerItem.drain(fluidInItem.copyWithAmount(acceptedAmount), IFluidHandler.FluidAction.EXECUTE);
+            if (drainedFluid.isEmpty()) {
+                continue;
+            }
+
+            return drainedFluid.getAmount();
+        }
+
+        return 0;
+    }
+
     private int fillFluidHandlerFromTank(IFluidHandlerItem fluidHandlerItem) {
         if (this.storedFluid.isEmpty() || this.storedFluidAmount <= 0L) {
             return 0;
@@ -512,6 +589,15 @@ public class CobblestoneTankBlockEntity extends BaseBlockEntity implements MenuP
 
         this.drainInternal(filledAmount, IFluidHandler.FluidAction.EXECUTE);
         return filledAmount;
+    }
+
+    private int simulateFillFluidHandlerFromTank(IFluidHandlerItem fluidHandlerItem) {
+        if (this.storedFluid.isEmpty() || this.storedFluidAmount <= 0L) {
+            return 0;
+        }
+
+        FluidStack availableFluid = this.storedFluid.copyWithAmount((int) Math.min(this.storedFluidAmount, Integer.MAX_VALUE));
+        return fluidHandlerItem.fill(availableFluid, IFluidHandler.FluidAction.EXECUTE);
     }
 
     private boolean canMoveProcessedContainer(ItemStack processedContainer) {

@@ -187,7 +187,9 @@ public class CobblestoneFEGeneratorBlockEntity extends BaseBlockEntity implement
         BlockState currentState = this.getBlockState();
         AutomationSide automationSide = AutomationSide.fromWorldSide(side, currentState);
         AutomationMode automationMode = this.getAutomationMode(automationSide);
-        if (automationMode == AutomationMode.COBBLESTONE_INPUT) {
+        if (automationMode == AutomationMode.INPUT
+            || automationMode == AutomationMode.COBBLESTONE_INPUT
+            || automationMode == AutomationMode.IN_OUT) {
             return this.inputAutomationHandler;
         }
 

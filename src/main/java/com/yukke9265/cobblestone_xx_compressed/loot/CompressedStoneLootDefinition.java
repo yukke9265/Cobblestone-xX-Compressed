@@ -28,87 +28,87 @@ public class CompressedStoneLootDefinition {
             ModBlocks.COMPRESSED_COBBLESTONE,
             bonusDrop(ModItems.COBBLESTONE_GEM, 0.8d),
             bonusDrop(() -> Items.BONE, 0.01d),
-            bonusDrop(() -> Items.FLINT, 0.05d)
+            bonusDrop(() -> Items.FLINT, 0.01d)
         ),
         new CompressedStoneLootDefinition(
             ModBlocks.TierCompressedStone.COPPER.getBlock(),
             ModBlocks.TierCompressedCobblestone.COPPER.getBlock(),
             bonusDrop(ModItems.TierCobblestoneGem.COPPER.getItem(), 0.4d),
-            bonusDrop(() -> Items.COAL_ORE, 0.45d),
-            bonusDrop(() -> Items.RAW_COPPER, 0.45d),
-            optionalModBonusDrop(MEKANISM_MOD_ID, "raw_tin", 0.45d)
+            bonusDrop(() -> Items.COAL_ORE, 0.10d),
+            bonusDrop(() -> Items.RAW_COPPER, 0.10d),
+            optionalModBonusDrop(MEKANISM_MOD_ID, "raw_tin", 0.10d)
         ),
         new CompressedStoneLootDefinition(
             ModBlocks.TierCompressedStone.IRON.getBlock(),
             ModBlocks.TierCompressedCobblestone.IRON.getBlock(),
             bonusDrop(ModItems.TierCobblestoneGem.IRON.getItem(), 0.2d),
-            bonusDrop(() -> Items.REDSTONE_ORE, 0.45d),
-            optionalModBonusDrop(MEKANISM_MOD_ID, "raw_osmium", 0.45d)
+            bonusDrop(() -> Items.REDSTONE_ORE, 0.10d),
+            optionalModBonusDrop(MEKANISM_MOD_ID, "raw_osmium", 0.10d)
         ),
         new CompressedStoneLootDefinition(
             ModBlocks.TierCompressedStone.GOLD.getBlock(),
             ModBlocks.TierCompressedCobblestone.GOLD.getBlock(),
             bonusDrop(ModItems.TierCobblestoneGem.GOLD.getItem(), 0.2d),
-            bonusDrop(() -> Items.RAW_IRON, 0.45d),
-            bonusDrop(() -> Items.NETHER_QUARTZ_ORE, 0.45d),
-            optionalModBonusDrop(MEKANISM_MOD_ID, "fluorite_ore", 0.45d)
+            bonusDrop(() -> Items.RAW_IRON, 0.10d),
+            bonusDrop(() -> Items.NETHER_QUARTZ_ORE, 0.10d),
+            optionalModBonusDrop(MEKANISM_MOD_ID, "fluorite_ore", 0.10d)
         ),
         new CompressedStoneLootDefinition(
             ModBlocks.TierCompressedStone.AMETHYST.getBlock(),
             ModBlocks.TierCompressedCobblestone.AMETHYST.getBlock(),
             bonusDrop(ModItems.TierCobblestoneGem.AMETHYST.getItem(), 0.1d),
-            bonusDrop(() -> Items.LAPIS_ORE, 0.45d),
-            optionalModBonusDrop(MEKANISM_MOD_ID, "raw_lead", 0.45d)
+            bonusDrop(() -> Items.LAPIS_ORE, 0.10d),
+            optionalModBonusDrop(MEKANISM_MOD_ID, "raw_lead", 0.10d)
         ),
         new CompressedStoneLootDefinition(
             ModBlocks.TierCompressedStone.AQUAMARINE.getBlock(),
             ModBlocks.TierCompressedCobblestone.AQUAMARINE.getBlock(),
             bonusDrop(ModItems.TierCobblestoneGem.AQUAMARINE.getItem(), 0.1d),
-            bonusDrop(() -> Items.GLOWSTONE, 0.45d),
-            optionalModBonusDrop(MEKANISM_MOD_ID, "raw_uranium", 0.45d)
+            bonusDrop(() -> Items.GLOWSTONE, 0.10d),
+            optionalModBonusDrop(MEKANISM_MOD_ID, "raw_uranium", 0.10d)
         ),
         new CompressedStoneLootDefinition(
             ModBlocks.TierCompressedStone.TOPAZ.getBlock(),
             ModBlocks.TierCompressedCobblestone.TOPAZ.getBlock(),
             bonusDrop(ModItems.TierCobblestoneGem.TOPAZ.getItem(), 0.04d),
-            bonusDrop(() -> Items.RAW_GOLD, 0.4d)
+            bonusDrop(() -> Items.RAW_GOLD, 0.10d)
         ),
         new CompressedStoneLootDefinition(
             ModBlocks.TierCompressedStone.RUBY.getBlock(),
             ModBlocks.TierCompressedCobblestone.RUBY.getBlock(),
             bonusDrop(ModItems.TierCobblestoneGem.RUBY.getItem(), 0.04d),
-            bonusDrop(() -> Items.BLAZE_ROD, 0.45d)
+            bonusDrop(() -> Items.BLAZE_ROD, 0.10d)
         ),
         new CompressedStoneLootDefinition(
             ModBlocks.TierCompressedStone.SAPPHIRE.getBlock(),
             ModBlocks.TierCompressedCobblestone.SAPPHIRE.getBlock(),
             bonusDrop(ModItems.TierCobblestoneGem.SAPPHIRE.getItem(), 0.02d),
-            bonusDrop(() -> Items.ENDER_PEARL, 0.45d)
+            bonusDrop(() -> Items.ENDER_PEARL, 0.10d)
         ),
         new CompressedStoneLootDefinition(
             ModBlocks.TierCompressedStone.DIAMOND.getBlock(),
             ModBlocks.TierCompressedCobblestone.DIAMOND.getBlock(),
             bonusDrop(ModItems.TierCobblestoneGem.DIAMOND.getItem(), 0.02d),
-            bonusDrop(() -> Items.DIAMOND_ORE, 0.2d),
-            optionalModBonusDrop(MEKANISM_EXTRAS_MOD_ID, "raw_naquadah", 0.2d)
+            bonusDrop(() -> Items.DIAMOND_ORE, 0.10d),
+            optionalModBonusDrop(MEKANISM_EXTRAS_MOD_ID, "raw_naquadah", 0.10d)
         ),
         new CompressedStoneLootDefinition(
             ModBlocks.TierCompressedStone.EMERALD.getBlock(),
             ModBlocks.TierCompressedCobblestone.EMERALD.getBlock(),
             bonusDrop(ModItems.TierCobblestoneGem.EMERALD.getItem(), 0.01d),
-            bonusDrop(() -> Items.EMERALD_ORE, 0.18d)
+            bonusDrop(() -> Items.EMERALD_ORE, 0.10d)
         ),
         new CompressedStoneLootDefinition(
             ModBlocks.TierCompressedStone.NETHERITE.getBlock(),
             ModBlocks.TierCompressedCobblestone.NETHERITE.getBlock(),
             bonusDrop(ModItems.TierCobblestoneGem.NETHERITE.getItem(), 0.01d),
-            bonusDrop(() -> Items.ANCIENT_DEBRIS, 0.08d)
+            bonusDrop(() -> Items.ANCIENT_DEBRIS, 0.10d)
         ),
         new CompressedStoneLootDefinition(
             ModBlocks.TierCompressedStone.OBSIDIAN.getBlock(),
             ModBlocks.TierCompressedCobblestone.OBSIDIAN.getBlock(),
             bonusDrop(ModItems.TierCobblestoneGem.OBSIDIAN.getItem(), 0.01d),
-            bonusDrop(() -> Items.NETHER_STAR, 0.2d)
+            bonusDrop(() -> Items.NETHER_STAR, 0.10d)
         )
     );
 

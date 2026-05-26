@@ -37,6 +37,7 @@ public class CobblestoneFEGeneratorMenu extends BaseMenu {
     private static final int DATA_INDEX_MAX_STORED_ENERGY = 6;
     private static final int DATA_INDEX_CONVERTED_ENERGY = 8;
     private static final int DATA_INDEX_EXPORTED_ENERGY = 10;
+    private static final int DATA_INDEX_AUTOMATION_START = 12;
     private static final int DATA_INDEX_CURRENT_POWER_RATE = 12 + BaseBlockEntity.AUTOMATION_FACE_COUNT;
     private static final int DATA_INDEX_CURRENT_POWER_RATE_UPPER = DATA_INDEX_CURRENT_POWER_RATE + 1;
     private static final int DATA_INDEX_AUTO_EXPORT = DATA_INDEX_CURRENT_POWER_RATE_UPPER + 1;
@@ -115,7 +116,7 @@ public class CobblestoneFEGeneratorMenu extends BaseMenu {
     }
 
     public AutomationMode getAutomationMode(AutomationSide automationSide) {
-        int dataIndex = DATA_INDEX_AUTO_EXPORT - BaseBlockEntity.AUTOMATION_FACE_COUNT + automationSide.getIndex();
+        int dataIndex = DATA_INDEX_AUTOMATION_START + automationSide.getIndex();
         return AutomationMode.fromId(this.generatorData.get(dataIndex));
     }
 

@@ -4,7 +4,7 @@
   "ingredient": {
     "item": "minecraft:obsidian"
   },
-  "required_item_count": 5000,
+  "required_item_count": 4096,
   "result": {
     "count": 1,
     "id": "cobblestonexxcompressed:extreme_compressed_obsidian"
