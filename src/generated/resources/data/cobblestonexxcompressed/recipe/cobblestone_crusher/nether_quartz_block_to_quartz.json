@@ -1,0 +1,12 @@
+{
+  "type": "cobblestonexxcompressed:cobblestone_crusher",
+  "cobblestone_power_per_tick": 4,
+  "ingredient": {
+    "item": "minecraft:quartz_block"
+  },
+  "result": {
+    "count": 4,
+    "id": "minecraft:quartz"
+  },
+  "total_cobblestone_power": 800
+}

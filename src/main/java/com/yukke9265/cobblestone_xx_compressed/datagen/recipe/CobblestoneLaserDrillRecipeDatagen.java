@@ -28,7 +28,7 @@ public final class CobblestoneLaserDrillRecipeDatagen {
             0.5F,
             new ItemStack(Items.DIAMOND),
             0.01F,
-            4096000,
+            1024000,
             256
         ),
         new LaserDrillRecipeDefinition(

@@ -2,8 +2,10 @@ package com.yukke9265.cobblestone_xx_compressed.registry;
 
 import com.yukke9265.cobblestone_xx_compressed.CobblestonexXCompressed;
 import com.yukke9265.cobblestone_xx_compressed.blockitem.CompressedCobblestoneBlockItem;
+import com.yukke9265.cobblestone_xx_compressed.blockitem.DescribedBlockItem;
 import com.yukke9265.cobblestone_xx_compressed.item.CobblestoneAccelerationChipItem;
 import com.yukke9265.cobblestone_xx_compressed.item.CobblestoneEnergizedCubeItem;
+import com.yukke9265.cobblestone_xx_compressed.util.TooltipTranslationKeys;
 
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -445,6 +447,10 @@ public class ModItems {
 
     private static DeferredItem<BlockItem> registerCompressedCobblestoneTooltipBlockItem(String name, DeferredBlock<Block> block) {
         return ITEMS.register(name, () -> new CompressedCobblestoneBlockItem(block.get(), new Item.Properties()));
+    }
+
+    private static DeferredItem<BlockItem> registerDescribedBlockItem(String name, DeferredBlock<Block> block, String... tooltipTranslationKeys) {
+        return ITEMS.register(name, () -> new DescribedBlockItem(block.get(), new Item.Properties(), tooltipTranslationKeys));
     }
 
     // 丸石パン系は、今の段階では通常版も tier 版も同じ食べ物設定を使います。
@@ -1674,89 +1680,106 @@ public class ModItems {
 
     static {
         for (TierCobblestoneGeneratorItem generatorItem : TierCobblestoneGeneratorItem.values()) {
-            generatorItem.setItem(registerCompressedCobblestoneBlockItem(
+            generatorItem.setItem(registerDescribedBlockItem(
                 generatorItem.getBlockVariant().getRegistryName(),
-                generatorItem.getBlockVariant().getBlock()
+                generatorItem.getBlockVariant().getBlock(),
+                TooltipTranslationKeys.cobblestoneGeneratorDescription(),
+                TooltipTranslationKeys.cobblestoneGeneratorSizeDescription(generatorItem.getBlockVariant().getSize())
             ));
         }
     }
 
     // cobblestone_furnace ブロックアイテムとして登録するためのDeferredItemも追加します。    
     public static final DeferredItem<BlockItem> COBBLESTONE_FURNACE_ITEM =
-        ModItems.ITEMS.registerSimpleBlockItem(
+        registerDescribedBlockItem(
             "cobblestone_furnace", 
-            ModBlocks.COBBLESTONE_FURNACE);
+            ModBlocks.COBBLESTONE_FURNACE,
+            TooltipTranslationKeys.machineDescription("cobblestone_furnace"));
 
     public static final DeferredItem<BlockItem> COBBLESTONE_POWERED_FURNACE_ITEM =
-        ModItems.ITEMS.registerSimpleBlockItem(
+        registerDescribedBlockItem(
             "cobblestone_powered_furnace",
-            ModBlocks.COBBLESTONE_POWERED_FURNACE);
+            ModBlocks.COBBLESTONE_POWERED_FURNACE,
+            TooltipTranslationKeys.machineDescription("cobblestone_powered_furnace"));
 
     public static final DeferredItem<BlockItem> COBBLESTONE_EXTREME_COMPRESSOR_ITEM =
-        ModItems.ITEMS.registerSimpleBlockItem(
+        registerDescribedBlockItem(
             "cobblestone_extreme_compressor",
-            ModBlocks.COBBLESTONE_EXTREME_COMPRESSOR);
+            ModBlocks.COBBLESTONE_EXTREME_COMPRESSOR,
+            TooltipTranslationKeys.machineDescription("cobblestone_extreme_compressor"));
 
     // cobblestone_crusher も設置できるように BlockItem を登録します。
     public static final DeferredItem<BlockItem> COBBLESTONE_CRUSHER_ITEM =
-        ModItems.ITEMS.registerSimpleBlockItem(
+        registerDescribedBlockItem(
             "cobblestone_crusher",
-            ModBlocks.COBBLESTONE_CRUSHER);
+            ModBlocks.COBBLESTONE_CRUSHER,
+            TooltipTranslationKeys.machineDescription("cobblestone_crusher"));
 
     public static final DeferredItem<BlockItem> COBBLESTONE_FE_GENERATOR_ITEM =
-        ModItems.ITEMS.registerSimpleBlockItem(
+        registerDescribedBlockItem(
             "cobblestone_fe_generator",
-            ModBlocks.COBBLESTONE_FE_GENERATOR);
+            ModBlocks.COBBLESTONE_FE_GENERATOR,
+            TooltipTranslationKeys.machineDescription("cobblestone_fe_generator"));
 
     // cobblestone_mixer も設置できるように BlockItem を登録します。
     public static final DeferredItem<BlockItem> COBBLESTONE_MIXER_ITEM =
-        ModItems.ITEMS.registerSimpleBlockItem(
+        registerDescribedBlockItem(
             "cobblestone_mixer",
-            ModBlocks.COBBLESTONE_MIXER);
+            ModBlocks.COBBLESTONE_MIXER,
+            TooltipTranslationKeys.machineDescription("cobblestone_mixer"));
 
     public static final DeferredItem<BlockItem> COBBLESTONE_MELTER_ITEM =
-        ModItems.ITEMS.registerSimpleBlockItem(
+        registerDescribedBlockItem(
             "cobblestone_melter",
-            ModBlocks.COBBLESTONE_MELTER);
+            ModBlocks.COBBLESTONE_MELTER,
+            TooltipTranslationKeys.machineDescription("cobblestone_melter"));
 
     public static final DeferredItem<BlockItem> COBBLESTONE_ASSEMBLY_MACHINE_ITEM =
-        ModItems.ITEMS.registerSimpleBlockItem(
+        registerDescribedBlockItem(
             "cobblestone_assembly_machine",
-            ModBlocks.COBBLESTONE_ASSEMBLY_MACHINE);
+            ModBlocks.COBBLESTONE_ASSEMBLY_MACHINE,
+            TooltipTranslationKeys.machineDescription("cobblestone_assembly_machine"));
 
     public static final DeferredItem<BlockItem> COBBLESTONE_CHEMICAL_REACTOR_ITEM =
-        ModItems.ITEMS.registerSimpleBlockItem(
+        registerDescribedBlockItem(
             "cobblestone_chemical_reactor",
-            ModBlocks.COBBLESTONE_CHEMICAL_REACTOR);
+            ModBlocks.COBBLESTONE_CHEMICAL_REACTOR,
+            TooltipTranslationKeys.machineDescription("cobblestone_chemical_reactor"));
 
     public static final DeferredItem<BlockItem> COBBLESTONE_REACTION_CHAMBER_ITEM =
-        ModItems.ITEMS.registerSimpleBlockItem(
+        registerDescribedBlockItem(
             "cobblestone_reaction_chamber",
-            ModBlocks.COBBLESTONE_REACTION_CHAMBER);
+            ModBlocks.COBBLESTONE_REACTION_CHAMBER,
+            TooltipTranslationKeys.machineDescription("cobblestone_reaction_chamber"));
 
     public static final DeferredItem<BlockItem> COBBLESTONE_CRYSTALLIZATION_CHAMBER_ITEM =
-        ModItems.ITEMS.registerSimpleBlockItem(
+        registerDescribedBlockItem(
             "cobblestone_crystallization_chamber",
-            ModBlocks.COBBLESTONE_CRYSTALLIZATION_CHAMBER);
+            ModBlocks.COBBLESTONE_CRYSTALLIZATION_CHAMBER,
+            TooltipTranslationKeys.machineDescription("cobblestone_crystallization_chamber"));
 
     public static final DeferredItem<BlockItem> COBBLESTONE_DISSOLUTION_CHAMBER_ITEM =
-        ModItems.ITEMS.registerSimpleBlockItem(
+        registerDescribedBlockItem(
             "cobblestone_dissolution_chamber",
-            ModBlocks.COBBLESTONE_DISSOLUTION_CHAMBER);
+            ModBlocks.COBBLESTONE_DISSOLUTION_CHAMBER,
+            TooltipTranslationKeys.machineDescription("cobblestone_dissolution_chamber"));
 
     public static final DeferredItem<BlockItem> COBBLESTONE_FLUID_MIXER_ITEM =
-        ModItems.ITEMS.registerSimpleBlockItem(
+        registerDescribedBlockItem(
             "cobblestone_fluid_mixer",
-            ModBlocks.COBBLESTONE_FLUID_MIXER);
+            ModBlocks.COBBLESTONE_FLUID_MIXER,
+            TooltipTranslationKeys.machineDescription("cobblestone_fluid_mixer"));
 
     // cobblestone_centrifuge も設置できるように BlockItem を登録します。
     public static final DeferredItem<BlockItem> COBBLESTONE_CENTRIFUGE_ITEM =
-        ModItems.ITEMS.registerSimpleBlockItem(
+        registerDescribedBlockItem(
             "cobblestone_centrifuge",
-            ModBlocks.COBBLESTONE_CENTRIFUGE);
+            ModBlocks.COBBLESTONE_CENTRIFUGE,
+            TooltipTranslationKeys.machineDescription("cobblestone_centrifuge"));
 
     public static final DeferredItem<BlockItem> COBBLESTONE_LASER_DRILL_ITEM =
-        ModItems.ITEMS.registerSimpleBlockItem(
+        registerDescribedBlockItem(
             "cobblestone_laser_drill",
-            ModBlocks.COBBLESTONE_LASER_DRILL);
+            ModBlocks.COBBLESTONE_LASER_DRILL,
+            TooltipTranslationKeys.machineDescription("cobblestone_laser_drill"));
 }

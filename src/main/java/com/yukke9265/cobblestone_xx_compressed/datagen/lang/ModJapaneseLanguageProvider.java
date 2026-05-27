@@ -57,5 +57,7 @@ public class ModJapaneseLanguageProvider extends LanguageProvider {
         add("tooltip.cobblestonexxcompressed.compressed_cobblestone.compression", "x%s 圧縮");
         add("tooltip.cobblestonexxcompressed.cobblestone_energized_cube.capacity", "x%s CP容量");
         add("tooltip.cobblestonexxcompressed.cobblestone_acceleration_chip.rate", "x%s CP/t");
+
+        TooltipTranslationEntries.addJapanese(this);
     }
 }

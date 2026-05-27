@@ -232,6 +232,7 @@ public class ModEnglishLanguageProvider extends LanguageProvider {
         add("tooltip.cobblestonexxcompressed.compressed_cobblestone.compression", "x%s compressed");
         add("tooltip.cobblestonexxcompressed.cobblestone_energized_cube.capacity", "x%s CP capacity");
         add("tooltip.cobblestonexxcompressed.cobblestone_acceleration_chip.rate", "x%s CP/t");
+        TooltipTranslationEntries.addEnglish(this);
         add("jei.cobblestonexxcompressed.compressed_stone_loot", "Compressed Stone Loot");
         add("jei.cobblestonexxcompressed.silk_touch", "Silk Touch");
         add("jei.cobblestonexxcompressed.no_silk_touch", "No Silk Touch");

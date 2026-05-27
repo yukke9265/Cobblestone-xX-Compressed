@@ -51,7 +51,9 @@ public final class CobblestoneCrusherRecipeDatagen {
         new CrusherRecipeDefinition("diamond_ore_to_diamond", Blocks.DIAMOND_ORE, new ItemStack(Items.DIAMOND,2), 800, 4),
         new CrusherRecipeDefinition("emerald_ore_to_emerald", Blocks.EMERALD_ORE, new ItemStack(Items.EMERALD,2), 800, 4),
         new CrusherRecipeDefinition("nether_quartz_ore_to_quartz", Blocks.NETHER_QUARTZ_ORE, new ItemStack(Items.QUARTZ,3), 800, 4),
-        new CrusherRecipeDefinition("glowstone_to_glowstone_dust", Blocks.GLOWSTONE, new ItemStack(Items.GLOWSTONE_DUST,4), 800, 4)
+        new CrusherRecipeDefinition("glowstone_to_glowstone_dust", Blocks.GLOWSTONE, new ItemStack(Items.GLOWSTONE_DUST,4), 800, 4),
+        new CrusherRecipeDefinition("amethyst_to_amethyst_shard", Blocks.AMETHYST_BLOCK, new ItemStack(Items.AMETHYST_SHARD,4), 800, 4),
+        new CrusherRecipeDefinition("nether_quartz_block_to_quartz", Blocks.QUARTZ_BLOCK, new ItemStack(Items.QUARTZ,4), 800, 4)
     };
 
     private CobblestoneCrusherRecipeDatagen() {
