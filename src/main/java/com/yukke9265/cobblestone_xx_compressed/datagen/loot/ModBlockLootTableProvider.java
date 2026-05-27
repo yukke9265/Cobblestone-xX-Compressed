@@ -10,7 +10,6 @@ import org.jetbrains.annotations.NotNull;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.yukke9265.cobblestone_xx_compressed.CobblestonexXCompressed;
-import com.yukke9265.cobblestone_xx_compressed.loot.CompressedStoneCompatLootDefinition;
 import com.yukke9265.cobblestone_xx_compressed.loot.CompressedStoneLootDefinition;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModBlocks;
 
@@ -82,7 +81,7 @@ public class ModBlockLootTableProvider implements DataProvider {
             futures.add(DataProvider.saveStable(cache, createCompressedStoneLoot(definition), rootPath.resolve(getBlockPath(definition.getStoneBlock().get()) + ".json")));
         }
 
-        for (CompressedStoneCompatLootDefinition definition : CompressedStoneCompatLootDefinition.getDefinitions()) {
+        for (CompressedStoneLootDefinition.CompatLootEntry definition : CompressedStoneLootDefinition.getCompatLootEntries()) {
             futures.add(DataProvider.saveStable(
                 cache,
                 createCompatCompressedStoneLoot(definition),
@@ -129,8 +128,12 @@ public class ModBlockLootTableProvider implements DataProvider {
         pools.add(mainPool);
 
         for (CompressedStoneLootDefinition.BonusLootEntry bonusDrop : definition.getBonusDrops()) {
+            if (bonusDrop.hasCompatLoot()) {
+                continue;
+            }
+
             pools.add(createBonusPool(
-                getItemName(bonusDrop.getItem().get()),
+                bonusDrop.getItemId().toString(),
                 bonusDrop.getChance(),
                 bonusDrop.hasCountRange(),
                 bonusDrop.getMinCount(),
@@ -142,7 +145,7 @@ public class ModBlockLootTableProvider implements DataProvider {
         return root;
     }
 
-    private JsonObject createCompatCompressedStoneLoot(CompressedStoneCompatLootDefinition definition) {
+    private JsonObject createCompatCompressedStoneLoot(CompressedStoneLootDefinition.CompatLootEntry definition) {
         JsonObject root = createLootRoot();
         JsonArray pools = new JsonArray();
         pools.add(createBonusPool(definition.getItemId().toString(), definition.getChance(), false, 0.0d, 0.0d));

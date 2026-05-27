@@ -9,8 +9,8 @@
   "conditions": [
     {
       "condition": "neoforge:loot_table_id",
-      "loot_table_id": "cobblestonexxcompressed:blocks/tier_amethyst_compressed_stone"
+      "loot_table_id": "cobblestonexxcompressed:blocks/tier_iron_compressed_stone"
     }
   ],
-  "table": "cobblestonexxcompressed:compat/compressed_stone/tier_amethyst_compressed_stone/raw_lead"
+  "table": "cobblestonexxcompressed:compat/compressed_stone/tier_iron_compressed_stone/raw_lead"
 }

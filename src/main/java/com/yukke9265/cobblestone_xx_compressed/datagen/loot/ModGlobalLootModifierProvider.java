@@ -4,7 +4,7 @@ import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
 import com.yukke9265.cobblestone_xx_compressed.CobblestonexXCompressed;
-import com.yukke9265.cobblestone_xx_compressed.loot.CompressedStoneCompatLootDefinition;
+import com.yukke9265.cobblestone_xx_compressed.loot.CompressedStoneLootDefinition;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
@@ -24,7 +24,7 @@ public class ModGlobalLootModifierProvider extends GlobalLootModifierProvider {
 
     @Override
     protected void start() {
-        for (CompressedStoneCompatLootDefinition definition : CompressedStoneCompatLootDefinition.getDefinitions()) {
+        for (CompressedStoneLootDefinition.CompatLootEntry definition : CompressedStoneLootDefinition.getCompatLootEntries()) {
             LootItemCondition[] conditions = new LootItemCondition[] {
                 LootTableIdCondition.builder(Objects.requireNonNull(definition.getTargetLootTableId())).build()
             };

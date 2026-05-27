@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Supplier;
 
+import com.yukke9265.cobblestone_xx_compressed.CobblestonexXCompressed;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModBlocks;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModItems;
 
@@ -14,7 +15,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
-import net.neoforged.fml.ModList;
 
 public class CompressedStoneLootDefinition {
     private static final String MEKANISM_MOD_ID = "mekanism";
@@ -36,7 +36,7 @@ public class CompressedStoneLootDefinition {
             bonusDrop(ModItems.TierCobblestoneGem.COPPER.getItem(), 0.4d),
             bonusDrop(() -> Items.COAL_ORE, 0.10d),
             bonusDrop(() -> Items.RAW_COPPER, 0.10d),
-            optionalModBonusDrop(MEKANISM_MOD_ID, "raw_tin", 0.10d)
+            optionalModBonusDrop(MEKANISM_MOD_ID, "raw_tin", 0.10d, 0.10d)
         ),
         new CompressedStoneLootDefinition(
             ModBlocks.TierCompressedStone.IRON.getBlock(),
@@ -44,28 +44,28 @@ public class CompressedStoneLootDefinition {
             bonusDrop(ModItems.TierCobblestoneGem.IRON.getItem(), 0.2d),
             bonusDrop(() -> Items.REDSTONE_ORE, 0.10d),
             bonusDrop(() -> Items.RAW_IRON, 0.10d),
-            optionalModBonusDrop(MEKANISM_MOD_ID, "raw_lead", 0.10d)
+            optionalModBonusDrop(MEKANISM_MOD_ID, "raw_lead", 0.10d, 0.10d)
         ),
         new CompressedStoneLootDefinition(
             ModBlocks.TierCompressedStone.GOLD.getBlock(),
             ModBlocks.TierCompressedCobblestone.GOLD.getBlock(),
             bonusDrop(ModItems.TierCobblestoneGem.GOLD.getItem(), 0.2d),
             bonusDrop(() -> Items.NETHER_QUARTZ_ORE, 0.10d),
-            optionalModBonusDrop(MEKANISM_MOD_ID, "fluorite_ore", 0.10d)
+            optionalModBonusDrop(MEKANISM_MOD_ID, "fluorite_ore", 0.10d, 0.10d)
         ),
         new CompressedStoneLootDefinition(
             ModBlocks.TierCompressedStone.AMETHYST.getBlock(),
             ModBlocks.TierCompressedCobblestone.AMETHYST.getBlock(),
             bonusDrop(ModItems.TierCobblestoneGem.AMETHYST.getItem(), 0.1d),
             bonusDrop(() -> Items.LAPIS_ORE, 0.10d),
-            optionalModBonusDrop(MEKANISM_MOD_ID, "raw_osmium", 0.10d)
+            optionalModBonusDrop(MEKANISM_MOD_ID, "raw_osmium", 0.10d, 0.10d)
         ),
         new CompressedStoneLootDefinition(
             ModBlocks.TierCompressedStone.AQUAMARINE.getBlock(),
             ModBlocks.TierCompressedCobblestone.AQUAMARINE.getBlock(),
             bonusDrop(ModItems.TierCobblestoneGem.AQUAMARINE.getItem(), 0.1d),
             bonusDrop(() -> Items.GLOWSTONE, 0.10d),
-            optionalModBonusDrop(MEKANISM_MOD_ID, "raw_uranium", 0.10d)
+            optionalModBonusDrop(MEKANISM_MOD_ID, "raw_uranium", 0.10d, 0.10d)
         ),
         new CompressedStoneLootDefinition(
             ModBlocks.TierCompressedStone.TOPAZ.getBlock(),
@@ -90,7 +90,7 @@ public class CompressedStoneLootDefinition {
             ModBlocks.TierCompressedCobblestone.DIAMOND.getBlock(),
             bonusDrop(ModItems.TierCobblestoneGem.DIAMOND.getItem(), 0.02d),
             bonusDrop(() -> Items.DIAMOND_ORE, 0.10d),
-            optionalModBonusDrop(MEKANISM_EXTRAS_MOD_ID, "raw_naquadah", 0.10d)
+            optionalModBonusDrop(MEKANISM_EXTRAS_MOD_ID, "raw_naquadah", 0.10d, 0.10d)
         ),
         new CompressedStoneLootDefinition(
             ModBlocks.TierCompressedStone.EMERALD.getBlock(),
@@ -138,30 +138,51 @@ public class CompressedStoneLootDefinition {
         return this.bonusDrops;
     }
 
+    public List<CompatLootEntry> getCompatBonusDrops() {
+        List<CompatLootEntry> entries = new ArrayList<>();
+
+        for (BonusLootEntry bonusDrop : this.bonusDrops) {
+            if (!bonusDrop.hasCompatLoot()) {
+                continue;
+            }
+
+            entries.add(new CompatLootEntry(this.stoneBlock, bonusDrop));
+        }
+
+        return List.copyOf(entries);
+    }
+
     public static List<CompressedStoneLootDefinition> getDefinitions() {
         return DEFINITIONS;
     }
 
-    public static BonusLootEntry bonusDrop(Supplier<? extends ItemLike> item, double chance) {
-        return new BonusLootEntry(item, chance, false, 0.0d, 0.0d);
-    }
+    public static List<CompatLootEntry> getCompatLootEntries() {
+        List<CompatLootEntry> entries = new ArrayList<>();
 
-    private static BonusLootEntry optionalModBonusDrop(String modId, String itemPath, double chance) {
-        // 外部 mod を compileOnly 依存にしていないため、
-        // レジストリから文字列 ID で引いて、未導入環境でも安全に読み込めるようにします。
-        if (!ModList.get().isLoaded(modId)) {
-            return null;
+        for (CompressedStoneLootDefinition definition : DEFINITIONS) {
+            entries.addAll(definition.getCompatBonusDrops());
         }
 
+        return List.copyOf(entries);
+    }
+
+    public static BonusLootEntry bonusDrop(Supplier<? extends ItemLike> item, double chance) {
+        return new BonusLootEntry(item, null, chance, null, 0.0d, false, 0.0d, 0.0d);
+    }
+
+    private static BonusLootEntry optionalModBonusDrop(String modId, String itemPath, double chance, double compatChance) {
+        // datagen 環境では外部 mod の Item 実体が無くても compat JSON を出したいため、
+        // item id は必ず保持し、実体が見つかったときだけ JEI 表示用の supplier を持たせます。
         String safeModId = Objects.requireNonNull(modId);
         String safeItemPath = Objects.requireNonNull(itemPath);
         ResourceLocation itemId = Objects.requireNonNull(ResourceLocation.fromNamespaceAndPath(safeModId, safeItemPath));
         Item item = BuiltInRegistries.ITEM.get(itemId);
-        if (item == Items.AIR) {
-            return null;
+        Supplier<? extends ItemLike> itemSupplier = null;
+        if (item != Items.AIR) {
+            itemSupplier = () -> item;
         }
 
-        return bonusDrop(() -> item, chance);
+        return new BonusLootEntry(itemSupplier, itemId, chance, modId, compatChance, false, 0.0d, 0.0d);
     }
 
     private static List<BonusLootEntry> createBonusDrops(BonusLootEntry... bonusDrops) {
@@ -185,19 +206,60 @@ public class CompressedStoneLootDefinition {
 
     public static class BonusLootEntry {
         private final Supplier<? extends ItemLike> item;
+        private final ResourceLocation explicitItemId;
         private final double chance;
+        private final String compatModId;
+        private final double compatChance;
 
-        private BonusLootEntry(Supplier<? extends ItemLike> item, double chance, boolean hasCountRange, double minCount, double maxCount) {
+        private BonusLootEntry(
+            Supplier<? extends ItemLike> item,
+            ResourceLocation explicitItemId,
+            double chance,
+            String compatModId,
+            double compatChance,
+            boolean hasCountRange,
+            double minCount,
+            double maxCount
+        ) {
             this.item = item;
+            this.explicitItemId = explicitItemId;
             this.chance = chance;
+            this.compatModId = compatModId;
+            this.compatChance = compatChance;
         }
 
         public Supplier<? extends ItemLike> getItem() {
-            return this.item;
+            return Objects.requireNonNull(this.item);
         }
 
         public double getChance() {
             return this.chance;
+        }
+
+        public boolean hasCompatLoot() {
+            return this.compatModId != null;
+        }
+
+        public boolean hasResolvedItem() {
+            return this.item != null;
+        }
+
+        public String getCompatModId() {
+            return this.compatModId;
+        }
+
+        public double getCompatChance() {
+            return this.compatChance;
+        }
+
+        public ResourceLocation getItemId() {
+            if (this.explicitItemId != null) {
+                return this.explicitItemId;
+            }
+
+            ItemLike itemLike = Objects.requireNonNull(this.item.get());
+            Item item = Objects.requireNonNull(itemLike.asItem());
+            return Objects.requireNonNull(BuiltInRegistries.ITEM.getKey(item));
         }
 
         public boolean hasCountRange() {
@@ -210,6 +272,44 @@ public class CompressedStoneLootDefinition {
 
         public double getMaxCount() {
             return 0.0d;
+        }
+    }
+
+    public static class CompatLootEntry {
+        private final Supplier<? extends Block> stoneBlock;
+        private final BonusLootEntry bonusDrop;
+
+        private CompatLootEntry(Supplier<? extends Block> stoneBlock, BonusLootEntry bonusDrop) {
+            this.stoneBlock = stoneBlock;
+            this.bonusDrop = bonusDrop;
+        }
+
+        public String getRequiredModId() {
+            return Objects.requireNonNull(this.bonusDrop.getCompatModId());
+        }
+
+        public ResourceLocation getItemId() {
+            return this.bonusDrop.getItemId();
+        }
+
+        public double getChance() {
+            return this.bonusDrop.getCompatChance();
+        }
+
+        public ResourceLocation getTargetLootTableId() {
+            return Objects.requireNonNull(ResourceLocation.fromNamespaceAndPath(CobblestonexXCompressed.MODID, "blocks/" + getStoneBlockPath()));
+        }
+
+        public ResourceLocation getCompatLootTableId() {
+            return Objects.requireNonNull(ResourceLocation.fromNamespaceAndPath(
+                CobblestonexXCompressed.MODID,
+                "compat/compressed_stone/" + getStoneBlockPath() + "/" + getItemId().getPath()
+            ));
+        }
+
+        public String getStoneBlockPath() {
+            Block block = Objects.requireNonNull(this.stoneBlock.get());
+            return BuiltInRegistries.BLOCK.getKey(block).getPath();
         }
     }
 }

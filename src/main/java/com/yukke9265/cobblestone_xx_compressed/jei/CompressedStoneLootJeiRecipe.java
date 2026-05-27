@@ -42,6 +42,10 @@ public class CompressedStoneLootJeiRecipe {
         for (CompressedStoneLootDefinition definition : CompressedStoneLootDefinition.getDefinitions()) {
             List<BonusDrop> bonusDrops = new ArrayList<>();
             for (CompressedStoneLootDefinition.BonusLootEntry bonusDrop : definition.getBonusDrops()) {
+                if (!bonusDrop.hasResolvedItem()) {
+                    continue;
+                }
+
                 bonusDrops.add(new BonusDrop(
                     new ItemStack(bonusDrop.getItem().get()),
                     bonusDrop.getChance(),
