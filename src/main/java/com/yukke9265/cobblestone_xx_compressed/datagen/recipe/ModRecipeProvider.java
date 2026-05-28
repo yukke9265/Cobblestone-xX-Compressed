@@ -7,7 +7,9 @@ import javax.annotation.Nonnull;
 import com.yukke9265.cobblestone_xx_compressed.CobblestonexXCompressed;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModBlocks;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModItems;
+import com.yukke9265.cobblestone_xx_compressed.util.FortuneEnchantedBookHelper;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
@@ -15,11 +17,16 @@ import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.data.recipes.ShapelessRecipeBuilder;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
+import net.neoforged.neoforge.common.crafting.DataComponentIngredient;
 
 @SuppressWarnings("null")
 public class ModRecipeProvider extends RecipeProvider {
+    private final CompletableFuture<HolderLookup.Provider> lookupProvider;
+
     // gem のレシピは tier ごとに個別変更しやすいよう、
     // 「出力先」と「その tier で使う素材」を 1 行ずつ定義しておきます。
     // ここを見れば、どの gem が何から作られるかをすぐ追えます。
@@ -254,8 +261,9 @@ public class ModRecipeProvider extends RecipeProvider {
         )
     };
 
-    public ModRecipeProvider(PackOutput output, CompletableFuture<net.minecraft.core.HolderLookup.Provider> lookupProvider) {
+    public ModRecipeProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider) {
         super(output, lookupProvider);
+        this.lookupProvider = lookupProvider;
     }
 
     @Override
@@ -269,6 +277,7 @@ public class ModRecipeProvider extends RecipeProvider {
         buildCobblestoneMachineCasingRecipes(output);
         buildCobblestoneTankRecipes(output);
         buildCobblestoneBreadRecipe(output);
+        buildFortuneEnchantedBookRecipes(output);
         // buildGemRecipes(output); //gemはドロップによる獲得に変更するため、レシピを削除します。
         buildCobblestoneRodRecipes(output);
         buildCobblestoneWireRecipes(output);
@@ -309,6 +318,39 @@ public class ModRecipeProvider extends RecipeProvider {
             .define('S', Items.STONE)
             .unlockedBy("has_cobblestone", has(Items.COBBLESTONE))
             .save(output, modRecipeId("cobblestone_bread"));
+    }
+
+    private void buildFortuneEnchantedBookRecipes(RecipeOutput output) {
+        HolderLookup.Provider holderLookup = this.lookupProvider.join();
+
+        // 幸運 4 以降は、同じ形の recipe を段階的に積み上げます。
+        // B は前レベルの本に component まで厳密一致させ、
+        // C は次段階に対応する丸石シンギュラリティ 8 個を外周へ置きます。
+        for (int fortuneLevel = FortuneEnchantedBookHelper.FIRST_FORTUNE_BOOK_LEVEL;
+             fortuneLevel <= FortuneEnchantedBookHelper.LAST_FORTUNE_BOOK_LEVEL;
+             fortuneLevel++) {
+            ItemLike singularity = FortuneEnchantedBookHelper.getRequiredSingularityTier(fortuneLevel).getItem().get();
+            ItemStack resultBook = FortuneEnchantedBookHelper.createFortuneEnchantedBook(holderLookup, fortuneLevel);
+
+            ShapedRecipeBuilder.shaped(RecipeCategory.MISC, resultBook)
+                .pattern("CCC")
+                .pattern("CBC")
+                .pattern("CCC")
+                .define('C', singularity)
+                .define('B', createFortuneBookBaseIngredient(holderLookup, fortuneLevel))
+                .unlockedBy("has_" + FortuneEnchantedBookHelper.getRequiredSingularityTier(fortuneLevel).getRegistryName(), has(singularity))
+                .save(output, modRecipeId("fortune_" + fortuneLevel + "_enchanted_book"));
+        }
+    }
+
+    private Ingredient createFortuneBookBaseIngredient(HolderLookup.Provider holderLookup, int fortuneLevel) {
+        if (fortuneLevel == FortuneEnchantedBookHelper.FIRST_FORTUNE_BOOK_LEVEL) {
+            return Ingredient.of(Items.BOOK);
+        }
+
+        // ここは「前レベルの幸運本だけ」を素材にしたいので、
+        // enchanted_book というアイテム種別だけでなく保存エンチャントの中身まで一致させます。
+        return DataComponentIngredient.of(true, FortuneEnchantedBookHelper.createFortuneEnchantedBook(holderLookup, fortuneLevel - 1));
     }
 
     private void buildCompressedCobblestoneRecipes(RecipeOutput output) {

@@ -180,4 +180,14 @@ public class BaseScreen<T extends BaseMenu> extends AbstractContainerScreen<T> {
         return List.of();
     }
 
+    // JEI 側の clickable area は画面全体の絶対座標で扱われるため、
+    // plugin 側から GUI 左上位置を参照できるように公開します。
+    public final int getGuiLeft() {
+        return this.leftPos;
+    }
+
+    public final int getGuiTop() {
+        return this.topPos;
+    }
+
 }

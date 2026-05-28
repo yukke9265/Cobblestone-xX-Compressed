@@ -480,7 +480,7 @@ public class ModJeiPlugin implements IModPlugin {
             @Override
             public Collection<IGuiClickableArea> getGuiClickableAreas(BaseScreen<?> screen, double mouseX, double mouseY) {
                 return screen.getJeiClickableAreaDefinitions().stream()
-                    .map(ModJeiPlugin::createClickableArea)
+                    .map(definition -> ModJeiPlugin.createClickableArea(screen, definition))
                     .flatMap(Optional::stream)
                     .toList();
             }
@@ -494,15 +494,15 @@ public class ModJeiPlugin implements IModPlugin {
         }
     }
 
-    private static Optional<IGuiClickableArea> createClickableArea(JeiClickableAreaDefinition definition) {
+    private static Optional<IGuiClickableArea> createClickableArea(BaseScreen<?> screen, JeiClickableAreaDefinition definition) {
         Optional<RecipeType<?>> recipeType = findRecipeType(definition.recipeCategoryId());
         if (recipeType.isEmpty()) {
             return Optional.empty();
         }
 
         return Optional.of(IGuiClickableArea.createBasic(
-            definition.x(),
-            definition.y(),
+            screen.getGuiLeft() + definition.x(),
+            screen.getGuiTop() + definition.y(),
             definition.width(),
             definition.height(),
             recipeType.get()

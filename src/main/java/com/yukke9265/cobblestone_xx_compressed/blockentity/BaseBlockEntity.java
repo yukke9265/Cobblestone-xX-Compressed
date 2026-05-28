@@ -151,6 +151,9 @@ public class BaseBlockEntity extends BlockEntity {
 
         this.automationModes[index] = mode;
 
+        // 面設定を変えると外部へ公開する capability の中身も変わるため、
+        // 既に隣接機械やパイプが握っているキャッシュを破棄して再取得させます。
+        this.invalidateAutomationCapabilities();
         this.setChanged();
     }
 
@@ -160,7 +163,19 @@ public class BaseBlockEntity extends BlockEntity {
         }
 
         this.fluidAutomationModes[index] = mode;
+
+        // 液体側も同様に、面設定の変更を外部 capability キャッシュへ即時反映します。
+        this.invalidateAutomationCapabilities();
         this.setChanged();
+    }
+
+    private void invalidateAutomationCapabilities() {
+        Level currentLevel = this.level;
+        if (currentLevel == null) {
+            return;
+        }
+
+        currentLevel.invalidateCapabilities(this.worldPosition);
     }
 
     protected void saveAutomationModes(CompoundTag tag) {
