@@ -32,13 +32,17 @@ public final class FortuneEnchantedBookHelper {
     private FortuneEnchantedBookHelper() {
     }
 
+    public static Holder<Enchantment> getFortuneEnchantment(HolderLookup.Provider holderLookup) {
+        return holderLookup.lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(Enchantments.FORTUNE);
+    }
+
     public static ItemStack createFortuneEnchantedBook(HolderLookup.Provider holderLookup, int fortuneLevel) {
         validateFortuneLevel(fortuneLevel);
 
         // 保存エンチャント付きの本を、その場で完成状態の ItemStack として作ります。
         // これを creative tab の表示や datagen の結果出力へ共通利用します。
         ItemStack enchantedBook = new ItemStack(Items.ENCHANTED_BOOK);
-        Holder<Enchantment> fortune = holderLookup.lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(Enchantments.FORTUNE);
+        Holder<Enchantment> fortune = getFortuneEnchantment(holderLookup);
 
         EnchantmentHelper.updateEnchantments(enchantedBook, enchantments -> enchantments.set(fortune, fortuneLevel));
         return enchantedBook;
