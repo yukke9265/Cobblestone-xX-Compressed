@@ -128,13 +128,11 @@ public class CobblestoneTankMenu extends BaseMenu {
 
     @Override
     public boolean clickMenuButton(Player player, int id) {
-        if (this.isAutomationButtonId(id)) {
-            this.tankBlockEntity.cycleAutomationMode(this.getAutomationIndexFromButtonId(id), TANK_ITEM_AUTOMATION_MODES);
+        if (this.handleAutomationButtonClick(this.tankBlockEntity, id, TANK_ITEM_AUTOMATION_MODES)) {
             return true;
         }
 
-        if (this.isFluidAutomationButtonId(id)) {
-            this.tankBlockEntity.cycleFluidAutomationMode(this.getFluidAutomationIndexFromButtonId(id), TANK_FLUID_AUTOMATION_MODES);
+        if (this.handleFluidAutomationButtonClick(this.tankBlockEntity, id, TANK_FLUID_AUTOMATION_MODES)) {
             return true;
         }
 

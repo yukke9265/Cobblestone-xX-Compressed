@@ -169,13 +169,11 @@ public class CobblestoneAssemblyMachineMenu extends BaseMenu {
             return true;
         }
 
-        if (this.isAutomationButtonId(id)) {
-            this.assemblyMachineBlockEntity.cycleAutomationMode(this.getAutomationIndexFromButtonId(id), ITEM_AUTOMATION_MODES);
+        if (this.handleAutomationButtonClick(this.assemblyMachineBlockEntity, id, ITEM_AUTOMATION_MODES)) {
             return true;
         }
 
-        if (this.isFluidAutomationButtonId(id)) {
-            this.assemblyMachineBlockEntity.cycleFluidAutomationMode(this.getFluidAutomationIndexFromButtonId(id), FLUID_AUTOMATION_MODES);
+        if (this.handleFluidAutomationButtonClick(this.assemblyMachineBlockEntity, id, FLUID_AUTOMATION_MODES)) {
             return true;
         }
 

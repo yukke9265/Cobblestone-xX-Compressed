@@ -161,8 +161,7 @@ public class CobblestoneExtremeCompressorMenu extends BaseMenu {
             return true;
         }
 
-        if (this.isAutomationButtonId(id)) {
-            this.extremeCompressorBlockEntity.cycleAutomationMode(this.getAutomationIndexFromButtonId(id), EXTREME_COMPRESSOR_AUTOMATION_MODES);
+        if (this.handleAutomationButtonClick(this.extremeCompressorBlockEntity, id, EXTREME_COMPRESSOR_AUTOMATION_MODES)) {
             return true;
         }
 

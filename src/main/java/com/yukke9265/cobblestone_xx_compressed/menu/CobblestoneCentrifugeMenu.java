@@ -130,8 +130,7 @@ public class CobblestoneCentrifugeMenu extends BaseMenu {
             return true;
         }
 
-        if (this.isAutomationButtonId(id)) {
-            this.centrifugeBlockEntity.cycleAutomationMode(this.getAutomationIndexFromButtonId(id), CENTRIFUGE_AUTOMATION_MODES);
+        if (this.handleAutomationButtonClick(this.centrifugeBlockEntity, id, CENTRIFUGE_AUTOMATION_MODES)) {
             return true;
         }
 

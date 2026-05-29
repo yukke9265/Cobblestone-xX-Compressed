@@ -163,13 +163,11 @@ public class CobblestoneCrystallizationChamberMenu extends BaseMenu {
             return true;
         }
 
-        if (this.isAutomationButtonId(id)) {
-            this.crystallizationChamberBlockEntity.cycleAutomationMode(this.getAutomationIndexFromButtonId(id), ITEM_AUTOMATION_MODES);
+        if (this.handleAutomationButtonClick(this.crystallizationChamberBlockEntity, id, ITEM_AUTOMATION_MODES)) {
             return true;
         }
 
-        if (this.isFluidAutomationButtonId(id)) {
-            this.crystallizationChamberBlockEntity.cycleFluidAutomationMode(this.getFluidAutomationIndexFromButtonId(id), FLUID_AUTOMATION_MODES);
+        if (this.handleFluidAutomationButtonClick(this.crystallizationChamberBlockEntity, id, FLUID_AUTOMATION_MODES)) {
             return true;
         }
 

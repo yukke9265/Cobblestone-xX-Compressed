@@ -51,6 +51,20 @@ public enum AutomationMode {
         };
     }
 
+    public AutomationMode previous() {
+        return switch (this) {
+            case DISABLED -> OUTPUT;
+            case INPUT -> DISABLED;
+            case OUTPUT -> INPUT;
+            case IN_OUT -> DISABLED;
+            case COBBLESTONE_INPUT -> DISABLED;
+            case INPUT_1 -> DISABLED;
+            case INPUT_2 -> DISABLED;
+            case OUTPUT_1 -> DISABLED;
+            case OUTPUT_2 -> DISABLED;
+        };
+    }
+
     public static AutomationMode fromId(int id) {
         for (AutomationMode mode : values()) {
             if (mode.id == id) {

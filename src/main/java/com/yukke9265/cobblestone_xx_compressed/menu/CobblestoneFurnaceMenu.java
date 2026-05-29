@@ -115,8 +115,7 @@ public class CobblestoneFurnaceMenu extends BaseMenu {
             return true;
         }
 
-        if (this.isAutomationButtonId(id)) {
-            this.furnaceBlockEntity.cycleAutomationMode(this.getAutomationIndexFromButtonId(id), FURNACE_AUTOMATION_MODES);
+        if (this.handleAutomationButtonClick(this.furnaceBlockEntity, id, FURNACE_AUTOMATION_MODES)) {
             return true;
         }
 

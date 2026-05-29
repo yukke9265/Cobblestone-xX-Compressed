@@ -190,13 +190,11 @@ public class CobblestoneDissolutionChamberMenu extends BaseMenu {
             return true;
         }
 
-        if (this.isAutomationButtonId(id)) {
-            this.dissolutionChamberBlockEntity.cycleAutomationMode(this.getAutomationIndexFromButtonId(id), ITEM_AUTOMATION_MODES);
+        if (this.handleAutomationButtonClick(this.dissolutionChamberBlockEntity, id, ITEM_AUTOMATION_MODES)) {
             return true;
         }
 
-        if (this.isFluidAutomationButtonId(id)) {
-            this.dissolutionChamberBlockEntity.cycleFluidAutomationMode(this.getFluidAutomationIndexFromButtonId(id), FLUID_AUTOMATION_MODES);
+        if (this.handleFluidAutomationButtonClick(this.dissolutionChamberBlockEntity, id, FLUID_AUTOMATION_MODES)) {
             return true;
         }
 

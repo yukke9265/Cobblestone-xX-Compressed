@@ -216,13 +216,11 @@ public class CobblestoneFluidMixerMenu extends BaseMenu {
             return true;
         }
 
-        if (this.isAutomationButtonId(id)) {
-            this.fluidMixerBlockEntity.cycleAutomationMode(this.getAutomationIndexFromButtonId(id), ITEM_AUTOMATION_MODES);
+        if (this.handleAutomationButtonClick(this.fluidMixerBlockEntity, id, ITEM_AUTOMATION_MODES)) {
             return true;
         }
 
-        if (this.isFluidAutomationButtonId(id)) {
-            this.fluidMixerBlockEntity.cycleFluidAutomationMode(this.getFluidAutomationIndexFromButtonId(id), FLUID_AUTOMATION_MODES);
+        if (this.handleFluidAutomationButtonClick(this.fluidMixerBlockEntity, id, FLUID_AUTOMATION_MODES)) {
             return true;
         }
 

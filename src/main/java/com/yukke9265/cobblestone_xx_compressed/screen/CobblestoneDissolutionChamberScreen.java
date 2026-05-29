@@ -320,20 +320,29 @@ public class CobblestoneDissolutionChamberScreen extends BaseScreen<CobblestoneD
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        for (AutomationSide side : AUTOMATION_SIDES) {
+            int index = side.getIndex();
+            if (this.handleAutomationButtonRightClick(button, this.itemAutomationButtons[index], this.menu.getReverseAutomationButtonId(index))) {
+                return true;
+            }
+
+            if (this.handleAutomationButtonRightClick(button, this.fluidAutomationButtons[index], this.menu.getReverseFluidAutomationButtonId(index))) {
+                return true;
+            }
+        }
+
         if (button == 0 && this.isMouseOverInputFluidIndicator((int) mouseX, (int) mouseY)) {
             int buttonId = Screen.hasShiftDown()
                 ? this.menu.getInputFluidInteractionShiftButtonId()
                 : this.menu.getInputFluidInteractionButtonId();
-            this.sendMenuButtonClick(buttonId);
-            return true;
+            return this.sendMenuButtonClickWithSound(buttonId);
         }
 
         if (button == 0 && this.isMouseOverOutputFluidIndicator((int) mouseX, (int) mouseY)) {
             int buttonId = Screen.hasShiftDown()
                 ? this.menu.getOutputFluidInteractionShiftButtonId()
                 : this.menu.getOutputFluidInteractionButtonId();
-            this.sendMenuButtonClick(buttonId);
-            return true;
+            return this.sendMenuButtonClickWithSound(buttonId);
         }
 
         return super.mouseClicked(mouseX, mouseY, button);

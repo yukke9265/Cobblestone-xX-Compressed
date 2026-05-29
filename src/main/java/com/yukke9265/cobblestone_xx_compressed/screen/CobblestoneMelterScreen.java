@@ -279,6 +279,22 @@ public class CobblestoneMelterScreen extends BaseScreen<CobblestoneMelterMenu> {
     }
 
     @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        for (AutomationSide side : AUTOMATION_SIDES) {
+            int index = side.getIndex();
+            if (this.handleAutomationButtonRightClick(button, this.itemAutomationButtons[index], this.menu.getReverseAutomationButtonId(index))) {
+                return true;
+            }
+
+            if (this.handleAutomationButtonRightClick(button, this.fluidAutomationButtons[index], this.menu.getReverseFluidAutomationButtonId(index))) {
+                return true;
+            }
+        }
+
+        return super.mouseClicked(mouseX, mouseY, button);
+    }
+
+    @Override
     public List<JeiClickableAreaDefinition> getJeiClickableAreaDefinitions() {
         return this.createSingleJeiClickableAreaDefinition(
             JEI_CLICK_AREA_X,

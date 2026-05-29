@@ -130,8 +130,7 @@ public class CobblestoneLaserDrillMenu extends BaseMenu {
             return true;
         }
 
-        if (this.isAutomationButtonId(id)) {
-            this.laserDrillBlockEntity.cycleAutomationMode(this.getAutomationIndexFromButtonId(id), LASER_DRILL_AUTOMATION_MODES);
+        if (this.handleAutomationButtonClick(this.laserDrillBlockEntity, id, LASER_DRILL_AUTOMATION_MODES)) {
             return true;
         }
 

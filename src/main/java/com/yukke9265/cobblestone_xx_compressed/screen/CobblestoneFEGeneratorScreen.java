@@ -255,6 +255,18 @@ public class CobblestoneFEGeneratorScreen extends BaseScreen<CobblestoneFEGenera
         }
     }
 
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        for (AutomationSide side : AUTOMATION_SIDES) {
+            int index = side.getIndex();
+            if (this.handleAutomationButtonRightClick(button, this.automationButtons[index], this.menu.getReverseAutomationButtonId(index))) {
+                return true;
+            }
+        }
+
+        return super.mouseClicked(mouseX, mouseY, button);
+    }
+
     private void renderIndicator(GuiGraphics guiGraphics, int x, int y, int width, int height, long stored, long max, int fillColor) {
         guiGraphics.fill(x - 1, y - 1, x + width + 1, y + height + 1, INDICATOR_BORDER_COLOR);
         guiGraphics.fill(x, y, x + width, y + height, INDICATOR_BACKGROUND_COLOR);

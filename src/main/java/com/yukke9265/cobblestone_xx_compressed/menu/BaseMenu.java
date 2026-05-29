@@ -2,6 +2,7 @@ package com.yukke9265.cobblestone_xx_compressed.menu;
 
 import java.util.List;
 
+import com.yukke9265.cobblestone_xx_compressed.blockentity.AutomationMode;
 import com.yukke9265.cobblestone_xx_compressed.blockentity.BaseBlockEntity;
 import com.yukke9265.cobblestone_xx_compressed.compat.jei.JeiRecipeTransferDefinition;
 import com.yukke9265.cobblestone_xx_compressed.util.LongDataHelper;
@@ -23,6 +24,8 @@ public class BaseMenu extends AbstractContainerMenu {
     protected static final int FLUID_AUTOMATION_BUTTON_ID_BASE = 300;
     protected static final int FLUID_INDICATOR_BUTTON_ID = 400;
     protected static final int FLUID_INDICATOR_SHIFT_BUTTON_ID = 401;
+    protected static final int REVERSE_AUTOMATION_BUTTON_ID_BASE = 500;
+    protected static final int REVERSE_FLUID_AUTOMATION_BUTTON_ID_BASE = 600;
 
     // 共通の基底メニュークラスです。全てのメニューはこれを継承します。
     public BaseMenu(MenuType<?> menuType, int containerId) {
@@ -33,17 +36,34 @@ public class BaseMenu extends AbstractContainerMenu {
         return AUTOMATION_BUTTON_ID_BASE + automationIndex;
     }
 
+    public final int getReverseAutomationButtonId(int automationIndex) {
+        return REVERSE_AUTOMATION_BUTTON_ID_BASE + automationIndex;
+    }
+
     protected final boolean isAutomationButtonId(int buttonId) {
         return buttonId >= AUTOMATION_BUTTON_ID_BASE
             && buttonId < AUTOMATION_BUTTON_ID_BASE + BaseBlockEntity.AUTOMATION_FACE_COUNT;
+    }
+
+    protected final boolean isReverseAutomationButtonId(int buttonId) {
+        return buttonId >= REVERSE_AUTOMATION_BUTTON_ID_BASE
+            && buttonId < REVERSE_AUTOMATION_BUTTON_ID_BASE + BaseBlockEntity.AUTOMATION_FACE_COUNT;
     }
 
     protected final int getAutomationIndexFromButtonId(int buttonId) {
         return buttonId - AUTOMATION_BUTTON_ID_BASE;
     }
 
+    protected final int getAutomationIndexFromReverseButtonId(int buttonId) {
+        return buttonId - REVERSE_AUTOMATION_BUTTON_ID_BASE;
+    }
+
     protected final int getFluidAutomationButtonId(int automationIndex) {
         return FLUID_AUTOMATION_BUTTON_ID_BASE + automationIndex;
+    }
+
+    public final int getReverseFluidAutomationButtonId(int automationIndex) {
+        return REVERSE_FLUID_AUTOMATION_BUTTON_ID_BASE + automationIndex;
     }
 
     protected final boolean isFluidAutomationButtonId(int buttonId) {
@@ -51,26 +71,73 @@ public class BaseMenu extends AbstractContainerMenu {
             && buttonId < FLUID_AUTOMATION_BUTTON_ID_BASE + BaseBlockEntity.AUTOMATION_FACE_COUNT;
     }
 
+    protected final boolean isReverseFluidAutomationButtonId(int buttonId) {
+        return buttonId >= REVERSE_FLUID_AUTOMATION_BUTTON_ID_BASE
+            && buttonId < REVERSE_FLUID_AUTOMATION_BUTTON_ID_BASE + BaseBlockEntity.AUTOMATION_FACE_COUNT;
+    }
+
     protected final int getFluidAutomationIndexFromButtonId(int buttonId) {
         return buttonId - FLUID_AUTOMATION_BUTTON_ID_BASE;
     }
 
+    protected final int getFluidAutomationIndexFromReverseButtonId(int buttonId) {
+        return buttonId - REVERSE_FLUID_AUTOMATION_BUTTON_ID_BASE;
+    }
+
     protected final boolean handleAutomationButtonClick(BaseBlockEntity blockEntity, int buttonId) {
         if (!this.isAutomationButtonId(buttonId)) {
-            return false;
+            if (!this.isReverseAutomationButtonId(buttonId)) {
+                return false;
+            }
+
+            blockEntity.cycleReverseAutomationMode(this.getAutomationIndexFromReverseButtonId(buttonId));
+            return true;
         }
 
         blockEntity.cycleAutomationMode(this.getAutomationIndexFromButtonId(buttonId));
         return true;
     }
 
+    protected final boolean handleAutomationButtonClick(BaseBlockEntity blockEntity, int buttonId, AutomationMode[] allowedModes) {
+        if (this.isAutomationButtonId(buttonId)) {
+            blockEntity.cycleAutomationMode(this.getAutomationIndexFromButtonId(buttonId), allowedModes);
+            return true;
+        }
+
+        if (this.isReverseAutomationButtonId(buttonId)) {
+            blockEntity.cycleReverseAutomationMode(this.getAutomationIndexFromReverseButtonId(buttonId), allowedModes);
+            return true;
+        }
+
+        return false;
+    }
+
     protected final boolean handleFluidAutomationButtonClick(BaseBlockEntity blockEntity, int buttonId) {
         if (!this.isFluidAutomationButtonId(buttonId)) {
-            return false;
+            if (!this.isReverseFluidAutomationButtonId(buttonId)) {
+                return false;
+            }
+
+            blockEntity.cycleReverseFluidAutomationMode(this.getFluidAutomationIndexFromReverseButtonId(buttonId));
+            return true;
         }
 
         blockEntity.cycleFluidAutomationMode(this.getFluidAutomationIndexFromButtonId(buttonId));
         return true;
+    }
+
+    protected final boolean handleFluidAutomationButtonClick(BaseBlockEntity blockEntity, int buttonId, AutomationMode[] allowedModes) {
+        if (this.isFluidAutomationButtonId(buttonId)) {
+            blockEntity.cycleFluidAutomationMode(this.getFluidAutomationIndexFromButtonId(buttonId), allowedModes);
+            return true;
+        }
+
+        if (this.isReverseFluidAutomationButtonId(buttonId)) {
+            blockEntity.cycleReverseFluidAutomationMode(this.getFluidAutomationIndexFromReverseButtonId(buttonId), allowedModes);
+            return true;
+        }
+
+        return false;
     }
 
     protected final int getAutoExportToggleButtonId() {

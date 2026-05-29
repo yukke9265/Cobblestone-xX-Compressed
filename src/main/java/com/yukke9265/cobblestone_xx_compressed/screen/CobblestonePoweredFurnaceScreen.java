@@ -255,6 +255,18 @@ public class CobblestonePoweredFurnaceScreen extends BaseScreen<CobblestonePower
     }
 
     @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        for (AutomationSide side : AUTOMATION_SIDES) {
+            int index = side.getIndex();
+            if (this.handleAutomationButtonRightClick(button, this.automationButtons[index], this.menu.getReverseAutomationButtonId(index))) {
+                return true;
+            }
+        }
+
+        return super.mouseClicked(mouseX, mouseY, button);
+    }
+
+    @Override
     public List<JeiClickableAreaDefinition> getJeiClickableAreaDefinitions() {
         return this.createSingleJeiClickableAreaDefinition(
             JEI_CLICK_AREA_X,

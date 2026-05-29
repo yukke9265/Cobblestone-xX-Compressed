@@ -125,8 +125,7 @@ public class CobblestoneMixerMenu extends BaseMenu {
             return true;
         }
 
-        if (this.isAutomationButtonId(id)) {
-            this.mixerBlockEntity.cycleAutomationMode(this.getAutomationIndexFromButtonId(id), MIXER_AUTOMATION_MODES);
+        if (this.handleAutomationButtonClick(this.mixerBlockEntity, id, MIXER_AUTOMATION_MODES)) {
             return true;
         }
 

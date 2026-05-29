@@ -249,13 +249,11 @@ public class CobblestoneChemicalReactorMenu extends BaseMenu {
             return true;
         }
 
-        if (this.isAutomationButtonId(id)) {
-            this.chemicalReactorBlockEntity.cycleAutomationMode(this.getAutomationIndexFromButtonId(id), ITEM_AUTOMATION_MODES);
+        if (this.handleAutomationButtonClick(this.chemicalReactorBlockEntity, id, ITEM_AUTOMATION_MODES)) {
             return true;
         }
 
-        if (this.isFluidAutomationButtonId(id)) {
-            this.chemicalReactorBlockEntity.cycleFluidAutomationMode(this.getFluidAutomationIndexFromButtonId(id), FLUID_AUTOMATION_MODES);
+        if (this.handleFluidAutomationButtonClick(this.chemicalReactorBlockEntity, id, FLUID_AUTOMATION_MODES)) {
             return true;
         }
 

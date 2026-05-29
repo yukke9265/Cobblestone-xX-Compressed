@@ -280,12 +280,22 @@ public class CobblestoneCrystallizationChamberScreen extends BaseScreen<Cobblest
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        for (AutomationSide side : AUTOMATION_SIDES) {
+            int index = side.getIndex();
+            if (this.handleAutomationButtonRightClick(button, this.itemAutomationButtons[index], this.menu.getReverseAutomationButtonId(index))) {
+                return true;
+            }
+
+            if (this.handleAutomationButtonRightClick(button, this.fluidAutomationButtons[index], this.menu.getReverseFluidAutomationButtonId(index))) {
+                return true;
+            }
+        }
+
         if (button == 0 && this.isMouseOverFluidIndicator((int) mouseX, (int) mouseY)) {
             int buttonId = Screen.hasShiftDown()
                 ? this.menu.getFluidInteractionShiftButtonId()
                 : this.menu.getFluidInteractionButtonId();
-            this.sendMenuButtonClick(buttonId);
-            return true;
+            return this.sendMenuButtonClickWithSound(buttonId);
         }
 
         return super.mouseClicked(mouseX, mouseY, button);

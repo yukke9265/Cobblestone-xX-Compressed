@@ -14,6 +14,8 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import net.minecraft.sounds.SoundEvents;
 
 @SuppressWarnings("null")
 public class BaseScreen<T extends BaseMenu> extends AbstractContainerScreen<T> {
@@ -59,6 +61,18 @@ public class BaseScreen<T extends BaseMenu> extends AbstractContainerScreen<T> {
         if (this.minecraft != null && this.minecraft.gameMode != null) {
             this.minecraft.gameMode.handleInventoryButtonClick(this.menu.containerId, buttonId);
         }
+    }
+
+    protected final boolean sendMenuButtonClickWithSound(int buttonId) {
+        if (this.minecraft == null || this.minecraft.gameMode == null) {
+            return false;
+        }
+
+        // 独自の mouseClicked 経路は Button の標準クリック音を通らないため、
+        // ここで UI ボタン音を補って通常のボタン操作感に揃えます。
+        this.minecraft.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
+        this.minecraft.gameMode.handleInventoryButtonClick(this.menu.containerId, buttonId);
+        return true;
     }
 
     protected final Component createCheckboxLabel(boolean checked, String translationKey) {
@@ -167,6 +181,14 @@ public class BaseScreen<T extends BaseMenu> extends AbstractContainerScreen<T> {
         if (button != null && button.isHovered()) {
             this.renderHoverLabel(guiGraphics, mouseX, mouseY, text);
         }
+    }
+
+    protected final boolean handleAutomationButtonRightClick(int mouseButton, Button button, int reverseButtonId) {
+        if (mouseButton != 1 || button == null || !button.isHovered()) {
+            return false;
+        }
+
+        return this.sendMenuButtonClickWithSound(reverseButtonId);
     }
 
     // renderBg はスクリーンの背景を描画するためのメソッドですが、今回はまだ実装していないので、空のままにしています。

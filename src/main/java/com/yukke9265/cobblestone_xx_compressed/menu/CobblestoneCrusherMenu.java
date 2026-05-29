@@ -123,8 +123,7 @@ public class CobblestoneCrusherMenu extends BaseMenu {
             return true;
         }
 
-        if (this.isAutomationButtonId(id)) {
-            this.crusherBlockEntity.cycleAutomationMode(this.getAutomationIndexFromButtonId(id), CRUSHER_AUTOMATION_MODES);
+        if (this.handleAutomationButtonClick(this.crusherBlockEntity, id, CRUSHER_AUTOMATION_MODES)) {
             return true;
         }
 

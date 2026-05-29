@@ -101,23 +101,17 @@ public class BaseBlockEntity extends BlockEntity {
         this.setAutomationMode(index, nextMode);
     }
 
+    public void cycleReverseAutomationMode(int index) {
+        AutomationMode previousMode = this.getAutomationMode(index).previous();
+        this.setAutomationMode(index, previousMode);
+    }
+
     public void cycleAutomationMode(int index, AutomationMode[] allowedModes) {
-        if (allowedModes == null || allowedModes.length == 0) {
-            throw new IllegalArgumentException("allowedModes が空です");
-        }
+        this.setAutomationMode(index, this.getShiftedAllowedAutomationMode(this.getAutomationMode(index), allowedModes, 1));
+    }
 
-        AutomationMode currentMode = this.getAutomationMode(index);
-        int currentAllowedIndex = 0;
-
-        for (int modeIndex = 0; modeIndex < allowedModes.length; modeIndex++) {
-            if (allowedModes[modeIndex] == currentMode) {
-                currentAllowedIndex = modeIndex;
-                break;
-            }
-        }
-
-        int nextAllowedIndex = (currentAllowedIndex + 1) % allowedModes.length;
-        this.setAutomationMode(index, allowedModes[nextAllowedIndex]);
+    public void cycleReverseAutomationMode(int index, AutomationMode[] allowedModes) {
+        this.setAutomationMode(index, this.getShiftedAllowedAutomationMode(this.getAutomationMode(index), allowedModes, -1));
     }
 
     public void cycleFluidAutomationMode(int index) {
@@ -125,12 +119,24 @@ public class BaseBlockEntity extends BlockEntity {
         this.setFluidAutomationMode(index, nextMode);
     }
 
+    public void cycleReverseFluidAutomationMode(int index) {
+        AutomationMode previousMode = this.getFluidAutomationMode(index).previous();
+        this.setFluidAutomationMode(index, previousMode);
+    }
+
     public void cycleFluidAutomationMode(int index, AutomationMode[] allowedModes) {
+        this.setFluidAutomationMode(index, this.getShiftedAllowedAutomationMode(this.getFluidAutomationMode(index), allowedModes, 1));
+    }
+
+    public void cycleReverseFluidAutomationMode(int index, AutomationMode[] allowedModes) {
+        this.setFluidAutomationMode(index, this.getShiftedAllowedAutomationMode(this.getFluidAutomationMode(index), allowedModes, -1));
+    }
+
+    private AutomationMode getShiftedAllowedAutomationMode(AutomationMode currentMode, AutomationMode[] allowedModes, int direction) {
         if (allowedModes == null || allowedModes.length == 0) {
             throw new IllegalArgumentException("allowedModes が空です");
         }
 
-        AutomationMode currentMode = this.getFluidAutomationMode(index);
         int currentAllowedIndex = 0;
 
         for (int modeIndex = 0; modeIndex < allowedModes.length; modeIndex++) {
@@ -140,8 +146,8 @@ public class BaseBlockEntity extends BlockEntity {
             }
         }
 
-        int nextAllowedIndex = (currentAllowedIndex + 1) % allowedModes.length;
-        this.setFluidAutomationMode(index, allowedModes[nextAllowedIndex]);
+        int nextAllowedIndex = (currentAllowedIndex + direction + allowedModes.length) % allowedModes.length;
+        return allowedModes[nextAllowedIndex];
     }
 
     public void setAutomationMode(int index, AutomationMode mode) {

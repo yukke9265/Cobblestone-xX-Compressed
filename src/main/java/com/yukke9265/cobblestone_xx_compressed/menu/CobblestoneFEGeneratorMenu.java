@@ -139,8 +139,7 @@ public class CobblestoneFEGeneratorMenu extends BaseMenu {
             return true;
         }
 
-        if (this.isAutomationButtonId(id)) {
-            this.generatorBlockEntity.cycleAutomationMode(this.getAutomationIndexFromButtonId(id), FE_GENERATOR_AUTOMATION_MODES);
+        if (this.handleAutomationButtonClick(this.generatorBlockEntity, id, FE_GENERATOR_AUTOMATION_MODES)) {
             return true;
         }
 
