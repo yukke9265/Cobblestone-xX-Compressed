@@ -31,7 +31,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidUtil;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
@@ -779,12 +778,7 @@ public class CobblestoneChemicalReactorBlockEntity extends BaseBlockEntity imple
             return Optional.empty();
         }
 
-        ChemicalReactorRecipeInput input = new ChemicalReactorRecipeInput(
-            this.itemStackHandler.getStackInSlot(INPUT_SLOT_1_INDEX),
-            this.itemStackHandler.getStackInSlot(INPUT_SLOT_2_INDEX),
-            this.getDisplayedInputFluid1(),
-            this.getDisplayedInputFluid2()
-        );
+        ChemicalReactorRecipeInput input = this.createRecipeInput();
         if (input.isEmpty()) {
             return Optional.empty();
         }
@@ -806,27 +800,14 @@ public class CobblestoneChemicalReactorBlockEntity extends BaseBlockEntity imple
     }
 
     private boolean hasRequiredInputs(CobblestoneChemicalReactorRecipe recipe) {
-        if (recipe.hasFirstItemInput() && !this.hasEnoughItems(INPUT_SLOT_1_INDEX, recipe.getFirstItemInput())) {
+        ChemicalReactorRecipeInput input = this.createRecipeInput();
+        if (recipe.findMatchingItemSlots(input).isEmpty()) {
             return false;
         }
-        if (recipe.hasSecondItemInput() && !this.hasEnoughItems(INPUT_SLOT_2_INDEX, recipe.getSecondItemInput())) {
-            return false;
-        }
-        if (recipe.hasFirstFluidInput() && this.storedInputFluid1Amount < recipe.getFirstFluidInput().getAmount()) {
-            return false;
-        }
-        if (recipe.hasSecondFluidInput() && this.storedInputFluid2Amount < recipe.getSecondFluidInput().getAmount()) {
+        if (recipe.findMatchingFluidTanks(input).isEmpty()) {
             return false;
         }
         return true;
-    }
-
-    private boolean hasEnoughItems(int slotIndex, SizedIngredient requiredStack) {
-        ItemStack slotStack = this.itemStackHandler.getStackInSlot(slotIndex);
-        if (slotStack.isEmpty()) {
-            return false;
-        }
-        return requiredStack.test(slotStack);
     }
 
     private boolean canOutputItems(CobblestoneChemicalReactorRecipe recipe) {
@@ -867,17 +848,26 @@ public class CobblestoneChemicalReactorBlockEntity extends BaseBlockEntity imple
     }
 
     private void craft(CobblestoneChemicalReactorRecipe recipe) {
+        ChemicalReactorRecipeInput input = this.createRecipeInput();
+        Optional<int[]> matchedItemSlots = recipe.findMatchingItemSlots(input);
+        Optional<int[]> matchedFluidTanks = recipe.findMatchingFluidTanks(input);
+        if (matchedItemSlots.isEmpty() || matchedFluidTanks.isEmpty()) {
+            return;
+        }
+
+        int[] itemSlots = matchedItemSlots.get();
+        int[] fluidTanks = matchedFluidTanks.get();
         if (recipe.hasFirstItemInput()) {
-            this.itemStackHandler.getStackInSlot(INPUT_SLOT_1_INDEX).shrink(recipe.getFirstItemInput().count());
+            this.itemStackHandler.getStackInSlot(itemSlots[0]).shrink(recipe.getFirstItemInput().count());
         }
         if (recipe.hasSecondItemInput()) {
-            this.itemStackHandler.getStackInSlot(INPUT_SLOT_2_INDEX).shrink(recipe.getSecondItemInput().count());
+            this.itemStackHandler.getStackInSlot(itemSlots[1]).shrink(recipe.getSecondItemInput().count());
         }
         if (recipe.hasFirstFluidInput()) {
-            this.drainTankInternal(0, recipe.getFirstFluidInput().getAmount(), IFluidHandler.FluidAction.EXECUTE);
+            this.drainTankInternal(fluidTanks[0], recipe.getFirstFluidInput().getAmount(), IFluidHandler.FluidAction.EXECUTE);
         }
         if (recipe.hasSecondFluidInput()) {
-            this.drainTankInternal(1, recipe.getSecondFluidInput().getAmount(), IFluidHandler.FluidAction.EXECUTE);
+            this.drainTankInternal(fluidTanks[1], recipe.getSecondFluidInput().getAmount(), IFluidHandler.FluidAction.EXECUTE);
         }
         if (recipe.hasFirstItemOutput()) {
             this.insertItemIntoOutputSlot(OUTPUT_SLOT_1_INDEX, recipe.getFirstResultItem());
@@ -891,6 +881,15 @@ public class CobblestoneChemicalReactorBlockEntity extends BaseBlockEntity imple
         if (recipe.hasSecondFluidOutput()) {
             this.fillTankInternal(3, recipe.getSecondResultFluid(), IFluidHandler.FluidAction.EXECUTE);
         }
+    }
+
+    private ChemicalReactorRecipeInput createRecipeInput() {
+        return new ChemicalReactorRecipeInput(
+            this.itemStackHandler.getStackInSlot(INPUT_SLOT_1_INDEX),
+            this.itemStackHandler.getStackInSlot(INPUT_SLOT_2_INDEX),
+            this.getDisplayedInputFluid1(),
+            this.getDisplayedInputFluid2()
+        );
     }
 
     private void insertItemIntoOutputSlot(int slotIndex, ItemStack resultStack) {
@@ -1051,7 +1050,9 @@ public class CobblestoneChemicalReactorBlockEntity extends BaseBlockEntity imple
     }
 
     private int fillFluidHandlerFromTank(IFluidHandlerItem fluidHandlerItem, int tankIndex) {
-        if (tankIndex != 2 && tankIndex != 3) {
+        // GUI の fluid indicator からは入力タンクも回収対象にしたいので、
+        // 存在する 4 つのタンクすべてを対象にします。
+        if (tankIndex < 0 || tankIndex > 3) {
             return 0;
         }
 

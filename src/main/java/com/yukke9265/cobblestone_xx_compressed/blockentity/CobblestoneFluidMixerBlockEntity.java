@@ -635,11 +635,8 @@ public class CobblestoneFluidMixerBlockEntity extends BaseBlockEntity implements
             return false;
         }
 
-        if (this.storedInputFluid1Amount < recipe.getFirstFluidInput().getAmount()) {
-            return false;
-        }
-
-        if (this.storedInputFluid2Amount < recipe.getSecondFluidInput().getAmount()) {
+        FluidMixerRecipeInput input = new FluidMixerRecipeInput(this.getDisplayedInputFluid1(), this.getDisplayedInputFluid2());
+        if (recipe.findMatchingFluidTanks(input).isEmpty()) {
             return false;
         }
 
@@ -656,8 +653,14 @@ public class CobblestoneFluidMixerBlockEntity extends BaseBlockEntity implements
     }
 
     private void craft(CobblestoneFluidMixerRecipe recipe) {
-        this.drainTankInternal(0, recipe.getFirstFluidInput().getAmount(), IFluidHandler.FluidAction.EXECUTE);
-        this.drainTankInternal(1, recipe.getSecondFluidInput().getAmount(), IFluidHandler.FluidAction.EXECUTE);
+        Optional<int[]> matchedFluidTanks = recipe.findMatchingFluidTanks(new FluidMixerRecipeInput(this.getDisplayedInputFluid1(), this.getDisplayedInputFluid2()));
+        if (matchedFluidTanks.isEmpty()) {
+            return;
+        }
+
+        int[] fluidTanks = matchedFluidTanks.get();
+        this.drainTankInternal(fluidTanks[0], recipe.getFirstFluidInput().getAmount(), IFluidHandler.FluidAction.EXECUTE);
+        this.drainTankInternal(fluidTanks[1], recipe.getSecondFluidInput().getAmount(), IFluidHandler.FluidAction.EXECUTE);
         this.fillTankInternal(2, recipe.getFluidOutput(), IFluidHandler.FluidAction.EXECUTE);
     }
 

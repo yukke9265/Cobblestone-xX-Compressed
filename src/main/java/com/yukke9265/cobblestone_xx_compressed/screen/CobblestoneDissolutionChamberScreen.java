@@ -12,7 +12,6 @@ import com.yukke9265.cobblestone_xx_compressed.util.MachineGuiLayouts;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
@@ -331,21 +330,40 @@ public class CobblestoneDissolutionChamberScreen extends BaseScreen<CobblestoneD
             }
         }
 
-        if (button == 0 && this.isMouseOverInputFluidIndicator((int) mouseX, (int) mouseY)) {
-            int buttonId = Screen.hasShiftDown()
-                ? this.menu.getInputFluidInteractionShiftButtonId()
-                : this.menu.getInputFluidInteractionButtonId();
-            return this.sendMenuButtonClickWithSound(buttonId);
+        if (this.handleFluidIndicatorClick(
+            button,
+            this.isMouseOverInputFluidIndicator((int) mouseX, (int) mouseY),
+            this.menu.getInputFluidInteractionButtonId(),
+            this.menu.getInputFluidInteractionShiftButtonId()
+        )) {
+            return true;
         }
 
-        if (button == 0 && this.isMouseOverOutputFluidIndicator((int) mouseX, (int) mouseY)) {
-            int buttonId = Screen.hasShiftDown()
-                ? this.menu.getOutputFluidInteractionShiftButtonId()
-                : this.menu.getOutputFluidInteractionButtonId();
-            return this.sendMenuButtonClickWithSound(buttonId);
+        if (this.handleFluidIndicatorClick(
+            button,
+            this.isMouseOverOutputFluidIndicator((int) mouseX, (int) mouseY),
+            this.menu.getOutputFluidInteractionButtonId(),
+            this.menu.getOutputFluidInteractionShiftButtonId()
+        )) {
+            return true;
         }
 
         return super.mouseClicked(mouseX, mouseY, button);
+    }
+
+    @Override
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        if (this.isMouseOverInputFluidIndicator(this.getLastMouseX(), this.getLastMouseY())
+            && this.handleJeiFluidLookupKeyPress(this.menu.getDisplayedInputFluid(), keyCode, scanCode)) {
+            return true;
+        }
+
+        if (this.isMouseOverOutputFluidIndicator(this.getLastMouseX(), this.getLastMouseY())
+            && this.handleJeiFluidLookupKeyPress(this.menu.getDisplayedOutputFluid(), keyCode, scanCode)) {
+            return true;
+        }
+
+        return super.keyPressed(keyCode, scanCode, modifiers);
     }
 
     @Override

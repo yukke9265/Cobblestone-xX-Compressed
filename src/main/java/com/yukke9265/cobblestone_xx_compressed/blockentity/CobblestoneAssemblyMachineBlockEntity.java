@@ -562,15 +562,7 @@ public class CobblestoneAssemblyMachineBlockEntity extends BaseBlockEntity imple
             return Optional.empty();
         }
 
-        AssemblyMachineRecipeInput input = new AssemblyMachineRecipeInput(
-            this.itemStackHandler.getStackInSlot(INPUT_SLOT_1_INDEX),
-            this.itemStackHandler.getStackInSlot(INPUT_SLOT_2_INDEX),
-            this.itemStackHandler.getStackInSlot(INPUT_SLOT_3_INDEX),
-            this.itemStackHandler.getStackInSlot(INPUT_SLOT_4_INDEX),
-            this.itemStackHandler.getStackInSlot(INPUT_SLOT_5_INDEX),
-            this.itemStackHandler.getStackInSlot(INPUT_SLOT_6_INDEX),
-            this.getDisplayedInputFluid()
-        );
+        AssemblyMachineRecipeInput input = this.createRecipeInput();
         if (input.isEmpty()) {
             return Optional.empty();
         }
@@ -579,22 +571,7 @@ public class CobblestoneAssemblyMachineBlockEntity extends BaseBlockEntity imple
     }
 
     private boolean hasRequiredInputs(CobblestoneAssemblyMachineRecipe recipe) {
-        if (recipe.hasFirstItemInput() && !this.hasEnoughItems(INPUT_SLOT_1_INDEX, recipe.getFirstItemInput())) {
-            return false;
-        }
-        if (recipe.hasSecondItemInput() && !this.hasEnoughItems(INPUT_SLOT_2_INDEX, recipe.getSecondItemInput())) {
-            return false;
-        }
-        if (recipe.hasThirdItemInput() && !this.hasEnoughItems(INPUT_SLOT_3_INDEX, recipe.getThirdItemInput())) {
-            return false;
-        }
-        if (recipe.hasFourthItemInput() && !this.hasEnoughItems(INPUT_SLOT_4_INDEX, recipe.getFourthItemInput())) {
-            return false;
-        }
-        if (recipe.hasFifthItemInput() && !this.hasEnoughItems(INPUT_SLOT_5_INDEX, recipe.getFifthItemInput())) {
-            return false;
-        }
-        if (recipe.hasSixthItemInput() && !this.hasEnoughItems(INPUT_SLOT_6_INDEX, recipe.getSixthItemInput())) {
+        if (recipe.findMatchingItemSlots(this.createRecipeInput()).isEmpty()) {
             return false;
         }
         if (recipe.hasFluidInput() && this.storedInputFluidAmount < recipe.getFluidInput().getAmount()) {
@@ -602,18 +579,6 @@ public class CobblestoneAssemblyMachineBlockEntity extends BaseBlockEntity imple
         }
 
         return true;
-    }
-
-    private boolean hasEnoughItems(int slotIndex, ItemStack requiredStack) {
-        ItemStack slotStack = this.itemStackHandler.getStackInSlot(slotIndex);
-        if (slotStack.isEmpty()) {
-            return false;
-        }
-        if (!ItemStack.isSameItemSameComponents(slotStack, requiredStack)) {
-            return false;
-        }
-
-        return slotStack.getCount() >= requiredStack.getCount();
     }
 
     private boolean canOutputItem(CobblestoneAssemblyMachineRecipe recipe) {
@@ -630,29 +595,47 @@ public class CobblestoneAssemblyMachineBlockEntity extends BaseBlockEntity imple
     }
 
     private void craft(CobblestoneAssemblyMachineRecipe recipe) {
+        Optional<int[]> matchedSlots = recipe.findMatchingItemSlots(this.createRecipeInput());
+        if (matchedSlots.isEmpty()) {
+            return;
+        }
+
+        int[] itemSlots = matchedSlots.get();
         if (recipe.hasFirstItemInput()) {
-            this.itemStackHandler.getStackInSlot(INPUT_SLOT_1_INDEX).shrink(recipe.getFirstItemInput().getCount());
+            this.itemStackHandler.getStackInSlot(itemSlots[0]).shrink(recipe.getFirstItemInput().getCount());
         }
         if (recipe.hasSecondItemInput()) {
-            this.itemStackHandler.getStackInSlot(INPUT_SLOT_2_INDEX).shrink(recipe.getSecondItemInput().getCount());
+            this.itemStackHandler.getStackInSlot(itemSlots[1]).shrink(recipe.getSecondItemInput().getCount());
         }
         if (recipe.hasThirdItemInput()) {
-            this.itemStackHandler.getStackInSlot(INPUT_SLOT_3_INDEX).shrink(recipe.getThirdItemInput().getCount());
+            this.itemStackHandler.getStackInSlot(itemSlots[2]).shrink(recipe.getThirdItemInput().getCount());
         }
         if (recipe.hasFourthItemInput()) {
-            this.itemStackHandler.getStackInSlot(INPUT_SLOT_4_INDEX).shrink(recipe.getFourthItemInput().getCount());
+            this.itemStackHandler.getStackInSlot(itemSlots[3]).shrink(recipe.getFourthItemInput().getCount());
         }
         if (recipe.hasFifthItemInput()) {
-            this.itemStackHandler.getStackInSlot(INPUT_SLOT_5_INDEX).shrink(recipe.getFifthItemInput().getCount());
+            this.itemStackHandler.getStackInSlot(itemSlots[4]).shrink(recipe.getFifthItemInput().getCount());
         }
         if (recipe.hasSixthItemInput()) {
-            this.itemStackHandler.getStackInSlot(INPUT_SLOT_6_INDEX).shrink(recipe.getSixthItemInput().getCount());
+            this.itemStackHandler.getStackInSlot(itemSlots[5]).shrink(recipe.getSixthItemInput().getCount());
         }
         if (recipe.hasFluidInput()) {
             this.drainTankInternal(recipe.getFluidInput().getAmount(), IFluidHandler.FluidAction.EXECUTE);
         }
 
         this.insertItemIntoOutput(recipe.getResultItemStack());
+    }
+
+    private AssemblyMachineRecipeInput createRecipeInput() {
+        return new AssemblyMachineRecipeInput(
+            this.itemStackHandler.getStackInSlot(INPUT_SLOT_1_INDEX),
+            this.itemStackHandler.getStackInSlot(INPUT_SLOT_2_INDEX),
+            this.itemStackHandler.getStackInSlot(INPUT_SLOT_3_INDEX),
+            this.itemStackHandler.getStackInSlot(INPUT_SLOT_4_INDEX),
+            this.itemStackHandler.getStackInSlot(INPUT_SLOT_5_INDEX),
+            this.itemStackHandler.getStackInSlot(INPUT_SLOT_6_INDEX),
+            this.getDisplayedInputFluid()
+        );
     }
 
     private void insertItemIntoOutput(ItemStack resultStack) {

@@ -140,6 +140,14 @@ public class CobblestoneMelterMenu extends BaseMenu {
         return this.getAutoExportToggleButtonId();
     }
 
+    public int getFluidInteractionButtonId() {
+        return super.getFluidIndicatorButtonId();
+    }
+
+    public int getFluidInteractionShiftButtonId() {
+        return super.getFluidIndicatorShiftButtonId();
+    }
+
     @Override
     public boolean clickMenuButton(Player player, int id) {
         if (id == 0) {
@@ -153,6 +161,14 @@ public class CobblestoneMelterMenu extends BaseMenu {
 
         if (this.handleFluidAutomationButtonClick(this.melterBlockEntity, id, FLUID_AUTOMATION_MODES)) {
             return true;
+        }
+
+        if (this.isFluidIndicatorButtonId(id)) {
+            return this.melterBlockEntity.handleFluidIndicatorClick(player, false);
+        }
+
+        if (this.isFluidIndicatorShiftButtonId(id)) {
+            return this.melterBlockEntity.handleFluidIndicatorClick(player, true);
         }
 
         return this.handleAutoExportButtonClick(this.melterBlockEntity, id);

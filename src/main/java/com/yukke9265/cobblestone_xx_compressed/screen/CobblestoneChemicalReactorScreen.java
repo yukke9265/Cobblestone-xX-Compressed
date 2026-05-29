@@ -12,7 +12,6 @@ import com.yukke9265.cobblestone_xx_compressed.util.MachineGuiLayouts;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
@@ -288,24 +287,65 @@ public class CobblestoneChemicalReactorScreen extends BaseScreen<CobblestoneChem
             }
         }
 
-        if (button == 0 && this.isMouseOverFluidIndicator((int) mouseX, (int) mouseY, MachineGuiLayouts.ChemicalReactor.INPUT_FLUID_1_SLOT_X, MachineGuiLayouts.ChemicalReactor.INPUT_FLUID_1_SLOT_Y)) {
-            int buttonId = Screen.hasShiftDown() ? this.menu.getInputFluid1InteractionShiftButtonId() : this.menu.getInputFluid1InteractionButtonId();
-            return this.sendMenuButtonClickWithSound(buttonId);
+        if (this.handleFluidIndicatorClick(
+            button,
+            this.isMouseOverFluidIndicator((int) mouseX, (int) mouseY, MachineGuiLayouts.ChemicalReactor.INPUT_FLUID_1_SLOT_X, MachineGuiLayouts.ChemicalReactor.INPUT_FLUID_1_SLOT_Y),
+            this.menu.getInputFluid1InteractionButtonId(),
+            this.menu.getInputFluid1InteractionShiftButtonId()
+        )) {
+            return true;
         }
-        if (button == 0 && this.isMouseOverFluidIndicator((int) mouseX, (int) mouseY, MachineGuiLayouts.ChemicalReactor.INPUT_FLUID_2_SLOT_X, MachineGuiLayouts.ChemicalReactor.INPUT_FLUID_2_SLOT_Y)) {
-            int buttonId = Screen.hasShiftDown() ? this.menu.getInputFluid2InteractionShiftButtonId() : this.menu.getInputFluid2InteractionButtonId();
-            return this.sendMenuButtonClickWithSound(buttonId);
+        if (this.handleFluidIndicatorClick(
+            button,
+            this.isMouseOverFluidIndicator((int) mouseX, (int) mouseY, MachineGuiLayouts.ChemicalReactor.INPUT_FLUID_2_SLOT_X, MachineGuiLayouts.ChemicalReactor.INPUT_FLUID_2_SLOT_Y),
+            this.menu.getInputFluid2InteractionButtonId(),
+            this.menu.getInputFluid2InteractionShiftButtonId()
+        )) {
+            return true;
         }
-        if (button == 0 && this.isMouseOverFluidIndicator((int) mouseX, (int) mouseY, MachineGuiLayouts.ChemicalReactor.OUTPUT_FLUID_1_SLOT_X, MachineGuiLayouts.ChemicalReactor.OUTPUT_FLUID_1_SLOT_Y)) {
-            int buttonId = Screen.hasShiftDown() ? this.menu.getOutputFluid1InteractionShiftButtonId() : this.menu.getOutputFluid1InteractionButtonId();
-            return this.sendMenuButtonClickWithSound(buttonId);
+        if (this.handleFluidIndicatorClick(
+            button,
+            this.isMouseOverFluidIndicator((int) mouseX, (int) mouseY, MachineGuiLayouts.ChemicalReactor.OUTPUT_FLUID_1_SLOT_X, MachineGuiLayouts.ChemicalReactor.OUTPUT_FLUID_1_SLOT_Y),
+            this.menu.getOutputFluid1InteractionButtonId(),
+            this.menu.getOutputFluid1InteractionShiftButtonId()
+        )) {
+            return true;
         }
-        if (button == 0 && this.isMouseOverFluidIndicator((int) mouseX, (int) mouseY, MachineGuiLayouts.ChemicalReactor.OUTPUT_FLUID_2_SLOT_X, MachineGuiLayouts.ChemicalReactor.OUTPUT_FLUID_2_SLOT_Y)) {
-            int buttonId = Screen.hasShiftDown() ? this.menu.getOutputFluid2InteractionShiftButtonId() : this.menu.getOutputFluid2InteractionButtonId();
-            return this.sendMenuButtonClickWithSound(buttonId);
+        if (this.handleFluidIndicatorClick(
+            button,
+            this.isMouseOverFluidIndicator((int) mouseX, (int) mouseY, MachineGuiLayouts.ChemicalReactor.OUTPUT_FLUID_2_SLOT_X, MachineGuiLayouts.ChemicalReactor.OUTPUT_FLUID_2_SLOT_Y),
+            this.menu.getOutputFluid2InteractionButtonId(),
+            this.menu.getOutputFluid2InteractionShiftButtonId()
+        )) {
+            return true;
         }
 
         return super.mouseClicked(mouseX, mouseY, button);
+    }
+
+    @Override
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        if (this.isMouseOverFluidIndicator(this.getLastMouseX(), this.getLastMouseY(), MachineGuiLayouts.ChemicalReactor.INPUT_FLUID_1_SLOT_X, MachineGuiLayouts.ChemicalReactor.INPUT_FLUID_1_SLOT_Y)
+            && this.handleJeiFluidLookupKeyPress(this.menu.getDisplayedInputFluid1(), keyCode, scanCode)) {
+            return true;
+        }
+
+        if (this.isMouseOverFluidIndicator(this.getLastMouseX(), this.getLastMouseY(), MachineGuiLayouts.ChemicalReactor.INPUT_FLUID_2_SLOT_X, MachineGuiLayouts.ChemicalReactor.INPUT_FLUID_2_SLOT_Y)
+            && this.handleJeiFluidLookupKeyPress(this.menu.getDisplayedInputFluid2(), keyCode, scanCode)) {
+            return true;
+        }
+
+        if (this.isMouseOverFluidIndicator(this.getLastMouseX(), this.getLastMouseY(), MachineGuiLayouts.ChemicalReactor.OUTPUT_FLUID_1_SLOT_X, MachineGuiLayouts.ChemicalReactor.OUTPUT_FLUID_1_SLOT_Y)
+            && this.handleJeiFluidLookupKeyPress(this.menu.getDisplayedOutputFluid1(), keyCode, scanCode)) {
+            return true;
+        }
+
+        if (this.isMouseOverFluidIndicator(this.getLastMouseX(), this.getLastMouseY(), MachineGuiLayouts.ChemicalReactor.OUTPUT_FLUID_2_SLOT_X, MachineGuiLayouts.ChemicalReactor.OUTPUT_FLUID_2_SLOT_Y)
+            && this.handleJeiFluidLookupKeyPress(this.menu.getDisplayedOutputFluid2(), keyCode, scanCode)) {
+            return true;
+        }
+
+        return super.keyPressed(keyCode, scanCode, modifiers);
     }
 
     @Override

@@ -7,7 +7,6 @@ import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneTankMenu;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
@@ -263,14 +262,26 @@ public class CobblestoneTankScreen extends BaseScreen<CobblestoneTankMenu> {
             }
         }
 
-        if (button == 0 && this.isMouseOverFluidIndicator((int) mouseX, (int) mouseY)) {
-            int buttonId = Screen.hasShiftDown()
-                ? this.menu.getFluidInteractionShiftButtonId()
-                : this.menu.getFluidInteractionButtonId();
-            return this.sendMenuButtonClickWithSound(buttonId);
+        if (this.handleFluidIndicatorClick(
+            button,
+            this.isMouseOverFluidIndicator((int) mouseX, (int) mouseY),
+            this.menu.getFluidInteractionButtonId(),
+            this.menu.getFluidInteractionShiftButtonId()
+        )) {
+            return true;
         }
 
         return super.mouseClicked(mouseX, mouseY, button);
+    }
+
+    @Override
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        if (this.isMouseOverFluidIndicator(this.getLastMouseX(), this.getLastMouseY())
+            && this.handleJeiFluidLookupKeyPress(this.menu.getDisplayedFluid(), keyCode, scanCode)) {
+            return true;
+        }
+
+        return super.keyPressed(keyCode, scanCode, modifiers);
     }
 
     private boolean isMouseOverFluidIndicator(int mouseX, int mouseY) {

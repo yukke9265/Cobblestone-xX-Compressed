@@ -1,5 +1,7 @@
 package com.yukke9265.cobblestone_xx_compressed.recipe;
 
+import java.util.Optional;
+
 import javax.annotation.Nonnull;
 
 import com.mojang.serialization.Codec;
@@ -98,8 +100,22 @@ public class CobblestoneMixerRecipe implements Recipe<DoubleItemRecipeInput> {
 
     @Override
     public boolean matches(@Nonnull DoubleItemRecipeInput input, @Nonnull Level level) {
-        return this.firstInput.test(input.getItem(0))
-            && this.secondInput.test(input.getItem(1));
+        return this.findMatchingItemSlots(input).isPresent();
+    }
+
+    public Optional<int[]> findMatchingItemSlots(DoubleItemRecipeInput input) {
+        ItemStack firstSlot = input.getItem(0);
+        ItemStack secondSlot = input.getItem(1);
+
+        if (this.firstInput.test(firstSlot) && this.secondInput.test(secondSlot)) {
+            return Optional.of(new int[] { 0, 1 });
+        }
+
+        if (this.firstInput.test(secondSlot) && this.secondInput.test(firstSlot)) {
+            return Optional.of(new int[] { 1, 0 });
+        }
+
+        return Optional.empty();
     }
 
     @Override

@@ -389,13 +389,14 @@ public class ModBlocks {
         return BLOCKS.register(name, () -> new Block(createCompressedCobblestoneProperties()));
     }
 
+    // 機械系ブロックの硬さはここだけで決めるようにして、
+    // 個別登録側に値を散らさないようにします。
+    private static BlockBehaviour.Properties createCobblestoneMachineProperties() {
+        return createCompressedCobblestoneProperties();
+    }
+
     private static BlockBehaviour.Properties createCobblestoneMachineCasingProperties() {
-        return BlockBehaviour.Properties
-            .of()
-            .mapColor(MapColor.STONE)
-            .strength(2.0F, 6.0F)
-            .requiresCorrectToolForDrops()
-            .sound(SoundType.STONE);
+        return createCobblestoneMachineProperties();
     }
 
     private static DeferredBlock<Block> registerCobblestoneMachineCasing(String name) {
@@ -412,11 +413,7 @@ public class ModBlocks {
     }
 
     private static BlockBehaviour.Properties createCobblestoneTankProperties() {
-        return BlockBehaviour.Properties
-            .of()
-            .mapColor(MapColor.STONE)
-            .strength(0.5F)
-            .sound(SoundType.STONE);
+        return createCobblestoneMachineProperties();
     }
 
     private static DeferredBlock<Block> registerCobblestoneTank(String name, long capacity) {
@@ -424,11 +421,7 @@ public class ModBlocks {
     }
 
     private static BlockBehaviour.Properties createCobblestoneGeneratorProperties() {
-        return BlockBehaviour.Properties
-            .of()
-            .mapColor(MapColor.STONE)
-            .strength(0.5F)
-            .sound(SoundType.STONE);
+        return createCobblestoneMachineProperties();
     }
 
     private static DeferredBlock<Block> registerCobblestoneGenerator(TierCobblestoneGenerator generatorVariant) {
@@ -484,11 +477,7 @@ public class ModBlocks {
         BLOCKS.register(
             "cobblestone_furnace", 
             () -> new CobblestoneFurnaceBlock(
-                BlockBehaviour.Properties
-                    .of()
-                    .mapColor(MapColor.STONE)
-                    .strength(0.5F)
-                    .sound(SoundType.STONE)
+                createCobblestoneMachineProperties()
             )
             );
 
@@ -496,11 +485,7 @@ public class ModBlocks {
         BLOCKS.register(
             "cobblestone_powered_furnace",
             () -> new CobblestonePoweredFurnaceBlock(
-                BlockBehaviour.Properties
-                    .of()
-                    .mapColor(MapColor.STONE)
-                    .strength(0.5F)
-                    .sound(SoundType.STONE)
+                createCobblestoneMachineProperties()
             )
         );
 
@@ -508,11 +493,7 @@ public class ModBlocks {
         BLOCKS.register(
             "cobblestone_extreme_compressor",
             () -> new CobblestoneExtremeCompressorBlock(
-                BlockBehaviour.Properties
-                    .of()
-                    .mapColor(MapColor.STONE)
-                    .strength(0.5F)
-                    .sound(SoundType.STONE)
+                createCobblestoneMachineProperties()
             )
         );
 
@@ -520,11 +501,7 @@ public class ModBlocks {
         BLOCKS.register(
             "cobblestone_crusher",
             () -> new CobblestoneCrusherBlock(
-                BlockBehaviour.Properties
-                    .of()
-                    .mapColor(MapColor.STONE)
-                    .strength(0.5F)
-                    .sound(SoundType.STONE)
+                createCobblestoneMachineProperties()
             )
         );
 
@@ -532,11 +509,7 @@ public class ModBlocks {
         BLOCKS.register(
             "cobblestone_fe_generator",
             () -> new CobblestoneFEGeneratorBlock(
-                BlockBehaviour.Properties
-                    .of()
-                    .mapColor(MapColor.STONE)
-                    .strength(0.5F)
-                    .sound(SoundType.STONE)
+                createCobblestoneMachineProperties()
             )
         );
 
@@ -544,11 +517,7 @@ public class ModBlocks {
         BLOCKS.register(
             "cobblestone_centrifuge",
             () -> new CobblestoneCentrifugeBlock(
-                BlockBehaviour.Properties
-                    .of()
-                    .mapColor(MapColor.STONE)
-                    .strength(0.5F)
-                    .sound(SoundType.STONE)
+                createCobblestoneMachineProperties()
             )
         );
 
@@ -556,11 +525,7 @@ public class ModBlocks {
         BLOCKS.register(
             "cobblestone_laser_drill",
             () -> new CobblestoneLaserDrillBlock(
-                BlockBehaviour.Properties
-                    .of()
-                    .mapColor(MapColor.STONE)
-                    .strength(0.5F)
-                    .sound(SoundType.STONE)
+                createCobblestoneMachineProperties()
             )
         );
 
@@ -568,11 +533,7 @@ public class ModBlocks {
         BLOCKS.register(
             "cobblestone_mixer",
             () -> new CobblestoneMixerBlock(
-                BlockBehaviour.Properties
-                    .of()
-                    .mapColor(MapColor.STONE)
-                    .strength(0.5F)
-                    .sound(SoundType.STONE)
+                createCobblestoneMachineProperties()
             )
         );
 
@@ -580,11 +541,7 @@ public class ModBlocks {
         BLOCKS.register(
             "cobblestone_melter",
             () -> new CobblestoneMelterBlock(
-                BlockBehaviour.Properties
-                    .of()
-                    .mapColor(MapColor.STONE)
-                    .strength(0.5F)
-                    .sound(SoundType.STONE)
+                createCobblestoneMachineProperties()
             )
         );
 
@@ -592,11 +549,7 @@ public class ModBlocks {
         BLOCKS.register(
             "cobblestone_assembly_machine",
             () -> new CobblestoneAssemblyMachineBlock(
-                BlockBehaviour.Properties
-                    .of()
-                    .mapColor(MapColor.STONE)
-                    .strength(0.5F)
-                    .sound(SoundType.STONE)
+                createCobblestoneMachineProperties()
             )
         );
 
@@ -604,11 +557,7 @@ public class ModBlocks {
         BLOCKS.register(
             "cobblestone_chemical_reactor",
             () -> new CobblestoneChemicalReactorBlock(
-                BlockBehaviour.Properties
-                    .of()
-                    .mapColor(MapColor.STONE)
-                    .strength(0.5F)
-                    .sound(SoundType.STONE)
+                createCobblestoneMachineProperties()
             )
         );
 
@@ -616,11 +565,7 @@ public class ModBlocks {
         BLOCKS.register(
             "cobblestone_reaction_chamber",
             () -> new CobblestoneReactionChamberBlock(
-                BlockBehaviour.Properties
-                    .of()
-                    .mapColor(MapColor.STONE)
-                    .strength(0.5F)
-                    .sound(SoundType.STONE)
+                createCobblestoneMachineProperties()
             )
         );
 
@@ -628,11 +573,7 @@ public class ModBlocks {
         BLOCKS.register(
             "cobblestone_crystallization_chamber",
             () -> new CobblestoneCrystallizationChamberBlock(
-                BlockBehaviour.Properties
-                    .of()
-                    .mapColor(MapColor.STONE)
-                    .strength(0.5F)
-                    .sound(SoundType.STONE)
+                createCobblestoneMachineProperties()
             )
         );
 
@@ -640,11 +581,7 @@ public class ModBlocks {
         BLOCKS.register(
             "cobblestone_dissolution_chamber",
             () -> new CobblestoneDissolutionChamberBlock(
-                BlockBehaviour.Properties
-                    .of()
-                    .mapColor(MapColor.STONE)
-                    .strength(0.5F)
-                    .sound(SoundType.STONE)
+                createCobblestoneMachineProperties()
             )
         );
 
@@ -652,11 +589,7 @@ public class ModBlocks {
         BLOCKS.register(
             "cobblestone_fluid_mixer",
             () -> new CobblestoneFluidMixerBlock(
-                BlockBehaviour.Properties
-                    .of()
-                    .mapColor(MapColor.STONE)
-                    .strength(0.5F)
-                    .sound(SoundType.STONE)
+                createCobblestoneMachineProperties()
             )
         );
 }

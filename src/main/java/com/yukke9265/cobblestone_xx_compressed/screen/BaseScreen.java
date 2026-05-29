@@ -3,6 +3,7 @@ package com.yukke9265.cobblestone_xx_compressed.screen;
 import java.util.List;
 import java.util.Optional;
 
+import com.yukke9265.cobblestone_xx_compressed.compat.jei.JeiFluidLookupCompat;
 import com.yukke9265.cobblestone_xx_compressed.compat.jei.JeiClickableAreaDefinition;
 import com.yukke9265.cobblestone_xx_compressed.blockentity.AutomationMode;
 import com.yukke9265.cobblestone_xx_compressed.menu.BaseMenu;
@@ -13,15 +14,19 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.sounds.SoundEvents;
+import net.neoforged.neoforge.fluids.FluidStack;
 
 @SuppressWarnings("null")
 public class BaseScreen<T extends BaseMenu> extends AbstractContainerScreen<T> {
     protected static final int EXTERNAL_SLOT_SIZE = 18;
     private static final int EXTERNAL_SLOT_BORDER_COLOR = 0xFF8B8B8B;
     private static final int EXTERNAL_SLOT_BACKGROUND_COLOR = 0xFF373737;
+    private int lastMouseX;
+    private int lastMouseY;
 
     // 共通の基底スクリーンクラスです。全てのスクリーンはこれを継承します。
     public BaseScreen(T menu, Inventory inventory, Component title) {
@@ -48,6 +53,8 @@ public class BaseScreen<T extends BaseMenu> extends AbstractContainerScreen<T> {
 
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        this.lastMouseX = mouseX;
+        this.lastMouseY = mouseY;
         super.render(guiGraphics, mouseX, mouseY, partialTick);
         this.renderHoverLabels(guiGraphics, mouseX, mouseY);
         // AbstractContainerScreen の super.render(...) だけでは、
@@ -189,6 +196,27 @@ public class BaseScreen<T extends BaseMenu> extends AbstractContainerScreen<T> {
         }
 
         return this.sendMenuButtonClickWithSound(reverseButtonId);
+    }
+
+    protected final boolean handleJeiFluidLookupKeyPress(FluidStack displayedFluid, int keyCode, int scanCode) {
+        return JeiFluidLookupCompat.handleKeyPress(displayedFluid, keyCode, scanCode);
+    }
+
+    protected final boolean handleFluidIndicatorClick(int mouseButton, boolean hovered, int normalButtonId, int shiftButtonId) {
+        if (!hovered || (mouseButton != 0 && mouseButton != 1)) {
+            return false;
+        }
+
+        int buttonId = Screen.hasShiftDown() ? shiftButtonId : normalButtonId;
+        return this.sendMenuButtonClickWithSound(buttonId);
+    }
+
+    protected final int getLastMouseX() {
+        return this.lastMouseX;
+    }
+
+    protected final int getLastMouseY() {
+        return this.lastMouseY;
     }
 
     // renderBg はスクリーンの背景を描画するためのメソッドですが、今回はまだ実装していないので、空のままにしています。

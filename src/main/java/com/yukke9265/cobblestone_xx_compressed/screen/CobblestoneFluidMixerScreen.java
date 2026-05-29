@@ -12,7 +12,6 @@ import com.yukke9265.cobblestone_xx_compressed.util.MachineGuiLayouts;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
@@ -325,22 +324,54 @@ public class CobblestoneFluidMixerScreen extends BaseScreen<CobblestoneFluidMixe
             }
         }
 
-        if (button == 0 && this.isMouseOverInputFluid1Indicator((int) mouseX, (int) mouseY)) {
-            int buttonId = Screen.hasShiftDown() ? this.menu.getInputFluid1InteractionShiftButtonId() : this.menu.getInputFluid1InteractionButtonId();
-            return this.sendMenuButtonClickWithSound(buttonId);
+        if (this.handleFluidIndicatorClick(
+            button,
+            this.isMouseOverInputFluid1Indicator((int) mouseX, (int) mouseY),
+            this.menu.getInputFluid1InteractionButtonId(),
+            this.menu.getInputFluid1InteractionShiftButtonId()
+        )) {
+            return true;
         }
 
-        if (button == 0 && this.isMouseOverInputFluid2Indicator((int) mouseX, (int) mouseY)) {
-            int buttonId = Screen.hasShiftDown() ? this.menu.getInputFluid2InteractionShiftButtonId() : this.menu.getInputFluid2InteractionButtonId();
-            return this.sendMenuButtonClickWithSound(buttonId);
+        if (this.handleFluidIndicatorClick(
+            button,
+            this.isMouseOverInputFluid2Indicator((int) mouseX, (int) mouseY),
+            this.menu.getInputFluid2InteractionButtonId(),
+            this.menu.getInputFluid2InteractionShiftButtonId()
+        )) {
+            return true;
         }
 
-        if (button == 0 && this.isMouseOverOutputFluidIndicator((int) mouseX, (int) mouseY)) {
-            int buttonId = Screen.hasShiftDown() ? this.menu.getOutputFluidInteractionShiftButtonId() : this.menu.getOutputFluidInteractionButtonId();
-            return this.sendMenuButtonClickWithSound(buttonId);
+        if (this.handleFluidIndicatorClick(
+            button,
+            this.isMouseOverOutputFluidIndicator((int) mouseX, (int) mouseY),
+            this.menu.getOutputFluidInteractionButtonId(),
+            this.menu.getOutputFluidInteractionShiftButtonId()
+        )) {
+            return true;
         }
 
         return super.mouseClicked(mouseX, mouseY, button);
+    }
+
+    @Override
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        if (this.isMouseOverInputFluid1Indicator(this.getLastMouseX(), this.getLastMouseY())
+            && this.handleJeiFluidLookupKeyPress(this.menu.getDisplayedInputFluid1(), keyCode, scanCode)) {
+            return true;
+        }
+
+        if (this.isMouseOverInputFluid2Indicator(this.getLastMouseX(), this.getLastMouseY())
+            && this.handleJeiFluidLookupKeyPress(this.menu.getDisplayedInputFluid2(), keyCode, scanCode)) {
+            return true;
+        }
+
+        if (this.isMouseOverOutputFluidIndicator(this.getLastMouseX(), this.getLastMouseY())
+            && this.handleJeiFluidLookupKeyPress(this.menu.getDisplayedOutputFluid(), keyCode, scanCode)) {
+            return true;
+        }
+
+        return super.keyPressed(keyCode, scanCode, modifiers);
     }
 
     @Override

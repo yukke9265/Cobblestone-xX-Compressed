@@ -55,6 +55,20 @@ import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneCrystallization
 import com.yukke9265.cobblestone_xx_compressed.registry.ModBlocks;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModMenuType;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModRecipeTypes;
+import com.yukke9265.cobblestone_xx_compressed.screen.CobblestoneAssemblyMachineScreen;
+import com.yukke9265.cobblestone_xx_compressed.screen.CobblestoneCentrifugeScreen;
+import com.yukke9265.cobblestone_xx_compressed.screen.CobblestoneChemicalReactorScreen;
+import com.yukke9265.cobblestone_xx_compressed.screen.CobblestoneCrystallizationChamberScreen;
+import com.yukke9265.cobblestone_xx_compressed.screen.CobblestoneCrusherScreen;
+import com.yukke9265.cobblestone_xx_compressed.screen.CobblestoneDissolutionChamberScreen;
+import com.yukke9265.cobblestone_xx_compressed.screen.CobblestoneExtremeCompressorScreen;
+import com.yukke9265.cobblestone_xx_compressed.screen.CobblestoneFluidMixerScreen;
+import com.yukke9265.cobblestone_xx_compressed.screen.CobblestoneFurnaceScreen;
+import com.yukke9265.cobblestone_xx_compressed.screen.CobblestoneLaserDrillScreen;
+import com.yukke9265.cobblestone_xx_compressed.screen.CobblestoneMelterScreen;
+import com.yukke9265.cobblestone_xx_compressed.screen.CobblestoneMixerScreen;
+import com.yukke9265.cobblestone_xx_compressed.screen.CobblestonePoweredFurnaceScreen;
+import com.yukke9265.cobblestone_xx_compressed.screen.CobblestoneReactionChamberScreen;
 import com.yukke9265.cobblestone_xx_compressed.screen.BaseScreen;
 
 import mezz.jei.api.IModPlugin;
@@ -75,8 +89,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
+import mezz.jei.api.runtime.IJeiRuntime;
 import java.util.function.Supplier;
 
+@SuppressWarnings("null")
 @JeiPlugin
 public class ModJeiPlugin implements IModPlugin {
     public static final RecipeType<CobblestoneFurnaceRecipe> COBBLESTONE_FURNACE_RECIPE_TYPE =
@@ -472,19 +488,23 @@ public class ModJeiPlugin implements IModPlugin {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public void registerGuiHandlers(IGuiHandlerRegistration registration) {
-        // BaseScreen が返すクリック領域定義を、JEI の clickable area へ変換します。
-        // これで各 Screen は座標とカテゴリ ID だけを返せばよくなります。
-        registration.addGuiContainerHandler((Class<? extends BaseScreen<?>>) (Class<?>) BaseScreen.class, new IGuiContainerHandler<BaseScreen<?>>() {
-            @Override
-            public Collection<IGuiClickableArea> getGuiClickableAreas(BaseScreen<?> screen, double mouseX, double mouseY) {
-                return screen.getJeiClickableAreaDefinitions().stream()
-                    .map(definition -> ModJeiPlugin.createClickableArea(screen, definition))
-                    .flatMap(Optional::stream)
-                    .toList();
-            }
-        });
+        // addGuiContainerHandler は画面クラスごとに登録しておく方が確実なので、
+        // JEI 入口を持つ各 Screen を明示的に結びます。
+        this.registerBaseScreenGuiHandler(registration, CobblestoneFurnaceScreen.class);
+        this.registerBaseScreenGuiHandler(registration, CobblestonePoweredFurnaceScreen.class);
+        this.registerBaseScreenGuiHandler(registration, CobblestoneExtremeCompressorScreen.class);
+        this.registerBaseScreenGuiHandler(registration, CobblestoneCrusherScreen.class);
+        this.registerBaseScreenGuiHandler(registration, CobblestoneCentrifugeScreen.class);
+        this.registerBaseScreenGuiHandler(registration, CobblestoneLaserDrillScreen.class);
+        this.registerBaseScreenGuiHandler(registration, CobblestoneMixerScreen.class);
+        this.registerBaseScreenGuiHandler(registration, CobblestoneMelterScreen.class);
+        this.registerBaseScreenGuiHandler(registration, CobblestoneAssemblyMachineScreen.class);
+        this.registerBaseScreenGuiHandler(registration, CobblestoneChemicalReactorScreen.class);
+        this.registerBaseScreenGuiHandler(registration, CobblestoneReactionChamberScreen.class);
+        this.registerBaseScreenGuiHandler(registration, CobblestoneCrystallizationChamberScreen.class);
+        this.registerBaseScreenGuiHandler(registration, CobblestoneDissolutionChamberScreen.class);
+        this.registerBaseScreenGuiHandler(registration, CobblestoneFluidMixerScreen.class);
     }
 
     @Override
@@ -494,6 +514,16 @@ public class ModJeiPlugin implements IModPlugin {
         }
     }
 
+    @Override
+    public void onRuntimeAvailable(IJeiRuntime jeiRuntime) {
+        JeiFluidLookupRuntimeBridge.setRuntime(jeiRuntime);
+    }
+
+    @Override
+    public void onRuntimeUnavailable() {
+        JeiFluidLookupRuntimeBridge.clearRuntime();
+    }
+
     private static Optional<IGuiClickableArea> createClickableArea(BaseScreen<?> screen, JeiClickableAreaDefinition definition) {
         Optional<RecipeType<?>> recipeType = findRecipeType(definition.recipeCategoryId());
         if (recipeType.isEmpty()) {
@@ -501,8 +531,8 @@ public class ModJeiPlugin implements IModPlugin {
         }
 
         return Optional.of(IGuiClickableArea.createBasic(
-            screen.getGuiLeft() + definition.x(),
-            screen.getGuiTop() + definition.y(),
+            definition.x(),
+            definition.y(),
             definition.width(),
             definition.height(),
             recipeType.get()
@@ -517,6 +547,18 @@ public class ModJeiPlugin implements IModPlugin {
         }
 
         return Optional.empty();
+    }
+
+    private <T extends BaseScreen<?>> void registerBaseScreenGuiHandler(IGuiHandlerRegistration registration, Class<T> screenClass) {
+        registration.addGuiContainerHandler(screenClass, new IGuiContainerHandler<T>() {
+            @Override
+            public Collection<IGuiClickableArea> getGuiClickableAreas(T screen, double mouseX, double mouseY) {
+                return screen.getJeiClickableAreaDefinitions().stream()
+                    .map(definition -> ModJeiPlugin.createClickableArea(screen, definition))
+                    .flatMap(Optional::stream)
+                    .toList();
+            }
+        });
     }
 
     private static <R, C extends BaseMenu> void registerTransferHandler(

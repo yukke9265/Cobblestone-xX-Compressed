@@ -679,8 +679,14 @@ public class CobblestoneMixerBlockEntity extends BaseBlockEntity implements Menu
         ItemStack resultStack = recipe.getResultItem(currentLevel.registryAccess());
         ItemStack outputStack = this.itemStackHandler.getStackInSlot(OUTPUT_SLOT_INDEX);
 
-        firstInputStack.shrink(recipe.getFirstInput().count());
-        secondInputStack.shrink(recipe.getSecondInput().count());
+        Optional<int[]> matchedSlots = recipe.findMatchingItemSlots(new DoubleItemRecipeInput(firstInputStack, secondInputStack));
+        if (matchedSlots.isEmpty()) {
+            return;
+        }
+
+        int[] itemSlots = matchedSlots.get();
+        this.itemStackHandler.getStackInSlot(itemSlots[0]).shrink(recipe.getFirstInput().count());
+        this.itemStackHandler.getStackInSlot(itemSlots[1]).shrink(recipe.getSecondInput().count());
 
         if (outputStack.isEmpty()) {
             this.itemStackHandler.setStackInSlot(OUTPUT_SLOT_INDEX, resultStack.copy());

@@ -1,12 +1,14 @@
 package com.yukke9265.cobblestone_xx_compressed.recipe;
 
+import java.util.Optional;
+
+import javax.annotation.Nonnull;
+
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModRecipeSerializers;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModRecipeTypes;
-
-import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -18,6 +20,7 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.fluids.FluidStack;
 
+@SuppressWarnings("null")
 public class CobblestoneFluidMixerRecipe implements Recipe<FluidMixerRecipeInput> {
     public static final MapCodec<CobblestoneFluidMixerRecipe> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
         FluidStack.CODEC.fieldOf("fluid_input_1").forGetter(CobblestoneFluidMixerRecipe::getFirstFluidInput),
@@ -96,31 +99,40 @@ public class CobblestoneFluidMixerRecipe implements Recipe<FluidMixerRecipeInput
     }
 
     @Override
-    public boolean matches(@NotNull FluidMixerRecipeInput input, @NotNull Level level) {
-        FluidStack firstFluid = input.getFirstFluidInput();
-        if (firstFluid.isEmpty() || !FluidStack.isSameFluidSameComponents(firstFluid, this.firstFluidInput)) {
+    public boolean matches(@Nonnull FluidMixerRecipeInput input, @Nonnull Level level) {
+        return this.findMatchingFluidTanks(input).isPresent();
+    }
+
+    public Optional<int[]> findMatchingFluidTanks(FluidMixerRecipeInput input) {
+        FluidStack firstTank = input.getFirstFluidInput();
+        FluidStack secondTank = input.getSecondFluidInput();
+
+        if (this.matchesFluid(this.firstFluidInput, firstTank) && this.matchesFluid(this.secondFluidInput, secondTank)) {
+            return Optional.of(new int[] { 0, 1 });
+        }
+
+        if (this.matchesFluid(this.firstFluidInput, secondTank) && this.matchesFluid(this.secondFluidInput, firstTank)) {
+            return Optional.of(new int[] { 1, 0 });
+        }
+
+        return Optional.empty();
+    }
+
+    private boolean matchesFluid(FluidStack expected, FluidStack actual) {
+        if (actual.isEmpty() || !FluidStack.isSameFluidSameComponents(actual, expected)) {
             return false;
         }
 
-        if (firstFluid.getAmount() < this.firstFluidInput.getAmount()) {
-            return false;
-        }
-
-        FluidStack secondFluid = input.getSecondFluidInput();
-        if (secondFluid.isEmpty() || !FluidStack.isSameFluidSameComponents(secondFluid, this.secondFluidInput)) {
-            return false;
-        }
-
-        return secondFluid.getAmount() >= this.secondFluidInput.getAmount();
+        return actual.getAmount() >= expected.getAmount();
     }
 
     @Override
-    public @NotNull ItemStack assemble(@NotNull FluidMixerRecipeInput input, @NotNull HolderLookup.Provider registries) {
+    public @Nonnull ItemStack assemble(@Nonnull FluidMixerRecipeInput input, @Nonnull HolderLookup.Provider registries) {
         return ItemStack.EMPTY;
     }
 
     @Override
-    public @NotNull ItemStack getResultItem(@NotNull HolderLookup.Provider registries) {
+    public @Nonnull ItemStack getResultItem(@Nonnull HolderLookup.Provider registries) {
         return ItemStack.EMPTY;
     }
 

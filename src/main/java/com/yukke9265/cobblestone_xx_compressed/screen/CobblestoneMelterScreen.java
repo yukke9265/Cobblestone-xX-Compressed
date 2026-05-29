@@ -291,7 +291,26 @@ public class CobblestoneMelterScreen extends BaseScreen<CobblestoneMelterMenu> {
             }
         }
 
+        if (this.handleFluidIndicatorClick(
+            button,
+            this.isMouseOverFluidIndicator((int) mouseX, (int) mouseY),
+            this.menu.getFluidInteractionButtonId(),
+            this.menu.getFluidInteractionShiftButtonId()
+        )) {
+            return true;
+        }
+
         return super.mouseClicked(mouseX, mouseY, button);
+    }
+
+    @Override
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        if (this.isMouseOverFluidIndicator(this.getLastMouseX(), this.getLastMouseY())
+            && this.handleJeiFluidLookupKeyPress(this.menu.getDisplayedFluid(), keyCode, scanCode)) {
+            return true;
+        }
+
+        return super.keyPressed(keyCode, scanCode, modifiers);
     }
 
     @Override

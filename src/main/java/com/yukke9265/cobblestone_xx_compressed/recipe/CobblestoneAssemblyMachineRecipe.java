@@ -1,5 +1,7 @@
 package com.yukke9265.cobblestone_xx_compressed.recipe;
 
+import java.util.Optional;
+
 import javax.annotation.Nonnull;
 
 import com.mojang.serialization.Codec;
@@ -217,26 +219,31 @@ public class CobblestoneAssemblyMachineRecipe implements Recipe<AssemblyMachineR
             return false;
         }
 
-        if (!this.matchesItem(this.firstItemInput, input.getItem(0))) {
-            return false;
-        }
-        if (!this.matchesItem(this.secondItemInput, input.getItem(1))) {
-            return false;
-        }
-        if (!this.matchesItem(this.thirdItemInput, input.getItem(2))) {
-            return false;
-        }
-        if (!this.matchesItem(this.fourthItemInput, input.getItem(3))) {
-            return false;
-        }
-        if (!this.matchesItem(this.fifthItemInput, input.getItem(4))) {
-            return false;
-        }
-        if (!this.matchesItem(this.sixthItemInput, input.getItem(5))) {
+        if (this.findMatchingItemSlots(input).isEmpty()) {
             return false;
         }
 
         return this.matchesFluid(this.fluidInput, input.getFluidInput());
+    }
+
+    public Optional<int[]> findMatchingItemSlots(AssemblyMachineRecipeInput input) {
+        ItemStack[] requiredItems = this.getRequiredItemInputs();
+        ItemStack[] actualItems = new ItemStack[] {
+            input.getItem(0),
+            input.getItem(1),
+            input.getItem(2),
+            input.getItem(3),
+            input.getItem(4),
+            input.getItem(5)
+        };
+        int[] matchedSlots = new int[] { -1, -1, -1, -1, -1, -1 };
+        boolean[] usedSlots = new boolean[actualItems.length];
+
+        if (!this.matchRequiredItems(requiredItems, actualItems, 0, usedSlots, matchedSlots)) {
+            return Optional.empty();
+        }
+
+        return Optional.of(matchedSlots);
     }
 
     @Override
@@ -288,6 +295,51 @@ public class CobblestoneAssemblyMachineRecipe implements Recipe<AssemblyMachineR
         }
 
         return actual.getCount() >= expected.getCount();
+    }
+
+    private ItemStack[] getRequiredItemInputs() {
+        return new ItemStack[] {
+            this.firstItemInput,
+            this.secondItemInput,
+            this.thirdItemInput,
+            this.fourthItemInput,
+            this.fifthItemInput,
+            this.sixthItemInput
+        };
+    }
+
+    private boolean matchRequiredItems(ItemStack[] requiredItems, ItemStack[] actualItems, int requiredIndex, boolean[] usedSlots, int[] matchedSlots) {
+        if (requiredIndex >= requiredItems.length) {
+            return true;
+        }
+
+        ItemStack requiredStack = requiredItems[requiredIndex];
+        if (requiredStack.isEmpty()) {
+            matchedSlots[requiredIndex] = -1;
+            return this.matchRequiredItems(requiredItems, actualItems, requiredIndex + 1, usedSlots, matchedSlots);
+        }
+
+        // 同じ材料が複数個ある recipe でも正しく対応付けられるよう、
+        // 1 スロットずつ仮に割り当てながら最後まで成立する組み合わせを探します。
+        for (int actualIndex = 0; actualIndex < actualItems.length; actualIndex++) {
+            if (usedSlots[actualIndex]) {
+                continue;
+            }
+            if (!this.matchesItem(requiredStack, actualItems[actualIndex])) {
+                continue;
+            }
+
+            usedSlots[actualIndex] = true;
+            matchedSlots[requiredIndex] = actualIndex;
+            if (this.matchRequiredItems(requiredItems, actualItems, requiredIndex + 1, usedSlots, matchedSlots)) {
+                return true;
+            }
+
+            usedSlots[actualIndex] = false;
+            matchedSlots[requiredIndex] = -1;
+        }
+
+        return false;
     }
 
     private boolean matchesFluid(FluidStack expected, FluidStack actual) {

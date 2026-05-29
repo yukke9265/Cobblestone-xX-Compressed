@@ -247,19 +247,41 @@ public class CobblestoneChemicalReactorRecipe implements Recipe<ChemicalReactorR
             return false;
         }
 
-        if (!this.matchesItem(this.firstItemInput, input.getItem(0))) {
+        if (this.findMatchingItemSlots(input).isEmpty()) {
             return false;
         }
 
-        if (!this.matchesItem(this.secondItemInput, input.getItem(1))) {
-            return false;
+        return this.findMatchingFluidTanks(input).isPresent();
+    }
+
+    public Optional<int[]> findMatchingItemSlots(ChemicalReactorRecipeInput input) {
+        ItemStack firstSlot = input.getItem(0);
+        ItemStack secondSlot = input.getItem(1);
+
+        if (this.matchesItem(this.firstItemInput, firstSlot) && this.matchesItem(this.secondItemInput, secondSlot)) {
+            return Optional.of(new int[] { 0, 1 });
         }
 
-        if (!this.matchesFluid(this.firstFluidInput, input.getFirstFluidInput())) {
-            return false;
+        if (this.matchesItem(this.firstItemInput, secondSlot) && this.matchesItem(this.secondItemInput, firstSlot)) {
+            return Optional.of(new int[] { 1, 0 });
         }
 
-        return this.matchesFluid(this.secondFluidInput, input.getSecondFluidInput());
+        return Optional.empty();
+    }
+
+    public Optional<int[]> findMatchingFluidTanks(ChemicalReactorRecipeInput input) {
+        FluidStack firstTank = input.getFirstFluidInput();
+        FluidStack secondTank = input.getSecondFluidInput();
+
+        if (this.matchesFluid(this.firstFluidInput, firstTank) && this.matchesFluid(this.secondFluidInput, secondTank)) {
+            return Optional.of(new int[] { 0, 1 });
+        }
+
+        if (this.matchesFluid(this.firstFluidInput, secondTank) && this.matchesFluid(this.secondFluidInput, firstTank)) {
+            return Optional.of(new int[] { 1, 0 });
+        }
+
+        return Optional.empty();
     }
 
     @Override

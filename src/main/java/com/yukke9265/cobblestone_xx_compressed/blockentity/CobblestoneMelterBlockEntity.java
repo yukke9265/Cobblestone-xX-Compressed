@@ -32,7 +32,9 @@ import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidUtil;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import net.neoforged.neoforge.items.wrapper.EmptyItemHandler;
@@ -273,6 +275,17 @@ public class CobblestoneMelterBlockEntity extends BaseBlockEntity implements Men
         return null;
     }
 
+    public boolean handleFluidIndicatorClick(Player player, boolean processAll) {
+        ItemStack carriedStack = player.containerMenu.getCarried();
+        if (this.tryProcessPlayerFluidContainer(player, carriedStack, true, processAll)) {
+            return true;
+        }
+
+        int selectedSlot = player.getInventory().selected;
+        ItemStack selectedStack = player.getInventory().getItem(selectedSlot);
+        return this.tryProcessPlayerFluidContainer(player, selectedStack, false, processAll);
+    }
+
     @Override
     public void tick() {
         if (this.level == null || this.level.isClientSide) {
@@ -481,6 +494,93 @@ public class CobblestoneMelterBlockEntity extends BaseBlockEntity implements Men
         }
 
         return drainedFluid;
+    }
+
+    private boolean tryProcessPlayerFluidContainer(Player player, ItemStack sourceStack, boolean carriedStack, boolean processAll) {
+        if (sourceStack.isEmpty()) {
+            return false;
+        }
+
+        Optional<IFluidHandlerItem> optionalHandler = FluidUtil.getFluidHandler(sourceStack.copyWithCount(1));
+        if (optionalHandler.isEmpty()) {
+            return false;
+        }
+
+        IFluidHandlerItem fluidHandlerItem = optionalHandler.get();
+        ItemStack processedContainer = this.tryFillPlayerContainer(fluidHandlerItem, processAll);
+        if (processedContainer.isEmpty()) {
+            return false;
+        }
+
+        this.replaceProcessedPlayerContainer(player, sourceStack, processedContainer, carriedStack);
+        return true;
+    }
+
+    private ItemStack tryFillPlayerContainer(IFluidHandlerItem fluidHandlerItem, boolean processAll) {
+        int transferredAmount = 0;
+        while (true) {
+            int stepTransferredAmount = this.fillFluidHandlerFromTank(fluidHandlerItem);
+            if (stepTransferredAmount <= 0) {
+                break;
+            }
+
+            transferredAmount += stepTransferredAmount;
+            if (!processAll) {
+                break;
+            }
+        }
+
+        if (transferredAmount <= 0) {
+            return ItemStack.EMPTY;
+        }
+
+        return fluidHandlerItem.getContainer().copy();
+    }
+
+    private int fillFluidHandlerFromTank(IFluidHandlerItem fluidHandlerItem) {
+        if (this.storedFluid.isEmpty() || this.storedFluidAmount <= 0L) {
+            return 0;
+        }
+
+        FluidStack availableFluid = this.storedFluid.copyWithAmount((int) Math.min(this.storedFluidAmount, Integer.MAX_VALUE));
+        int fillAmount = fluidHandlerItem.fill(availableFluid.copy(), IFluidHandler.FluidAction.SIMULATE);
+        if (fillAmount <= 0) {
+            return 0;
+        }
+
+        FluidStack drainedFluid = this.drainInternal(fillAmount, IFluidHandler.FluidAction.EXECUTE);
+        if (drainedFluid.isEmpty()) {
+            return 0;
+        }
+
+        int executedFillAmount = fluidHandlerItem.fill(drainedFluid, IFluidHandler.FluidAction.EXECUTE);
+        if (executedFillAmount <= 0) {
+            this.fillInternal(drainedFluid, IFluidHandler.FluidAction.EXECUTE);
+            return 0;
+        }
+
+        if (executedFillAmount < drainedFluid.getAmount()) {
+            FluidStack remainingFluid = drainedFluid.copyWithAmount(drainedFluid.getAmount() - executedFillAmount);
+            this.fillInternal(remainingFluid, IFluidHandler.FluidAction.EXECUTE);
+        }
+
+        return executedFillAmount;
+    }
+
+    private void replaceProcessedPlayerContainer(Player player, ItemStack sourceStack, ItemStack processedContainer, boolean carriedStack) {
+        if (sourceStack.getCount() == 1) {
+            if (carriedStack) {
+                player.containerMenu.setCarried(processedContainer);
+            } else {
+                player.getInventory().setItem(player.getInventory().selected, processedContainer);
+            }
+            return;
+        }
+
+        sourceStack.shrink(1);
+        if (!player.getInventory().add(processedContainer)) {
+            player.drop(processedContainer, false);
+        }
     }
 
     private void syncToClient() {
