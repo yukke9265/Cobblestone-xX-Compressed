@@ -17,6 +17,7 @@ import com.yukke9265.cobblestone_xx_compressed.screen.CobblestonePoweredFurnaceS
 import com.yukke9265.cobblestone_xx_compressed.screen.CobblestoneReactionChamberScreen;
 import com.yukke9265.cobblestone_xx_compressed.screen.CobblestoneCrystallizationChamberScreen;
 import com.yukke9265.cobblestone_xx_compressed.screen.CobblestoneTankScreen;
+import com.yukke9265.cobblestone_xx_compressed.screen.StoneBreakSimulatorScreen;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModMenuType;
 
 import net.minecraft.client.Minecraft;
@@ -79,6 +80,7 @@ public class CobblestonexXCompressedClient {
         event.register(ModMenuType.COBBLESTONE_CENTRIFUGE_MENU.get(), CobblestoneCentrifugeScreen::new);
         event.register(ModMenuType.COBBLESTONE_LASER_DRILL_MENU.get(), CobblestoneLaserDrillScreen::new);
         event.register(ModMenuType.COBBLESTONE_MIXER_MENU.get(), CobblestoneMixerScreen::new);
+        event.register(ModMenuType.STONE_BREAK_SIMULATOR_MENU.get(), StoneBreakSimulatorScreen::new);
         event.register(ModMenuType.COBBLESTONE_MELTER_MENU.get(), CobblestoneMelterScreen::new);
         event.register(ModMenuType.COBBLESTONE_ASSEMBLY_MACHINE_MENU.get(), CobblestoneAssemblyMachineScreen::new);
         event.register(ModMenuType.COBBLESTONE_CHEMICAL_REACTOR_MENU.get(), CobblestoneChemicalReactorScreen::new);

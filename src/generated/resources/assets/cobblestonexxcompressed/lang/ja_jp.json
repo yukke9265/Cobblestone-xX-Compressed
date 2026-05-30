@@ -23,6 +23,7 @@
   "block.cobblestonexxcompressed.cobblestone_mixer": "丸石ミキサー",
   "block.cobblestonexxcompressed.cobblestone_powered_furnace": "丸石動力かまど",
   "block.cobblestonexxcompressed.cobblestone_reaction_chamber": "丸石反応槽",
+  "block.cobblestonexxcompressed.stone_break_simulator": "石破壊シミュレーター",
   "gui.cobblestonexxcompressed.auto_export": "自動搬出",
   "gui.cobblestonexxcompressed.automation.back": "後",
   "gui.cobblestonexxcompressed.automation.down": "下",
@@ -60,5 +61,6 @@
   "tooltip.cobblestonexxcompressed.cobblestone_mixer.description": "複数のアイテムを混ぜて、新しい素材を作ります。",
   "tooltip.cobblestonexxcompressed.cobblestone_powered_furnace.description": "CP を使って精錬を進める強化版のかまどです。",
   "tooltip.cobblestonexxcompressed.cobblestone_reaction_chamber.description": "複数の材料を反応させて、中間素材や完成品を作ります。",
-  "tooltip.cobblestonexxcompressed.compressed_cobblestone.compression": "x%s 圧縮"
+  "tooltip.cobblestonexxcompressed.compressed_cobblestone.compression": "x%s 圧縮",
+  "tooltip.cobblestonexxcompressed.stone_break_simulator.description": "圧縮石を疑似的に破壊して、エンチャントの効果付きでドロップを生成します。"
 }

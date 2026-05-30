@@ -17,6 +17,7 @@ import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneReactionChamberMe
 import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneCrystallizationChamberMenu;
 import com.yukke9265.cobblestone_xx_compressed.menu.CobblestonePoweredFurnaceMenu;
 import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneTankMenu;
+import com.yukke9265.cobblestone_xx_compressed.menu.StoneBreakSimulatorMenu;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.inventory.MenuType;
@@ -74,6 +75,12 @@ public class ModMenuType {
         MENU_TYPES.register(
             "cobblestone_mixer_menu",
             () -> IMenuTypeExtension.create(CobblestoneMixerMenu::new)
+        );
+
+    public static final Supplier<MenuType<StoneBreakSimulatorMenu>> STONE_BREAK_SIMULATOR_MENU =
+        MENU_TYPES.register(
+            "stone_break_simulator_menu",
+            () -> IMenuTypeExtension.create(StoneBreakSimulatorMenu::new)
         );
 
     public static final Supplier<MenuType<CobblestoneMelterMenu>> COBBLESTONE_MELTER_MENU =

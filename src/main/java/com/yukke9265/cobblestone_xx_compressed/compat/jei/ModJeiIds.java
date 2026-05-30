@@ -28,6 +28,9 @@ public final class ModJeiIds {
     public static final ResourceLocation COBBLESTONE_MIXER =
         ResourceLocation.fromNamespaceAndPath(CobblestonexXCompressed.MODID, "cobblestone_mixer");
 
+    public static final ResourceLocation STONE_BREAK_SIMULATOR =
+        ResourceLocation.fromNamespaceAndPath(CobblestonexXCompressed.MODID, "stone_break_simulator");
+
     public static final ResourceLocation COBBLESTONE_MELTER =
         ResourceLocation.fromNamespaceAndPath(CobblestonexXCompressed.MODID, "cobblestone_melter");
 

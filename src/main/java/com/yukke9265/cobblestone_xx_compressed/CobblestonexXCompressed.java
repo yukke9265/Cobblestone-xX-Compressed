@@ -172,6 +172,7 @@ public class CobblestonexXCompressed {
                 output.accept(ModItems.COBBLESTONE_CENTRIFUGE_ITEM.get());
                 output.accept(ModItems.COBBLESTONE_LASER_DRILL_ITEM.get());
                 output.accept(ModItems.COBBLESTONE_MIXER_ITEM.get());
+                output.accept(ModItems.STONE_BREAK_SIMULATOR_ITEM.get());
                 output.accept(ModItems.COBBLESTONE_MELTER_ITEM.get());
                 output.accept(ModItems.COBBLESTONE_ASSEMBLY_MACHINE_ITEM.get());
                 output.accept(ModItems.COBBLESTONE_CHEMICAL_REACTOR_ITEM.get());
@@ -339,6 +340,12 @@ public class CobblestonexXCompressed {
         event.registerBlockEntity(
             Capabilities.ItemHandler.BLOCK,
             ModBlockEntities.COBBLESTONE_MIXER_BLOCK_ENTITY.get(),
+            (blockEntity, side) -> blockEntity.getAutomationItemHandler(side)
+        );
+
+        event.registerBlockEntity(
+            Capabilities.ItemHandler.BLOCK,
+            ModBlockEntities.STONE_BREAK_SIMULATOR_BLOCK_ENTITY.get(),
             (blockEntity, side) -> blockEntity.getAutomationItemHandler(side)
         );
 

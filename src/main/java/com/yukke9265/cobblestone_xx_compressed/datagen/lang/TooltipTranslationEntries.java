@@ -21,6 +21,7 @@ public final class TooltipTranslationEntries {
         new TooltipEntry(TooltipTranslationKeys.machineDescription("cobblestone_crusher"), "素材を砕いて、ダストや副産物を作ります。", "Crushes materials into dusts and byproducts."),
         new TooltipEntry(TooltipTranslationKeys.machineDescription("cobblestone_fe_generator"), "CP を FE に変換して、外部の機械へ電力を送ります。", "Converts Cobblestone Power into FE for external machines."),
         new TooltipEntry(TooltipTranslationKeys.machineDescription("cobblestone_mixer"), "複数のアイテムを混ぜて、新しい素材を作ります。", "Mixes multiple items into new materials."),
+        new TooltipEntry(TooltipTranslationKeys.machineDescription("stone_break_simulator"), "圧縮石を疑似的に破壊して、エンチャントの効果付きでドロップを生成します。", "Simulates breaking compressed stone and generates drops with the inserted pickaxe enchants."),
         new TooltipEntry(TooltipTranslationKeys.machineDescription("cobblestone_melter"), "アイテムを溶かして、液体素材へ変換します。", "Melts items into fluid materials."),
         new TooltipEntry(TooltipTranslationKeys.machineDescription("cobblestone_assembly_machine"), "部品を組み合わせて、機械用のアイテムを作ります。", "Assembles components into machine-related items."),
         new TooltipEntry(TooltipTranslationKeys.machineDescription("cobblestone_chemical_reactor"), "アイテムと液体を反応させて、化学系素材を作ります。", "Reacts items and fluids to create chemical materials."),

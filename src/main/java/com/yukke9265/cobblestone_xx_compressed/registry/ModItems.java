@@ -1728,6 +1728,12 @@ public class ModItems {
             ModBlocks.COBBLESTONE_MIXER,
             TooltipTranslationKeys.machineDescription("cobblestone_mixer"));
 
+    public static final DeferredItem<BlockItem> STONE_BREAK_SIMULATOR_ITEM =
+        registerDescribedBlockItem(
+            "stone_break_simulator",
+            ModBlocks.STONE_BREAK_SIMULATOR,
+            TooltipTranslationKeys.machineDescription("stone_break_simulator"));
+
     public static final DeferredItem<BlockItem> COBBLESTONE_MELTER_ITEM =
         registerDescribedBlockItem(
             "cobblestone_melter",

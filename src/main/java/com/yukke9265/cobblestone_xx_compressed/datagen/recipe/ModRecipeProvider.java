@@ -307,6 +307,7 @@ public class ModRecipeProvider extends RecipeProvider {
         CobblestoneDissolutionChamberRecipeDatagen.register(output);
         CobblestoneCrystallizationChamberRecipeDatagen.register(output);
         CobblestoneFluidMixerRecipeDatagen.register(output);
+        StoneBreakSimulatorRecipeDatagen.register(output);
     }
 
     private void buildCobblestoneBreadRecipe(RecipeOutput output) {

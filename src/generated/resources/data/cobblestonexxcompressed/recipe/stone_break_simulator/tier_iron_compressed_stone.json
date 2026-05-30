@@ -1,0 +1,7 @@
+{
+  "type": "cobblestonexxcompressed:stone_break_simulator",
+  "ingredient": {
+    "item": "cobblestonexxcompressed:tier_iron_compressed_stone"
+  },
+  "total_cobblestone_power": 100
+}

@@ -20,6 +20,7 @@ import com.yukke9265.cobblestone_xx_compressed.blockentity.CobblestoneReactionCh
 import com.yukke9265.cobblestone_xx_compressed.blockentity.CobblestoneCrystallizationChamberBlockEntity;
 import com.yukke9265.cobblestone_xx_compressed.blockentity.CobblestonePoweredFurnaceBlockEntity;
 import com.yukke9265.cobblestone_xx_compressed.blockentity.CobblestoneTankBlockEntity;
+import com.yukke9265.cobblestone_xx_compressed.blockentity.StoneBreakSimulatorBlockEntity;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.block.Block;
@@ -99,6 +100,15 @@ public class ModBlockEntities {
             () -> BlockEntityType.Builder.of(
                 CobblestoneMixerBlockEntity::new,
                 ModBlocks.COBBLESTONE_MIXER.get()
+            ).build(null)
+        );
+
+    public static final Supplier<BlockEntityType<StoneBreakSimulatorBlockEntity>> STONE_BREAK_SIMULATOR_BLOCK_ENTITY =
+        BLOCK_ENTITY_TYPES.register(
+            "stone_break_simulator",
+            () -> BlockEntityType.Builder.of(
+                StoneBreakSimulatorBlockEntity::new,
+                ModBlocks.STONE_BREAK_SIMULATOR.get()
             ).build(null)
         );
 

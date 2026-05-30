@@ -12,6 +12,7 @@ import com.yukke9265.cobblestone_xx_compressed.registry.ModItems;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
@@ -154,6 +155,20 @@ public class CompressedStoneLootDefinition {
 
     public static List<CompressedStoneLootDefinition> getDefinitions() {
         return DEFINITIONS;
+    }
+
+    public static CompressedStoneLootDefinition findByStoneInput(ItemStack inputStack) {
+        if (inputStack.isEmpty()) {
+            return null;
+        }
+
+        for (CompressedStoneLootDefinition definition : DEFINITIONS) {
+            if (inputStack.is(definition.getStoneBlock().get().asItem())) {
+                return definition;
+            }
+        }
+
+        return null;
     }
 
     public static List<CompatLootEntry> getCompatLootEntries() {

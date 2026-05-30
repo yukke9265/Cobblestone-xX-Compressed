@@ -186,6 +186,28 @@ public final class MachineGuiLayouts {
         }
     }
 
+    public static final class StoneBreakSimulator {
+        public static final int INPUT_SLOT_1_X = 36;
+        public static final int INPUT_SLOT_1_Y = 25;
+        public static final int INPUT_SLOT_2_X = INPUT_SLOT_1_X + SLOT_SIZE;
+        public static final int INPUT_SLOT_2_Y = INPUT_SLOT_1_Y;
+        public static final int POWER_SLOT_X = 10;
+        public static final int POWER_SLOT_Y = 51;
+        public static final int PROGRESS_BAR_X = 80;
+        public static final int PROGRESS_BAR_Y = 25;
+        public static final int PROGRESS_BAR_WIDTH = 16;
+        public static final int PROGRESS_BAR_HEIGHT = 16;
+        public static final int POWER_BAR_X = 36;
+        public static final int POWER_BAR_Y = 63;
+        public static final int POWER_BAR_WIDTH = 124;
+        public static final int POWER_BAR_HEIGHT = 8;
+        public static final int[] OUTPUT_SLOT_X = new int[] { 112, 130, 148, 112, 130, 148 };
+        public static final int[] OUTPUT_SLOT_Y = new int[] { 16, 16, 16, 34, 34, 34 };
+
+        private StoneBreakSimulator() {
+        }
+    }
+
     public static final class DissolutionChamber {
         public static final int MACHINE_SLOT_Y = 31;
         public static final int INPUT_SLOT_X = 36;

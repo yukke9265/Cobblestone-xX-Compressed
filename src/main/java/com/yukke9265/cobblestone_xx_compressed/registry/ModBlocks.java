@@ -20,6 +20,7 @@ import com.yukke9265.cobblestone_xx_compressed.block.CobblestonePoweredFurnaceBl
 import com.yukke9265.cobblestone_xx_compressed.block.CobblestoneReactionChamberBlock;
 import com.yukke9265.cobblestone_xx_compressed.block.CobblestoneCrystallizationChamberBlock;
 import com.yukke9265.cobblestone_xx_compressed.block.CobblestoneTankBlock;
+import com.yukke9265.cobblestone_xx_compressed.block.StoneBreakSimulatorBlock;
 
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
@@ -533,6 +534,14 @@ public class ModBlocks {
         BLOCKS.register(
             "cobblestone_mixer",
             () -> new CobblestoneMixerBlock(
+                createCobblestoneMachineProperties()
+            )
+        );
+
+    public static final DeferredBlock<Block> STONE_BREAK_SIMULATOR =
+        BLOCKS.register(
+            "stone_break_simulator",
+            () -> new StoneBreakSimulatorBlock(
                 createCobblestoneMachineProperties()
             )
         );

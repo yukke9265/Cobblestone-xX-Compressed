@@ -67,6 +67,7 @@
   "block.cobblestonexxcompressed.shiny_blaze": "Shiny Blaze",
   "block.cobblestonexxcompressed.shiny_sapphire": "Shiny Sapphire",
   "block.cobblestonexxcompressed.shiny_water": "Shiny Water",
+  "block.cobblestonexxcompressed.stone_break_simulator": "Stone Break Simulator",
   "block.cobblestonexxcompressed.tier_amethyst_cobblestone_generator_l": "Amethyst Cobblestone Generator L",
   "block.cobblestonexxcompressed.tier_amethyst_cobblestone_generator_m": "Amethyst Cobblestone Generator M",
   "block.cobblestonexxcompressed.tier_amethyst_cobblestone_generator_s": "Amethyst Cobblestone Generator S",
@@ -531,5 +532,6 @@
   "tooltip.cobblestonexxcompressed.cobblestone_mixer.description": "Mixes multiple items into new materials.",
   "tooltip.cobblestonexxcompressed.cobblestone_powered_furnace.description": "An upgraded furnace that smelts items with Cobblestone Power.",
   "tooltip.cobblestonexxcompressed.cobblestone_reaction_chamber.description": "Combines multiple ingredients to produce intermediates and finished items.",
-  "tooltip.cobblestonexxcompressed.compressed_cobblestone.compression": "x%s compressed"
+  "tooltip.cobblestonexxcompressed.compressed_cobblestone.compression": "x%s compressed",
+  "tooltip.cobblestonexxcompressed.stone_break_simulator.description": "Simulates breaking compressed stone and generates drops with the inserted pickaxe enchants."
 }

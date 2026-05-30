@@ -23,6 +23,7 @@ import com.yukke9265.cobblestone_xx_compressed.jei.category.CobblestoneMixerReci
 import com.yukke9265.cobblestone_xx_compressed.jei.category.CobblestonePoweredFurnaceRecipeCategory;
 import com.yukke9265.cobblestone_xx_compressed.jei.category.CobblestoneReactionChamberRecipeCategory;
 import com.yukke9265.cobblestone_xx_compressed.jei.category.CobblestoneCrystallizationChamberRecipeCategory;
+import com.yukke9265.cobblestone_xx_compressed.jei.category.StoneBreakSimulatorRecipeCategory;
 import com.yukke9265.cobblestone_xx_compressed.menu.BaseMenu;
 import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneAssemblyMachineMenu;
 import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneChemicalReactorMenu;
@@ -38,6 +39,7 @@ import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneMixerMenu;
 import com.yukke9265.cobblestone_xx_compressed.menu.CobblestonePoweredFurnaceMenu;
 import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneReactionChamberMenu;
 import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneCrystallizationChamberMenu;
+import com.yukke9265.cobblestone_xx_compressed.menu.StoneBreakSimulatorMenu;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneCrusherRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneAssemblyMachineRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneChemicalReactorRecipe;
@@ -52,6 +54,7 @@ import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneMixerRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestonePoweredFurnaceRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneReactionChamberRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneCrystallizationChamberRecipe;
+import com.yukke9265.cobblestone_xx_compressed.recipe.StoneBreakSimulatorRecipe;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModBlocks;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModMenuType;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModRecipeTypes;
@@ -70,6 +73,7 @@ import com.yukke9265.cobblestone_xx_compressed.screen.CobblestoneMixerScreen;
 import com.yukke9265.cobblestone_xx_compressed.screen.CobblestonePoweredFurnaceScreen;
 import com.yukke9265.cobblestone_xx_compressed.screen.CobblestoneReactionChamberScreen;
 import com.yukke9265.cobblestone_xx_compressed.screen.BaseScreen;
+import com.yukke9265.cobblestone_xx_compressed.screen.StoneBreakSimulatorScreen;
 
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
@@ -142,6 +146,13 @@ public class ModJeiPlugin implements IModPlugin {
             ModJeiIds.COBBLESTONE_MIXER.getNamespace(),
             ModJeiIds.COBBLESTONE_MIXER.getPath(),
             CobblestoneMixerRecipe.class
+        );
+
+    public static final RecipeType<StoneBreakSimulatorJeiRecipe> STONE_BREAK_SIMULATOR_RECIPE_TYPE =
+        RecipeType.create(
+            ModJeiIds.STONE_BREAK_SIMULATOR.getNamespace(),
+            ModJeiIds.STONE_BREAK_SIMULATOR.getPath(),
+            StoneBreakSimulatorJeiRecipe.class
         );
 
     public static final RecipeType<CobblestoneMelterRecipe> COBBLESTONE_MELTER_RECIPE_TYPE =
@@ -270,6 +281,16 @@ public class ModJeiPlugin implements IModPlugin {
             ModMenuType.COBBLESTONE_MIXER_MENU
         );
 
+    private static final MachineJeiDefinition<StoneBreakSimulatorJeiRecipe, StoneBreakSimulatorMenu> STONE_BREAK_SIMULATOR_DEFINITION =
+        new MachineJeiDefinition<>(
+            ModJeiIds.STONE_BREAK_SIMULATOR,
+            STONE_BREAK_SIMULATOR_RECIPE_TYPE,
+            registration -> new StoneBreakSimulatorRecipeCategory(registration.getJeiHelpers().getGuiHelper()),
+            () -> new ItemStack(ModBlocks.STONE_BREAK_SIMULATOR.get()),
+            StoneBreakSimulatorMenu.class,
+            ModMenuType.STONE_BREAK_SIMULATOR_MENU
+        );
+
     private static final MachineJeiDefinition<CobblestoneMelterRecipe, CobblestoneMelterMenu> COBBLESTONE_MELTER_DEFINITION =
         new MachineJeiDefinition<>(
             ModJeiIds.COBBLESTONE_MELTER,
@@ -348,6 +369,7 @@ public class ModJeiPlugin implements IModPlugin {
         COBBLESTONE_CENTRIFUGE_DEFINITION,
         COBBLESTONE_LASER_DRILL_DEFINITION,
         COBBLESTONE_MIXER_DEFINITION,
+        STONE_BREAK_SIMULATOR_DEFINITION,
         COBBLESTONE_MELTER_DEFINITION,
         COBBLESTONE_ASSEMBLY_MACHINE_DEFINITION,
         COBBLESTONE_CHEMICAL_REACTOR_DEFINITION,
@@ -430,6 +452,13 @@ public class ModJeiPlugin implements IModPlugin {
             .toList();
         registration.addRecipes(COBBLESTONE_MIXER_DEFINITION.recipeType(), mixerRecipes);
 
+        List<StoneBreakSimulatorRecipe> stoneBreakSimulatorRecipes = minecraft.level.getRecipeManager()
+            .getAllRecipesFor(ModRecipeTypes.STONE_BREAK_SIMULATOR.get())
+            .stream()
+            .map(RecipeHolder::value)
+            .toList();
+        registration.addRecipes(STONE_BREAK_SIMULATOR_DEFINITION.recipeType(), StoneBreakSimulatorJeiRecipe.createRecipes(stoneBreakSimulatorRecipes));
+
         List<CobblestoneMelterRecipe> melterRecipes = minecraft.level.getRecipeManager()
             .getAllRecipesFor(ModRecipeTypes.COBBLESTONE_MELTER.get())
             .stream()
@@ -498,6 +527,7 @@ public class ModJeiPlugin implements IModPlugin {
         this.registerBaseScreenGuiHandler(registration, CobblestoneCentrifugeScreen.class);
         this.registerBaseScreenGuiHandler(registration, CobblestoneLaserDrillScreen.class);
         this.registerBaseScreenGuiHandler(registration, CobblestoneMixerScreen.class);
+        this.registerBaseScreenGuiHandler(registration, StoneBreakSimulatorScreen.class);
         this.registerBaseScreenGuiHandler(registration, CobblestoneMelterScreen.class);
         this.registerBaseScreenGuiHandler(registration, CobblestoneAssemblyMachineScreen.class);
         this.registerBaseScreenGuiHandler(registration, CobblestoneChemicalReactorScreen.class);

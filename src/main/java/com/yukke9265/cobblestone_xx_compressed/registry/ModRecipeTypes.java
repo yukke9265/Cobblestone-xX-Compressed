@@ -17,6 +17,7 @@ import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneMixerRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestonePoweredFurnaceRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneReactionChamberRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneCrystallizationChamberRecipe;
+import com.yukke9265.cobblestone_xx_compressed.recipe.StoneBreakSimulatorRecipe;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -67,4 +68,7 @@ public class ModRecipeTypes {
 
     public static final Supplier<RecipeType<CobblestoneFluidMixerRecipe>> COBBLESTONE_FLUID_MIXER =
         RECIPE_TYPES.register("cobblestone_fluid_mixer", RecipeType::simple);
+
+    public static final Supplier<RecipeType<StoneBreakSimulatorRecipe>> STONE_BREAK_SIMULATOR =
+        RECIPE_TYPES.register("stone_break_simulator", RecipeType::simple);
 }

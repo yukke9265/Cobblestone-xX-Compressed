@@ -17,6 +17,7 @@ import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneMixerRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestonePoweredFurnaceRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneReactionChamberRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneCrystallizationChamberRecipe;
+import com.yukke9265.cobblestone_xx_compressed.recipe.StoneBreakSimulatorRecipe;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -249,6 +250,22 @@ public class ModRecipeSerializers {
                 @Override
                 public StreamCodec<RegistryFriendlyByteBuf, CobblestoneFluidMixerRecipe> streamCodec() {
                     return CobblestoneFluidMixerRecipe.STREAM_CODEC;
+                }
+            }
+        );
+
+    public static final Supplier<RecipeSerializer<StoneBreakSimulatorRecipe>> STONE_BREAK_SIMULATOR =
+        RECIPE_SERIALIZERS.register(
+            "stone_break_simulator",
+            () -> new RecipeSerializer<StoneBreakSimulatorRecipe>() {
+                @Override
+                public MapCodec<StoneBreakSimulatorRecipe> codec() {
+                    return StoneBreakSimulatorRecipe.CODEC;
+                }
+
+                @Override
+                public StreamCodec<RegistryFriendlyByteBuf, StoneBreakSimulatorRecipe> streamCodec() {
+                    return StoneBreakSimulatorRecipe.STREAM_CODEC;
                 }
             }
         );

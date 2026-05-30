@@ -17,6 +17,7 @@ import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneMelterRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneMixerRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestonePoweredFurnaceRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneReactionChamberRecipe;
+import com.yukke9265.cobblestone_xx_compressed.recipe.StoneBreakSimulatorRecipe;
 
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
@@ -75,6 +76,22 @@ final class MachineRecipeOutputHelper {
         );
 
         output.accept(modRecipeId("cobblestone_crusher/" + recipeName), recipe, null);
+    }
+
+    public static void saveStoneBreakSimulatorRecipe(
+        RecipeOutput output,
+        String recipeName,
+        ItemLike ingredient,
+        long totalCobblestonePower,
+        long cobblestonePowerPerTick
+    ) {
+        StoneBreakSimulatorRecipe recipe = new StoneBreakSimulatorRecipe(
+            Ingredient.of(ingredient),
+            totalCobblestonePower,
+            cobblestonePowerPerTick
+        );
+
+        output.accept(modRecipeId("stone_break_simulator/" + recipeName), recipe, null);
     }
 
     public static void saveCobblestoneCentrifugeRecipe(
