@@ -194,6 +194,7 @@ public class ModEnglishLanguageProvider extends LanguageProvider {
         addBlock(ModBlocks.COBBLESTONE_LASER_DRILL, "Cobblestone Laser Drill");
         addBlock(ModBlocks.COBBLESTONE_MELTER, "Cobblestone Melter");
         addBlock(ModBlocks.COBBLESTONE_ASSEMBLY_MACHINE, "Cobblestone Assembly Machine");
+        addBlock(ModBlocks.COBBLESTONE_ENCHANTER, "Cobblestone Enchanter");
         addBlock(ModBlocks.COBBLESTONE_CHEMICAL_REACTOR, "Cobblestone Chemical Reactor");
         addBlock(ModBlocks.COBBLESTONE_MIXER, "Cobblestone Mixer");
         addBlock(ModBlocks.STONE_BREAK_SIMULATOR, "Stone Break Simulator");

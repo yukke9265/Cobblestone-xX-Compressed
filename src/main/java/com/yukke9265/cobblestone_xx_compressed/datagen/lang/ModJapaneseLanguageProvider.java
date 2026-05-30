@@ -22,6 +22,7 @@ public class ModJapaneseLanguageProvider extends LanguageProvider {
         addBlock(ModBlocks.COBBLESTONE_LASER_DRILL, "丸石レーザードリル");
         addBlock(ModBlocks.COBBLESTONE_MELTER, "丸石溶解機");
         addBlock(ModBlocks.COBBLESTONE_ASSEMBLY_MACHINE, "丸石組立機");
+        addBlock(ModBlocks.COBBLESTONE_ENCHANTER, "丸石エンチャンター");
         addBlock(ModBlocks.COBBLESTONE_CHEMICAL_REACTOR, "丸石化学反応機");
         addBlock(ModBlocks.COBBLESTONE_MIXER, "丸石ミキサー");
         addBlock(ModBlocks.STONE_BREAK_SIMULATOR, "石破壊シミュレーター");

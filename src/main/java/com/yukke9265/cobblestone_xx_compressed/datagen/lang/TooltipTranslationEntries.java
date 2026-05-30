@@ -24,6 +24,7 @@ public final class TooltipTranslationEntries {
         new TooltipEntry(TooltipTranslationKeys.machineDescription("stone_break_simulator"), "圧縮石を疑似的に破壊して、エンチャントの効果付きでドロップを生成します。", "Simulates breaking compressed stone and generates drops with the inserted pickaxe enchants."),
         new TooltipEntry(TooltipTranslationKeys.machineDescription("cobblestone_melter"), "アイテムを溶かして、液体素材へ変換します。", "Melts items into fluid materials."),
         new TooltipEntry(TooltipTranslationKeys.machineDescription("cobblestone_assembly_machine"), "部品を組み合わせて、機械用のアイテムを作ります。", "Assembles components into machine-related items."),
+        new TooltipEntry(TooltipTranslationKeys.machineDescription("cobblestone_enchanter"), "エンチャント本を使って、道具へエンチャントを付与します。", "Uses enchanted books to apply enchantments onto tools."),
         new TooltipEntry(TooltipTranslationKeys.machineDescription("cobblestone_chemical_reactor"), "アイテムと液体を反応させて、化学系素材を作ります。", "Reacts items and fluids to create chemical materials."),
         new TooltipEntry(TooltipTranslationKeys.machineDescription("cobblestone_reaction_chamber"), "複数の材料を反応させて、中間素材や完成品を作ります。", "Combines multiple ingredients to produce intermediates and finished items."),
         new TooltipEntry(TooltipTranslationKeys.machineDescription("cobblestone_crystallization_chamber"), "液体や素材から結晶系アイテムを生成します。", "Creates crystal-based items from fluids and materials."),

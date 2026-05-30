@@ -301,6 +301,7 @@ public class ModRecipeProvider extends RecipeProvider {
         CobblestoneLaserDrillRecipeDatagen.register(output);
         CobblestoneMelterRecipeDatagen.register(output);
         CobblestoneAssemblyMachineRecipeDatagen.register(output);
+        CobblestoneEnchanterRecipeDatagen.register(output);
         CobblestoneChemicalReactorRecipeDatagen.register(output);
         CobblestoneMixerRecipeDatagen.register(output);
         CobblestoneReactionChamberRecipeDatagen.register(output);

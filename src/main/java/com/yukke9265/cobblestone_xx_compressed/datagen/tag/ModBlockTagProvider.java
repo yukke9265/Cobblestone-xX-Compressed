@@ -33,6 +33,7 @@ public class ModBlockTagProvider extends BlockTagsProvider {
             .add(ModBlocks.COBBLESTONE_LASER_DRILL.get())
             .add(ModBlocks.COBBLESTONE_MELTER.get())
             .add(ModBlocks.COBBLESTONE_ASSEMBLY_MACHINE.get())
+            .add(ModBlocks.COBBLESTONE_ENCHANTER.get())
             .add(ModBlocks.COBBLESTONE_MIXER.get())
             .add(ModBlocks.COBBLESTONE_DISSOLUTION_CHAMBER.get());
 

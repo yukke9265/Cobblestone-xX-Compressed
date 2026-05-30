@@ -9,6 +9,7 @@ import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneChemicalReactor
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneCrystallizationChamberRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneCrusherRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneDissolutionChamberRecipe;
+import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneEnchanterRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneExtremeCompressorRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneFluidMixerRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneFurnaceRecipe;
@@ -300,6 +301,26 @@ final class MachineRecipeOutputHelper {
         );
 
         output.accept(modRecipeId("cobblestone_dissolution_chamber/" + recipeName), recipe, null);
+    }
+
+    public static void saveCobblestoneEnchanterRecipe(
+        RecipeOutput output,
+        String recipeName,
+        Ingredient bookIngredient,
+        ItemStack jeiPreviewTool,
+        ItemStack jeiPreviewBook,
+        ItemStack jeiPreviewResult,
+        int processingTicks
+    ) {
+        CobblestoneEnchanterRecipe recipe = new CobblestoneEnchanterRecipe(
+            bookIngredient,
+            jeiPreviewTool.copy(),
+            jeiPreviewBook.copy(),
+            jeiPreviewResult.copy(),
+            processingTicks
+        );
+
+        output.accept(modRecipeId("cobblestone_enchanter/" + recipeName), recipe, null);
     }
 
     public static void saveCobblestoneCrystallizationChamberRecipe(

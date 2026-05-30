@@ -64,6 +64,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
         registerCobblestoneExtremeCompressorBlock(ModBlocks.COBBLESTONE_EXTREME_COMPRESSOR.get(), "cobblestone_extreme_compressor");
         registerCobblestoneMelterBlock(ModBlocks.COBBLESTONE_MELTER.get(), "cobblestone_melter");
         registerCobblestoneAssemblyMachineBlock(ModBlocks.COBBLESTONE_ASSEMBLY_MACHINE.get(), "cobblestone_assembly_machine");
+        registerCobblestoneEnchanterBlock(ModBlocks.COBBLESTONE_ENCHANTER.get(), "cobblestone_enchanter");
         registerCobblestoneChemicalReactorBlock(ModBlocks.COBBLESTONE_CHEMICAL_REACTOR.get(), "cobblestone_chemical_reactor");
         registerStandardOnOffMachineBlock(ModBlocks.COBBLESTONE_REACTION_CHAMBER.get(), "cobblestone_reaction_chamber");
         registerStandardOnOffMachineBlock(ModBlocks.COBBLESTONE_CRYSTALLIZATION_CHAMBER.get(), "cobblestone_crystallization_chamber");
@@ -203,6 +204,51 @@ public class ModBlockStateProvider extends BlockStateProvider {
 
             // datagen では north 基準の model を作り、
             // blockstate 側で向きごとの回転だけを差し替えるようにします。
+            int rotationY = switch (facing) {
+                case SOUTH -> 180;
+                case EAST -> 90;
+                case WEST -> 270;
+                default -> 0;
+            };
+
+            return ConfiguredModel.builder()
+                .modelFile(isOn ? onModel : offModel)
+                .rotationY(rotationY)
+                .build();
+        });
+
+        this.simpleBlockItem(block, offModel);
+    }
+
+    private void registerCobblestoneEnchanterBlock(Block block, String blockName) {
+        // 既存テクスチャの実フォルダ名が cobblestone_enchnater になっているため、
+        // datagen 側でもその実体に合わせて参照します。
+        String textureFolderName = "cobblestone_enchnater";
+
+        ModelFile offModel = this.models()
+            .withExistingParent(blockName + "_off", this.mcLoc("block/cube"))
+            .texture("particle", this.modLoc("block/" + textureFolderName + "/" + textureFolderName + "_top"))
+            .texture("down", this.modLoc("block/" + textureFolderName + "/" + textureFolderName + "_top"))
+            .texture("up", this.modLoc("block/" + textureFolderName + "/" + textureFolderName + "_top"))
+            .texture("north", this.modLoc("block/" + textureFolderName + "/" + textureFolderName + "_front"))
+            .texture("south", this.modLoc("block/" + textureFolderName + "/" + textureFolderName + "_side"))
+            .texture("west", this.modLoc("block/" + textureFolderName + "/" + textureFolderName + "_side"))
+            .texture("east", this.modLoc("block/" + textureFolderName + "/" + textureFolderName + "_side"));
+
+        ModelFile onModel = this.models()
+            .withExistingParent(blockName + "_on", this.mcLoc("block/cube"))
+            .texture("particle", this.modLoc("block/" + textureFolderName + "/" + textureFolderName + "_top"))
+            .texture("down", this.modLoc("block/" + textureFolderName + "/" + textureFolderName + "_top"))
+            .texture("up", this.modLoc("block/" + textureFolderName + "/" + textureFolderName + "_top"))
+            .texture("north", this.modLoc("block/" + textureFolderName + "/" + textureFolderName + "_front_on"))
+            .texture("south", this.modLoc("block/" + textureFolderName + "/" + textureFolderName + "_side"))
+            .texture("west", this.modLoc("block/" + textureFolderName + "/" + textureFolderName + "_side"))
+            .texture("east", this.modLoc("block/" + textureFolderName + "/" + textureFolderName + "_side"));
+
+        this.getVariantBuilder(block).forAllStates(state -> {
+            Direction facing = state.getValue(OnOffBlock.FACING);
+            boolean isOn = state.getValue(OnOffBlock.ON);
+
             int rotationY = switch (facing) {
                 case SOUTH -> 180;
                 case EAST -> 90;
