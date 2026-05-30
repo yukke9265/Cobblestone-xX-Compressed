@@ -1,7 +1,5 @@
 package com.yukke9265.cobblestone_xx_compressed.block;
 
-import com.yukke9265.cobblestone_xx_compressed.blockentity.BaseBlockEntity;
-import com.yukke9265.cobblestone_xx_compressed.blockentity.MachineUpgradeHelper;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModItems;
 
 import net.minecraft.core.BlockPos;
@@ -52,18 +50,6 @@ public class RotatingBlock extends Block {
         InteractionHand hand,
         BlockHitResult hitResult
     ) {
-        if (player.isShiftKeyDown() && stack == player.getItemInHand(hand)) {
-            BlockPos clickedPos = hitResult.getBlockPos();
-            if (level.getBlockEntity(clickedPos) instanceof BaseBlockEntity baseBlockEntity
-                && (MachineUpgradeHelper.isAccelerationChip(stack) || MachineUpgradeHelper.isEnergizedCube(stack))
-                && baseBlockEntity.canInstallUpgradeItem(stack)) {
-                if (!level.isClientSide && baseBlockEntity.installUpgradeItem(stack, false) && !player.getAbilities().instabuild) {
-                    stack.shrink(1);
-                }
-                return ItemInteractionResult.sidedSuccess(level.isClientSide);
-            }
-        }
-
         if (stack.is(ModItems.CONFIGURATION_CARD.get())) {
             return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }

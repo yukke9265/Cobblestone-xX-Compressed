@@ -27,6 +27,7 @@ public class ModBlockTagProvider extends BlockTagsProvider {
             .add(ModBlocks.COBBLESTONE_MACHINE_CASING.get())
             .add(ModBlocks.COBBLESTONE_TANK.get())
             .add(ModBlocks.COBBLESTONE_FURNACE.get())
+            .add(ModBlocks.COBBLESTONE_POWERED_FURNACE.get())
             .add(ModBlocks.COBBLESTONE_EXTREME_COMPRESSOR.get())
             .add(ModBlocks.COBBLESTONE_CRUSHER.get())
             .add(ModBlocks.COBBLESTONE_CENTRIFUGE.get())
@@ -34,8 +35,14 @@ public class ModBlockTagProvider extends BlockTagsProvider {
             .add(ModBlocks.COBBLESTONE_MELTER.get())
             .add(ModBlocks.COBBLESTONE_ASSEMBLY_MACHINE.get())
             .add(ModBlocks.COBBLESTONE_ENCHANTER.get())
+            .add(ModBlocks.COBBLESTONE_CHEMICAL_REACTOR.get())
             .add(ModBlocks.COBBLESTONE_MIXER.get())
-            .add(ModBlocks.COBBLESTONE_DISSOLUTION_CHAMBER.get());
+            .add(ModBlocks.STONE_BREAK_SIMULATOR.get())
+            .add(ModBlocks.COBBLESTONE_FLUID_MIXER.get())
+            .add(ModBlocks.COBBLESTONE_REACTION_CHAMBER.get())
+            .add(ModBlocks.COBBLESTONE_CRYSTALLIZATION_CHAMBER.get())
+            .add(ModBlocks.COBBLESTONE_DISSOLUTION_CHAMBER.get())
+            .add(ModBlocks.COBBLESTONE_FE_GENERATOR.get());
 
         for (ModBlocks.TierCobblestoneGenerator generatorVariant : ModBlocks.TierCobblestoneGenerator.values()) {
             this.tag(BlockTags.MINEABLE_WITH_PICKAXE).add(generatorVariant.getBlock().get());

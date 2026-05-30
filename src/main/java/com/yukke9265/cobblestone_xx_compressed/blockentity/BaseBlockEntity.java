@@ -225,6 +225,60 @@ public class BaseBlockEntity extends BlockEntity {
         return null;
     }
 
+    protected int getAccelerationUpgradeSlotIndex() {
+        return this.getUpgradeSlotIndexByFieldName("ACCELERATION_SLOT_INDEX");
+    }
+
+    protected int getEnergizedCubeUpgradeSlotIndex() {
+        return this.getUpgradeSlotIndexByFieldName("ENERGIZED_CUBE_SLOT_INDEX");
+    }
+
+    private int getUpgradeSlotIndexByFieldName(String fieldName) {
+        try {
+            Object slotIndexValue = this.getClass().getField(fieldName).get(null);
+            if (slotIndexValue instanceof Integer slotIndex) {
+                return slotIndex.intValue();
+            }
+        } catch (NoSuchFieldException | IllegalAccessException ignored) {
+            // upgrade slot を持たない機械もあるため、その場合は未対応として扱います。
+        }
+
+        return -1;
+    }
+
+    private boolean canInstallUpgradeItemInSlot(ItemStackHandler itemStackHandler, ItemStack stack, int slot) {
+        if (slot < 0 || slot >= itemStackHandler.getSlots()) {
+            return false;
+        }
+
+        if (!itemStackHandler.isItemValid(slot, stack)) {
+            return false;
+        }
+
+        if (!itemStackHandler.getStackInSlot(slot).isEmpty()) {
+            return false;
+        }
+
+        return itemStackHandler.getSlotLimit(slot) > 0;
+    }
+
+    private boolean tryInstallUpgradeItemInSlot(ItemStackHandler itemStackHandler, ItemStack stack, int slot, boolean simulate) {
+        if (!this.canInstallUpgradeItemInSlot(itemStackHandler, stack, slot)) {
+            return false;
+        }
+
+        ItemStack singleStack = stack.copyWithCount(1);
+        ItemStack remainingStack = itemStackHandler.insertItem(slot, singleStack, simulate);
+        if (!remainingStack.isEmpty()) {
+            return false;
+        }
+
+        if (!simulate) {
+            this.setChanged();
+        }
+        return true;
+    }
+
     public boolean canInstallUpgradeItem(ItemStack stack) {
         if (stack.isEmpty()) {
             return false;
@@ -239,19 +293,13 @@ public class BaseBlockEntity extends BlockEntity {
             return false;
         }
 
-        for (int slot = 0; slot < itemStackHandler.getSlots(); slot++) {
-            if (!itemStackHandler.isItemValid(slot, stack)) {
-                continue;
-            }
+        if (MachineUpgradeHelper.isAccelerationChip(stack)
+            && this.canInstallUpgradeItemInSlot(itemStackHandler, stack, this.getAccelerationUpgradeSlotIndex())) {
+            return true;
+        }
 
-            if (!itemStackHandler.getStackInSlot(slot).isEmpty()) {
-                continue;
-            }
-
-            if (itemStackHandler.getSlotLimit(slot) <= 0) {
-                continue;
-            }
-
+        if (MachineUpgradeHelper.isEnergizedCube(stack)
+            && this.canInstallUpgradeItemInSlot(itemStackHandler, stack, this.getEnergizedCubeUpgradeSlotIndex())) {
             return true;
         }
 
@@ -268,24 +316,13 @@ public class BaseBlockEntity extends BlockEntity {
             return false;
         }
 
-        for (int slot = 0; slot < itemStackHandler.getSlots(); slot++) {
-            if (!itemStackHandler.isItemValid(slot, stack)) {
-                continue;
-            }
+        if (MachineUpgradeHelper.isAccelerationChip(stack)
+            && this.tryInstallUpgradeItemInSlot(itemStackHandler, stack, this.getAccelerationUpgradeSlotIndex(), simulate)) {
+            return true;
+        }
 
-            if (!itemStackHandler.getStackInSlot(slot).isEmpty()) {
-                continue;
-            }
-
-            ItemStack singleStack = stack.copyWithCount(1);
-            ItemStack remainingStack = itemStackHandler.insertItem(slot, singleStack, simulate);
-            if (!remainingStack.isEmpty()) {
-                continue;
-            }
-
-            if (!simulate) {
-                this.setChanged();
-            }
+        if (MachineUpgradeHelper.isEnergizedCube(stack)
+            && this.tryInstallUpgradeItemInSlot(itemStackHandler, stack, this.getEnergizedCubeUpgradeSlotIndex(), simulate)) {
             return true;
         }
 

@@ -8,11 +8,10 @@ import com.yukke9265.cobblestone_xx_compressed.blockentity.MachineUpgradeHelper;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 
-public class CobblestoneAccelerationChipItem extends Item {
+public class CobblestoneAccelerationChipItem extends BaseMachineUpgradeItem {
     private static final String TOOLTIP_KEY = "tooltip.cobblestonexxcompressed.cobblestone_acceleration_chip.rate";
 
     public CobblestoneAccelerationChipItem(Properties properties) {
