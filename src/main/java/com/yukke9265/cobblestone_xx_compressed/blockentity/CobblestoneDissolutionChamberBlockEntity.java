@@ -541,6 +541,26 @@ public class CobblestoneDissolutionChamberBlockEntity extends BaseBlockEntity im
         this.setChanged();
     }
 
+    @SuppressWarnings("null")
+    public boolean canQuickMoveToInput(ItemStack stack) {
+        if (stack.isEmpty()) {
+            return false;
+        }
+
+        Level currentLevel = this.level;
+        if (currentLevel == null) {
+            return false;
+        }
+
+        for (RecipeHolder<CobblestoneDissolutionChamberRecipe> recipeHolder : currentLevel.getRecipeManager().getAllRecipesFor(ModRecipeTypes.COBBLESTONE_DISSOLUTION_CHAMBER.get())) {
+            if (recipeHolder.value().getIngredient().test(stack)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     private Optional<RecipeHolder<CobblestoneDissolutionChamberRecipe>> getCurrentRecipe() {
         Level currentLevel = this.level;
         if (currentLevel == null) {

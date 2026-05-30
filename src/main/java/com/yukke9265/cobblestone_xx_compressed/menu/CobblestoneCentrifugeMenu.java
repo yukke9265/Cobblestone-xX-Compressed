@@ -196,20 +196,20 @@ public class CobblestoneCentrifugeMenu extends BaseMenu {
                     CobblestoneCentrifugeBlockEntity.ENERGIZED_CUBE_SLOT_INDEX + 1,
                     false
                 );
-            } else if (CobblestoneCrusherBlockEntity.isCobblestonePowerItem(sourceStack)) {
-                movedToMachine = this.moveItemStackTo(
-                    sourceStack,
-                    CobblestoneCentrifugeBlockEntity.POWER_SLOT_INDEX,
-                    CobblestoneCentrifugeBlockEntity.POWER_SLOT_INDEX + 1,
-                    false
-                );
-            }
-
-            if (!movedToMachine) {
+            } else if (this.centrifugeBlockEntity.canQuickMoveToInput(sourceStack)) {
                 movedToMachine = this.moveItemStackTo(
                     sourceStack,
                     CobblestoneCentrifugeBlockEntity.INPUT_SLOT_INDEX,
                     CobblestoneCentrifugeBlockEntity.INPUT_SLOT_INDEX + 1,
+                    false
+                );
+            }
+
+            if (!movedToMachine && CobblestoneCrusherBlockEntity.isCobblestonePowerItem(sourceStack)) {
+                movedToMachine = this.moveItemStackTo(
+                    sourceStack,
+                    CobblestoneCentrifugeBlockEntity.POWER_SLOT_INDEX,
+                    CobblestoneCentrifugeBlockEntity.POWER_SLOT_INDEX + 1,
                     false
                 );
             }

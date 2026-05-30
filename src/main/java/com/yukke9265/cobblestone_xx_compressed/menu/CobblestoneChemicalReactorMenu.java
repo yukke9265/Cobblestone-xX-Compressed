@@ -343,20 +343,20 @@ public class CobblestoneChemicalReactorMenu extends BaseMenu {
                     CobblestoneChemicalReactorBlockEntity.ENERGIZED_CUBE_SLOT_INDEX + 1,
                     false
                 );
-            } else if (CobblestoneCrusherBlockEntity.isCobblestonePowerItem(sourceStack)) {
-                movedToMachine = this.moveItemStackTo(
-                    sourceStack,
-                    CobblestoneChemicalReactorBlockEntity.POWER_SLOT_INDEX,
-                    CobblestoneChemicalReactorBlockEntity.POWER_SLOT_INDEX + 1,
-                    false
-                );
-            }
-
-            if (!movedToMachine) {
+            } else if (this.chemicalReactorBlockEntity.canQuickMoveToInput(sourceStack)) {
                 movedToMachine = this.moveItemStackTo(
                     sourceStack,
                     CobblestoneChemicalReactorBlockEntity.INPUT_SLOT_1_INDEX,
                     CobblestoneChemicalReactorBlockEntity.POWER_SLOT_INDEX,
+                    false
+                );
+            }
+
+            if (!movedToMachine && CobblestoneCrusherBlockEntity.isCobblestonePowerItem(sourceStack)) {
+                movedToMachine = this.moveItemStackTo(
+                    sourceStack,
+                    CobblestoneChemicalReactorBlockEntity.POWER_SLOT_INDEX,
+                    CobblestoneChemicalReactorBlockEntity.POWER_SLOT_INDEX + 1,
                     false
                 );
             }

@@ -37,6 +37,9 @@ public final class ModJeiIds {
     public static final ResourceLocation COBBLESTONE_ASSEMBLY_MACHINE =
         ResourceLocation.fromNamespaceAndPath(CobblestonexXCompressed.MODID, "cobblestone_assembly_machine");
 
+    public static final ResourceLocation COBBLESTONE_ENCHANTER =
+        ResourceLocation.fromNamespaceAndPath(CobblestonexXCompressed.MODID, "cobblestone_enchanter");
+
     public static final ResourceLocation COBBLESTONE_CHEMICAL_REACTOR =
         ResourceLocation.fromNamespaceAndPath(CobblestonexXCompressed.MODID, "cobblestone_chemical_reactor");
 

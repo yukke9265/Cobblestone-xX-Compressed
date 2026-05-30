@@ -487,6 +487,26 @@ public class CobblestoneCrusherBlockEntity extends BaseBlockEntity implements Me
         this.setChanged();
     }
 
+    @SuppressWarnings("null")
+    public boolean canQuickMoveToInput(ItemStack stack) {
+        if (stack.isEmpty()) {
+            return false;
+        }
+
+        Level currentLevel = this.level;
+        if (currentLevel == null) {
+            return false;
+        }
+
+        for (RecipeHolder<CobblestoneCrusherRecipe> recipeHolder : currentLevel.getRecipeManager().getAllRecipesFor(ModRecipeTypes.COBBLESTONE_CRUSHER.get())) {
+            if (recipeHolder.value().getIngredient().test(stack)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     private Optional<RecipeHolder<CobblestoneCrusherRecipe>> getCurrentRecipe() {
         Level currentLevel = this.level;
         if (currentLevel == null) {

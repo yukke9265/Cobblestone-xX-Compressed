@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "down": "cobblestonexxcompressed:block/cobblestone_enchnater/cobblestone_enchnater_top",
+    "east": "cobblestonexxcompressed:block/cobblestone_enchnater/cobblestone_enchnater_side",
+    "north": "cobblestonexxcompressed:block/cobblestone_enchnater/cobblestone_enchnater_front",
+    "particle": "cobblestonexxcompressed:block/cobblestone_enchnater/cobblestone_enchnater_top",
+    "south": "cobblestonexxcompressed:block/cobblestone_enchnater/cobblestone_enchnater_side",
+    "up": "cobblestonexxcompressed:block/cobblestone_enchnater/cobblestone_enchnater_top",
+    "west": "cobblestonexxcompressed:block/cobblestone_enchnater/cobblestone_enchnater_side"
+  }
+}

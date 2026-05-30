@@ -174,14 +174,14 @@ public class StoneBreakSimulatorMenu extends BaseMenu {
                 movedToMachine = this.moveItemStackTo(sourceStack, StoneBreakSimulatorBlockEntity.ACCELERATION_SLOT_INDEX, StoneBreakSimulatorBlockEntity.ACCELERATION_SLOT_INDEX + 1, false);
             } else if (MachineUpgradeHelper.isEnergizedCube(sourceStack)) {
                 movedToMachine = this.moveItemStackTo(sourceStack, StoneBreakSimulatorBlockEntity.ENERGIZED_CUBE_SLOT_INDEX, StoneBreakSimulatorBlockEntity.ENERGIZED_CUBE_SLOT_INDEX + 1, false);
-            } else if (CobblestoneCrusherBlockEntity.isCobblestonePowerItem(sourceStack)) {
-                movedToMachine = this.moveItemStackTo(sourceStack, StoneBreakSimulatorBlockEntity.POWER_SLOT_INDEX, StoneBreakSimulatorBlockEntity.POWER_SLOT_INDEX + 1, false);
             } else if (sourceStack.is(net.minecraft.tags.ItemTags.PICKAXES)) {
                 movedToMachine = this.moveItemStackTo(sourceStack, StoneBreakSimulatorBlockEntity.INPUT_SLOT_2_INDEX, StoneBreakSimulatorBlockEntity.INPUT_SLOT_2_INDEX + 1, false);
+            } else if (this.stoneBreakSimulatorBlockEntity.canQuickMoveToInput(sourceStack)) {
+                movedToMachine = this.moveItemStackTo(sourceStack, StoneBreakSimulatorBlockEntity.INPUT_SLOT_1_INDEX, StoneBreakSimulatorBlockEntity.INPUT_SLOT_2_INDEX, false);
             }
 
-            if (!movedToMachine) {
-                movedToMachine = this.moveItemStackTo(sourceStack, StoneBreakSimulatorBlockEntity.INPUT_SLOT_1_INDEX, StoneBreakSimulatorBlockEntity.INPUT_SLOT_2_INDEX, false);
+            if (!movedToMachine && CobblestoneCrusherBlockEntity.isCobblestonePowerItem(sourceStack)) {
+                movedToMachine = this.moveItemStackTo(sourceStack, StoneBreakSimulatorBlockEntity.POWER_SLOT_INDEX, StoneBreakSimulatorBlockEntity.POWER_SLOT_INDEX + 1, false);
             }
 
             if (!movedToMachine) {

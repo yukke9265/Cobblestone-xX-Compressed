@@ -194,20 +194,20 @@ public class CobblestonePoweredFurnaceMenu extends BaseMenu {
                     CobblestonePoweredFurnaceBlockEntity.ENERGIZED_CUBE_SLOT_INDEX + 1,
                     false
                 );
-            } else if (CobblestonePoweredFurnaceBlockEntity.isCobblestonePowerItem(sourceStack)) {
-                movedToMachine = this.moveItemStackTo(
-                    sourceStack,
-                    CobblestonePoweredFurnaceBlockEntity.POWER_SLOT_INDEX,
-                    CobblestonePoweredFurnaceBlockEntity.POWER_SLOT_INDEX + 1,
-                    false
-                );
-            }
-
-            if (!movedToMachine) {
+            } else if (this.poweredFurnaceBlockEntity.canQuickMoveToInput(sourceStack)) {
                 movedToMachine = this.moveItemStackTo(
                     sourceStack,
                     CobblestonePoweredFurnaceBlockEntity.INPUT_SLOT_INDEX,
                     CobblestonePoweredFurnaceBlockEntity.INPUT_SLOT_INDEX + 1,
+                    false
+                );
+            }
+
+            if (!movedToMachine && CobblestonePoweredFurnaceBlockEntity.isCobblestonePowerItem(sourceStack)) {
+                movedToMachine = this.moveItemStackTo(
+                    sourceStack,
+                    CobblestonePoweredFurnaceBlockEntity.POWER_SLOT_INDEX,
+                    CobblestonePoweredFurnaceBlockEntity.POWER_SLOT_INDEX + 1,
                     false
                 );
             }

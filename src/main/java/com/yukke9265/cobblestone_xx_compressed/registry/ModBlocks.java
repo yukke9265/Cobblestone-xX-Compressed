@@ -9,6 +9,7 @@ import com.yukke9265.cobblestone_xx_compressed.block.CobblestoneCentrifugeBlock;
 import com.yukke9265.cobblestone_xx_compressed.block.CobblestoneAssemblyMachineBlock;
 import com.yukke9265.cobblestone_xx_compressed.block.CobblestoneChemicalReactorBlock;
 import com.yukke9265.cobblestone_xx_compressed.block.CobblestoneDissolutionChamberBlock;
+import com.yukke9265.cobblestone_xx_compressed.block.CobblestoneEnchanterBlock;
 import com.yukke9265.cobblestone_xx_compressed.block.CobblestoneExtremeCompressorBlock;
 import com.yukke9265.cobblestone_xx_compressed.block.CobblestoneFEGeneratorBlock;
 import com.yukke9265.cobblestone_xx_compressed.block.CobblestoneFluidMixerBlock;
@@ -558,6 +559,14 @@ public class ModBlocks {
         BLOCKS.register(
             "cobblestone_assembly_machine",
             () -> new CobblestoneAssemblyMachineBlock(
+                createCobblestoneMachineProperties()
+            )
+        );
+
+    public static final DeferredBlock<Block> COBBLESTONE_ENCHANTER =
+        BLOCKS.register(
+            "cobblestone_enchanter",
+            () -> new CobblestoneEnchanterBlock(
                 createCobblestoneMachineProperties()
             )
         );

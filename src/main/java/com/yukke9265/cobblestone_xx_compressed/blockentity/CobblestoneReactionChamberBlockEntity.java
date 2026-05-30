@@ -446,6 +446,27 @@ public class CobblestoneReactionChamberBlockEntity extends BaseBlockEntity imple
         this.setChanged();
     }
 
+    @SuppressWarnings("null")
+    public boolean canQuickMoveToInput(ItemStack stack) {
+        if (stack.isEmpty()) {
+            return false;
+        }
+
+        Level currentLevel = this.level;
+        if (currentLevel == null) {
+            return false;
+        }
+
+        for (RecipeHolder<CobblestoneReactionChamberRecipe> recipeHolder : currentLevel.getRecipeManager().getAllRecipesFor(ModRecipeTypes.COBBLESTONE_REACTION_CHAMBER.get())) {
+            CobblestoneReactionChamberRecipe recipe = recipeHolder.value();
+            if (recipe.getFirstIngredient().test(stack) || recipe.getSecondIngredient().test(stack)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     private Optional<RecipeHolder<CobblestoneReactionChamberRecipe>> getCurrentRecipe() {
         Level currentLevel = this.level;
         if (currentLevel == null) {

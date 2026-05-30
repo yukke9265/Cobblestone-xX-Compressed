@@ -89,6 +89,29 @@ public final class MachineGuiLayouts {
         }
     }
 
+    public static final class Enchanter {
+        public static final int MACHINE_SLOT_Y = Mixer.MACHINE_SLOT_Y;
+        public static final int POWER_SLOT_X = Mixer.POWER_SLOT_X;
+        public static final int POWER_SLOT_Y = Mixer.POWER_SLOT_Y;
+        public static final int TOOL_SLOT_X = Mixer.INPUT_SLOT_1_X;
+        public static final int TOOL_SLOT_Y = Mixer.INPUT_SLOT_1_Y;
+        public static final int BOOK_SLOT_X = Mixer.INPUT_SLOT_2_X;
+        public static final int BOOK_SLOT_Y = Mixer.INPUT_SLOT_2_Y;
+        public static final int OUTPUT_SLOT_X = Mixer.OUTPUT_SLOT_X;
+        public static final int OUTPUT_SLOT_Y = Mixer.OUTPUT_SLOT_Y;
+        public static final int PROGRESS_BAR_X = Mixer.PROGRESS_BAR_X;
+        public static final int PROGRESS_BAR_Y = Mixer.PROGRESS_BAR_Y;
+        public static final int PROGRESS_BAR_WIDTH = Mixer.PROGRESS_BAR_WIDTH;
+        public static final int PROGRESS_BAR_HEIGHT = Mixer.PROGRESS_BAR_HEIGHT;
+        public static final int POWER_BAR_X = Mixer.POWER_BAR_X;
+        public static final int POWER_BAR_Y = Mixer.POWER_BAR_Y;
+        public static final int POWER_BAR_WIDTH = Mixer.POWER_BAR_WIDTH;
+        public static final int POWER_BAR_HEIGHT = Mixer.POWER_BAR_HEIGHT;
+
+        private Enchanter() {
+        }
+    }
+
     public static final class ReactionChamber {
         public static final int MACHINE_SLOT_Y = 31 - 6;//液体スロットがある分、他のマシンより少し上に配置
         public static final int INPUT_SLOT_1_X = 36;

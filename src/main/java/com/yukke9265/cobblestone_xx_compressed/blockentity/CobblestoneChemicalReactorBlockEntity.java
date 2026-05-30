@@ -772,6 +772,30 @@ public class CobblestoneChemicalReactorBlockEntity extends BaseBlockEntity imple
         this.setChanged();
     }
 
+    @SuppressWarnings("null")
+    public boolean canQuickMoveToInput(ItemStack stack) {
+        if (stack.isEmpty()) {
+            return false;
+        }
+
+        Level currentLevel = this.level;
+        if (currentLevel == null) {
+            return false;
+        }
+
+        for (RecipeHolder<CobblestoneChemicalReactorRecipe> recipeHolder : currentLevel.getRecipeManager().getAllRecipesFor(ModRecipeTypes.COBBLESTONE_CHEMICAL_REACTOR.get())) {
+            CobblestoneChemicalReactorRecipe recipe = recipeHolder.value();
+            if (recipe.hasFirstItemInput() && recipe.getFirstItemInput().test(stack)) {
+                return true;
+            }
+            if (recipe.hasSecondItemInput() && recipe.getSecondItemInput().test(stack)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     private Optional<RecipeHolder<CobblestoneChemicalReactorRecipe>> getCurrentRecipe() {
         Level currentLevel = this.level;
         if (currentLevel == null) {

@@ -227,20 +227,20 @@ public class CobblestoneExtremeCompressorMenu extends BaseMenu {
                     CobblestoneExtremeCompressorBlockEntity.ENERGIZED_CUBE_SLOT_INDEX + 1,
                     false
                 );
-            } else if (CobblestoneExtremeCompressorBlockEntity.isCobblestonePowerItem(sourceStack)) {
-                movedToMachine = this.moveItemStackTo(
-                    sourceStack,
-                    CobblestoneExtremeCompressorBlockEntity.POWER_SLOT_INDEX,
-                    CobblestoneExtremeCompressorBlockEntity.POWER_SLOT_INDEX + 1,
-                    false
-                );
-            }
-
-            if (!movedToMachine) {
+            } else if (this.extremeCompressorBlockEntity.canQuickMoveToInput(sourceStack)) {
                 movedToMachine = this.moveItemStackTo(
                     sourceStack,
                     CobblestoneExtremeCompressorBlockEntity.INPUT_SLOT_INDEX,
                     CobblestoneExtremeCompressorBlockEntity.INPUT_SLOT_INDEX + 1,
+                    false
+                );
+            }
+
+            if (!movedToMachine && CobblestoneExtremeCompressorBlockEntity.isCobblestonePowerItem(sourceStack)) {
+                movedToMachine = this.moveItemStackTo(
+                    sourceStack,
+                    CobblestoneExtremeCompressorBlockEntity.POWER_SLOT_INDEX,
+                    CobblestoneExtremeCompressorBlockEntity.POWER_SLOT_INDEX + 1,
                     false
                 );
             }

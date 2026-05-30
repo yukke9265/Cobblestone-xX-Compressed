@@ -4,14 +4,17 @@ import java.util.Optional;
 
 import javax.annotation.Nonnull;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import com.yukke9265.cobblestone_xx_compressed.block.OnOffBlock;
-import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneLaserDrillMenu;
-import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneLaserDrillRecipe;
+import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneEnchanterMenu;
+import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneEnchanterRecipe;
+import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneEnchanterRecipeInput;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModBlockEntities;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModRecipeTypes;
+import com.yukke9265.cobblestone_xx_compressed.util.CobblestoneEnchanterHelper;
 import com.yukke9265.cobblestone_xx_compressed.util.LongDataHelper;
-
-import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -25,22 +28,23 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import net.neoforged.neoforge.items.wrapper.EmptyItemHandler;
 
-public class CobblestoneLaserDrillBlockEntity extends BaseBlockEntity implements MenuProvider {
-    public static final int INPUT_SLOT_INDEX = 0;
-    public static final int POWER_SLOT_INDEX = 1;
-    public static final int OUTPUT_SLOT_1_INDEX = 2;
-    public static final int OUTPUT_SLOT_2_INDEX = 3;
+@SuppressWarnings("null")
+public class CobblestoneEnchanterBlockEntity extends BaseBlockEntity implements MenuProvider {
+    public static final int TOOL_INPUT_SLOT_INDEX = 0;
+    public static final int BOOK_INPUT_SLOT_INDEX = 1;
+    public static final int POWER_SLOT_INDEX = 2;
+    public static final int OUTPUT_SLOT_INDEX = 3;
     public static final int ACCELERATION_SLOT_INDEX = 4;
     public static final int ENERGIZED_CUBE_SLOT_INDEX = 5;
-    public static final long MAX_COBBLESTONE_POWER = 256000L;
+    public static final long MAX_COBBLESTONE_POWER = 16384L;
 
     private static final int DATA_INDEX_PROGRESS = 0;
     private static final int DATA_INDEX_MAX_PROGRESS = 1;
@@ -53,16 +57,24 @@ public class CobblestoneLaserDrillBlockEntity extends BaseBlockEntity implements
     private static final int DATA_INDEX_CURRENT_POWER_RATE_UPPER = DATA_INDEX_CURRENT_POWER_RATE + 1;
     private static final int DATA_INDEX_AUTO_EXPORT = DATA_INDEX_CURRENT_POWER_RATE_UPPER + 1;
 
-    private int progress = 0;
-    private int maxProgress = 0;
-    private long storedCobblestonePower = 0L;
+    private int progress;
+    private int maxProgress;
+    private long storedCobblestonePower;
     private boolean isAvailable = true;
 
     private final FixedSizeItemStackHandler itemStackHandler = new FixedSizeItemStackHandler(6) {
         @Override
         public boolean isItemValid(int slot, @NotNull ItemStack stack) {
-            if (slot == OUTPUT_SLOT_1_INDEX || slot == OUTPUT_SLOT_2_INDEX) {
+            if (slot == OUTPUT_SLOT_INDEX) {
                 return false;
+            }
+
+            if (slot == TOOL_INPUT_SLOT_INDEX) {
+                return isValidToolCandidate(stack);
+            }
+
+            if (slot == BOOK_INPUT_SLOT_INDEX) {
+                return stack.is(Items.ENCHANTED_BOOK);
             }
 
             if (slot == POWER_SLOT_INDEX) {
@@ -77,12 +89,12 @@ public class CobblestoneLaserDrillBlockEntity extends BaseBlockEntity implements
                 return MachineUpgradeHelper.isEnergizedCube(stack);
             }
 
-            return true;
+            return false;
         }
 
         @Override
         protected void onContentsChanged(int slot) {
-            CobblestoneLaserDrillBlockEntity.this.setChanged();
+            CobblestoneEnchanterBlockEntity.this.setChanged();
         }
 
         @Override
@@ -95,12 +107,7 @@ public class CobblestoneLaserDrillBlockEntity extends BaseBlockEntity implements
         }
     };
 
-    private final IItemHandler inputAutomationHandler = new SingleSlotInsertHandler(INPUT_SLOT_INDEX);
-    private final IItemHandler cobblestoneInputAutomationHandler = new SingleSlotInsertHandler(POWER_SLOT_INDEX);
-    private final IItemHandler outputSlot1AutomationHandler = new SingleSlotExtractHandler(OUTPUT_SLOT_1_INDEX);
-    private final IItemHandler outputSlot2AutomationHandler = new SingleSlotExtractHandler(OUTPUT_SLOT_2_INDEX);
-
-    private final IItemHandler outputAutomationHandler = new IItemHandler() {
+    private final IItemHandler inputAutomationHandler = new IItemHandler() {
         @Override
         public int getSlots() {
             return 2;
@@ -109,11 +116,10 @@ public class CobblestoneLaserDrillBlockEntity extends BaseBlockEntity implements
         @Override
         public @Nonnull ItemStack getStackInSlot(int slot) {
             if (slot == 0) {
-                return CobblestoneLaserDrillBlockEntity.this.itemStackHandler.getStackInSlot(OUTPUT_SLOT_1_INDEX);
+                return CobblestoneEnchanterBlockEntity.this.itemStackHandler.getStackInSlot(TOOL_INPUT_SLOT_INDEX);
             }
-
             if (slot == 1) {
-                return CobblestoneLaserDrillBlockEntity.this.itemStackHandler.getStackInSlot(OUTPUT_SLOT_2_INDEX);
+                return CobblestoneEnchanterBlockEntity.this.itemStackHandler.getStackInSlot(BOOK_INPUT_SLOT_INDEX);
             }
 
             return ItemStack.EMPTY;
@@ -121,30 +127,25 @@ public class CobblestoneLaserDrillBlockEntity extends BaseBlockEntity implements
 
         @Override
         public @Nonnull ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-            return stack;
+            if (stack.is(Items.ENCHANTED_BOOK)) {
+                return CobblestoneEnchanterBlockEntity.this.itemStackHandler.insertItem(BOOK_INPUT_SLOT_INDEX, stack, simulate);
+            }
+
+            return CobblestoneEnchanterBlockEntity.this.itemStackHandler.insertItem(TOOL_INPUT_SLOT_INDEX, stack, simulate);
         }
 
         @Override
         public @Nonnull ItemStack extractItem(int slot, int amount, boolean simulate) {
-            if (slot == 0) {
-                return CobblestoneLaserDrillBlockEntity.this.itemStackHandler.extractItem(OUTPUT_SLOT_1_INDEX, amount, simulate);
-            }
-
-            if (slot == 1) {
-                return CobblestoneLaserDrillBlockEntity.this.itemStackHandler.extractItem(OUTPUT_SLOT_2_INDEX, amount, simulate);
-            }
-
             return ItemStack.EMPTY;
         }
 
         @Override
         public int getSlotLimit(int slot) {
             if (slot == 0) {
-                return CobblestoneLaserDrillBlockEntity.this.itemStackHandler.getSlotLimit(OUTPUT_SLOT_1_INDEX);
+                return CobblestoneEnchanterBlockEntity.this.itemStackHandler.getSlotLimit(TOOL_INPUT_SLOT_INDEX);
             }
-
             if (slot == 1) {
-                return CobblestoneLaserDrillBlockEntity.this.itemStackHandler.getSlotLimit(OUTPUT_SLOT_2_INDEX);
+                return CobblestoneEnchanterBlockEntity.this.itemStackHandler.getSlotLimit(BOOK_INPUT_SLOT_INDEX);
             }
 
             return 0;
@@ -152,9 +153,21 @@ public class CobblestoneLaserDrillBlockEntity extends BaseBlockEntity implements
 
         @Override
         public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
+            if (slot == 0) {
+                return CobblestoneEnchanterBlockEntity.isValidToolCandidate(stack);
+            }
+            if (slot == 1) {
+                return stack.is(Items.ENCHANTED_BOOK);
+            }
+
             return false;
         }
     };
+
+    private final IItemHandler toolInputAutomationHandler = new SingleSlotAutomationHandler(TOOL_INPUT_SLOT_INDEX, true, false);
+    private final IItemHandler bookInputAutomationHandler = new SingleSlotAutomationHandler(BOOK_INPUT_SLOT_INDEX, true, false);
+    private final IItemHandler cobblestoneInputAutomationHandler = new SingleSlotAutomationHandler(POWER_SLOT_INDEX, true, false);
+    private final IItemHandler outputAutomationHandler = new SingleSlotAutomationHandler(OUTPUT_SLOT_INDEX, false, true);
 
     private final IItemHandler automationAccessHandler = new IItemHandler() {
         @Override
@@ -168,13 +181,13 @@ public class CobblestoneLaserDrillBlockEntity extends BaseBlockEntity implements
                 return ItemStack.EMPTY;
             }
 
-            return CobblestoneLaserDrillBlockEntity.this.itemStackHandler.getStackInSlot(slot);
+            return CobblestoneEnchanterBlockEntity.this.itemStackHandler.getStackInSlot(slot);
         }
 
         @Override
         public @Nonnull ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-            if (slot == INPUT_SLOT_INDEX) {
-                return CobblestoneLaserDrillBlockEntity.this.itemStackHandler.insertItem(slot, stack, simulate);
+            if (slot == TOOL_INPUT_SLOT_INDEX || slot == BOOK_INPUT_SLOT_INDEX || slot == POWER_SLOT_INDEX) {
+                return CobblestoneEnchanterBlockEntity.this.itemStackHandler.insertItem(slot, stack, simulate);
             }
 
             return stack;
@@ -182,8 +195,8 @@ public class CobblestoneLaserDrillBlockEntity extends BaseBlockEntity implements
 
         @Override
         public @Nonnull ItemStack extractItem(int slot, int amount, boolean simulate) {
-            if (slot == OUTPUT_SLOT_1_INDEX || slot == OUTPUT_SLOT_2_INDEX) {
-                return CobblestoneLaserDrillBlockEntity.this.itemStackHandler.extractItem(slot, amount, simulate);
+            if (slot == OUTPUT_SLOT_INDEX) {
+                return CobblestoneEnchanterBlockEntity.this.itemStackHandler.extractItem(slot, amount, simulate);
             }
 
             return ItemStack.EMPTY;
@@ -195,7 +208,7 @@ public class CobblestoneLaserDrillBlockEntity extends BaseBlockEntity implements
                 return 0;
             }
 
-            return CobblestoneLaserDrillBlockEntity.this.itemStackHandler.getSlotLimit(slot);
+            return CobblestoneEnchanterBlockEntity.this.itemStackHandler.getSlotLimit(slot);
         }
 
         @Override
@@ -204,12 +217,32 @@ public class CobblestoneLaserDrillBlockEntity extends BaseBlockEntity implements
                 return false;
             }
 
-            return CobblestoneLaserDrillBlockEntity.this.itemStackHandler.isItemValid(slot, stack);
+            return CobblestoneEnchanterBlockEntity.this.itemStackHandler.isItemValid(slot, stack);
         }
     };
 
-    public CobblestoneLaserDrillBlockEntity(BlockPos pos, BlockState state) {
-        super(ModBlockEntities.COBBLESTONE_LASER_DRILL_BLOCK_ENTITY.get(), pos, state);
+    public CobblestoneEnchanterBlockEntity(BlockPos pos, BlockState state) {
+        super(ModBlockEntities.COBBLESTONE_ENCHANTER_BLOCK_ENTITY.get(), pos, state);
+    }
+
+    public static boolean isValidToolCandidate(ItemStack stack) {
+        if (stack.isEmpty()) {
+            return false;
+        }
+
+        if (stack.is(Items.ENCHANTED_BOOK)) {
+            return false;
+        }
+
+        if (CobblestoneCrusherBlockEntity.isCobblestonePowerItem(stack)) {
+            return false;
+        }
+
+        if (MachineUpgradeHelper.isAccelerationChip(stack) || MachineUpgradeHelper.isEnergizedCube(stack)) {
+            return false;
+        }
+
+        return true;
     }
 
     public int getProgress() {
@@ -225,26 +258,33 @@ public class CobblestoneLaserDrillBlockEntity extends BaseBlockEntity implements
     }
 
     public long getMaxCobblestonePower() {
-        return MAX_COBBLESTONE_POWER * this.getEnergizedCubeMultiplier();
+        long baseCapacity = this.multiplySaturating(MAX_COBBLESTONE_POWER, this.getEnergizedCubeMultiplier());
+        long requiredCapacity = this.getRequiredCobblestonePowerCapacity();
+        return Math.max(baseCapacity, requiredCapacity);
     }
 
     public long getCurrentCobblestonePowerConsumption() {
-        if (!this.isAvailable) {
+        if (!this.isAvailable || this.level == null) {
             return 0L;
         }
 
-        var recipeHolder = this.getCurrentRecipe();
+        Optional<RecipeHolder<CobblestoneEnchanterRecipe>> recipeHolder = this.getCurrentRecipe();
         if (recipeHolder.isEmpty()) {
             return 0L;
         }
 
-        var recipe = recipeHolder.get().value();
-        if (!this.canProcess(recipe)) {
+        CobblestoneEnchanterHelper.EvaluationResult evaluation = recipeHolder.get().value().evaluate(this.createRecipeInput(), this.level.registryAccess());
+        if (!evaluation.isValid() || !this.canOutput(evaluation.resultStack())) {
             return 0L;
         }
 
-        long cobblestonePowerPerTick = recipe.getCobblestonePowerPerTick();
-        return cobblestonePowerPerTick * this.getProgressStep(cobblestonePowerPerTick);
+        long cobblestonePowerPerTick = evaluation.cobblestonePowerPerTick();
+        int progressStep = this.getProgressStep(cobblestonePowerPerTick);
+        if (progressStep <= 0) {
+            return cobblestonePowerPerTick;
+        }
+
+        return this.multiplySaturating(cobblestonePowerPerTick, progressStep);
     }
 
     public boolean getIsAvailable() {
@@ -255,41 +295,6 @@ public class CobblestoneLaserDrillBlockEntity extends BaseBlockEntity implements
         return this.itemStackHandler;
     }
 
-    public IItemHandler getAutomationItemHandler(Direction side) {
-        if (side == null) {
-            return this.automationAccessHandler;
-        }
-
-        BlockState currentState = this.getBlockState();
-        AutomationSide automationSide = AutomationSide.fromWorldSide(side, currentState);
-        AutomationMode automationMode = this.getAutomationMode(automationSide);
-        if (automationMode == AutomationMode.INPUT) {
-            return this.inputAutomationHandler;
-        }
-
-        if (automationMode == AutomationMode.COBBLESTONE_INPUT) {
-            return this.cobblestoneInputAutomationHandler;
-        }
-
-        if (automationMode == AutomationMode.OUTPUT) {
-            return this.outputAutomationHandler;
-        }
-
-        if (automationMode == AutomationMode.OUTPUT_1) {
-            return this.outputSlot1AutomationHandler;
-        }
-
-        if (automationMode == AutomationMode.OUTPUT_2) {
-            return this.outputSlot2AutomationHandler;
-        }
-
-        if (automationMode == AutomationMode.IN_OUT) {
-            return this.automationAccessHandler;
-        }
-
-        return EmptyItemHandler.INSTANCE;
-    }
-
     public void reverseIsAvailable() {
         if (this.level == null || this.level.isClientSide) {
             return;
@@ -297,6 +302,34 @@ public class CobblestoneLaserDrillBlockEntity extends BaseBlockEntity implements
 
         this.isAvailable = !this.isAvailable;
         this.setChanged();
+    }
+
+    public IItemHandler getAutomationItemHandler(@Nullable Direction side) {
+        if (side == null) {
+            return this.automationAccessHandler;
+        }
+
+        AutomationMode automationMode = this.getAutomationMode(AutomationSide.fromWorldSide(side, this.getBlockState()));
+        if (automationMode == AutomationMode.INPUT) {
+            return this.inputAutomationHandler;
+        }
+        if (automationMode == AutomationMode.INPUT_1) {
+            return this.toolInputAutomationHandler;
+        }
+        if (automationMode == AutomationMode.INPUT_2) {
+            return this.bookInputAutomationHandler;
+        }
+        if (automationMode == AutomationMode.COBBLESTONE_INPUT) {
+            return this.cobblestoneInputAutomationHandler;
+        }
+        if (automationMode == AutomationMode.OUTPUT) {
+            return this.outputAutomationHandler;
+        }
+        if (automationMode == AutomationMode.IN_OUT) {
+            return this.automationAccessHandler;
+        }
+
+        return EmptyItemHandler.INSTANCE;
     }
 
     @Override
@@ -312,23 +345,24 @@ public class CobblestoneLaserDrillBlockEntity extends BaseBlockEntity implements
         this.clampStoredCobblestonePower();
         this.tryAbsorbCobblestonePower();
 
-        Optional<RecipeHolder<CobblestoneLaserDrillRecipe>> recipeHolder = this.getCurrentRecipe();
+        Optional<RecipeHolder<CobblestoneEnchanterRecipe>> recipeHolder = this.getCurrentRecipe();
         if (this.isAvailable && recipeHolder.isPresent()) {
-            CobblestoneLaserDrillRecipe recipe = recipeHolder.get().value();
-            if (this.maxProgress != recipe.getProcessingTime()) {
-                this.maxProgress = recipe.getProcessingTime();
+            CobblestoneEnchanterRecipe recipe = recipeHolder.get().value();
+            if (this.maxProgress != recipe.getProcessingTicks()) {
+                this.maxProgress = recipe.getProcessingTicks();
                 this.setChanged();
             }
 
-            if (this.canProcess(recipe)) {
-                int progressStep = this.getProgressStep(recipe.getCobblestonePowerPerTick());
+            CobblestoneEnchanterHelper.EvaluationResult evaluation = recipe.evaluate(this.createRecipeInput(), currentLevel.registryAccess());
+            if (this.canProcess(evaluation)) {
+                int progressStep = this.getProgressStep(evaluation.cobblestonePowerPerTick());
                 this.progress += progressStep;
-                this.storedCobblestonePower -= recipe.getCobblestonePowerPerTick() * progressStep;
+                this.storedCobblestonePower -= evaluation.cobblestonePowerPerTick() * progressStep;
                 shouldTurnOn = true;
                 this.setChanged();
 
                 if (this.progress >= this.maxProgress) {
-                    this.craft(recipe);
+                    this.craft(evaluation.resultStack());
                     this.progress = 0;
                     this.setChanged();
                 }
@@ -353,31 +387,23 @@ public class CobblestoneLaserDrillBlockEntity extends BaseBlockEntity implements
             currentLevel.setBlock(this.worldPosition, updatedState, 3);
         }
 
-        this.pushOutputsToConfiguredSides();
+        this.pushOutputToConfiguredSides();
     }
 
-    private void pushOutputsToConfiguredSides() {
-        ItemStack outputStack1 = this.itemStackHandler.getStackInSlot(OUTPUT_SLOT_1_INDEX);
-        if (!outputStack1.isEmpty()) {
-            ItemStack remainingOutput1 = this.pushItemStackToConfiguredSides(outputStack1.copy(), AutomationMode.OUTPUT, AutomationMode.OUTPUT_1, AutomationMode.IN_OUT);
-            this.itemStackHandler.setStackInSlot(OUTPUT_SLOT_1_INDEX, remainingOutput1);
+    private void pushOutputToConfiguredSides() {
+        ItemStack outputStack = this.itemStackHandler.getStackInSlot(OUTPUT_SLOT_INDEX);
+        if (outputStack.isEmpty()) {
+            return;
         }
 
-        ItemStack outputStack2 = this.itemStackHandler.getStackInSlot(OUTPUT_SLOT_2_INDEX);
-        if (!outputStack2.isEmpty()) {
-            ItemStack remainingOutput2 = this.pushItemStackToConfiguredSides(outputStack2.copy(), AutomationMode.OUTPUT, AutomationMode.OUTPUT_2, AutomationMode.IN_OUT);
-            this.itemStackHandler.setStackInSlot(OUTPUT_SLOT_2_INDEX, remainingOutput2);
-        }
+        ItemStack remainingOutput = this.pushItemStackToConfiguredSides(outputStack.copy(), AutomationMode.OUTPUT, AutomationMode.IN_OUT);
+        this.itemStackHandler.setStackInSlot(OUTPUT_SLOT_INDEX, remainingOutput);
     }
 
     private void tryAbsorbCobblestonePower() {
         ItemStack powerStack = this.itemStackHandler.getStackInSlot(POWER_SLOT_INDEX);
         long convertedPower = CobblestoneCrusherBlockEntity.getCobblestonePowerValueForAutomation(powerStack);
-        if (convertedPower <= 0) {
-            return;
-        }
-
-        if (this.storedCobblestonePower + convertedPower > this.getMaxCobblestonePower()) {
+        if (convertedPower <= 0L || this.storedCobblestonePower + convertedPower > this.getMaxCobblestonePower()) {
             return;
         }
 
@@ -386,56 +412,75 @@ public class CobblestoneLaserDrillBlockEntity extends BaseBlockEntity implements
         this.setChanged();
     }
 
-    @SuppressWarnings("null")
-    public boolean canQuickMoveToInput(ItemStack stack) {
-        if (stack.isEmpty()) {
-            return false;
-        }
-
-        Level currentLevel = this.level;
-        if (currentLevel == null) {
-            return false;
-        }
-
-        for (RecipeHolder<CobblestoneLaserDrillRecipe> recipeHolder : currentLevel.getRecipeManager().getAllRecipesFor(ModRecipeTypes.COBBLESTONE_LASER_DRILL.get())) {
-            if (recipeHolder.value().getIngredient().test(stack)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    private Optional<RecipeHolder<CobblestoneLaserDrillRecipe>> getCurrentRecipe() {
+    private Optional<RecipeHolder<CobblestoneEnchanterRecipe>> getCurrentRecipe() {
         Level currentLevel = this.level;
         if (currentLevel == null) {
             return Optional.empty();
         }
 
-        ItemStack inputStack = this.itemStackHandler.getStackInSlot(INPUT_SLOT_INDEX);
-        if (inputStack.isEmpty()) {
+        CobblestoneEnchanterRecipeInput input = this.createRecipeInput();
+        if (input.isEmpty()) {
             return Optional.empty();
         }
 
-        SingleRecipeInput input = new SingleRecipeInput(inputStack);
-        return currentLevel.getRecipeManager().getRecipeFor(ModRecipeTypes.COBBLESTONE_LASER_DRILL.get(), input, currentLevel);
+        return currentLevel.getRecipeManager().getRecipeFor(ModRecipeTypes.COBBLESTONE_ENCHANTER.get(), input, currentLevel);
     }
 
-    private boolean canProcess(CobblestoneLaserDrillRecipe recipe) {
-        int progressStep = this.getProgressStep(recipe.getCobblestonePowerPerTick());
+    private CobblestoneEnchanterRecipeInput createRecipeInput() {
+        return new CobblestoneEnchanterRecipeInput(
+            this.itemStackHandler.getStackInSlot(TOOL_INPUT_SLOT_INDEX),
+            this.itemStackHandler.getStackInSlot(BOOK_INPUT_SLOT_INDEX)
+        );
+    }
+
+    private boolean canProcess(CobblestoneEnchanterHelper.EvaluationResult evaluation) {
+        if (!evaluation.isValid()) {
+            return false;
+        }
+
+        int progressStep = this.getProgressStep(evaluation.cobblestonePowerPerTick());
         if (progressStep <= 0) {
             return false;
         }
 
-        if (!this.canAcceptResult(OUTPUT_SLOT_1_INDEX, recipe.getFirstResult())) {
+        return this.canOutput(evaluation.resultStack());
+    }
+
+    private boolean canOutput(ItemStack resultStack) {
+        if (resultStack.isEmpty()) {
             return false;
         }
 
-        return this.canAcceptResult(OUTPUT_SLOT_2_INDEX, recipe.getSecondResult());
+        ItemStack outputStack = this.itemStackHandler.getStackInSlot(OUTPUT_SLOT_INDEX);
+        if (outputStack.isEmpty()) {
+            return true;
+        }
+
+        if (!ItemStack.isSameItemSameComponents(outputStack, resultStack)) {
+            return false;
+        }
+
+        return outputStack.getCount() + resultStack.getCount() <= outputStack.getMaxStackSize();
+    }
+
+    private void craft(ItemStack resultStack) {
+        ItemStack toolStack = this.itemStackHandler.getStackInSlot(TOOL_INPUT_SLOT_INDEX);
+        ItemStack bookStack = this.itemStackHandler.getStackInSlot(BOOK_INPUT_SLOT_INDEX);
+        ItemStack outputStack = this.itemStackHandler.getStackInSlot(OUTPUT_SLOT_INDEX);
+
+        toolStack.shrink(1);
+        bookStack.shrink(1);
+
+        if (outputStack.isEmpty()) {
+            this.itemStackHandler.setStackInSlot(OUTPUT_SLOT_INDEX, resultStack.copy());
+            return;
+        }
+
+        outputStack.grow(resultStack.getCount());
     }
 
     private int getProgressStep(long cobblestonePowerPerTick) {
-        if (cobblestonePowerPerTick <= 0) {
+        if (cobblestonePowerPerTick <= 0L) {
             return 0;
         }
 
@@ -451,31 +496,15 @@ public class CobblestoneLaserDrillBlockEntity extends BaseBlockEntity implements
     }
 
     private int getAccelerationMultiplier() {
-        if (this.itemStackHandler.getSlots() <= ACCELERATION_SLOT_INDEX) {
-            return 1;
-        }
-
         ItemStack accelerationStack = this.itemStackHandler.getStackInSlot(ACCELERATION_SLOT_INDEX);
         int multiplier = MachineUpgradeHelper.getAccelerationMultiplier(accelerationStack);
-        if (multiplier <= 0) {
-            return 1;
-        }
-
-        return multiplier;
+        return Math.max(1, multiplier);
     }
 
     private int getEnergizedCubeMultiplier() {
-        if (this.itemStackHandler.getSlots() <= ENERGIZED_CUBE_SLOT_INDEX) {
-            return 1;
-        }
-
         ItemStack energizedCubeStack = this.itemStackHandler.getStackInSlot(ENERGIZED_CUBE_SLOT_INDEX);
         int multiplier = MachineUpgradeHelper.getEnergizedCubeMultiplier(energizedCubeStack);
-        if (multiplier <= 0) {
-            return 1;
-        }
-
-        return multiplier;
+        return Math.max(1, multiplier);
     }
 
     private void clampStoredCobblestonePower() {
@@ -486,47 +515,36 @@ public class CobblestoneLaserDrillBlockEntity extends BaseBlockEntity implements
         }
     }
 
-    private boolean canAcceptResult(int slotIndex, ItemStack resultStack) {
-        if (resultStack.isEmpty()) {
-            return true;
+    private long getRequiredCobblestonePowerCapacity() {
+        if (this.level == null) {
+            return 0L;
         }
 
-        ItemStack outputStack = this.itemStackHandler.getStackInSlot(slotIndex);
-        if (outputStack.isEmpty()) {
-            return true;
+        Optional<RecipeHolder<CobblestoneEnchanterRecipe>> recipeHolder = this.getCurrentRecipe();
+        if (recipeHolder.isEmpty()) {
+            return 0L;
         }
 
-        if (!ItemStack.isSameItemSameComponents(outputStack, resultStack)) {
-            return false;
+        CobblestoneEnchanterHelper.EvaluationResult evaluation = recipeHolder.get().value().evaluate(this.createRecipeInput(), this.level.registryAccess());
+        if (!evaluation.isValid()) {
+            return 0L;
         }
 
-        return outputStack.getCount() + resultStack.getCount() <= outputStack.getMaxStackSize();
+        // 高レベルエンチャントでも 1 tick 分以上は蓄えられるようにして、
+        // 加速アップグレードが入っているときはその分の同時消費も受け止めます。
+        return this.multiplySaturating(evaluation.cobblestonePowerPerTick(), this.getAccelerationMultiplier());
     }
 
-    private void craft(CobblestoneLaserDrillRecipe recipe) {
-        Level currentLevel = this.level;
-        if (currentLevel == null) {
-            return;
+    private long multiplySaturating(long value, int multiplier) {
+        if (value <= 0L || multiplier <= 0) {
+            return 0L;
         }
 
-        // Laser Drill の入力は触媒扱いなので、レシピ完了時に消費しません。
-        // ここでは出力だけを確率で決定し、入力スロットの中身はそのまま残します。
-        this.insertResult(OUTPUT_SLOT_1_INDEX, recipe.rollFirstResult(currentLevel.random));
-        this.insertResult(OUTPUT_SLOT_2_INDEX, recipe.rollSecondResult(currentLevel.random));
-    }
-
-    private void insertResult(int slotIndex, ItemStack resultStack) {
-        if (resultStack.isEmpty()) {
-            return;
+        if (value > Long.MAX_VALUE / multiplier) {
+            return Long.MAX_VALUE;
         }
 
-        ItemStack outputStack = this.itemStackHandler.getStackInSlot(slotIndex);
-        if (outputStack.isEmpty()) {
-            this.itemStackHandler.setStackInSlot(slotIndex, resultStack.copy());
-            return;
-        }
-
-        outputStack.grow(resultStack.getCount());
+        return value * multiplier;
     }
 
     @Override
@@ -555,12 +573,12 @@ public class CobblestoneLaserDrillBlockEntity extends BaseBlockEntity implements
 
     @Override
     public Component getDisplayName() {
-        return Component.translatable("block.cobblestonexxcompressed.cobblestone_laser_drill");
+        return Component.translatable("block.cobblestonexxcompressed.cobblestone_enchanter");
     }
 
     @Override
     public AbstractContainerMenu createMenu(int containerId, Inventory playerInventory, Player player) {
-        ContainerData laserDrillData = new ContainerData() {
+        ContainerData enchanterData = new ContainerData() {
             @Override
             public int get(int index) {
                 if (index == DATA_INDEX_PROGRESS) {
@@ -641,14 +659,18 @@ public class CobblestoneLaserDrillBlockEntity extends BaseBlockEntity implements
             }
         };
 
-        return new CobblestoneLaserDrillMenu(containerId, playerInventory, this, laserDrillData);
+        return new CobblestoneEnchanterMenu(containerId, playerInventory, this, enchanterData);
     }
 
-    private class SingleSlotInsertHandler implements IItemHandler {
+    private class SingleSlotAutomationHandler implements IItemHandler {
         private final int slotIndex;
+        private final boolean canInsert;
+        private final boolean canExtract;
 
-        private SingleSlotInsertHandler(int slotIndex) {
+        private SingleSlotAutomationHandler(int slotIndex, boolean canInsert, boolean canExtract) {
             this.slotIndex = slotIndex;
+            this.canInsert = canInsert;
+            this.canExtract = canExtract;
         }
 
         @Override
@@ -658,93 +680,35 @@ public class CobblestoneLaserDrillBlockEntity extends BaseBlockEntity implements
 
         @Override
         public @Nonnull ItemStack getStackInSlot(int slot) {
-            if (slot != 0) {
-                return ItemStack.EMPTY;
-            }
-
-            return CobblestoneLaserDrillBlockEntity.this.itemStackHandler.getStackInSlot(this.slotIndex);
+            return slot == 0 ? CobblestoneEnchanterBlockEntity.this.itemStackHandler.getStackInSlot(this.slotIndex) : ItemStack.EMPTY;
         }
 
         @Override
         public @Nonnull ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-            if (slot != 0) {
+            if (!this.canInsert || slot != 0) {
                 return stack;
             }
 
-            return CobblestoneLaserDrillBlockEntity.this.itemStackHandler.insertItem(this.slotIndex, stack, simulate);
+            return CobblestoneEnchanterBlockEntity.this.itemStackHandler.insertItem(this.slotIndex, stack, simulate);
         }
 
         @Override
         public @Nonnull ItemStack extractItem(int slot, int amount, boolean simulate) {
-            return ItemStack.EMPTY;
+            if (!this.canExtract || slot != 0) {
+                return ItemStack.EMPTY;
+            }
+
+            return CobblestoneEnchanterBlockEntity.this.itemStackHandler.extractItem(this.slotIndex, amount, simulate);
         }
 
         @Override
         public int getSlotLimit(int slot) {
-            if (slot != 0) {
-                return 0;
-            }
-
-            return CobblestoneLaserDrillBlockEntity.this.itemStackHandler.getSlotLimit(this.slotIndex);
+            return slot == 0 ? CobblestoneEnchanterBlockEntity.this.itemStackHandler.getSlotLimit(this.slotIndex) : 0;
         }
 
         @Override
         public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-            if (slot != 0) {
-                return false;
-            }
-
-            return CobblestoneLaserDrillBlockEntity.this.itemStackHandler.isItemValid(this.slotIndex, stack);
-        }
-    }
-
-    private class SingleSlotExtractHandler implements IItemHandler {
-        private final int slotIndex;
-
-        private SingleSlotExtractHandler(int slotIndex) {
-            this.slotIndex = slotIndex;
-        }
-
-        @Override
-        public int getSlots() {
-            return 1;
-        }
-
-        @Override
-        public @Nonnull ItemStack getStackInSlot(int slot) {
-            if (slot != 0) {
-                return ItemStack.EMPTY;
-            }
-
-            return CobblestoneLaserDrillBlockEntity.this.itemStackHandler.getStackInSlot(this.slotIndex);
-        }
-
-        @Override
-        public @Nonnull ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-            return stack;
-        }
-
-        @Override
-        public @Nonnull ItemStack extractItem(int slot, int amount, boolean simulate) {
-            if (slot != 0) {
-                return ItemStack.EMPTY;
-            }
-
-            return CobblestoneLaserDrillBlockEntity.this.itemStackHandler.extractItem(this.slotIndex, amount, simulate);
-        }
-
-        @Override
-        public int getSlotLimit(int slot) {
-            if (slot != 0) {
-                return 0;
-            }
-
-            return CobblestoneLaserDrillBlockEntity.this.itemStackHandler.getSlotLimit(this.slotIndex);
-        }
-
-        @Override
-        public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-            return false;
+            return slot == 0 && CobblestoneEnchanterBlockEntity.this.itemStackHandler.isItemValid(this.slotIndex, stack);
         }
     }
 }

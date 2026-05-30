@@ -556,6 +556,40 @@ public class CobblestoneAssemblyMachineBlockEntity extends BaseBlockEntity imple
         this.setChanged();
     }
 
+    @SuppressWarnings("null")
+    public boolean canQuickMoveToInput(ItemStack stack) {
+        if (stack.isEmpty()) {
+            return false;
+        }
+
+        Level currentLevel = this.level;
+        if (currentLevel == null) {
+            return false;
+        }
+
+        for (RecipeHolder<CobblestoneAssemblyMachineRecipe> recipeHolder : currentLevel.getRecipeManager().getAllRecipesFor(ModRecipeTypes.COBBLESTONE_ASSEMBLY_MACHINE.get())) {
+            CobblestoneAssemblyMachineRecipe recipe = recipeHolder.value();
+            if (this.matchesAssemblyInput(recipe.getFirstItemInput(), stack)
+                || this.matchesAssemblyInput(recipe.getSecondItemInput(), stack)
+                || this.matchesAssemblyInput(recipe.getThirdItemInput(), stack)
+                || this.matchesAssemblyInput(recipe.getFourthItemInput(), stack)
+                || this.matchesAssemblyInput(recipe.getFifthItemInput(), stack)
+                || this.matchesAssemblyInput(recipe.getSixthItemInput(), stack)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private boolean matchesAssemblyInput(ItemStack requiredStack, ItemStack actualStack) {
+        if (requiredStack.isEmpty() || actualStack.isEmpty()) {
+            return false;
+        }
+
+        return ItemStack.isSameItemSameComponents(requiredStack, actualStack);
+    }
+
     private Optional<RecipeHolder<CobblestoneAssemblyMachineRecipe>> getCurrentRecipe() {
         Level currentLevel = this.level;
         if (currentLevel == null) {

@@ -12,6 +12,7 @@ import com.yukke9265.cobblestone_xx_compressed.jei.category.CompressedStoneLootR
 import com.yukke9265.cobblestone_xx_compressed.jei.category.CobblestoneAssemblyMachineRecipeCategory;
 import com.yukke9265.cobblestone_xx_compressed.jei.category.CobblestoneChemicalReactorRecipeCategory;
 import com.yukke9265.cobblestone_xx_compressed.jei.category.CobblestoneDissolutionChamberRecipeCategory;
+import com.yukke9265.cobblestone_xx_compressed.jei.category.CobblestoneEnchanterRecipeCategory;
 import com.yukke9265.cobblestone_xx_compressed.jei.category.CobblestoneExtremeCompressorRecipeCategory;
 import com.yukke9265.cobblestone_xx_compressed.jei.category.CobblestoneFluidMixerRecipeCategory;
 import com.yukke9265.cobblestone_xx_compressed.jei.category.CobblestoneCrusherRecipeCategory;
@@ -30,6 +31,7 @@ import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneChemicalReactorMe
 import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneCrusherMenu;
 import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneCentrifugeMenu;
 import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneDissolutionChamberMenu;
+import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneEnchanterMenu;
 import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneExtremeCompressorMenu;
 import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneFluidMixerMenu;
 import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneFurnaceMenu;
@@ -45,6 +47,7 @@ import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneAssemblyMachine
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneChemicalReactorRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneCentrifugeRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneDissolutionChamberRecipe;
+import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneEnchanterRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneExtremeCompressorRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneFluidMixerRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneFurnaceRecipe;
@@ -64,6 +67,7 @@ import com.yukke9265.cobblestone_xx_compressed.screen.CobblestoneChemicalReactor
 import com.yukke9265.cobblestone_xx_compressed.screen.CobblestoneCrystallizationChamberScreen;
 import com.yukke9265.cobblestone_xx_compressed.screen.CobblestoneCrusherScreen;
 import com.yukke9265.cobblestone_xx_compressed.screen.CobblestoneDissolutionChamberScreen;
+import com.yukke9265.cobblestone_xx_compressed.screen.CobblestoneEnchanterScreen;
 import com.yukke9265.cobblestone_xx_compressed.screen.CobblestoneExtremeCompressorScreen;
 import com.yukke9265.cobblestone_xx_compressed.screen.CobblestoneFluidMixerScreen;
 import com.yukke9265.cobblestone_xx_compressed.screen.CobblestoneFurnaceScreen;
@@ -167,6 +171,13 @@ public class ModJeiPlugin implements IModPlugin {
             ModJeiIds.COBBLESTONE_ASSEMBLY_MACHINE.getNamespace(),
             ModJeiIds.COBBLESTONE_ASSEMBLY_MACHINE.getPath(),
             CobblestoneAssemblyMachineRecipe.class
+        );
+
+    public static final RecipeType<CobblestoneEnchanterRecipe> COBBLESTONE_ENCHANTER_RECIPE_TYPE =
+        RecipeType.create(
+            ModJeiIds.COBBLESTONE_ENCHANTER.getNamespace(),
+            ModJeiIds.COBBLESTONE_ENCHANTER.getPath(),
+            CobblestoneEnchanterRecipe.class
         );
 
     public static final RecipeType<CobblestoneChemicalReactorRecipe> COBBLESTONE_CHEMICAL_REACTOR_RECIPE_TYPE =
@@ -311,6 +322,16 @@ public class ModJeiPlugin implements IModPlugin {
             ModMenuType.COBBLESTONE_ASSEMBLY_MACHINE_MENU
         );
 
+    private static final MachineJeiDefinition<CobblestoneEnchanterRecipe, CobblestoneEnchanterMenu> COBBLESTONE_ENCHANTER_DEFINITION =
+        new MachineJeiDefinition<>(
+            ModJeiIds.COBBLESTONE_ENCHANTER,
+            COBBLESTONE_ENCHANTER_RECIPE_TYPE,
+            registration -> new CobblestoneEnchanterRecipeCategory(registration.getJeiHelpers().getGuiHelper()),
+            () -> new ItemStack(ModBlocks.COBBLESTONE_ENCHANTER.get()),
+            CobblestoneEnchanterMenu.class,
+            ModMenuType.COBBLESTONE_ENCHANTER_MENU
+        );
+
     private static final MachineJeiDefinition<CobblestoneChemicalReactorRecipe, CobblestoneChemicalReactorMenu> COBBLESTONE_CHEMICAL_REACTOR_DEFINITION =
         new MachineJeiDefinition<>(
             ModJeiIds.COBBLESTONE_CHEMICAL_REACTOR,
@@ -372,6 +393,7 @@ public class ModJeiPlugin implements IModPlugin {
         STONE_BREAK_SIMULATOR_DEFINITION,
         COBBLESTONE_MELTER_DEFINITION,
         COBBLESTONE_ASSEMBLY_MACHINE_DEFINITION,
+        COBBLESTONE_ENCHANTER_DEFINITION,
         COBBLESTONE_CHEMICAL_REACTOR_DEFINITION,
         COBBLESTONE_REACTION_CHAMBER_DEFINITION,
         COBBLESTONE_CRYSTALLIZATION_CHAMBER_DEFINITION,
@@ -473,6 +495,13 @@ public class ModJeiPlugin implements IModPlugin {
             .toList();
         registration.addRecipes(COBBLESTONE_ASSEMBLY_MACHINE_DEFINITION.recipeType(), assemblyMachineRecipes);
 
+        List<CobblestoneEnchanterRecipe> enchanterRecipes = minecraft.level.getRecipeManager()
+            .getAllRecipesFor(ModRecipeTypes.COBBLESTONE_ENCHANTER.get())
+            .stream()
+            .map(RecipeHolder::value)
+            .toList();
+        registration.addRecipes(COBBLESTONE_ENCHANTER_DEFINITION.recipeType(), enchanterRecipes);
+
         List<CobblestoneChemicalReactorRecipe> chemicalReactorRecipes = minecraft.level.getRecipeManager()
             .getAllRecipesFor(ModRecipeTypes.COBBLESTONE_CHEMICAL_REACTOR.get())
             .stream()
@@ -530,6 +559,7 @@ public class ModJeiPlugin implements IModPlugin {
         this.registerBaseScreenGuiHandler(registration, StoneBreakSimulatorScreen.class);
         this.registerBaseScreenGuiHandler(registration, CobblestoneMelterScreen.class);
         this.registerBaseScreenGuiHandler(registration, CobblestoneAssemblyMachineScreen.class);
+        this.registerBaseScreenGuiHandler(registration, CobblestoneEnchanterScreen.class);
         this.registerBaseScreenGuiHandler(registration, CobblestoneChemicalReactorScreen.class);
         this.registerBaseScreenGuiHandler(registration, CobblestoneReactionChamberScreen.class);
         this.registerBaseScreenGuiHandler(registration, CobblestoneCrystallizationChamberScreen.class);

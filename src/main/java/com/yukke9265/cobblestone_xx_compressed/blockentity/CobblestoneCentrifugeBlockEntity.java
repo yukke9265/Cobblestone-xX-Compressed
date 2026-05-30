@@ -386,6 +386,26 @@ public class CobblestoneCentrifugeBlockEntity extends BaseBlockEntity implements
         this.setChanged();
     }
 
+    @SuppressWarnings("null")
+    public boolean canQuickMoveToInput(ItemStack stack) {
+        if (stack.isEmpty()) {
+            return false;
+        }
+
+        Level currentLevel = this.level;
+        if (currentLevel == null) {
+            return false;
+        }
+
+        for (RecipeHolder<CobblestoneCentrifugeRecipe> recipeHolder : currentLevel.getRecipeManager().getAllRecipesFor(ModRecipeTypes.COBBLESTONE_CENTRIFUGE.get())) {
+            if (recipeHolder.value().getIngredient().test(stack)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     private Optional<RecipeHolder<CobblestoneCentrifugeRecipe>> getCurrentRecipe() {
         Level currentLevel = this.level;
         if (currentLevel == null) {

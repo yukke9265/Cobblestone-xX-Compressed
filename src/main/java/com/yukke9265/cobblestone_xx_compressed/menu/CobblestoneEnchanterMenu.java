@@ -2,11 +2,13 @@ package com.yukke9265.cobblestone_xx_compressed.menu;
 
 import java.util.List;
 
+import javax.annotation.Nonnull;
+
 import com.yukke9265.cobblestone_xx_compressed.blockentity.AutomationMode;
 import com.yukke9265.cobblestone_xx_compressed.blockentity.AutomationSide;
 import com.yukke9265.cobblestone_xx_compressed.blockentity.BaseBlockEntity;
 import com.yukke9265.cobblestone_xx_compressed.blockentity.CobblestoneCrusherBlockEntity;
-import com.yukke9265.cobblestone_xx_compressed.blockentity.CobblestoneMixerBlockEntity;
+import com.yukke9265.cobblestone_xx_compressed.blockentity.CobblestoneEnchanterBlockEntity;
 import com.yukke9265.cobblestone_xx_compressed.blockentity.MachineUpgradeHelper;
 import com.yukke9265.cobblestone_xx_compressed.compat.jei.JeiRecipeTransferDefinition;
 import com.yukke9265.cobblestone_xx_compressed.compat.jei.ModJeiIds;
@@ -22,12 +24,14 @@ import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.SimpleContainerData;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import net.neoforged.neoforge.items.SlotItemHandler;
 
-public class CobblestoneMixerMenu extends BaseMenu {
-    private static final AutomationMode[] MIXER_AUTOMATION_MODES = new AutomationMode[] {
+@SuppressWarnings("null")
+public class CobblestoneEnchanterMenu extends BaseMenu {
+    private static final AutomationMode[] ENCHANTER_AUTOMATION_MODES = new AutomationMode[] {
         AutomationMode.DISABLED,
         AutomationMode.INPUT,
         AutomationMode.INPUT_1,
@@ -41,12 +45,9 @@ public class CobblestoneMixerMenu extends BaseMenu {
     private static final int DATA_INDEX_PROGRESS = 0;
     private static final int DATA_INDEX_MAX_PROGRESS = 1;
     private static final int DATA_INDEX_STORED_POWER = 2;
-    private static final int DATA_INDEX_STORED_POWER_UPPER = 3;
     private static final int DATA_INDEX_MAX_STORED_POWER = 4;
-    private static final int DATA_INDEX_MAX_STORED_POWER_UPPER = 5;
     private static final int DATA_INDEX_CURRENT_POWER_RATE = 6 + BaseBlockEntity.AUTOMATION_FACE_COUNT;
-    private static final int DATA_INDEX_CURRENT_POWER_RATE_UPPER = DATA_INDEX_CURRENT_POWER_RATE + 1;
-    private static final int DATA_INDEX_AUTO_EXPORT = DATA_INDEX_CURRENT_POWER_RATE_UPPER + 1;
+    private static final int DATA_INDEX_AUTO_EXPORT = DATA_INDEX_CURRENT_POWER_RATE + 2;
     private static final int PLAYER_INVENTORY_COLUMNS = 9;
     private static final int PLAYER_INVENTORY_ROWS = 3;
     private static final int HOTBAR_SLOT_COUNT = 9;
@@ -56,58 +57,58 @@ public class CobblestoneMixerMenu extends BaseMenu {
     private static final int HOTBAR_START_INDEX = PLAYER_INVENTORY_START_INDEX + PLAYER_INVENTORY_SLOT_COUNT;
     private static final int HOTBAR_END_INDEX = HOTBAR_START_INDEX + HOTBAR_SLOT_COUNT;
 
-    private final CobblestoneMixerBlockEntity mixerBlockEntity;
-    private final ContainerData mixerData;
+    private final CobblestoneEnchanterBlockEntity enchanterBlockEntity;
+    private final ContainerData enchanterData;
 
-    public CobblestoneMixerMenu(int containerId, Inventory playerInventory, CobblestoneMixerBlockEntity mixerBlockEntity, ContainerData mixerData) {
-        super(ModMenuType.COBBLESTONE_MIXER_MENU.get(), containerId);
-        this.mixerBlockEntity = mixerBlockEntity;
-        this.mixerData = mixerData;
+    public CobblestoneEnchanterMenu(int containerId, Inventory playerInventory, CobblestoneEnchanterBlockEntity enchanterBlockEntity, ContainerData enchanterData) {
+        super(ModMenuType.COBBLESTONE_ENCHANTER_MENU.get(), containerId);
+        this.enchanterBlockEntity = enchanterBlockEntity;
+        this.enchanterData = enchanterData;
 
-        checkContainerDataCount(mixerData, DATA_COUNT);
-        this.addDataSlots(mixerData);
+        checkContainerDataCount(enchanterData, DATA_COUNT);
+        this.addDataSlots(enchanterData);
 
-        this.addMixerSlots();
+        this.addEnchanterSlots();
         this.addPlayerInventorySlots(playerInventory);
         this.addPlayerHotbarSlots(playerInventory);
     }
 
-    public CobblestoneMixerMenu(int containerId, Inventory playerInventory, RegistryFriendlyByteBuf buf) {
+    public CobblestoneEnchanterMenu(int containerId, Inventory playerInventory, RegistryFriendlyByteBuf buf) {
         this(containerId, playerInventory, buf.readBlockPos());
     }
 
     public int getProgress() {
-        return this.mixerData.get(DATA_INDEX_PROGRESS);
+        return this.enchanterData.get(DATA_INDEX_PROGRESS);
     }
 
     public int getMaxProgress() {
-        return this.mixerData.get(DATA_INDEX_MAX_PROGRESS);
+        return this.enchanterData.get(DATA_INDEX_MAX_PROGRESS);
     }
 
     public long getStoredCobblestonePower() {
-        return this.getLongFromData(this.mixerData, DATA_INDEX_STORED_POWER);
+        return this.getLongFromData(this.enchanterData, DATA_INDEX_STORED_POWER);
     }
 
     public long getMaxCobblestonePower() {
-        return this.getLongFromData(this.mixerData, DATA_INDEX_MAX_STORED_POWER);
+        return this.getLongFromData(this.enchanterData, DATA_INDEX_MAX_STORED_POWER);
     }
 
     @Override
     public long getCurrentCobblestonePowerRate() {
-        return this.getLongFromData(this.mixerData, DATA_INDEX_CURRENT_POWER_RATE);
+        return this.getLongFromData(this.enchanterData, DATA_INDEX_CURRENT_POWER_RATE);
     }
 
     public boolean getIsAvailable() {
-        return this.mixerBlockEntity.getIsAvailable();
+        return this.enchanterBlockEntity.getIsAvailable();
     }
 
     public AutomationMode getAutomationMode(AutomationSide automationSide) {
-        int dataIndex = DATA_INDEX_MAX_STORED_POWER_UPPER + 1 + automationSide.getIndex();
-        return AutomationMode.fromId(this.mixerData.get(dataIndex));
+        int dataIndex = DATA_INDEX_MAX_STORED_POWER + 2 + automationSide.getIndex();
+        return AutomationMode.fromId(this.enchanterData.get(dataIndex));
     }
 
     public boolean isAutoExportEnabled() {
-        return this.mixerData.get(DATA_INDEX_AUTO_EXPORT) != 0;
+        return this.enchanterData.get(DATA_INDEX_AUTO_EXPORT) != 0;
     }
 
     public int getAutomationButtonId(AutomationSide automationSide) {
@@ -119,44 +120,36 @@ public class CobblestoneMixerMenu extends BaseMenu {
     }
 
     @Override
-    public boolean clickMenuButton(Player player, int id) {
+    public boolean clickMenuButton(@Nonnull Player player, int id) {
         if (id == 0) {
-            this.mixerBlockEntity.reverseIsAvailable();
+            this.enchanterBlockEntity.reverseIsAvailable();
             return true;
         }
 
-        if (this.handleAutomationButtonClick(this.mixerBlockEntity, id, MIXER_AUTOMATION_MODES)) {
+        if (this.handleAutomationButtonClick(this.enchanterBlockEntity, id, ENCHANTER_AUTOMATION_MODES)) {
             return true;
         }
 
-        if (this.handleAutoExportButtonClick(this.mixerBlockEntity, id)) {
-            return true;
-        }
-
-        return false;
+        return this.handleAutoExportButtonClick(this.enchanterBlockEntity, id);
     }
 
     @Override
     public boolean stillValid(Player player) {
-        if (this.mixerBlockEntity.isRemoved()) {
+        if (this.enchanterBlockEntity.isRemoved()) {
             return false;
         }
 
-        BlockPos blockPos = this.mixerBlockEntity.getBlockPos();
-        if (!player.level().getBlockState(blockPos).is(ModBlocks.COBBLESTONE_MIXER.get())) {
+        BlockPos blockPos = this.enchanterBlockEntity.getBlockPos();
+        if (!player.level().getBlockState(blockPos).is(ModBlocks.COBBLESTONE_ENCHANTER.get())) {
             return false;
         }
 
         BlockEntity blockEntity = player.level().getBlockEntity(blockPos);
-        if (blockEntity != this.mixerBlockEntity) {
+        if (blockEntity != this.enchanterBlockEntity) {
             return false;
         }
 
-        return player.distanceToSqr(
-            blockPos.getX() + 0.5D,
-            blockPos.getY() + 0.5D,
-            blockPos.getZ() + 0.5D
-        ) <= 64.0D;
+        return player.distanceToSqr(blockPos.getX() + 0.5D, blockPos.getY() + 0.5D, blockPos.getZ() + 0.5D) <= 64.0D;
     }
 
     @Override
@@ -178,35 +171,15 @@ public class CobblestoneMixerMenu extends BaseMenu {
         } else {
             boolean movedToMachine = false;
             if (MachineUpgradeHelper.isAccelerationChip(sourceStack)) {
-                movedToMachine = this.moveItemStackTo(
-                    sourceStack,
-                    CobblestoneMixerBlockEntity.ACCELERATION_SLOT_INDEX,
-                    CobblestoneMixerBlockEntity.ACCELERATION_SLOT_INDEX + 1,
-                    false
-                );
+                movedToMachine = this.moveItemStackTo(sourceStack, CobblestoneEnchanterBlockEntity.ACCELERATION_SLOT_INDEX, CobblestoneEnchanterBlockEntity.ACCELERATION_SLOT_INDEX + 1, false);
             } else if (MachineUpgradeHelper.isEnergizedCube(sourceStack)) {
-                movedToMachine = this.moveItemStackTo(
-                    sourceStack,
-                    CobblestoneMixerBlockEntity.ENERGIZED_CUBE_SLOT_INDEX,
-                    CobblestoneMixerBlockEntity.ENERGIZED_CUBE_SLOT_INDEX + 1,
-                    false
-                );
-            } else if (this.mixerBlockEntity.canQuickMoveToInput(sourceStack)) {
-                movedToMachine = this.moveItemStackTo(
-                    sourceStack,
-                    CobblestoneMixerBlockEntity.INPUT_SLOT_1_INDEX,
-                    CobblestoneMixerBlockEntity.POWER_SLOT_INDEX,
-                    false
-                );
-            }
-
-            if (!movedToMachine && CobblestoneCrusherBlockEntity.isCobblestonePowerItem(sourceStack)) {
-                movedToMachine = this.moveItemStackTo(
-                    sourceStack,
-                    CobblestoneMixerBlockEntity.POWER_SLOT_INDEX,
-                    CobblestoneMixerBlockEntity.POWER_SLOT_INDEX + 1,
-                    false
-                );
+                movedToMachine = this.moveItemStackTo(sourceStack, CobblestoneEnchanterBlockEntity.ENERGIZED_CUBE_SLOT_INDEX, CobblestoneEnchanterBlockEntity.ENERGIZED_CUBE_SLOT_INDEX + 1, false);
+            } else if (CobblestoneCrusherBlockEntity.isCobblestonePowerItem(sourceStack)) {
+                movedToMachine = this.moveItemStackTo(sourceStack, CobblestoneEnchanterBlockEntity.POWER_SLOT_INDEX, CobblestoneEnchanterBlockEntity.POWER_SLOT_INDEX + 1, false);
+            } else if (sourceStack.is(Items.ENCHANTED_BOOK)) {
+                movedToMachine = this.moveItemStackTo(sourceStack, CobblestoneEnchanterBlockEntity.BOOK_INPUT_SLOT_INDEX, CobblestoneEnchanterBlockEntity.BOOK_INPUT_SLOT_INDEX + 1, false);
+            } else if (CobblestoneEnchanterBlockEntity.isValidToolCandidate(sourceStack)) {
+                movedToMachine = this.moveItemStackTo(sourceStack, CobblestoneEnchanterBlockEntity.TOOL_INPUT_SLOT_INDEX, CobblestoneEnchanterBlockEntity.TOOL_INPUT_SLOT_INDEX + 1, false);
             }
 
             if (!movedToMachine) {
@@ -234,52 +207,66 @@ public class CobblestoneMixerMenu extends BaseMenu {
         return copiedStack;
     }
 
-    private CobblestoneMixerMenu(int containerId, Inventory playerInventory, BlockPos blockPos) {
-        this(
-            containerId,
-            playerInventory,
-            getMixerBlockEntity(playerInventory, blockPos),
-            new SimpleContainerData(DATA_COUNT)
+    @Override
+    public List<JeiRecipeTransferDefinition> getJeiRecipeTransferDefinitions() {
+        return this.createSingleJeiRecipeTransferDefinition(
+            ModJeiIds.COBBLESTONE_ENCHANTER,
+            CobblestoneEnchanterBlockEntity.TOOL_INPUT_SLOT_INDEX,
+            2,
+            PLAYER_INVENTORY_START_INDEX,
+            PLAYER_INVENTORY_SLOT_COUNT + HOTBAR_SLOT_COUNT
         );
     }
 
-    private static CobblestoneMixerBlockEntity getMixerBlockEntity(Inventory playerInventory, BlockPos blockPos) {
-        BlockEntity blockEntity = playerInventory.player.level().getBlockEntity(blockPos);
-        if (blockEntity instanceof CobblestoneMixerBlockEntity mixerBlockEntity) {
-            return mixerBlockEntity;
-        }
-
-        throw new IllegalStateException("Cobblestone Mixer の BlockEntity を取得できませんでした: " + blockPos);
+    private CobblestoneEnchanterMenu(int containerId, Inventory playerInventory, BlockPos blockPos) {
+        this(containerId, playerInventory, getEnchanterBlockEntity(playerInventory, blockPos), new SimpleContainerData(DATA_COUNT));
     }
 
-    private void addMixerSlots() {
-        ItemStackHandler itemStackHandler = this.mixerBlockEntity.getItemStackHandler();
+    private static CobblestoneEnchanterBlockEntity getEnchanterBlockEntity(Inventory playerInventory, BlockPos blockPos) {
+        BlockEntity blockEntity = playerInventory.player.level().getBlockEntity(blockPos);
+        if (blockEntity instanceof CobblestoneEnchanterBlockEntity enchanterBlockEntity) {
+            return enchanterBlockEntity;
+        }
 
-        // GUI テクスチャは crusher と同じ土台を使っているため、
-        // 丸石 CP スロットは左下、材料 2 枠と出力枠は上段にそろえて配置します。
-        this.addSlot(new SlotItemHandler(itemStackHandler, CobblestoneMixerBlockEntity.POWER_SLOT_INDEX, MachineGuiLayouts.Mixer.POWER_SLOT_X, MachineGuiLayouts.Mixer.POWER_SLOT_Y) {
+        throw new IllegalStateException("Cobblestone Enchanter の BlockEntity を取得できませんでした: " + blockPos);
+    }
+
+    private void addEnchanterSlots() {
+        ItemStackHandler itemStackHandler = this.enchanterBlockEntity.getItemStackHandler();
+
+        this.addSlot(new SlotItemHandler(itemStackHandler, CobblestoneEnchanterBlockEntity.POWER_SLOT_INDEX, MachineGuiLayouts.Enchanter.POWER_SLOT_X, MachineGuiLayouts.Enchanter.POWER_SLOT_Y) {
             @Override
-            public boolean mayPlace(ItemStack stack) {
+            public boolean mayPlace(@Nonnull ItemStack stack) {
                 return CobblestoneCrusherBlockEntity.isCobblestonePowerItem(stack);
             }
         });
-        this.addSlot(new SlotItemHandler(itemStackHandler, CobblestoneMixerBlockEntity.INPUT_SLOT_1_INDEX, MachineGuiLayouts.Mixer.INPUT_SLOT_1_X, MachineGuiLayouts.Mixer.INPUT_SLOT_1_Y));
-        this.addSlot(new SlotItemHandler(itemStackHandler, CobblestoneMixerBlockEntity.INPUT_SLOT_2_INDEX, MachineGuiLayouts.Mixer.INPUT_SLOT_2_X, MachineGuiLayouts.Mixer.INPUT_SLOT_2_Y));
-        this.addSlot(new SlotItemHandler(itemStackHandler, CobblestoneMixerBlockEntity.OUTPUT_SLOT_INDEX, MachineGuiLayouts.Mixer.OUTPUT_SLOT_X, MachineGuiLayouts.Mixer.OUTPUT_SLOT_Y) {
+        this.addSlot(new SlotItemHandler(itemStackHandler, CobblestoneEnchanterBlockEntity.TOOL_INPUT_SLOT_INDEX, MachineGuiLayouts.Enchanter.TOOL_SLOT_X, MachineGuiLayouts.Enchanter.TOOL_SLOT_Y) {
             @Override
-            public boolean mayPlace(ItemStack stack) {
+            public boolean mayPlace(@Nonnull ItemStack stack) {
+                return CobblestoneEnchanterBlockEntity.isValidToolCandidate(stack);
+            }
+        });
+        this.addSlot(new SlotItemHandler(itemStackHandler, CobblestoneEnchanterBlockEntity.BOOK_INPUT_SLOT_INDEX, MachineGuiLayouts.Enchanter.BOOK_SLOT_X, MachineGuiLayouts.Enchanter.BOOK_SLOT_Y) {
+            @Override
+            public boolean mayPlace(@Nonnull ItemStack stack) {
+                return stack.is(Items.ENCHANTED_BOOK);
+            }
+        });
+        this.addSlot(new SlotItemHandler(itemStackHandler, CobblestoneEnchanterBlockEntity.OUTPUT_SLOT_INDEX, MachineGuiLayouts.Enchanter.OUTPUT_SLOT_X, MachineGuiLayouts.Enchanter.OUTPUT_SLOT_Y) {
+            @Override
+            public boolean mayPlace(@Nonnull ItemStack stack) {
                 return false;
             }
         });
-        this.addSlot(new SlotItemHandler(itemStackHandler, CobblestoneMixerBlockEntity.ACCELERATION_SLOT_INDEX, MachineGuiLayouts.UPGRADE_SLOT_X, MachineGuiLayouts.ACCELERATION_SLOT_Y) {
+        this.addSlot(new SlotItemHandler(itemStackHandler, CobblestoneEnchanterBlockEntity.ACCELERATION_SLOT_INDEX, MachineGuiLayouts.UPGRADE_SLOT_X, MachineGuiLayouts.ACCELERATION_SLOT_Y) {
             @Override
-            public boolean mayPlace(ItemStack stack) {
+            public boolean mayPlace(@Nonnull ItemStack stack) {
                 return MachineUpgradeHelper.isAccelerationChip(stack);
             }
         });
-        this.addSlot(new SlotItemHandler(itemStackHandler, CobblestoneMixerBlockEntity.ENERGIZED_CUBE_SLOT_INDEX, MachineGuiLayouts.UPGRADE_SLOT_X, MachineGuiLayouts.ENERGIZED_CUBE_SLOT_Y) {
+        this.addSlot(new SlotItemHandler(itemStackHandler, CobblestoneEnchanterBlockEntity.ENERGIZED_CUBE_SLOT_INDEX, MachineGuiLayouts.UPGRADE_SLOT_X, MachineGuiLayouts.ENERGIZED_CUBE_SLOT_Y) {
             @Override
-            public boolean mayPlace(ItemStack stack) {
+            public boolean mayPlace(@Nonnull ItemStack stack) {
                 return MachineUpgradeHelper.isEnergizedCube(stack);
             }
         });
@@ -301,16 +288,5 @@ public class CobblestoneMixerMenu extends BaseMenu {
             int x = MachineGuiLayouts.PLAYER_INVENTORY_START_X + column * MachineGuiLayouts.SLOT_SIZE;
             this.addSlot(new Slot(playerInventory, column, x, MachineGuiLayouts.HOTBAR_START_Y));
         }
-    }
-
-    @Override
-    public List<JeiRecipeTransferDefinition> getJeiRecipeTransferDefinitions() {
-        return this.createSingleJeiRecipeTransferDefinition(
-            ModJeiIds.COBBLESTONE_MIXER,
-            CobblestoneMixerBlockEntity.INPUT_SLOT_1_INDEX,
-            2,
-            PLAYER_INVENTORY_START_INDEX,
-            PLAYER_INVENTORY_SLOT_COUNT + HOTBAR_SLOT_COUNT
-        );
     }
 }

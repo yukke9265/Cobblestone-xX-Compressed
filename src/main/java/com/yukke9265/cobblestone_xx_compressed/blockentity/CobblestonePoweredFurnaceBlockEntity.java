@@ -446,6 +446,26 @@ public class CobblestonePoweredFurnaceBlockEntity extends BaseBlockEntity implem
         return getCobblestonePowerValue(stack);
     }
 
+    @SuppressWarnings("null")
+    public boolean canQuickMoveToInput(ItemStack stack) {
+        if (stack.isEmpty()) {
+            return false;
+        }
+
+        Level currentLevel = this.level;
+        if (currentLevel == null) {
+            return false;
+        }
+
+        for (RecipeHolder<CobblestonePoweredFurnaceRecipe> recipeHolder : currentLevel.getRecipeManager().getAllRecipesFor(ModRecipeTypes.COBBLESTONE_POWERED_FURNACE.get())) {
+            if (recipeHolder.value().getIngredient().test(stack)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     private static long getCobblestonePowerValue(ItemStack stack) {
         if (stack.isEmpty()) {
             return 0;

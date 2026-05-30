@@ -1750,6 +1750,12 @@ public class ModItems {
             ModBlocks.COBBLESTONE_ASSEMBLY_MACHINE,
             TooltipTranslationKeys.machineDescription("cobblestone_assembly_machine"));
 
+    public static final DeferredItem<BlockItem> COBBLESTONE_ENCHANTER_ITEM =
+        registerDescribedBlockItem(
+            "cobblestone_enchanter",
+            ModBlocks.COBBLESTONE_ENCHANTER,
+            TooltipTranslationKeys.machineDescription("cobblestone_enchanter"));
+
     public static final DeferredItem<BlockItem> COBBLESTONE_CHEMICAL_REACTOR_ITEM =
         registerDescribedBlockItem(
             "cobblestone_chemical_reactor",

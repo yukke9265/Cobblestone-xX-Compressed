@@ -196,20 +196,20 @@ public class CobblestoneLaserDrillMenu extends BaseMenu {
                     CobblestoneLaserDrillBlockEntity.ENERGIZED_CUBE_SLOT_INDEX + 1,
                     false
                 );
-            } else if (CobblestoneCrusherBlockEntity.isCobblestonePowerItem(sourceStack)) {
-                movedToMachine = this.moveItemStackTo(
-                    sourceStack,
-                    CobblestoneLaserDrillBlockEntity.POWER_SLOT_INDEX,
-                    CobblestoneLaserDrillBlockEntity.POWER_SLOT_INDEX + 1,
-                    false
-                );
-            }
-
-            if (!movedToMachine) {
+            } else if (this.laserDrillBlockEntity.canQuickMoveToInput(sourceStack)) {
                 movedToMachine = this.moveItemStackTo(
                     sourceStack,
                     CobblestoneLaserDrillBlockEntity.INPUT_SLOT_INDEX,
                     CobblestoneLaserDrillBlockEntity.INPUT_SLOT_INDEX + 1,
+                    false
+                );
+            }
+
+            if (!movedToMachine && CobblestoneCrusherBlockEntity.isCobblestonePowerItem(sourceStack)) {
+                movedToMachine = this.moveItemStackTo(
+                    sourceStack,
+                    CobblestoneLaserDrillBlockEntity.POWER_SLOT_INDEX,
+                    CobblestoneLaserDrillBlockEntity.POWER_SLOT_INDEX + 1,
                     false
                 );
             }

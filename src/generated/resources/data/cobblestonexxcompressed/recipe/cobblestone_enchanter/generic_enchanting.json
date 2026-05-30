@@ -1,0 +1,19 @@
+{
+  "type": "cobblestonexxcompressed:cobblestone_enchanter",
+  "book_ingredient": {
+    "item": "minecraft:enchanted_book"
+  },
+  "jei_preview_tool": {
+    "count": 1,
+    "id": "minecraft:diamond_pickaxe"
+  },
+  "jei_preview_book": {
+    "count": 1,
+    "id": "minecraft:enchanted_book"
+  },
+  "jei_preview_result": {
+    "count": 1,
+    "id": "minecraft:diamond_pickaxe"
+  },
+  "processing_ticks": 200
+}

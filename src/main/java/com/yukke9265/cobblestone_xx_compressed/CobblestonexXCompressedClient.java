@@ -7,6 +7,7 @@ import com.yukke9265.cobblestone_xx_compressed.screen.CobblestoneCentrifugeScree
 import com.yukke9265.cobblestone_xx_compressed.screen.CobblestoneAssemblyMachineScreen;
 import com.yukke9265.cobblestone_xx_compressed.screen.CobblestoneChemicalReactorScreen;
 import com.yukke9265.cobblestone_xx_compressed.screen.CobblestoneDissolutionChamberScreen;
+import com.yukke9265.cobblestone_xx_compressed.screen.CobblestoneEnchanterScreen;
 import com.yukke9265.cobblestone_xx_compressed.screen.CobblestoneExtremeCompressorScreen;
 import com.yukke9265.cobblestone_xx_compressed.screen.CobblestoneFEGeneratorScreen;
 import com.yukke9265.cobblestone_xx_compressed.screen.CobblestoneFluidMixerScreen;
@@ -83,6 +84,7 @@ public class CobblestonexXCompressedClient {
         event.register(ModMenuType.STONE_BREAK_SIMULATOR_MENU.get(), StoneBreakSimulatorScreen::new);
         event.register(ModMenuType.COBBLESTONE_MELTER_MENU.get(), CobblestoneMelterScreen::new);
         event.register(ModMenuType.COBBLESTONE_ASSEMBLY_MACHINE_MENU.get(), CobblestoneAssemblyMachineScreen::new);
+        event.register(ModMenuType.COBBLESTONE_ENCHANTER_MENU.get(), CobblestoneEnchanterScreen::new);
         event.register(ModMenuType.COBBLESTONE_CHEMICAL_REACTOR_MENU.get(), CobblestoneChemicalReactorScreen::new);
         event.register(ModMenuType.COBBLESTONE_REACTION_CHAMBER_MENU.get(), CobblestoneReactionChamberScreen::new);
         event.register(ModMenuType.COBBLESTONE_CRYSTALLIZATION_CHAMBER_MENU.get(), CobblestoneCrystallizationChamberScreen::new);

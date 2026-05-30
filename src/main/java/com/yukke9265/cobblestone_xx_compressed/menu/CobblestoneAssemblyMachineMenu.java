@@ -229,12 +229,12 @@ public class CobblestoneAssemblyMachineMenu extends BaseMenu {
                 movedToMachine = this.moveItemStackTo(sourceStack, CobblestoneAssemblyMachineBlockEntity.ACCELERATION_SLOT_INDEX, CobblestoneAssemblyMachineBlockEntity.ACCELERATION_SLOT_INDEX + 1, false);
             } else if (MachineUpgradeHelper.isEnergizedCube(sourceStack)) {
                 movedToMachine = this.moveItemStackTo(sourceStack, CobblestoneAssemblyMachineBlockEntity.ENERGIZED_CUBE_SLOT_INDEX, CobblestoneAssemblyMachineBlockEntity.ENERGIZED_CUBE_SLOT_INDEX + 1, false);
-            } else if (CobblestoneCrusherBlockEntity.isCobblestonePowerItem(sourceStack)) {
-                movedToMachine = this.moveItemStackTo(sourceStack, CobblestoneAssemblyMachineBlockEntity.POWER_SLOT_INDEX, CobblestoneAssemblyMachineBlockEntity.POWER_SLOT_INDEX + 1, false);
+            } else if (this.assemblyMachineBlockEntity.canQuickMoveToInput(sourceStack)) {
+                movedToMachine = this.moveItemStackTo(sourceStack, CobblestoneAssemblyMachineBlockEntity.INPUT_SLOT_1_INDEX, CobblestoneAssemblyMachineBlockEntity.POWER_SLOT_INDEX, false);
             }
 
-            if (!movedToMachine) {
-                movedToMachine = this.moveItemStackTo(sourceStack, CobblestoneAssemblyMachineBlockEntity.INPUT_SLOT_1_INDEX, CobblestoneAssemblyMachineBlockEntity.POWER_SLOT_INDEX, false);
+            if (!movedToMachine && CobblestoneCrusherBlockEntity.isCobblestonePowerItem(sourceStack)) {
+                movedToMachine = this.moveItemStackTo(sourceStack, CobblestoneAssemblyMachineBlockEntity.POWER_SLOT_INDEX, CobblestoneAssemblyMachineBlockEntity.POWER_SLOT_INDEX + 1, false);
             }
 
             if (!movedToMachine) {

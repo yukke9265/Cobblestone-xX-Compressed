@@ -184,7 +184,10 @@ public class CobblestoneFurnaceMenu extends BaseMenu {
         } else {
             // プレイヤー所持品側を Shift + クリックした場合は、まず入力スロットだけを試します。
             // 出力スロットは取り出し専用なので、ここでは移動先にしません。
-            if (!this.moveItemStackTo(sourceStack, INPUT_SLOT_INDEX, INPUT_SLOT_INDEX + 1, false)) {
+            if (this.furnaceBlockEntity.canQuickMoveToInput(sourceStack)
+                && this.moveItemStackTo(sourceStack, INPUT_SLOT_INDEX, INPUT_SLOT_INDEX + 1, false)) {
+                // 入力候補だった場合はここで移動完了です。
+            } else {
                 // プレイヤーのメインインベントリから来た場合はホットバーへ、
                 // ホットバーから来た場合はメインインベントリへ送って整理できるようにします。
                 if (index < HOTBAR_START_INDEX) {

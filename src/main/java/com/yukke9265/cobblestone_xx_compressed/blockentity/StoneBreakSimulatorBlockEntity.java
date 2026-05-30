@@ -27,6 +27,8 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
@@ -323,6 +325,26 @@ public class StoneBreakSimulatorBlockEntity extends BaseBlockEntity implements M
         this.setChanged();
     }
 
+    @SuppressWarnings("null")
+    public boolean canQuickMoveToInput(ItemStack stack) {
+        if (stack.isEmpty()) {
+            return false;
+        }
+
+        Level currentLevel = this.level;
+        if (currentLevel == null) {
+            return false;
+        }
+
+        for (RecipeHolder<StoneBreakSimulatorRecipe> recipeHolder : currentLevel.getRecipeManager().getAllRecipesFor(ModRecipeTypes.STONE_BREAK_SIMULATOR.get())) {
+            if (recipeHolder.value().getIngredient().test(stack)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     private Optional<RecipeHolder<StoneBreakSimulatorRecipe>> getCurrentRecipe() {
         Level currentLevel = this.level;
         if (currentLevel == null) {
@@ -461,6 +483,9 @@ public class StoneBreakSimulatorBlockEntity extends BaseBlockEntity implements M
         this.insertMainOutput(generatedDrops.mainDrop());
         this.insertSubOutputs(generatedDrops.subDrops());
         inputStack.shrink(blockCount);
+
+        // 実際に石を壊したような完了感が出るように、レシピ完了時に破壊音を鳴らします。
+        currentLevel.playSound(null, this.worldPosition, SoundEvents.STONE_BREAK, SoundSource.BLOCKS, 0.5F, 1.0F);
     }
 
     private void insertMainOutput(ItemStack mainDrop) {
