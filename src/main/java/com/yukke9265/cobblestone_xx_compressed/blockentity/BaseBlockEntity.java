@@ -13,7 +13,9 @@ import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
+import net.neoforged.neoforge.items.ItemStackHandler;
 
+@SuppressWarnings("null")
 public class BaseBlockEntity extends BlockEntity {
     public static final int AUTOMATION_FACE_COUNT = AutomationSide.values().length;
 
@@ -217,6 +219,77 @@ public class BaseBlockEntity extends BlockEntity {
     public void applyAutomationCopyData(CompoundTag tag) {
         this.loadAutomationModes(tag);
         this.setChanged();
+    }
+
+    public ItemStackHandler getItemStackHandler() {
+        return null;
+    }
+
+    public boolean canInstallUpgradeItem(ItemStack stack) {
+        if (stack.isEmpty()) {
+            return false;
+        }
+
+        if (!MachineUpgradeHelper.isAccelerationChip(stack) && !MachineUpgradeHelper.isEnergizedCube(stack)) {
+            return false;
+        }
+
+        ItemStackHandler itemStackHandler = this.getItemStackHandler();
+        if (itemStackHandler == null) {
+            return false;
+        }
+
+        for (int slot = 0; slot < itemStackHandler.getSlots(); slot++) {
+            if (!itemStackHandler.isItemValid(slot, stack)) {
+                continue;
+            }
+
+            if (!itemStackHandler.getStackInSlot(slot).isEmpty()) {
+                continue;
+            }
+
+            if (itemStackHandler.getSlotLimit(slot) <= 0) {
+                continue;
+            }
+
+            return true;
+        }
+
+        return false;
+    }
+
+    public boolean installUpgradeItem(ItemStack stack, boolean simulate) {
+        if (!this.canInstallUpgradeItem(stack)) {
+            return false;
+        }
+
+        ItemStackHandler itemStackHandler = this.getItemStackHandler();
+        if (itemStackHandler == null) {
+            return false;
+        }
+
+        for (int slot = 0; slot < itemStackHandler.getSlots(); slot++) {
+            if (!itemStackHandler.isItemValid(slot, stack)) {
+                continue;
+            }
+
+            if (!itemStackHandler.getStackInSlot(slot).isEmpty()) {
+                continue;
+            }
+
+            ItemStack singleStack = stack.copyWithCount(1);
+            ItemStack remainingStack = itemStackHandler.insertItem(slot, singleStack, simulate);
+            if (!remainingStack.isEmpty()) {
+                continue;
+            }
+
+            if (!simulate) {
+                this.setChanged();
+            }
+            return true;
+        }
+
+        return false;
     }
 
     protected ItemStack pushItemStackToConfiguredSides(ItemStack stack, AutomationMode... targetModes) {

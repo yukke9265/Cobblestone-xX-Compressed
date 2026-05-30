@@ -788,6 +788,7 @@ public class CobblestoneChemicalReactorBlockEntity extends BaseBlockEntity imple
             if (recipe.hasFirstItemInput() && recipe.getFirstItemInput().test(stack)) {
                 return true;
             }
+
             if (recipe.hasSecondItemInput() && recipe.getSecondItemInput().test(stack)) {
                 return true;
             }

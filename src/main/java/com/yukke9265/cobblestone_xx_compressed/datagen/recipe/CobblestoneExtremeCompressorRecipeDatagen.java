@@ -17,7 +17,7 @@ public final class CobblestoneExtremeCompressorRecipeDatagen {
             ModItems.EXTREME_COMPRESSED_OBSIDIAN.get(),
             4096,
             TOTAL_CP,
-            33554432
+            16777216
         ),
         // 同じ入力素材に複数レシピをぶら下げると、RecipeManager が先に見つけた 1 件だけを返します。
         // そのため Bedrock は 1 段階後ろへずらして、Extreme Compressed Obsidian から作る連鎖にします。
@@ -27,7 +27,7 @@ public final class CobblestoneExtremeCompressorRecipeDatagen {
             Blocks.BEDROCK,
             4096,
             TOTAL_CP,
-            33554432
+            16777216
         )
     };
 

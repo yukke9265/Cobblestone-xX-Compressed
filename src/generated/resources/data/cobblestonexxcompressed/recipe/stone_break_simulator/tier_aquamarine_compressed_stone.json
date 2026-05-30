@@ -1,7 +1,8 @@
 {
   "type": "cobblestonexxcompressed:stone_break_simulator",
+  "cobblestone_power_per_tick": 1024,
   "ingredient": {
     "item": "cobblestonexxcompressed:tier_aquamarine_compressed_stone"
   },
-  "total_cobblestone_power": 100
+  "total_cobblestone_power": 3276800
 }

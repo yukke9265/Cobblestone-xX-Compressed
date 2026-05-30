@@ -3,7 +3,6 @@ package com.yukke9265.cobblestone_xx_compressed.block;
 import com.yukke9265.cobblestone_xx_compressed.blockentity.CobblestoneGeneratorBlockEntity;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModBlockEntities;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModBlocks;
-import com.yukke9265.cobblestone_xx_compressed.util.BlockItemDropHelper;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
@@ -42,14 +41,5 @@ public class CobblestoneGeneratorBlock extends Block implements EntityBlock {
         }
 
         return null;
-    }
-
-    @Override
-    protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
-        if (state.getBlock() != newState.getBlock()) {
-            BlockItemDropHelper.dropAllItems(level, pos, state);
-        }
-
-        super.onRemove(state, level, pos, newState, isMoving);
     }
 }

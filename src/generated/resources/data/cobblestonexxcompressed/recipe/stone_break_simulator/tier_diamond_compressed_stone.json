@@ -1,7 +1,8 @@
 {
   "type": "cobblestonexxcompressed:stone_break_simulator",
+  "cobblestone_power_per_tick": 262144,
   "ingredient": {
     "item": "cobblestonexxcompressed:tier_diamond_compressed_stone"
   },
-  "total_cobblestone_power": 100
+  "total_cobblestone_power": 13421772800
 }
