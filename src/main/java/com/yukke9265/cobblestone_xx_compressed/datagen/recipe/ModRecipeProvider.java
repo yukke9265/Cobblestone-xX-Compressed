@@ -288,6 +288,8 @@ public class ModRecipeProvider extends RecipeProvider {
         buildCobblestoneAccelerationChipRecipes(output);
         buildCobblestoneEnergizedCubeRecipes(output);
         buildCobblestoneMachineBlockRecipes(output);
+        buildCustomMachineRecipes(output);
+        buildConfigurationCardRecipe(output);
 
         // ここから下は独自 RecipeType / RecipeSerializer を使う機械レシピです。
         // JSON の出力先は data/<modid>/recipe/<machine_name>/... になります。
@@ -825,6 +827,43 @@ public class ModRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_" + tier.getRegistryName(), has(compressedCobblestone))
                 .save(output, modRecipeId(tier.getRegistryName()));
         }
+    }
+
+    private void buildCustomMachineRecipes(RecipeOutput output) {
+        // 丸石エンチャンターは、鉄 tier の圧縮丸石と gem、中央のエンチャントテーブルで組みます。
+        // 通常の機械共通レシピとは形が違うため、個別レシピとして分けておきます。
+        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ModBlocks.COBBLESTONE_ENCHANTER.get())
+            .pattern("CGC")
+            .pattern("GEG")
+            .pattern("CGC")
+            .define('C', ModBlocks.TierCompressedCobblestone.IRON.getBlock().get())
+            .define('G', ModItems.TIER_IRON_COBBLESTONE_GEM.get())
+            .define('E', Items.ENCHANTING_TABLE)
+            .unlockedBy("has_cobblestone_enchanter_material", has(Items.ENCHANTING_TABLE))
+            .save(output, modRecipeId("cobblestone_enchanter"));
+
+        // Stone Break Simulator は、金 tier の圧縮丸石を外周に置き、
+        // 鉄 tier の machine casing とダイヤのツルハシを組み合わせて作ります。
+        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ModBlocks.STONE_BREAK_SIMULATOR.get())
+            .pattern("CIC")
+            .pattern("IPI")
+            .pattern("CIC")
+            .define('C', ModBlocks.TierCompressedCobblestone.GOLD.getBlock().get())
+            .define('I', ModBlocks.TierCobblestoneMachineCasing.IRON.getBlock().get())
+            .define('P', Items.DIAMOND_PICKAXE)
+            .unlockedBy("has_stone_break_simulator_material", has(Items.DIAMOND_PICKAXE))
+            .save(output, modRecipeId("stone_break_simulator"));
+    }
+
+    private void buildConfigurationCardRecipe(RecipeOutput output) {
+        // Configuration Card は初期 machine casing とレッドストーンだけで作れるようにします。
+        // 1x2 の簡単なレシピにして、序盤の設定変更ツールとして取り回しやすくします。
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.CONFIGURATION_CARD.get())
+            .pattern("CR")
+            .define('C', ModBlocks.COBBLESTONE_MACHINE_CASING.get())
+            .define('R', Items.REDSTONE)
+            .unlockedBy("has_configuration_card_material", has(ModBlocks.COBBLESTONE_MACHINE_CASING.get()))
+            .save(output, modRecipeId("configuration_card"));
     }
 
     private ResourceLocation modRecipeId(String path) {

@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "C": {
+      "item": "cobblestonexxcompressed:tier_gold_compressed_cobblestone"
+    },
+    "I": {
+      "item": "cobblestonexxcompressed:tier_iron_cobblestone_machine_casing"
+    },
+    "P": {
+      "item": "minecraft:diamond_pickaxe"
+    }
+  },
+  "pattern": [
+    "CIC",
+    "IPI",
+    "CIC"
+  ],
+  "result": {
+    "count": 1,
+    "id": "cobblestonexxcompressed:stone_break_simulator"
+  }
+}
