@@ -208,6 +208,17 @@ public class BaseBlockEntity extends BlockEntity {
         this.setAutoExportEnabled(tag.getBoolean("autoExportEnabled"));
     }
 
+    public CompoundTag createAutomationCopyData() {
+        CompoundTag tag = new CompoundTag();
+        this.saveAutomationModes(tag);
+        return tag;
+    }
+
+    public void applyAutomationCopyData(CompoundTag tag) {
+        this.loadAutomationModes(tag);
+        this.setChanged();
+    }
+
     protected ItemStack pushItemStackToConfiguredSides(ItemStack stack, AutomationMode... targetModes) {
         if (!this.autoExportEnabled || stack.isEmpty()) {
             return stack;

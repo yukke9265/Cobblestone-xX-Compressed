@@ -2,6 +2,7 @@ package com.yukke9265.cobblestone_xx_compressed.block;
 
 import com.yukke9265.cobblestone_xx_compressed.blockentity.CobblestoneTankBlockEntity;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModBlockEntities;
+import com.yukke9265.cobblestone_xx_compressed.util.BlockItemDropHelper;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
@@ -47,6 +48,10 @@ public class CobblestoneTankBlock extends RotatingBlock implements EntityBlock {
 
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
+        if (this.shouldPassInteractionToConfigurationCard(player)) {
+            return InteractionResult.PASS;
+        }
+
         if (level.isClientSide) {
             return InteractionResult.SUCCESS;
         }
@@ -61,5 +66,14 @@ public class CobblestoneTankBlock extends RotatingBlock implements EntityBlock {
         }
 
         return InteractionResult.CONSUME;
+    }
+
+    @Override
+    protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
+        if (state.getBlock() != newState.getBlock()) {
+            BlockItemDropHelper.dropAllItems(level, pos, state);
+        }
+
+        super.onRemove(state, level, pos, newState, isMoving);
     }
 }

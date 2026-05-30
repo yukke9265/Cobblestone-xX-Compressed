@@ -241,6 +241,7 @@
   "item.cobblestonexxcompressed.compressed_cobblestone_singularity": "Compressed Cobblestone Singularity",
   "item.cobblestonexxcompressed.compressed_cobblestone_singularity_bit": "Compressed Cobblestone Singularity Bit",
   "item.cobblestonexxcompressed.compressed_cobblestone_singularity_fragment": "Compressed Cobblestone Singularity Fragment",
+  "item.cobblestonexxcompressed.configuration_card": "Configuration Card",
   "item.cobblestonexxcompressed.copper_dust": "Copper Dust",
   "item.cobblestonexxcompressed.diamond_dust": "Diamond Dust",
   "item.cobblestonexxcompressed.dirty_mixture": "Dirty Mixture",
@@ -511,6 +512,10 @@
   "jei.cobblestonexxcompressed.count_range_fortune": "Count: %s-%s (Fortune)",
   "jei.cobblestonexxcompressed.no_silk_touch": "No Silk Touch",
   "jei.cobblestonexxcompressed.silk_touch": "Silk Touch",
+  "message.cobblestonexxcompressed.configuration_card.cleared": "Cleared stored automation settings",
+  "message.cobblestonexxcompressed.configuration_card.copied": "Copied automation settings from %s",
+  "message.cobblestonexxcompressed.configuration_card.incompatible": "Stored settings can only be pasted to the same machine type",
+  "message.cobblestonexxcompressed.configuration_card.pasted": "Pasted automation settings to %s",
   "tooltip.cobblestonexxcompressed.cobblestone_acceleration_chip.rate": "x%s CP/t",
   "tooltip.cobblestonexxcompressed.cobblestone_assembly_machine.description": "Assembles components into machine-related items.",
   "tooltip.cobblestonexxcompressed.cobblestone_centrifuge.description": "Separates materials into multiple outputs with centrifuging.",
@@ -533,5 +538,7 @@
   "tooltip.cobblestonexxcompressed.cobblestone_powered_furnace.description": "An upgraded furnace that smelts items with Cobblestone Power.",
   "tooltip.cobblestonexxcompressed.cobblestone_reaction_chamber.description": "Combines multiple ingredients to produce intermediates and finished items.",
   "tooltip.cobblestonexxcompressed.compressed_cobblestone.compression": "x%s compressed",
+  "tooltip.cobblestonexxcompressed.configuration_card.empty": "No configuration stored",
+  "tooltip.cobblestonexxcompressed.configuration_card.stored": "Stored: %s",
   "tooltip.cobblestonexxcompressed.stone_break_simulator.description": "Simulates breaking compressed stone and generates drops with the inserted pickaxe enchants."
 }

@@ -43,6 +43,10 @@ public class CobblestoneAssemblyMachineBlock extends OnOffBlock {
 
     @Override
     protected InteractionResult useWithoutItem(@Nonnull BlockState state, @Nonnull Level level, @Nonnull BlockPos pos, @Nonnull Player player, @Nonnull BlockHitResult hitResult) {
+        if (this.shouldPassInteractionToConfigurationCard(player)) {
+            return InteractionResult.PASS;
+        }
+
         if (level.isClientSide) {
             return InteractionResult.SUCCESS;
         }

@@ -3,6 +3,7 @@ package com.yukke9265.cobblestone_xx_compressed.registry;
 import com.yukke9265.cobblestone_xx_compressed.CobblestonexXCompressed;
 import com.yukke9265.cobblestone_xx_compressed.blockitem.CompressedCobblestoneBlockItem;
 import com.yukke9265.cobblestone_xx_compressed.blockitem.DescribedBlockItem;
+import com.yukke9265.cobblestone_xx_compressed.item.ConfigurationCardItem;
 import com.yukke9265.cobblestone_xx_compressed.item.CobblestoneAccelerationChipItem;
 import com.yukke9265.cobblestone_xx_compressed.item.CobblestoneEnergizedCubeItem;
 import com.yukke9265.cobblestone_xx_compressed.util.TooltipTranslationKeys;
@@ -564,6 +565,9 @@ public class ModItems {
 
     public static final DeferredItem<Item> EXTREME_COMPRESSED_OBSIDIAN =
         ITEMS.registerSimpleItem("extreme_compressed_obsidian", createOtherItemProperties());
+
+    public static final DeferredItem<Item> CONFIGURATION_CARD =
+        ITEMS.register("configuration_card", () -> new ConfigurationCardItem(createOtherItemProperties()));
 
     public static final DeferredItem<Item> COMPRESSED_COBBLESTONE_SINGULARITY_BIT =
         ITEMS.registerSimpleItem("compressed_cobblestone_singularity_bit", createCobblestoneSingularityProperties());

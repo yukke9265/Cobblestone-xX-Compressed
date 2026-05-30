@@ -39,6 +39,10 @@ public class CobblestoneDissolutionChamberBlock extends OnOffBlock {
 
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
+        if (this.shouldPassInteractionToConfigurationCard(player)) {
+            return InteractionResult.PASS;
+        }
+
         if (level.isClientSide) {
             return InteractionResult.SUCCESS;
         }

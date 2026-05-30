@@ -103,6 +103,7 @@ public class ModItemModelProvider extends ItemModelProvider {
         registerOtherItemModel(ModItems.CANNED_STABLE_ENDERITE);
         registerOtherItemModel(ModItems.EXTREME_COMPRESSED_CANNED_ENDERITE);
         registerOtherItemModel(ModItems.EXTREME_COMPRESSED_OBSIDIAN);
+        registerOtherItemModel(ModItems.CONFIGURATION_CARD);
 
         registerCobblestoneWireItemModel(ModItems.COBBLESTONE_WIRE);
 

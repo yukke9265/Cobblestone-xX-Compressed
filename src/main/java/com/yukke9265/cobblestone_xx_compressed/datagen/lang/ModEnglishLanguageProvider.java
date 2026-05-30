@@ -96,6 +96,7 @@ public class ModEnglishLanguageProvider extends LanguageProvider {
         addItem(ModItems.CANNED_STABLE_ENDERITE, "Canned Stable Enderite");
         addItem(ModItems.EXTREME_COMPRESSED_CANNED_ENDERITE, "Extreme Compressed Canned Enderite");
         addItem(ModItems.EXTREME_COMPRESSED_OBSIDIAN, "Extreme Compressed Obsidian");
+        addItem(ModItems.CONFIGURATION_CARD, "Configuration Card");
 
         addItem(ModItems.COBBLESTONE_WIRE, "Cobblestone Wire");
         for (ModItems.TierCobblestoneWire tier : ModItems.TierCobblestoneWire.values()) {
@@ -233,6 +234,12 @@ public class ModEnglishLanguageProvider extends LanguageProvider {
         add("tooltip.cobblestonexxcompressed.compressed_cobblestone.compression", "x%s compressed");
         add("tooltip.cobblestonexxcompressed.cobblestone_energized_cube.capacity", "x%s CP capacity");
         add("tooltip.cobblestonexxcompressed.cobblestone_acceleration_chip.rate", "x%s CP/t");
+        add("tooltip.cobblestonexxcompressed.configuration_card.empty", "No configuration stored");
+        add("tooltip.cobblestonexxcompressed.configuration_card.stored", "Stored: %s");
+        add("message.cobblestonexxcompressed.configuration_card.copied", "Copied automation settings from %s");
+        add("message.cobblestonexxcompressed.configuration_card.pasted", "Pasted automation settings to %s");
+        add("message.cobblestonexxcompressed.configuration_card.cleared", "Cleared stored automation settings");
+        add("message.cobblestonexxcompressed.configuration_card.incompatible", "Stored settings can only be pasted to the same machine type");
         TooltipTranslationEntries.addEnglish(this);
         add("jei.cobblestonexxcompressed.compressed_stone_loot", "Compressed Stone Loot");
         add("jei.cobblestonexxcompressed.silk_touch", "Silk Touch");
