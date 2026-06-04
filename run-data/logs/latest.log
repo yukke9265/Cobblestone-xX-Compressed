@@ -1,42 +1,42 @@
-[305月2026 23:06:38.128] [main/INFO] [cpw.mods.modlauncher.Launcher/MODLAUNCHER]: ModLauncher running: args [--launchTarget, forgedatadev, --assetIndex, 17, --assetsDir, C:\\Users\\yukke\\.gradle\\caches\\neoformruntime\\assets, --gameDir, ., --fml.fmlVersion, 4.0.42, --fml.mcVersion, 1.21.1, --fml.neoForgeVersion, 21.1.228, --fml.neoFormVersion, 20240808.144430, --mod, cobblestonexxcompressed, --all, --output, D:\\cobblestonexxcompressed-1_21_1\\src\\generated\\resources, --existing, D:\\cobblestonexxcompressed-1_21_1\\src\\main\\resources]
-[305月2026 23:06:38.132] [main/INFO] [cpw.mods.modlauncher.Launcher/MODLAUNCHER]: JVM identified as Eclipse Adoptium OpenJDK 64-Bit Server VM 21.0.10+7-LTS
-[305月2026 23:06:38.134] [main/INFO] [cpw.mods.modlauncher.Launcher/MODLAUNCHER]: ModLauncher 11.0.5+main.901c6ea8 starting: java version 21.0.10 by Eclipse Adoptium; OS Windows 11 arch amd64 version 10.0
-[305月2026 23:06:38.319] [main/INFO] [net.neoforged.fml.loading.ImmediateWindowHandler/]: ImmediateWindowProvider not loading because launch target is forgedatadev
-[305月2026 23:06:38.417] [main/INFO] [mixin/]: SpongePowered MIXIN Subsystem Version=0.8.7 Source=union:/C:/Users/yukke/.gradle/caches/modules-2/files-2.1/net.fabricmc/sponge-mixin/0.15.2+mixin.0.8.7/2af2f021d8e02a0220dc27a7a72b4666d66d44ca/sponge-mixin-0.15.2+mixin.0.8.7.jar%23138!/ Service=ModLauncher Env=CLIENT
-[305月2026 23:06:38.870] [main/INFO] [net.neoforged.fml.loading.moddiscovery.locators.JarInJarDependencyLocator/]: Found 2 dependencies adding them to mods collection
-[305月2026 23:06:38.878] [main/INFO] [net.neoforged.fml.loading.moddiscovery.ModDiscoverer/]: 
+[046月2026 21:47:54.310] [main/INFO] [cpw.mods.modlauncher.Launcher/MODLAUNCHER]: ModLauncher running: args [--launchTarget, forgedatadev, --assetIndex, 17, --assetsDir, C:\\Users\\yukke\\.gradle\\caches\\neoformruntime\\assets, --gameDir, ., --fml.fmlVersion, 4.0.42, --fml.mcVersion, 1.21.1, --fml.neoForgeVersion, 21.1.228, --fml.neoFormVersion, 20240808.144430, --mod, cobblestonexxcompressed, --all, --output, D:\\cobblestonexxcompressed-1_21_1\\src\\generated\\resources, --existing, D:\\cobblestonexxcompressed-1_21_1\\src\\main\\resources]
+[046月2026 21:47:54.314] [main/INFO] [cpw.mods.modlauncher.Launcher/MODLAUNCHER]: JVM identified as Eclipse Adoptium OpenJDK 64-Bit Server VM 21.0.10+7-LTS
+[046月2026 21:47:54.316] [main/INFO] [cpw.mods.modlauncher.Launcher/MODLAUNCHER]: ModLauncher 11.0.5+main.901c6ea8 starting: java version 21.0.10 by Eclipse Adoptium; OS Windows 11 arch amd64 version 10.0
+[046月2026 21:47:54.437] [main/INFO] [net.neoforged.fml.loading.ImmediateWindowHandler/]: ImmediateWindowProvider not loading because launch target is forgedatadev
+[046月2026 21:47:54.511] [main/INFO] [mixin/]: SpongePowered MIXIN Subsystem Version=0.8.7 Source=union:/C:/Users/yukke/.gradle/caches/modules-2/files-2.1/net.fabricmc/sponge-mixin/0.15.2+mixin.0.8.7/2af2f021d8e02a0220dc27a7a72b4666d66d44ca/sponge-mixin-0.15.2+mixin.0.8.7.jar%23138!/ Service=ModLauncher Env=CLIENT
+[046月2026 21:47:55.015] [main/INFO] [net.neoforged.fml.loading.moddiscovery.locators.JarInJarDependencyLocator/]: Found 2 dependencies adding them to mods collection
+[046月2026 21:47:55.016] [main/INFO] [net.neoforged.fml.loading.moddiscovery.ModDiscoverer/]: 
      Mod List:
 		Name Version (Mod Id)
 
-		Cobblestone xXCompressed 1.1.1 (cobblestonexxcompressed)
+		Cobblestone xXCompressed 1.1.2 (cobblestonexxcompressed)
 		Just Enough Items 19.27.0.340 (jei)
 		Minecraft 1.21.1 (minecraft)
 		NeoForge 21.1.228 (neoforge)
-[305月2026 23:06:39.749] [main/INFO] [cpw.mods.modlauncher.LaunchServiceHandler/MODLAUNCHER]: Launching target 'forgedatadev' with arguments [--gameDir, ., --assetsDir, C:\Users\yukke\.gradle\caches\neoformruntime\assets, --assetIndex, 17, --mod, cobblestonexxcompressed, --all, --output, D:\\cobblestonexxcompressed-1_21_1\\src\\generated\\resources, --existing, D:\\cobblestonexxcompressed-1_21_1\\src\\main\\resources]
-[305月2026 23:06:40.848] [main/INFO] [net.neoforged.neoforge.data.loading.DatagenModLoader/]: Initializing Data Gatherer for mods [cobblestonexxcompressed]
-[305月2026 23:06:40.870] [main/INFO] [MixinExtras|Service/]: Initializing MixinExtras via com.llamalad7.mixinextras.service.MixinExtrasServiceImpl(version=0.5.3).
-[305月2026 23:06:46.377] [modloading-worker-0/INFO] [net.neoforged.neoforge.common.NeoForgeMod/NEOFORGE-MOD]: NeoForge mod loading, version 21.1.228, for MC 1.21.1
-[305月2026 23:06:46.613] [modloading-worker-0/INFO] [mezz.jei.library.load.PluginCaller/]: Sending ConfigManager...
-[305月2026 23:06:46.617] [modloading-worker-0/INFO] [mezz.jei.library.load.PluginCaller/]: Sending ConfigManager took 1.856 milliseconds
-[305月2026 23:06:46.942] [main/WARN] [net.minecraft.server.packs.VanillaPackResourcesBuilder/]: Assets URL 'union:/D:/cobblestonexxcompressed-1_21_1/build/moddev/artifacts/neoforge-21.1.228.jar%23189!/assets/.mcassetsroot' uses unexpected schema
-[305月2026 23:06:46.943] [main/WARN] [net.minecraft.server.packs.VanillaPackResourcesBuilder/]: Assets URL 'union:/D:/cobblestonexxcompressed-1_21_1/build/moddev/artifacts/neoforge-21.1.228.jar%23189!/data/.mcassetsroot' uses unexpected schema
-[305月2026 23:06:47.329] [main/INFO] [net.minecraft.data.DataGenerator/]: Starting provider: Block States: cobblestonexxcompressed
-[305月2026 23:06:47.419] [main/INFO] [net.minecraft.data.DataGenerator/]: Block States: cobblestonexxcompressed finished after 89 ms
-[305月2026 23:06:47.419] [main/INFO] [net.minecraft.data.DataGenerator/]: Starting provider: Item Models: cobblestonexxcompressed
-[305月2026 23:06:47.456] [main/INFO] [net.minecraft.data.DataGenerator/]: Item Models: cobblestonexxcompressed finished after 37 ms
-[305月2026 23:06:47.456] [main/INFO] [net.minecraft.data.DataGenerator/]: Starting provider: Languages: en_us for mod: cobblestonexxcompressed
-[305月2026 23:06:47.466] [main/INFO] [net.minecraft.data.DataGenerator/]: Languages: en_us for mod: cobblestonexxcompressed finished after 8 ms
-[305月2026 23:06:47.466] [main/INFO] [net.minecraft.data.DataGenerator/]: Starting provider: Languages: ja_jp for mod: cobblestonexxcompressed
-[305月2026 23:06:47.467] [main/INFO] [net.minecraft.data.DataGenerator/]: Languages: ja_jp for mod: cobblestonexxcompressed finished after 0 ms
-[305月2026 23:06:47.467] [main/INFO] [net.minecraft.data.DataGenerator/]: Starting provider: Recipes
-[305月2026 23:06:47.800] [main/INFO] [net.minecraft.data.DataGenerator/]: Recipes finished after 332 ms
-[305月2026 23:06:47.800] [main/INFO] [net.minecraft.data.DataGenerator/]: Starting provider: Tags for minecraft:block mod id cobblestonexxcompressed
-[305月2026 23:06:47.809] [main/INFO] [net.minecraft.data.DataGenerator/]: Tags for minecraft:block mod id cobblestonexxcompressed finished after 9 ms
-[305月2026 23:06:47.810] [main/INFO] [net.minecraft.data.DataGenerator/]: Starting provider: Tags for minecraft:item mod id cobblestonexxcompressed
-[305月2026 23:06:47.811] [main/INFO] [net.minecraft.data.DataGenerator/]: Tags for minecraft:item mod id cobblestonexxcompressed finished after 1 ms
-[305月2026 23:06:47.811] [main/INFO] [net.minecraft.data.DataGenerator/]: Starting provider: CobblestonexXCompressed Block Loot Tables
-[305月2026 23:06:47.816] [main/INFO] [net.minecraft.data.DataGenerator/]: CobblestonexXCompressed Block Loot Tables finished after 4 ms
-[305月2026 23:06:47.816] [main/INFO] [net.minecraft.data.DataGenerator/]: Starting provider: Global Loot Modifiers : cobblestonexxcompressed
-[305月2026 23:06:47.827] [main/INFO] [net.minecraft.data.DataGenerator/]: Global Loot Modifiers : cobblestonexxcompressed finished after 10 ms
-[305月2026 23:06:47.827] [main/INFO] [net.minecraft.data.DataGenerator/]: All providers took: 498 ms
-[305月2026 23:06:47.835] [main/INFO] [net.minecraft.data.HashCache/]: Caching: total files: 1560, old count: 1560, new count: 1561, removed stale: 0, written: 0
+[046月2026 21:47:55.865] [main/INFO] [cpw.mods.modlauncher.LaunchServiceHandler/MODLAUNCHER]: Launching target 'forgedatadev' with arguments [--gameDir, ., --assetsDir, C:\Users\yukke\.gradle\caches\neoformruntime\assets, --assetIndex, 17, --mod, cobblestonexxcompressed, --all, --output, D:\\cobblestonexxcompressed-1_21_1\\src\\generated\\resources, --existing, D:\\cobblestonexxcompressed-1_21_1\\src\\main\\resources]
+[046月2026 21:47:56.768] [main/INFO] [net.neoforged.neoforge.data.loading.DatagenModLoader/]: Initializing Data Gatherer for mods [cobblestonexxcompressed]
+[046月2026 21:47:56.780] [main/INFO] [MixinExtras|Service/]: Initializing MixinExtras via com.llamalad7.mixinextras.service.MixinExtrasServiceImpl(version=0.5.3).
+[046月2026 21:48:01.589] [modloading-worker-0/INFO] [net.neoforged.neoforge.common.NeoForgeMod/NEOFORGE-MOD]: NeoForge mod loading, version 21.1.228, for MC 1.21.1
+[046月2026 21:48:01.838] [modloading-worker-0/INFO] [mezz.jei.library.load.PluginCaller/]: Sending ConfigManager...
+[046月2026 21:48:01.843] [modloading-worker-0/INFO] [mezz.jei.library.load.PluginCaller/]: Sending ConfigManager took 4.248 milliseconds
+[046月2026 21:48:02.176] [main/WARN] [net.minecraft.server.packs.VanillaPackResourcesBuilder/]: Assets URL 'union:/D:/cobblestonexxcompressed-1_21_1/build/moddev/artifacts/neoforge-21.1.228.jar%23189!/assets/.mcassetsroot' uses unexpected schema
+[046月2026 21:48:02.177] [main/WARN] [net.minecraft.server.packs.VanillaPackResourcesBuilder/]: Assets URL 'union:/D:/cobblestonexxcompressed-1_21_1/build/moddev/artifacts/neoforge-21.1.228.jar%23189!/data/.mcassetsroot' uses unexpected schema
+[046月2026 21:48:02.475] [main/INFO] [net.minecraft.data.DataGenerator/]: Starting provider: Block States: cobblestonexxcompressed
+[046月2026 21:48:02.547] [main/INFO] [net.minecraft.data.DataGenerator/]: Block States: cobblestonexxcompressed finished after 70 ms
+[046月2026 21:48:02.547] [main/INFO] [net.minecraft.data.DataGenerator/]: Starting provider: Item Models: cobblestonexxcompressed
+[046月2026 21:48:02.577] [main/INFO] [net.minecraft.data.DataGenerator/]: Item Models: cobblestonexxcompressed finished after 29 ms
+[046月2026 21:48:02.577] [main/INFO] [net.minecraft.data.DataGenerator/]: Starting provider: Languages: en_us for mod: cobblestonexxcompressed
+[046月2026 21:48:02.585] [main/INFO] [net.minecraft.data.DataGenerator/]: Languages: en_us for mod: cobblestonexxcompressed finished after 7 ms
+[046月2026 21:48:02.585] [main/INFO] [net.minecraft.data.DataGenerator/]: Starting provider: Languages: ja_jp for mod: cobblestonexxcompressed
+[046月2026 21:48:02.586] [main/INFO] [net.minecraft.data.DataGenerator/]: Languages: ja_jp for mod: cobblestonexxcompressed finished after 0 ms
+[046月2026 21:48:02.586] [main/INFO] [net.minecraft.data.DataGenerator/]: Starting provider: Recipes
+[046月2026 21:48:02.919] [main/INFO] [net.minecraft.data.DataGenerator/]: Recipes finished after 333 ms
+[046月2026 21:48:02.919] [main/INFO] [net.minecraft.data.DataGenerator/]: Starting provider: Tags for minecraft:block mod id cobblestonexxcompressed
+[046月2026 21:48:02.926] [main/INFO] [net.minecraft.data.DataGenerator/]: Tags for minecraft:block mod id cobblestonexxcompressed finished after 6 ms
+[046月2026 21:48:02.926] [main/INFO] [net.minecraft.data.DataGenerator/]: Starting provider: Tags for minecraft:item mod id cobblestonexxcompressed
+[046月2026 21:48:02.927] [main/INFO] [net.minecraft.data.DataGenerator/]: Tags for minecraft:item mod id cobblestonexxcompressed finished after 1 ms
+[046月2026 21:48:02.928] [main/INFO] [net.minecraft.data.DataGenerator/]: Starting provider: CobblestonexXCompressed Block Loot Tables
+[046月2026 21:48:02.932] [main/INFO] [net.minecraft.data.DataGenerator/]: CobblestonexXCompressed Block Loot Tables finished after 3 ms
+[046月2026 21:48:02.932] [main/INFO] [net.minecraft.data.DataGenerator/]: Starting provider: Global Loot Modifiers : cobblestonexxcompressed
+[046月2026 21:48:02.944] [main/INFO] [net.minecraft.data.DataGenerator/]: Global Loot Modifiers : cobblestonexxcompressed finished after 11 ms
+[046月2026 21:48:02.944] [main/INFO] [net.minecraft.data.DataGenerator/]: All providers took: 469 ms
+[046月2026 21:48:02.953] [main/INFO] [net.minecraft.data.HashCache/]: Caching: total files: 1560, old count: 1560, new count: 1561, removed stale: 0, written: 0
