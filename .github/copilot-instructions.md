@@ -1,41 +1,41 @@
-## 概要
-minecraftのmod開発のワークスペースです
+## Overview
+This is a workspace for Minecraft mod development.
 
-## 環境
+## Environment
 - JAVA 21
 - Minecraft 1.21.1
 - Minecraft Neoforge 1.21.1
 
-## 生成するコードと説明の方針
-- 利用者はJava初心者として扱い、実装や提案は理解しやすさを優先する
-- 可能な限り複雑な構文や高度な書き方を避け、素直な制御構文と明確な変数名を使う
-- ラムダ式、Stream API、複雑なジェネリクス、トリッキーな短縮記法は、明確な利点がない限り無理に使わない
-- コードを変更するときは、「なぜその変更が必要か」「何が起きるか」が追いやすい形にする
-- 回答は日本語で行い、初心者でも追える順序で説明する
+## Code Generation and Explanation Policy
+- Treat the user as a Java beginner and prioritize clarity in implementations and suggestions.
+- Avoid complex syntax and advanced patterns whenever possible; prefer straightforward control flow and clear variable names.
+- Do not force the use of lambda expressions, the Stream API, complex generics, or tricky shorthand unless there is a clear benefit.
+- When changing code, make it easy to follow why the change is needed and what will happen as a result.
+- Respond in Japanese and explain things in an order that a beginner can follow.
 
-## コメント方針
-- コメントは日本語で記載する
-- 基本的なことも含め、処理の目的や前提、結果が分かるように詳しく書く
-- コメントは省略しすぎず、処理の目的、前提、結果が分かるように詳しく書く
-- 特にMinecraftやNeoForge固有の仕組み、イベント登録、データ生成、クライアント限定処理は、意図が伝わるコメントを優先する
-- 複数手順の処理では、必要に応じて処理のまとまりごとにコメントを置く
+## Comment Policy
+- Write comments in Japanese.
+- Explain the purpose, assumptions, and result of the code in enough detail that even basic behavior is clear.
+- Do not omit comments too aggressively; write them so the purpose, assumptions, and result of the processing are easy to understand.
+- For Minecraft- and NeoForge-specific mechanisms, event registration, data generation, and client-only processing, prioritize comments that clearly convey intent.
+- For multi-step processing, add comments at each logical block as needed.
 
-## 実装方針
-- まず既存コードの流れに合わせ、命名規則や構成を崩さない
-- 不要な抽象化は避け、小さく読めるメソッドに分ける
-- 一度に多くを変更しすぎず、原因と結果が追いやすい差分を優先する
-- エラー時は、どの条件で失敗したのか分かるようにする
-- 初学者が追跡しやすいよう、処理の入口と出口が分かりやすい構成を優先する
+## Implementation Policy
+- First follow the flow of the existing code, and do not break naming conventions or structure.
+- Avoid unnecessary abstraction; split logic into small, easy-to-read methods.
+- Do not change too much at once; prefer diffs that make cause and effect easy to trace.
+- When an error occurs, make it clear which condition caused the failure.
+- Prefer a structure with clear entry and exit points so beginners can follow the processing more easily.
 
-## NeoForge / Minecraft mod開発で意識すること
-- Minecraft 1.21.1 と NeoForge 1.21.1 を前提に実装する
-- Java 21 を前提にしてよいが、新しい構文は読みやすさが上がる場合に限って使う
-- クライアント専用処理とサーバー側でも動く処理を混同しない
-- 登録処理、イベント購読、リソース配置、データ生成先の違いを意識して実装する
-- 既存のGradle設定に従い、生成リソースは src/generated/resources を利用する前提で考える
+## Points to Keep in Mind for NeoForge / Minecraft Mod Development
+- Implement with Minecraft 1.21.1 and NeoForge 1.21.1 as the baseline.
+- You may assume Java 21, but only use newer syntax when it actually improves readability.
+- Do not mix client-only logic with logic that must also run on the server.
+- Be aware of the differences between registration, event subscription, resource placement, and data generation output locations.
+- Follow the existing Gradle configuration and assume generated resources will be placed under src/generated/resources.
 
-## 作業時の確認方針
-- 変更後は、可能なら影響範囲の狭い方法で確認する
-- このワークスペースの基本的な確認候補は gradlew.bat build、gradlew.bat runClient、gradlew.bat runData とする
-- ただし確認コストが高い場合は、まずコンパイルや対象箇所の整合性確認を優先する
-- 実装方法については、できる限りネット上のソースをあたり、既存コードのスタイルや構成に合わせることを優先する
+## Verification Policy During Work
+- After making changes, verify them with the smallest possible impact when feasible.
+- The basic verification commands for this workspace are gradlew.bat build, gradlew.bat runClient, and gradlew.bat runData.
+- If verification is expensive, prioritize compilation and consistency checks for the affected area first.
+- For implementation details, check online sources when possible and prioritize matching the style and structure of the existing codebase.
