@@ -182,7 +182,7 @@ public final class CobblestoneLaserDrillRecipeDatagen {
             256
         ),
         new LaserDrillRecipeDefinition(
-            "netherite_compressed_cobblestone_to_ancient_debris_and_echo_shard",
+            "netherite_compressed_cobblestone_gen_to_ancient_debris_and_echo_shard",
             ModBlocks.TierCobblestoneGenerator.NETHERITE_S.getBlock().get(),
             new ItemStack(Items.ANCIENT_DEBRIS,64),
             1.0F,
@@ -192,7 +192,7 @@ public final class CobblestoneLaserDrillRecipeDatagen {
             256
         ),
         new LaserDrillRecipeDefinition(
-            "obsidian_compressed_cobblestone_to_ancient_debris_and_echo_shard",
+            "obsidian_compressed_cobblestone_gen_to_ancient_debris_and_echo_shard",
             ModBlocks.TierCobblestoneGenerator.OBSIDIAN_S.getBlock().get(),
             new ItemStack(ModItems.EXTREME_COMPRESSED_OBSIDIAN.get()),
             1.0F,
