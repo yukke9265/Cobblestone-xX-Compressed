@@ -47,7 +47,7 @@ public class CobblestoneReactionChamberBlockEntity extends BaseBlockEntity imple
     public static final int ACCELERATION_SLOT_INDEX = 4;
     public static final int ENERGIZED_CUBE_SLOT_INDEX = 5;
     public static final long MAX_COBBLESTONE_POWER = 1024000L;
-    public static final long MAX_FLUID_AMOUNT = 16_000L;
+    public static final long MAX_FLUID_AMOUNT = 64_000L;
 
     private static final int DATA_INDEX_PROGRESS = 0;
     private static final int DATA_INDEX_MAX_PROGRESS = 1;

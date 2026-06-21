@@ -1,0 +1,12 @@
+{
+  "type": "cobblestonexxcompressed:cobblestone_crusher",
+  "cobblestone_power_per_tick": 4,
+  "ingredient": {
+    "item": "minecraft:blue_ice"
+  },
+  "result": {
+    "count": 9,
+    "id": "minecraft:packed_ice"
+  },
+  "total_cobblestone_power": 800
+}

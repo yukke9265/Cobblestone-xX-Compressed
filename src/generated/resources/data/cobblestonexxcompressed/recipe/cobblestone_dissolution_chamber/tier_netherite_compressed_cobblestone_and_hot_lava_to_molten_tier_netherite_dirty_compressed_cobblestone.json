@@ -10,6 +10,7 @@
     "id": "cobblestonexxcompressed:molten_dirty_tier_netherite_compressed_cobblestone"
   },
   "ingredient": {
+    "count": 1,
     "item": "cobblestonexxcompressed:tier_netherite_compressed_cobblestone"
   },
   "total_cobblestone_power": 209715200

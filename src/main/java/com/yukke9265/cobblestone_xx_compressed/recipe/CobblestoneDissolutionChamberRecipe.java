@@ -12,22 +12,22 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import net.neoforged.neoforge.fluids.FluidStack;
 
 public class CobblestoneDissolutionChamberRecipe implements Recipe<DissolutionChamberRecipeInput> {
     public static final MapCodec<CobblestoneDissolutionChamberRecipe> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-        Ingredient.CODEC.fieldOf("ingredient").forGetter(CobblestoneDissolutionChamberRecipe::getIngredient),
+        SizedIngredient.FLAT_CODEC.fieldOf("ingredient").forGetter(CobblestoneDissolutionChamberRecipe::getItemInput),
         FluidStack.CODEC.fieldOf("fluid_input").forGetter(CobblestoneDissolutionChamberRecipe::getFluidInput),
         FluidStack.CODEC.fieldOf("fluid_output").forGetter(CobblestoneDissolutionChamberRecipe::getFluidOutput),
         Codec.LONG.fieldOf("total_cobblestone_power").forGetter(CobblestoneDissolutionChamberRecipe::getTotalCobblestonePower),
         Codec.LONG.fieldOf("cobblestone_power_per_tick").forGetter(CobblestoneDissolutionChamberRecipe::getCobblestonePowerPerTick)
-    ).apply(instance, (ingredient, fluidInput, fluidOutput, totalCobblestonePower, cobblestonePowerPerTick) -> new CobblestoneDissolutionChamberRecipe(
-        ingredient,
+    ).apply(instance, (itemInput, fluidInput, fluidOutput, totalCobblestonePower, cobblestonePowerPerTick) -> new CobblestoneDissolutionChamberRecipe(
+        itemInput,
         fluidInput,
         fluidOutput,
         totalCobblestonePower.longValue(),
@@ -36,14 +36,14 @@ public class CobblestoneDissolutionChamberRecipe implements Recipe<DissolutionCh
 
     public static final StreamCodec<RegistryFriendlyByteBuf, CobblestoneDissolutionChamberRecipe> STREAM_CODEC = StreamCodec.of(
         (buf, recipe) -> {
-            Ingredient.CONTENTS_STREAM_CODEC.encode(buf, recipe.getIngredient());
+            SizedIngredient.STREAM_CODEC.encode(buf, recipe.getItemInput());
             FluidStack.STREAM_CODEC.encode(buf, recipe.getFluidInput());
             FluidStack.STREAM_CODEC.encode(buf, recipe.getFluidOutput());
             buf.writeLong(recipe.getTotalCobblestonePower());
             buf.writeLong(recipe.getCobblestonePowerPerTick());
         },
         buf -> new CobblestoneDissolutionChamberRecipe(
-            Ingredient.CONTENTS_STREAM_CODEC.decode(buf),
+            SizedIngredient.STREAM_CODEC.decode(buf),
             FluidStack.STREAM_CODEC.decode(buf),
             FluidStack.STREAM_CODEC.decode(buf),
             buf.readLong(),
@@ -51,28 +51,32 @@ public class CobblestoneDissolutionChamberRecipe implements Recipe<DissolutionCh
         )
     );
 
-    private final Ingredient ingredient;
+    private final SizedIngredient itemInput;
     private final FluidStack fluidInput;
     private final FluidStack fluidOutput;
     private final long totalCobblestonePower;
     private final long cobblestonePowerPerTick;
 
     public CobblestoneDissolutionChamberRecipe(
-        Ingredient ingredient,
+        SizedIngredient itemInput,
         FluidStack fluidInput,
         FluidStack fluidOutput,
         long totalCobblestonePower,
         long cobblestonePowerPerTick
     ) {
-        this.ingredient = ingredient;
+        this.itemInput = itemInput;
         this.fluidInput = fluidInput.copy();
         this.fluidOutput = fluidOutput.copy();
         this.cobblestonePowerPerTick = Math.max(1L, cobblestonePowerPerTick);
         this.totalCobblestonePower = Math.max(this.cobblestonePowerPerTick, totalCobblestonePower);
     }
 
-    public Ingredient getIngredient() {
-        return this.ingredient;
+    public SizedIngredient getItemInput() {
+        return this.itemInput;
+    }
+
+    public net.minecraft.world.item.crafting.Ingredient getIngredient() {
+        return this.itemInput.ingredient();
     }
 
     public FluidStack getFluidInput() {
@@ -98,7 +102,7 @@ public class CobblestoneDissolutionChamberRecipe implements Recipe<DissolutionCh
 
     @Override
     public boolean matches(@NotNull DissolutionChamberRecipeInput input, @NotNull Level level) {
-        if (!this.ingredient.test(input.getItem(0))) {
+        if (!this.itemInput.test(input.getItem(0))) {
             return false;
         }
 

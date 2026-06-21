@@ -3,15 +3,15 @@
   "cobblestone_power_per_tick": 16384,
   "fluid_input": {
     "amount": 1000,
-    "id": "cobblestonexxcompressed:hot_lava"
+    "id": "minecraft:lava"
   },
   "fluid_output": {
-    "amount": 1000,
-    "id": "cobblestonexxcompressed:molten_dirty_tier_diamond_compressed_cobblestone"
+    "amount": 16000,
+    "id": "cobblestonexxcompressed:glow_topaz"
   },
   "ingredient": {
-    "count": 1,
-    "item": "cobblestonexxcompressed:tier_diamond_compressed_cobblestone"
+    "count": 16,
+    "item": "cobblestonexxcompressed:topaz_mixtures"
   },
   "total_cobblestone_power": 209715200
 }
