@@ -110,6 +110,96 @@ public final class CobblestoneLaserDrillRecipeDatagen {
             0.01F,
             4096000,
             256
+        ),
+        new LaserDrillRecipeDefinition(
+            "amethyst_compressed_cobblestone_gen_to_amethyst_shard_and_diamond",
+            ModBlocks.TierCobblestoneGenerator.AMETHYST_S.getBlock().get(),
+            new ItemStack(Items.AMETHYST_SHARD,16),
+            1.0F,
+            new ItemStack(Items.DIAMOND),
+            0.01F,
+            4096000,
+            256
+        ),
+        new LaserDrillRecipeDefinition(
+            "aquamarine_compressed_cobblestone_gen_to_aquamarine_shard_and_diamond",
+            ModBlocks.TierCobblestoneGenerator.AQUAMARINE_S.getBlock().get(),
+            new ItemStack(ModItems.AQUAMARINE_SHARD.get(),16),
+            1.0F,
+            new ItemStack(Items.DIAMOND),
+            0.01F,
+            4096000,
+            256
+        ),
+        new LaserDrillRecipeDefinition(
+            "topaz_compressed_cobblestone_gen_to_topaz_shard_and_diamond",
+            ModBlocks.TierCobblestoneGenerator.TOPAZ_S.getBlock().get(),
+            new ItemStack(ModItems.TOPAZ_SHARD.get(),16),
+            1.0F,
+            new ItemStack(Items.DIAMOND),
+            0.01F,
+            4096000,
+            256
+        ),
+        new LaserDrillRecipeDefinition(
+            "ruby_compressed_cobblestone_gen_to_ruby_shard_and_diamond",
+            ModBlocks.TierCobblestoneGenerator.RUBY_S.getBlock().get(),
+            new ItemStack(ModItems.RUBY_SHARD.get(),16),
+            1.0F,
+            new ItemStack(Items.DIAMOND),
+            0.01F,
+            4096000,
+            256
+        ),
+        new LaserDrillRecipeDefinition(
+            "sapphire_compressed_cobblestone_gen_to_sapphire_shard_and_diamond",
+            ModBlocks.TierCobblestoneGenerator.SAPPHIRE_S.getBlock().get(),
+            new ItemStack(ModItems.SAPPHIRE_SHARD.get(),16),
+            1.0F,
+            new ItemStack(Items.DIAMOND),
+            0.01F,
+            4096000,
+            256
+        ),
+        new LaserDrillRecipeDefinition(
+            "diamond_compressed_cobblestone_gen_to_diamond_and_ancient_debris",
+            ModBlocks.TierCobblestoneGenerator.DIAMOND_S.getBlock().get(),
+            new ItemStack(Items.DIAMOND,64),
+            1.0F,
+            new ItemStack(Items.ANCIENT_DEBRIS),
+            0.01F,
+            4096000,
+            256
+        ),
+        new LaserDrillRecipeDefinition(
+            "emerald_compressed_cobblestone_gen_to_emerald_and_ancient_debris",
+            ModBlocks.TierCobblestoneGenerator.EMERALD_S.getBlock().get(),
+            new ItemStack(Items.EMERALD,64),
+            1.0F,
+            new ItemStack(Items.ANCIENT_DEBRIS),
+            0.01F,
+            4096000,
+            256
+        ),
+        new LaserDrillRecipeDefinition(
+            "netherite_compressed_cobblestone_to_ancient_debris_and_echo_shard",
+            ModBlocks.TierCobblestoneGenerator.NETHERITE_S.getBlock().get(),
+            new ItemStack(Items.ANCIENT_DEBRIS,64),
+            1.0F,
+            new ItemStack(Items.ECHO_SHARD),
+            0.01F,
+            4096000,
+            256
+        ),
+        new LaserDrillRecipeDefinition(
+            "obsidian_compressed_cobblestone_to_ancient_debris_and_echo_shard",
+            ModBlocks.TierCobblestoneGenerator.OBSIDIAN_S.getBlock().get(),
+            new ItemStack(ModItems.EXTREME_COMPRESSED_OBSIDIAN.get()),
+            1.0F,
+            new ItemStack(Items.ECHO_SHARD),
+            0.01F,
+            32768000,
+            256
         )
     };
 
