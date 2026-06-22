@@ -9,7 +9,6 @@ import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneExtremeCompressor
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneExtremeCompressorRecipe;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModBlockEntities;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModRecipeTypes;
-import com.yukke9265.cobblestone_xx_compressed.util.LongDataHelper;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -33,9 +32,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
-import net.neoforged.neoforge.items.wrapper.EmptyItemHandler;
 
-public class CobblestoneExtremeCompressorBlockEntity extends BaseBlockEntity implements MenuProvider {
+public class CobblestoneExtremeCompressorBlockEntity extends PoweredMachineBlockEntityBase<CobblestoneExtremeCompressorRecipe> implements MenuProvider {
     public static final int INPUT_SLOT_INDEX = 0;
     public static final int POWER_SLOT_INDEX = 1;
     public static final int OUTPUT_SLOT_INDEX = 2;
@@ -43,27 +41,14 @@ public class CobblestoneExtremeCompressorBlockEntity extends BaseBlockEntity imp
     public static final int ENERGIZED_CUBE_SLOT_INDEX = 4;
     public static final long MAX_COBBLESTONE_POWER = 33554432000L;
 
-    private static final int DATA_INDEX_PROGRESS = 0;
-    private static final int DATA_INDEX_MAX_PROGRESS = 1;
-    private static final int DATA_INDEX_STORED_POWER = 2;
-    private static final int DATA_INDEX_STORED_POWER_UPPER = 3;
-    private static final int DATA_INDEX_MAX_STORED_POWER = 4;
-    private static final int DATA_INDEX_MAX_STORED_POWER_UPPER = 5;
-    private static final int DATA_INDEX_STORED_ITEM_COUNT = 6;
-    private static final int DATA_INDEX_REQUIRED_ITEM_COUNT = 7;
-    private static final int DATA_INDEX_STORED_ITEM_ID = 8;
-    private static final int DATA_INDEX_AUTOMATION_START = 9;
-    private static final int DATA_INDEX_CURRENT_POWER_RATE = DATA_INDEX_AUTOMATION_START + AUTOMATION_FACE_COUNT;
-    private static final int DATA_INDEX_CURRENT_POWER_RATE_UPPER = DATA_INDEX_CURRENT_POWER_RATE + 1;
-    private static final int DATA_INDEX_AUTO_EXPORT = DATA_INDEX_CURRENT_POWER_RATE_UPPER + 1;
+    private static final int MACHINE_SPECIFIC_DATA_COUNT = 3;
+    private static final int DATA_INDEX_STORED_ITEM_COUNT = DATA_INDEX_MACHINE_SPECIFIC_START;
+    private static final int DATA_INDEX_REQUIRED_ITEM_COUNT = DATA_INDEX_MACHINE_SPECIFIC_START + 1;
+    private static final int DATA_INDEX_STORED_ITEM_ID = DATA_INDEX_MACHINE_SPECIFIC_START + 2;
 
-    private int progress;
-    private int maxProgress;
-    private long storedCobblestonePower;
     private int storedInputItemCount;
     private int currentRequiredItemCount;
     private ItemStack storedInputTemplate = ItemStack.EMPTY;
-    private boolean isAvailable = true;
 
     private final FixedSizeItemStackHandler itemStackHandler = new FixedSizeItemStackHandler(5) {
         @Override
@@ -298,42 +283,6 @@ public class CobblestoneExtremeCompressorBlockEntity extends BaseBlockEntity imp
         super(ModBlockEntities.COBBLESTONE_EXTREME_COMPRESSOR_BLOCK_ENTITY.get(), pos, state);
     }
 
-    public int getProgress() {
-        return this.progress;
-    }
-
-    public int getMaxProgress() {
-        return this.maxProgress;
-    }
-
-    public long getStoredCobblestonePower() {
-        return this.storedCobblestonePower;
-    }
-
-    public long getMaxCobblestonePower() {
-        return MAX_COBBLESTONE_POWER * this.getEnergizedCubeMultiplier();
-    }
-
-    public long getCurrentCobblestonePowerConsumption() {
-        if (!this.isAvailable) {
-            return 0L;
-        }
-
-        var recipeHolder = this.getCurrentRecipe();
-        if (recipeHolder.isEmpty()) {
-            return 0L;
-        }
-
-        var recipe = recipeHolder.get().value();
-        long cobblestonePowerPerTick = recipe.getCobblestonePowerPerTick();
-        int progressStep = this.getProgressStep(cobblestonePowerPerTick);
-        if (!this.canContinueRecipe(recipe) || progressStep <= 0) {
-            return 0L;
-        }
-
-        return cobblestonePowerPerTick * progressStep;
-    }
-
     public int getStoredInputItemCount() {
         return this.storedInputItemCount;
     }
@@ -358,125 +307,56 @@ public class CobblestoneExtremeCompressorBlockEntity extends BaseBlockEntity imp
         return BuiltInRegistries.ITEM.getId(this.storedInputTemplate.getItem());
     }
 
-    public boolean getIsAvailable() {
-        return this.isAvailable;
-    }
-
+    @Override
     public ItemStackHandler getItemStackHandler() {
         return this.itemStackHandler;
     }
 
     public IItemHandler getAutomationItemHandler(Direction side) {
-        if (side == null) {
-            return this.automationAccessHandler;
-        }
-
-        BlockState currentState = this.getBlockState();
-        AutomationSide automationSide = AutomationSide.fromWorldSide(side, currentState);
-        AutomationMode automationMode = this.getAutomationMode(automationSide);
-        if (automationMode == AutomationMode.INPUT) {
-            return this.inputAutomationHandler;
-        }
-
-        if (automationMode == AutomationMode.COBBLESTONE_INPUT) {
-            return this.cobblestoneInputAutomationHandler;
-        }
-
-        if (automationMode == AutomationMode.OUTPUT) {
-            return this.outputAutomationHandler;
-        }
-
-        if (automationMode == AutomationMode.IN_OUT) {
-            return this.automationAccessHandler;
-        }
-
-        return EmptyItemHandler.INSTANCE;
-    }
-
-    public void reverseIsAvailable() {
-        if (this.level == null || this.level.isClientSide) {
-            return;
-        }
-
-        this.isAvailable = !this.isAvailable;
-        if (!this.isAvailable) {
-            // 停止した瞬間に進行中 1 個分の途中状態は破棄し、
-            // 既に内部へ取り込んだ個数だけを回収できる状態へ切り替えます。
-            this.progress = 0;
-            this.maxProgress = 0;
-        }
-        this.setChanged();
+        return this.getConfiguredAutomationItemHandler(
+            side,
+            this.inputAutomationHandler,
+            this.cobblestoneInputAutomationHandler,
+            this.outputAutomationHandler,
+            this.automationAccessHandler
+        );
     }
 
     @Override
-    public void tick() {
-        if (this.level == null || this.level.isClientSide) {
-            return;
-        }
-
-        Level currentLevel = this.level;
-        BlockState currentState = this.getBlockState();
-        boolean shouldTurnOn = false;
-
-        this.clampStoredCobblestonePower();
-        this.tryAbsorbCobblestonePower();
-
-        if (!this.isAvailable) {
-            this.tryReturnStoredItemsToOutput();
-            this.updateDisplayedRecipeState(Optional.empty());
-        } else {
-            Optional<RecipeHolder<CobblestoneExtremeCompressorRecipe>> recipeHolder = this.getCurrentRecipe();
-            this.updateDisplayedRecipeState(recipeHolder);
-
-            if (recipeHolder.isPresent()) {
-                CobblestoneExtremeCompressorRecipe recipe = recipeHolder.get().value();
-                if (this.canContinueRecipe(recipe)) {
-                    if (this.maxProgress != recipe.getProcessingTime()) {
-                        this.maxProgress = recipe.getProcessingTime();
-                        this.setChanged();
-                    }
-
-                    int progressStep = this.getProgressStep(recipe.getCobblestonePowerPerTick());
-                    if (progressStep > 0) {
-                        this.progress += progressStep;
-                        this.storedCobblestonePower -= recipe.getCobblestonePowerPerTick() * progressStep;
-                        shouldTurnOn = true;
-                        this.setChanged();
-
-                        if (this.progress >= this.maxProgress) {
-                            this.finishSingleInput(recipe);
-                            this.progress = 0;
-                            this.setChanged();
-                        }
-                    }
-                } else if (this.shouldResetProgress(recipe) && this.progress != 0) {
-                    this.progress = 0;
-                    this.setChanged();
-                }
-            } else {
-                if (this.progress != 0) {
-                    this.progress = 0;
-                    this.setChanged();
-                }
-
-                if (this.maxProgress != 0) {
-                    this.maxProgress = 0;
-                    this.setChanged();
-                }
-            }
-        }
-
-        BlockState updatedState = currentState.setValue(OnOffBlock.ON, shouldTurnOn);
-        if (updatedState != currentState) {
-            currentLevel.setBlock(this.worldPosition, updatedState, 3);
-        }
-
-        this.pushOutputToConfiguredSides();
+    protected void onStopped() {
+        // 停止直後は内部に貯め込んだ途中材料の回収だけ継承先で続けます。
+        // 共通基底側の reverseIsAvailable で進捗自体は既に破棄しています。
     }
 
-    private void updateDisplayedRecipeState(Optional<RecipeHolder<CobblestoneExtremeCompressorRecipe>> recipeHolder) {
-        if (recipeHolder.isPresent()) {
-            int requiredItemCount = recipeHolder.get().value().getRequiredItemCount();
+    @Override
+    protected long getBaseMaxCobblestonePower() {
+        return MAX_COBBLESTONE_POWER;
+    }
+
+    @Override
+    protected int getPowerSlotIndex() {
+        return POWER_SLOT_INDEX;
+    }
+
+    @Override
+    protected int getOutputSlotIndex() {
+        return OUTPUT_SLOT_INDEX;
+    }
+
+    @Override
+    protected void onRecipeStateChanged(Optional<CobblestoneExtremeCompressorRecipe> recipeOptional) {
+        this.updateDisplayedRecipeState(recipeOptional);
+    }
+
+    @Override
+    protected void onUnavailableTick() {
+        this.tryReturnStoredItemsToOutput();
+        this.updateDisplayedRecipeState(Optional.empty());
+    }
+
+    private void updateDisplayedRecipeState(Optional<CobblestoneExtremeCompressorRecipe> recipeOptional) {
+        if (recipeOptional.isPresent()) {
+            int requiredItemCount = recipeOptional.get().getRequiredItemCount();
             if (this.currentRequiredItemCount != requiredItemCount) {
                 this.currentRequiredItemCount = requiredItemCount;
                 this.setChanged();
@@ -488,36 +368,6 @@ public class CobblestoneExtremeCompressorBlockEntity extends BaseBlockEntity imp
             this.currentRequiredItemCount = 0;
             this.setChanged();
         }
-    }
-
-    private void pushOutputToConfiguredSides() {
-        ItemStack outputStack = this.itemStackHandler.getStackInSlot(OUTPUT_SLOT_INDEX);
-        if (outputStack.isEmpty()) {
-            return;
-        }
-
-        ItemStack remainingOutput = this.pushItemStackToConfiguredSides(outputStack.copy(), AutomationMode.OUTPUT, AutomationMode.IN_OUT);
-        this.itemStackHandler.setStackInSlot(OUTPUT_SLOT_INDEX, remainingOutput);
-    }
-
-    public static boolean isCobblestonePowerItem(ItemStack stack) {
-        return CobblestoneCrusherBlockEntity.isCobblestonePowerItem(stack);
-    }
-
-    private void tryAbsorbCobblestonePower() {
-        ItemStack powerStack = this.itemStackHandler.getStackInSlot(POWER_SLOT_INDEX);
-        long convertedPower = CobblestoneCrusherBlockEntity.getCobblestonePowerValueForAutomation(powerStack);
-        if (convertedPower <= 0) {
-            return;
-        }
-
-        if (this.storedCobblestonePower + convertedPower > this.getMaxCobblestonePower()) {
-            return;
-        }
-
-        powerStack.shrink(1);
-        this.storedCobblestonePower += convertedPower;
-        this.setChanged();
     }
 
     @SuppressWarnings("null")
@@ -540,7 +390,8 @@ public class CobblestoneExtremeCompressorBlockEntity extends BaseBlockEntity imp
         return false;
     }
 
-    private Optional<RecipeHolder<CobblestoneExtremeCompressorRecipe>> getCurrentRecipe() {
+    @Override
+    protected Optional<CobblestoneExtremeCompressorRecipe> findMatchingRecipe() {
         Level currentLevel = this.level;
         if (currentLevel == null) {
             return Optional.empty();
@@ -552,7 +403,12 @@ public class CobblestoneExtremeCompressorBlockEntity extends BaseBlockEntity imp
         }
 
         SingleRecipeInput input = new SingleRecipeInput(inputStack);
-        return currentLevel.getRecipeManager().getRecipeFor(ModRecipeTypes.COBBLESTONE_EXTREME_COMPRESSOR.get(), input, currentLevel);
+        Optional<RecipeHolder<CobblestoneExtremeCompressorRecipe>> recipeHolder = currentLevel.getRecipeManager().getRecipeFor(
+            ModRecipeTypes.COBBLESTONE_EXTREME_COMPRESSOR.get(),
+            input,
+            currentLevel
+        );
+        return recipeHolder.map(RecipeHolder::value);
     }
 
     private boolean canContinueRecipe(CobblestoneExtremeCompressorRecipe recipe) {
@@ -567,8 +423,22 @@ public class CobblestoneExtremeCompressorBlockEntity extends BaseBlockEntity imp
         return true;
     }
 
-    private boolean shouldResetProgress(CobblestoneExtremeCompressorRecipe recipe) {
-        return !this.canAcceptCurrentInput(recipe);
+    @Override
+    protected boolean canProcessRecipe(CobblestoneExtremeCompressorRecipe recipe) {
+        return this.canContinueRecipe(recipe);
+    }
+
+    @Override
+    protected boolean shouldResetProgress(CobblestoneExtremeCompressorRecipe recipe) {
+        if (!this.canAcceptCurrentInput(recipe)) {
+            return true;
+        }
+
+        if (this.storedInputItemCount >= recipe.getRequiredItemCount() && !this.canOutputResult(recipe)) {
+            return true;
+        }
+
+        return false;
     }
 
     private boolean canAcceptCurrentInput(CobblestoneExtremeCompressorRecipe recipe) {
@@ -588,48 +458,19 @@ public class CobblestoneExtremeCompressorBlockEntity extends BaseBlockEntity imp
         return ItemStack.isSameItemSameComponents(this.storedInputTemplate, inputStack);
     }
 
-    private int getProgressStep(long cobblestonePowerPerTick) {
-        if (cobblestonePowerPerTick <= 0) {
-            return 0;
-        }
-
-        int accelerationMultiplier = this.getAccelerationMultiplier();
-        int remainingProgress = this.maxProgress - this.progress;
-        if (remainingProgress <= 0) {
-            return 0;
-        }
-
-        int maxProgressStep = Math.min(accelerationMultiplier, remainingProgress);
-        long maxPowerStep = this.storedCobblestonePower / cobblestonePowerPerTick;
-        return Math.min(maxProgressStep, (int) Math.min(Integer.MAX_VALUE, maxPowerStep));
+    @Override
+    protected int getRecipeProcessingTime(CobblestoneExtremeCompressorRecipe recipe) {
+        return recipe.getProcessingTime();
     }
 
-    private int getAccelerationMultiplier() {
-        ItemStack accelerationStack = this.itemStackHandler.getStackInSlot(ACCELERATION_SLOT_INDEX);
-        int multiplier = MachineUpgradeHelper.getAccelerationMultiplier(accelerationStack);
-        if (multiplier <= 0) {
-            return 1;
-        }
-
-        return multiplier;
+    @Override
+    protected long getRecipeCobblestonePowerPerTick(CobblestoneExtremeCompressorRecipe recipe) {
+        return recipe.getCobblestonePowerPerTick();
     }
 
-    private int getEnergizedCubeMultiplier() {
-        ItemStack energizedCubeStack = this.itemStackHandler.getStackInSlot(ENERGIZED_CUBE_SLOT_INDEX);
-        int multiplier = MachineUpgradeHelper.getEnergizedCubeMultiplier(energizedCubeStack);
-        if (multiplier <= 0) {
-            return 1;
-        }
-
-        return multiplier;
-    }
-
-    private void clampStoredCobblestonePower() {
-        long maxCobblestonePower = this.getMaxCobblestonePower();
-        if (this.storedCobblestonePower > maxCobblestonePower) {
-            this.storedCobblestonePower = maxCobblestonePower;
-            this.setChanged();
-        }
+    @Override
+    protected void finishProcessing(CobblestoneExtremeCompressorRecipe recipe) {
+        this.finishSingleInput(recipe);
     }
 
     private void finishSingleInput(CobblestoneExtremeCompressorRecipe recipe) {
@@ -728,34 +569,18 @@ public class CobblestoneExtremeCompressorBlockEntity extends BaseBlockEntity imp
     }
 
     @Override
-    protected void saveAdditional(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider registries) {
-        super.saveAdditional(tag, registries);
-        tag.putInt("progress", this.progress);
-        tag.putInt("maxProgress", this.maxProgress);
-        tag.putLong("storedCobblestonePower", this.storedCobblestonePower);
+    protected void saveAdditionalPoweredMachineData(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider registries) {
         tag.putInt("storedInputItemCount", this.storedInputItemCount);
         tag.putInt("currentRequiredItemCount", this.currentRequiredItemCount);
-        tag.putBoolean("isAvailable", this.isAvailable);
-        this.saveAutomationModes(tag);
-        tag.put("inventory", this.itemStackHandler.serializeNBT(registries));
         if (!this.storedInputTemplate.isEmpty()) {
             tag.put("storedInputTemplate", this.storedInputTemplate.save(registries));
         }
     }
 
     @Override
-    protected void loadAdditional(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider registries) {
-        super.loadAdditional(tag, registries);
-        this.progress = tag.getInt("progress");
-        this.maxProgress = tag.getInt("maxProgress");
-        this.storedCobblestonePower = tag.getLong("storedCobblestonePower");
+    protected void loadAdditionalPoweredMachineData(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider registries) {
         this.storedInputItemCount = tag.getInt("storedInputItemCount");
         this.currentRequiredItemCount = tag.getInt("currentRequiredItemCount");
-        this.isAvailable = !tag.contains("isAvailable", Tag.TAG_BYTE) || tag.getBoolean("isAvailable");
-        this.loadAutomationModes(tag);
-        if (tag.contains("inventory", Tag.TAG_COMPOUND)) {
-            this.itemStackHandler.deserializeNBTKeepingSize(registries, tag.getCompound("inventory"));
-        }
         if (tag.contains("storedInputTemplate", Tag.TAG_COMPOUND)) {
             this.storedInputTemplate = ItemStack.parseOptional(registries, tag.getCompound("storedInputTemplate"));
         } else {
@@ -773,101 +598,39 @@ public class CobblestoneExtremeCompressorBlockEntity extends BaseBlockEntity imp
         ContainerData extremeCompressorData = new ContainerData() {
             @Override
             public int get(int index) {
-                if (index == DATA_INDEX_PROGRESS) {
-                    return progress;
-                }
-
-                if (index == DATA_INDEX_MAX_PROGRESS) {
-                    return maxProgress;
-                }
-
-                if (index == DATA_INDEX_STORED_POWER) {
-                    return LongDataHelper.lowerInt(storedCobblestonePower);
-                }
-
-                if (index == DATA_INDEX_STORED_POWER_UPPER) {
-                    return LongDataHelper.upperInt(storedCobblestonePower);
-                }
-
-                if (index == DATA_INDEX_MAX_STORED_POWER) {
-                    return LongDataHelper.lowerInt(getMaxCobblestonePower());
-                }
-
-                if (index == DATA_INDEX_MAX_STORED_POWER_UPPER) {
-                    return LongDataHelper.upperInt(getMaxCobblestonePower());
-                }
-
                 if (index == DATA_INDEX_STORED_ITEM_COUNT) {
-                    return storedInputItemCount;
+                    return CobblestoneExtremeCompressorBlockEntity.this.storedInputItemCount;
                 }
 
                 if (index == DATA_INDEX_REQUIRED_ITEM_COUNT) {
-                    return currentRequiredItemCount;
+                    return CobblestoneExtremeCompressorBlockEntity.this.currentRequiredItemCount;
                 }
 
                 if (index == DATA_INDEX_STORED_ITEM_ID) {
-                    return getStoredInputItemId();
+                    return CobblestoneExtremeCompressorBlockEntity.this.getStoredInputItemId();
                 }
 
-                if (index == DATA_INDEX_CURRENT_POWER_RATE) {
-                    return LongDataHelper.lowerInt(getCurrentCobblestonePowerConsumption());
-                }
-
-                if (index == DATA_INDEX_CURRENT_POWER_RATE_UPPER) {
-                    return LongDataHelper.upperInt(getCurrentCobblestonePowerConsumption());
-                }
-
-                int automationIndex = index - DATA_INDEX_AUTOMATION_START;
-                if (automationIndex >= 0 && automationIndex < AUTOMATION_FACE_COUNT) {
-                    return getAutomationModeId(automationIndex);
-                }
-
-                if (index == DATA_INDEX_AUTO_EXPORT) {
-                    return getAutoExportEnabledId();
-                }
-
-                return 0;
+                return CobblestoneExtremeCompressorBlockEntity.this.getPoweredMachineCommonData(index, MACHINE_SPECIFIC_DATA_COUNT);
             }
 
             @Override
             public void set(int index, int value) {
-                if (index == DATA_INDEX_PROGRESS) {
-                    progress = value;
-                }
-
-                if (index == DATA_INDEX_MAX_PROGRESS) {
-                    maxProgress = value;
-                }
-
-                if (index == DATA_INDEX_STORED_POWER) {
-                    storedCobblestonePower = LongDataHelper.toLong(value, LongDataHelper.upperInt(storedCobblestonePower));
-                }
-
-                if (index == DATA_INDEX_STORED_POWER_UPPER) {
-                    storedCobblestonePower = LongDataHelper.toLong(LongDataHelper.lowerInt(storedCobblestonePower), value);
-                }
-
                 if (index == DATA_INDEX_STORED_ITEM_COUNT) {
-                    storedInputItemCount = value;
+                    CobblestoneExtremeCompressorBlockEntity.this.storedInputItemCount = value;
+                    return;
                 }
 
                 if (index == DATA_INDEX_REQUIRED_ITEM_COUNT) {
-                    currentRequiredItemCount = value;
+                    CobblestoneExtremeCompressorBlockEntity.this.currentRequiredItemCount = value;
+                    return;
                 }
 
-                int automationIndex = index - DATA_INDEX_AUTOMATION_START;
-                if (automationIndex >= 0 && automationIndex < AUTOMATION_FACE_COUNT) {
-                    setAutomationMode(automationIndex, AutomationMode.fromId(value));
-                }
-
-                if (index == DATA_INDEX_AUTO_EXPORT) {
-                    setAutoExportEnabled(value != 0);
-                }
+                CobblestoneExtremeCompressorBlockEntity.this.setPoweredMachineCommonData(index, value, MACHINE_SPECIFIC_DATA_COUNT);
             }
 
             @Override
             public int getCount() {
-                return DATA_INDEX_AUTO_EXPORT + 1;
+                return CobblestoneExtremeCompressorBlockEntity.this.getPoweredMachineDataCount(MACHINE_SPECIFIC_DATA_COUNT);
             }
         };
 

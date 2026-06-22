@@ -19,13 +19,17 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.SimpleContainerData;
-import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import net.neoforged.neoforge.items.SlotItemHandler;
 
-public class CobblestoneCrusherMenu extends BaseMenu {
+/*
+ * 方針:
+ * このクラスでは Crusher 固有の差分だけを持ち、共通のメニュー処理は PoweredMachineMenuBase に任せます。
+ * 具体的には、同期データの意味、機械スロット構成、Shift+クリック時の投入優先順位だけをここへ残します。
+ */
+public class CobblestoneCrusherMenu extends PoweredMachineMenuBase<CobblestoneCrusherBlockEntity> {
     private static final AutomationMode[] CRUSHER_AUTOMATION_MODES = new AutomationMode[] {
         AutomationMode.DISABLED,
         AutomationMode.INPUT,
@@ -44,15 +48,7 @@ public class CobblestoneCrusherMenu extends BaseMenu {
     private static final int DATA_INDEX_CURRENT_POWER_RATE = 6 + BaseBlockEntity.AUTOMATION_FACE_COUNT;
     private static final int DATA_INDEX_CURRENT_POWER_RATE_UPPER = DATA_INDEX_CURRENT_POWER_RATE + 1;
     private static final int DATA_INDEX_AUTO_EXPORT = DATA_INDEX_CURRENT_POWER_RATE_UPPER + 1;
-    private static final int PLAYER_INVENTORY_COLUMNS = 9;
-    private static final int PLAYER_INVENTORY_ROWS = 3;
-    private static final int HOTBAR_SLOT_COUNT = 9;
-
     private static final int MACHINE_SLOT_COUNT = 5;
-    private static final int PLAYER_INVENTORY_START_INDEX = MACHINE_SLOT_COUNT;
-    private static final int PLAYER_INVENTORY_SLOT_COUNT = PLAYER_INVENTORY_ROWS * PLAYER_INVENTORY_COLUMNS;
-    private static final int HOTBAR_START_INDEX = PLAYER_INVENTORY_START_INDEX + PLAYER_INVENTORY_SLOT_COUNT;
-    private static final int HOTBAR_END_INDEX = HOTBAR_START_INDEX + HOTBAR_SLOT_COUNT;
 
     private final CobblestoneCrusherBlockEntity crusherBlockEntity;
     private final ContainerData crusherData;
@@ -66,8 +62,8 @@ public class CobblestoneCrusherMenu extends BaseMenu {
         this.addDataSlots(crusherData);
 
         this.addCrusherSlots();
-        this.addPlayerInventorySlots(playerInventory);
-        this.addPlayerHotbarSlots(playerInventory);
+        this.addPlayerInventorySlots(playerInventory, MachineGuiLayouts.PLAYER_INVENTORY_START_X, MachineGuiLayouts.PLAYER_INVENTORY_START_Y, MachineGuiLayouts.SLOT_SIZE);
+        this.addPlayerHotbarSlots(playerInventory, MachineGuiLayouts.PLAYER_INVENTORY_START_X, MachineGuiLayouts.HOTBAR_START_Y, MachineGuiLayouts.SLOT_SIZE);
     }
 
     public CobblestoneCrusherMenu(int containerId, Inventory playerInventory, RegistryFriendlyByteBuf buf) {
@@ -117,6 +113,59 @@ public class CobblestoneCrusherMenu extends BaseMenu {
     }
 
     @Override
+    protected CobblestoneCrusherBlockEntity getMachineBlockEntity() {
+        return this.crusherBlockEntity;
+    }
+
+    @Override
+    protected net.minecraft.world.level.block.Block getMachineBlock() {
+        return ModBlocks.COBBLESTONE_CRUSHER.get();
+    }
+
+    @Override
+    protected int getMachineSlotCount() {
+        return MACHINE_SLOT_COUNT;
+    }
+
+    @Override
+    protected boolean moveStackToMachine(ItemStack sourceStack) {
+        boolean movedToMachine = false;
+        if (MachineUpgradeHelper.isAccelerationChip(sourceStack)) {
+            movedToMachine = this.moveItemStackTo(
+                sourceStack,
+                CobblestoneCrusherBlockEntity.ACCELERATION_SLOT_INDEX,
+                CobblestoneCrusherBlockEntity.ACCELERATION_SLOT_INDEX + 1,
+                false
+            );
+        } else if (MachineUpgradeHelper.isEnergizedCube(sourceStack)) {
+            movedToMachine = this.moveItemStackTo(
+                sourceStack,
+                CobblestoneCrusherBlockEntity.ENERGIZED_CUBE_SLOT_INDEX,
+                CobblestoneCrusherBlockEntity.ENERGIZED_CUBE_SLOT_INDEX + 1,
+                false
+            );
+        } else if (this.crusherBlockEntity.canQuickMoveToInput(sourceStack)) {
+            movedToMachine = this.moveItemStackTo(
+                sourceStack,
+                CobblestoneCrusherBlockEntity.INPUT_SLOT_INDEX,
+                CobblestoneCrusherBlockEntity.INPUT_SLOT_INDEX + 1,
+                false
+            );
+        }
+
+        if (!movedToMachine && CobblestoneCrusherBlockEntity.isCobblestonePowerItem(sourceStack)) {
+            movedToMachine = this.moveItemStackTo(
+                sourceStack,
+                CobblestoneCrusherBlockEntity.POWER_SLOT_INDEX,
+                CobblestoneCrusherBlockEntity.POWER_SLOT_INDEX + 1,
+                false
+            );
+        }
+
+        return movedToMachine;
+    }
+
+    @Override
     public boolean clickMenuButton(Player player, int id) {
         if (id == 0) {
             this.crusherBlockEntity.reverseIsAvailable();
@@ -134,120 +183,13 @@ public class CobblestoneCrusherMenu extends BaseMenu {
         return false;
     }
 
-    @Override
-    public boolean stillValid(Player player) {
-        if (this.crusherBlockEntity.isRemoved()) {
-            return false;
-        }
-
-        BlockPos blockPos = this.crusherBlockEntity.getBlockPos();
-        if (!player.level().getBlockState(blockPos).is(ModBlocks.COBBLESTONE_CRUSHER.get())) {
-            return false;
-        }
-
-        BlockEntity blockEntity = player.level().getBlockEntity(blockPos);
-        if (blockEntity != this.crusherBlockEntity) {
-            return false;
-        }
-
-        return player.distanceToSqr(
-            blockPos.getX() + 0.5D,
-            blockPos.getY() + 0.5D,
-            blockPos.getZ() + 0.5D
-        ) <= 64.0D;
-    }
-
-    @Override
-    public ItemStack quickMoveStack(Player player, int index) {
-        Slot slot = this.slots.get(index);
-        if (!slot.hasItem()) {
-            return ItemStack.EMPTY;
-        }
-
-        ItemStack sourceStack = slot.getItem();
-        ItemStack copiedStack = sourceStack.copy();
-
-        if (index < MACHINE_SLOT_COUNT) {
-            if (!this.moveItemStackTo(sourceStack, PLAYER_INVENTORY_START_INDEX, HOTBAR_END_INDEX, true)) {
-                return ItemStack.EMPTY;
-            }
-
-            slot.onQuickCraft(sourceStack, copiedStack);
-        } else {
-            boolean movedToMachine = false;
-            if (MachineUpgradeHelper.isAccelerationChip(sourceStack)) {
-                movedToMachine = this.moveItemStackTo(
-                    sourceStack,
-                    CobblestoneCrusherBlockEntity.ACCELERATION_SLOT_INDEX,
-                    CobblestoneCrusherBlockEntity.ACCELERATION_SLOT_INDEX + 1,
-                    false
-                );
-            } else if (MachineUpgradeHelper.isEnergizedCube(sourceStack)) {
-                movedToMachine = this.moveItemStackTo(
-                    sourceStack,
-                    CobblestoneCrusherBlockEntity.ENERGIZED_CUBE_SLOT_INDEX,
-                    CobblestoneCrusherBlockEntity.ENERGIZED_CUBE_SLOT_INDEX + 1,
-                    false
-                );
-            } else if (this.crusherBlockEntity.canQuickMoveToInput(sourceStack)) {
-                movedToMachine = this.moveItemStackTo(
-                    sourceStack,
-                    CobblestoneCrusherBlockEntity.INPUT_SLOT_INDEX,
-                    CobblestoneCrusherBlockEntity.INPUT_SLOT_INDEX + 1,
-                    false
-                );
-            }
-
-            if (!movedToMachine && CobblestoneCrusherBlockEntity.isCobblestonePowerItem(sourceStack)) {
-                movedToMachine = this.moveItemStackTo(
-                    sourceStack,
-                    CobblestoneCrusherBlockEntity.POWER_SLOT_INDEX,
-                    CobblestoneCrusherBlockEntity.POWER_SLOT_INDEX + 1,
-                    false
-                );
-            }
-
-            if (!movedToMachine) {
-                if (index < HOTBAR_START_INDEX) {
-                    if (!this.moveItemStackTo(sourceStack, HOTBAR_START_INDEX, HOTBAR_END_INDEX, false)) {
-                        return ItemStack.EMPTY;
-                    }
-                } else if (!this.moveItemStackTo(sourceStack, PLAYER_INVENTORY_START_INDEX, HOTBAR_START_INDEX, false)) {
-                    return ItemStack.EMPTY;
-                }
-            }
-        }
-
-        if (sourceStack.isEmpty()) {
-            slot.set(ItemStack.EMPTY);
-        } else {
-            slot.setChanged();
-        }
-
-        if (sourceStack.getCount() == copiedStack.getCount()) {
-            return ItemStack.EMPTY;
-        }
-
-        slot.onTake(player, sourceStack);
-        return copiedStack;
-    }
-
     private CobblestoneCrusherMenu(int containerId, Inventory playerInventory, BlockPos blockPos) {
         this(
             containerId,
             playerInventory,
-            getCrusherBlockEntity(playerInventory, blockPos),
+            getRequiredBlockEntity(playerInventory, blockPos, CobblestoneCrusherBlockEntity.class, "Cobblestone Crusher"),
             new SimpleContainerData(DATA_COUNT)
         );
-    }
-
-    private static CobblestoneCrusherBlockEntity getCrusherBlockEntity(Inventory playerInventory, BlockPos blockPos) {
-        BlockEntity blockEntity = playerInventory.player.level().getBlockEntity(blockPos);
-        if (blockEntity instanceof CobblestoneCrusherBlockEntity crusherBlockEntity) {
-            return crusherBlockEntity;
-        }
-
-        throw new IllegalStateException("Cobblestone Crusher の BlockEntity を取得できませんでした: " + blockPos);
     }
 
     private void addCrusherSlots() {
@@ -282,32 +224,12 @@ public class CobblestoneCrusherMenu extends BaseMenu {
         });
     }
 
-    private void addPlayerInventorySlots(Inventory playerInventory) {
-        for (int row = 0; row < PLAYER_INVENTORY_ROWS; row++) {
-            for (int column = 0; column < PLAYER_INVENTORY_COLUMNS; column++) {
-                int slotIndex = column + row * PLAYER_INVENTORY_COLUMNS + PLAYER_INVENTORY_COLUMNS;
-                int x = MachineGuiLayouts.PLAYER_INVENTORY_START_X + column * MachineGuiLayouts.SLOT_SIZE;
-                int y = MachineGuiLayouts.PLAYER_INVENTORY_START_Y + row * MachineGuiLayouts.SLOT_SIZE;
-                this.addSlot(new Slot(playerInventory, slotIndex, x, y));
-            }
-        }
-    }
-
-    private void addPlayerHotbarSlots(Inventory playerInventory) {
-        for (int column = 0; column < PLAYER_INVENTORY_COLUMNS; column++) {
-            int x = MachineGuiLayouts.PLAYER_INVENTORY_START_X + column * MachineGuiLayouts.SLOT_SIZE;
-            this.addSlot(new Slot(playerInventory, column, x, MachineGuiLayouts.HOTBAR_START_Y));
-        }
-    }
-
     @Override
     public List<JeiRecipeTransferDefinition> getJeiRecipeTransferDefinitions() {
-        return this.createSingleJeiRecipeTransferDefinition(
+        return this.createPoweredMachineJeiRecipeTransferDefinition(
             ModJeiIds.COBBLESTONE_CRUSHER,
             CobblestoneCrusherBlockEntity.INPUT_SLOT_INDEX,
-            1,
-            PLAYER_INVENTORY_START_INDEX,
-            PLAYER_INVENTORY_SLOT_COUNT + HOTBAR_SLOT_COUNT
+            1
         );
     }
 }
