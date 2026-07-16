@@ -90,7 +90,21 @@ Phase 1 の確認が完了したら、Phase 2 の準備として Centrifuge の�
 - Laser Drill を `PoweredMachineBlockEntityBase<CobblestoneLaserDrillRecipe>` へ移行した。CP、progress、upgrade、保存、`ContainerData` は基底クラスを使用する
 - 入力触媒を消費しない完成処理、独立した確率による 2 出力、個別出力面は Laser Drill 固有の処理として維持した
 - `gradlew.bat compileJava` は成功した
-- ゲーム内の手動確認は未実施。触媒が残ること、2 出力の搬出順、各 automation mode、CP 不足からの再開、保存・再読込、GUI、JEI を確認する
+- ゲーム内確認は完了。触媒保持、2 出力の搬出、automation、CP 不足からの再開を確認した
+- 次の候補は Enchanter。2 入力の照合だけを固有処理に残せばよく、基底クラスの拡張なしで移行できる
+
+## Phase 3 の Enchanter 移行
+- Enchanter は、tool と enchanted book の 2 入力を照合する powered machine として `PoweredMachineBlockEntityBase<CobblestoneEnchanterRecipe>` へ移行する
+- item 種別で入力先を振り分ける `INPUT` handler、エンチャント評価、評価結果に応じた CP/t、2 入力の消費は Enchanter 固有の処理として維持する
+- 高コストのエンチャントで 1 tick 分の CP を保持できるよう、既存どおり通常上限と必要 CP 容量の大きい方を最大 CP とする
+- CP 不足時の progress reset は、他の powered machine と同じ progress 維持・CP 回復後の再開へ意図的に統一する
+- 詳細な実装順とゲーム内確認項目は [Phase 3: Enchanter の powered machine 共通化計画](./phase-3-enchanter-plan.md) を参照
+- `PoweredMachineBlockEntityBase` の energized cube 倍率取得を protected helper とし、Enchanter の特殊な最大 CP 容量計算でも同じ倍率規則を使用できるようにした
+- Enchanter を `PoweredMachineBlockEntityBase<CobblestoneEnchanterRecipe>` へ移行した。CP、progress、upgrade、保存、`ContainerData`、単一出力の auto export は基底クラスを使用する
+- `INPUT` の item 種別による tool / enchanted book の振り分け、`INPUT_1` / `INPUT_2`、エンチャント評価、2 入力の消費、高コスト時の飽和 CP/t 計算は Enchanter 固有の処理として維持した
+- CP 不足中の GUI 用 CP/t は 0 と表示する。これは、実際に CP を消費している tick だけを表示する共通 powered machine の仕様に統一したもの
+- `gradlew.bat compileJava` は成功した
+- ゲーム内の手動確認は未実施。2 入力の面別投入、エンチャント競合、CP 不足からの再開、高コスト時の容量、出力搬出、保存・再読込、GUI、JEI を確認する
 
 ## Phase 1 に向けた整理
 - Crusher、Extreme Compressor、Powered Furnace は、単一入力、CP 入力、単一出力、IN_OUT の handler 構造が同じ

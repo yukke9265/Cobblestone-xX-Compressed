@@ -324,7 +324,13 @@ public abstract class PoweredMachineBlockEntityBase<R> extends BaseBlockEntity {
         return multiplier;
     }
 
-    private int getEnergizedCubeMultiplier() {
+    /**
+     * energized cube による容量倍率を返します。
+     *
+     * 通常は getMaxCobblestonePower() 内部だけで使用しますが、Enchanter のように
+     * 機械固有の必要容量と比較する機械でも、同じ倍率規則を使えるようにします。
+     */
+    protected final int getEnergizedCubeMultiplier() {
         ItemStackHandler itemStackHandler = this.getItemStackHandler();
         if (itemStackHandler == null) {
             return 1;
