@@ -598,7 +598,7 @@ public class CobblestoneDissolutionChamberBlockEntity extends BaseBlockEntity im
     }
 
     private void craft(CobblestoneDissolutionChamberRecipe recipe) {
-        this.itemStackHandler.getStackInSlot(INPUT_SLOT_INDEX).shrink(1);
+        this.itemStackHandler.getStackInSlot(INPUT_SLOT_INDEX).shrink(recipe.getItemInput().count());
         this.drainInputInternal(recipe.getFluidInput().getAmount(), IFluidHandler.FluidAction.EXECUTE);
         this.fillOutputInternal(recipe.getFluidOutput(), IFluidHandler.FluidAction.EXECUTE);
     }

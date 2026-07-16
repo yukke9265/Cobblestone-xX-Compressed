@@ -83,7 +83,7 @@ public class BaseScreen<T extends BaseMenu> extends AbstractContainerScreen<T> {
     }
 
     protected final Component createCheckboxLabel(boolean checked, String translationKey) {
-        return Component.literal(checked ? "[x] " : "[ ] ")
+        return Component.literal(checked ? "[✓] " : "[ ] ")
             .append(Component.translatable(translationKey));
     }
 

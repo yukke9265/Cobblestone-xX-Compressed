@@ -1,0 +1,17 @@
+{
+  "type": "cobblestonexxcompressed:cobblestone_dissolution_chamber",
+  "cobblestone_power_per_tick": 16384,
+  "fluid_input": {
+    "amount": 1000,
+    "id": "minecraft:lava"
+  },
+  "fluid_output": {
+    "amount": 16000,
+    "id": "cobblestonexxcompressed:red_ruby"
+  },
+  "ingredient": {
+    "count": 16,
+    "item": "cobblestonexxcompressed:ruby_mixtures"
+  },
+  "total_cobblestone_power": 209715200
+}

@@ -1,0 +1,17 @@
+{
+  "type": "cobblestonexxcompressed:cobblestone_dissolution_chamber",
+  "cobblestone_power_per_tick": 16384,
+  "fluid_input": {
+    "amount": 16000,
+    "id": "cobblestonexxcompressed:shiny_sapphire"
+  },
+  "fluid_output": {
+    "amount": 16000,
+    "id": "cobblestonexxcompressed:shiny_water"
+  },
+  "ingredient": {
+    "count": 16,
+    "item": "minecraft:packed_ice"
+  },
+  "total_cobblestone_power": 209715200
+}

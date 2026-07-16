@@ -286,14 +286,14 @@ final class MachineRecipeOutputHelper {
     public static void saveCobblestoneDissolutionChamberRecipe(
         RecipeOutput output,
         String recipeName,
-        ItemLike ingredient,
+        SizedIngredient ingredient,
         FluidStack fluidInput,
         FluidStack fluidOutput,
         long totalCobblestonePower,
         long cobblestonePowerPerTick
     ) {
         CobblestoneDissolutionChamberRecipe recipe = new CobblestoneDissolutionChamberRecipe(
-            Ingredient.of(ingredient),
+            ingredient,
             fluidInput,
             fluidOutput,
             totalCobblestonePower,

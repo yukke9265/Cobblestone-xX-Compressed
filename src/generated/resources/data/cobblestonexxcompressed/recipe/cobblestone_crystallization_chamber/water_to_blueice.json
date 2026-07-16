@@ -1,0 +1,13 @@
+{
+  "type": "cobblestonexxcompressed:cobblestone_crystallization_chamber",
+  "cobblestone_power_per_tick": 262144,
+  "fluid_input": {
+    "amount": 64000,
+    "id": "minecraft:water"
+  },
+  "result": {
+    "count": 1,
+    "id": "minecraft:blue_ice"
+  },
+  "total_cobblestone_power": 13421772800
+}

@@ -4,7 +4,9 @@ import com.yukke9265.cobblestone_xx_compressed.registry.ModFluids;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModItems;
 
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.fluids.FluidStack;
 
 public final class CobblestoneCrystallizationChamberRecipeDatagen {
@@ -34,6 +36,13 @@ public final class CobblestoneCrystallizationChamberRecipeDatagen {
             "molten_obsidian_compressed_cobblestone_to_obsidian_cobblestone_dirty_dust",
             new FluidStack(ModFluids.TierMoltenCompressedCobblestone.OBSIDIAN.getFluidEntry().getStillFluid().get(), 1000),
             ModItems.TIER_OBSIDIAN_COBBLESTONE_DIRTY_DUST.get(),
+            13421772800L,
+            262144
+        ),
+        new CrystallizationChamberRecipeDefinition(
+            "water_to_blueice",
+            new FluidStack(Fluids.WATER, 64000),
+            Items.BLUE_ICE,
             13421772800L,
             262144
         )

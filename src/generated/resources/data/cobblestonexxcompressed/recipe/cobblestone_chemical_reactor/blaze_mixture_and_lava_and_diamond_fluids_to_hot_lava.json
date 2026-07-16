@@ -1,0 +1,25 @@
+{
+  "type": "cobblestonexxcompressed:cobblestone_chemical_reactor",
+  "cobblestone_power_per_tick": 1048576,
+  "fluid_input_1": {
+    "amount": 16000,
+    "id": "minecraft:lava"
+  },
+  "fluid_input_2": {
+    "amount": 1000,
+    "id": "cobblestonexxcompressed:molten_tier_diamond_compressed_cobblestone"
+  },
+  "item_input_1": {
+    "count": 16,
+    "item": "cobblestonexxcompressed:blaze_mixtures"
+  },
+  "result_fluid_1": {
+    "amount": 16000,
+    "id": "cobblestonexxcompressed:hot_lava"
+  },
+  "result_fluid_2": {
+    "amount": 1000,
+    "id": "cobblestonexxcompressed:molten_dirty_tier_diamond_compressed_cobblestone"
+  },
+  "total_cobblestone_power": 107374182400
+}

@@ -2,9 +2,15 @@ package com.yukke9265.cobblestone_xx_compressed.datagen.recipe;
 
 import com.yukke9265.cobblestone_xx_compressed.registry.ModBlocks;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModFluids;
+import com.yukke9265.cobblestone_xx_compressed.registry.ModItems;
 
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.material.Fluids;
+import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import net.neoforged.neoforge.fluids.FluidStack;
 
 public final class CobblestoneDissolutionChamberRecipeDatagen {
@@ -56,6 +62,30 @@ public final class CobblestoneDissolutionChamberRecipeDatagen {
             new FluidStack(ModFluids.TierMoltenDirtyCompressedCobblestone.OBSIDIAN.getFluidEntry().getStillFluid().get(), 1000),
             209715200,
             16384
+        ),
+        new DissolutionChamberRecipeDefinition(
+            "topazmixture_and_lava_to_glowtopz",
+            new ItemStack(ModItems.TOPAZ_MIXTURES.get(), 16),
+            new FluidStack(Fluids.LAVA, 1000),
+            new FluidStack(ModFluids.WaterBasedFluid.GLOW_TOPAZ.getFluidEntry().getStillFluid().get(), 16000),
+            209715200,
+            16384
+        ),
+        new DissolutionChamberRecipeDefinition(
+            "rubymixture_and_lava_to_glowtopz",
+            new ItemStack(ModItems.RUBY_MIXTURES.get(), 16),
+            new FluidStack(Fluids.LAVA, 1000),
+            new FluidStack(ModFluids.WaterBasedFluid.RED_RUBY.getFluidEntry().getStillFluid().get(), 16000),
+            209715200,
+            16384
+        ),
+        new DissolutionChamberRecipeDefinition(
+            "sapphire_mixture_and_lava_to_glowtopz",
+            new ItemStack(Items.PACKED_ICE, 16),
+            new FluidStack(ModFluids.WaterBasedFluid.SHINY_SAPPHIRE.getFluidEntry().getStillFluid().get(), 16000),
+            new FluidStack(ModFluids.WaterBasedFluid.SHINY_WATER.getFluidEntry().getStillFluid().get(), 16000),
+            209715200,
+            16384
         )
     };
 
@@ -68,15 +98,31 @@ public final class CobblestoneDissolutionChamberRecipeDatagen {
         }
     }
 
+    private static SizedIngredient sizedItem(ItemLike item) {
+        return sizedItem(item, 1);
+    }
+
+    private static SizedIngredient sizedItem(ItemLike item, int count) {
+        return new SizedIngredient(Ingredient.of(item), count);
+    }
+
     private static class DissolutionChamberRecipeDefinition {
         private final String recipeName;
-        private final ItemLike ingredient;
+        private final SizedIngredient ingredient;
         private final FluidStack fluidInput;
         private final FluidStack fluidOutput;
         private final long totalCobblestonePower;
         private final long cobblestonePowerPerTick;
 
         private DissolutionChamberRecipeDefinition(String recipeName, ItemLike ingredient, FluidStack fluidInput, FluidStack fluidOutput, long totalCobblestonePower, long cobblestonePowerPerTick) {
+            this(recipeName, sizedItem(ingredient), fluidInput, fluidOutput, totalCobblestonePower, cobblestonePowerPerTick);
+        }
+
+        private DissolutionChamberRecipeDefinition(String recipeName, ItemStack ingredient, FluidStack fluidInput, FluidStack fluidOutput, long totalCobblestonePower, long cobblestonePowerPerTick) {
+            this(recipeName, sizedItem(ingredient.getItem(), ingredient.getCount()), fluidInput, fluidOutput, totalCobblestonePower, cobblestonePowerPerTick);
+        }
+
+        private DissolutionChamberRecipeDefinition(String recipeName, SizedIngredient ingredient, FluidStack fluidInput, FluidStack fluidOutput, long totalCobblestonePower, long cobblestonePowerPerTick) {
             this.recipeName = recipeName;
             this.ingredient = ingredient;
             this.fluidInput = fluidInput.copy();

@@ -12,6 +12,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import net.neoforged.neoforge.fluids.FluidStack;
 
@@ -54,6 +55,19 @@ public final class CobblestoneChemicalReactorRecipeDatagen {
             ItemStack.EMPTY,
             new FluidStack(ModFluids.TierMoltenCompressedCobblestone.OBSIDIAN.getFluidEntry().getStillFluid().get(), 1000),
             new FluidStack(ModFluids.TierMoltenDirtyCompressedCobblestone.DIAMOND.getFluidEntry().getStillFluid().get(), 4000),
+            107374182400L,
+            1048576
+        ),
+        new ChemicalReactorRecipeDefinition(
+            "blaze_mixture_and_lava_and_diamond_fluids_to_hot_lava",
+            Optional.of(sizedItem(ModItems.BLAZE_MIXTURES.get(),16)),
+            Optional.empty(),
+            new FluidStack(Fluids.LAVA, 16000),
+            new FluidStack(ModFluids.TierMoltenCompressedCobblestone.DIAMOND.getFluidEntry().getStillFluid().get(), 1000),
+            ItemStack.EMPTY,
+            ItemStack.EMPTY,
+            new FluidStack(ModFluids.WaterBasedFluid.HOT_LAVA.getFluidEntry().getStillFluid().get(), 16000),
+            new FluidStack(ModFluids.TierMoltenDirtyCompressedCobblestone.DIAMOND.getFluidEntry().getStillFluid().get(), 1000),
             107374182400L,
             1048576
         )

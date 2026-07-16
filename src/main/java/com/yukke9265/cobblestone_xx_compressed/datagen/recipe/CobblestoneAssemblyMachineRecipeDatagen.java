@@ -48,7 +48,7 @@ public final class CobblestoneAssemblyMachineRecipeDatagen {
             ItemStack.EMPTY,
             ItemStack.EMPTY,
             new FluidStack(ModFluids.WaterBasedFluid.UNSTABLE_ENDERITE.getFluidEntry().getStillFluid().get(), 10000),
-            new ItemStack(ModItems.CANNED_STABLE_ENDERITE.get(), 1),
+            new ItemStack(ModItems.CANNED_STABLE_ENDERITE.get(), 3),
             TOTAL_CP,
             4194304
         ),
@@ -61,7 +61,7 @@ public final class CobblestoneAssemblyMachineRecipeDatagen {
             ItemStack.EMPTY,
             ItemStack.EMPTY,
             new FluidStack(ModFluids.WaterBasedFluid.UNSTABLE_ENDERITE.getFluidEntry().getStillFluid().get(), 64000),
-            new ItemStack(ModItems.EXTREME_COMPRESSED_CANNED_ENDERITE.get(), 1),
+            new ItemStack(ModItems.EXTREME_COMPRESSED_CANNED_ENDERITE.get(), 3),
             TOTAL_CP,
             4194304
         )

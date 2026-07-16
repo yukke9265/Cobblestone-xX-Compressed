@@ -1,0 +1,17 @@
+{
+  "type": "cobblestonexxcompressed:cobblestone_laser_drill",
+  "cobblestone_power_per_tick": 256,
+  "ingredient": {
+    "item": "cobblestonexxcompressed:tier_netherite_cobblestone_generator_s"
+  },
+  "result_1": {
+    "count": 64,
+    "id": "minecraft:ancient_debris"
+  },
+  "result_2": {
+    "count": 1,
+    "id": "minecraft:echo_shard"
+  },
+  "result_2_chance": 0.01,
+  "total_cobblestone_power": 4096000
+}

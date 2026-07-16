@@ -1,5 +1,6 @@
 package com.yukke9265.cobblestone_xx_compressed.jei.category;
 
+import java.util.Arrays;
 import java.util.List;
 
 import com.yukke9265.cobblestone_xx_compressed.CobblestonexXCompressed;
@@ -25,6 +26,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.neoforged.neoforge.fluids.FluidType;
+import net.neoforged.neoforge.common.crafting.SizedIngredient;
 
 public class CobblestoneDissolutionChamberRecipeCategory implements IRecipeCategory<CobblestoneDissolutionChamberRecipe> {
     private static final ResourceLocation BACKGROUND_TEXTURE =
@@ -80,7 +82,7 @@ public class CobblestoneDissolutionChamberRecipeCategory implements IRecipeCateg
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, CobblestoneDissolutionChamberRecipe recipe, IFocusGroup focuses) {
         builder.addSlot(RecipeIngredientRole.INPUT, INPUT_SLOT_X, INPUT_SLOT_Y)
-            .addIngredients(recipe.getIngredient());
+            .addItemStacks(getDisplayStacks(recipe.getItemInput()));
 
         builder.addSlot(RecipeIngredientRole.CATALYST, POWER_SLOT_X, POWER_SLOT_Y)
             .addItemStacks(JeiCobblestonePowerItems.getCatalystItems());
@@ -103,5 +105,11 @@ public class CobblestoneDissolutionChamberRecipeCategory implements IRecipeCateg
         GuiPartRenderer.renderProgressFrame(guiGraphics, PROGRESS_FRAME_X, PROGRESS_FRAME_Y);
         guiGraphics.drawString(Minecraft.getInstance().font, recipe.getCobblestonePowerPerTick() + " CP/t", CPPT_LABEL_X, CPPT_LABEL_Y, 0x404040, false);
         guiGraphics.drawString(Minecraft.getInstance().font, recipe.getTotalCobblestonePower() + " total CP", TOTAL_CP_LABEL_X, TOTAL_CP_LABEL_Y, 0x404040, false);
+    }
+
+    private static List<ItemStack> getDisplayStacks(SizedIngredient ingredient) {
+        return Arrays.stream(ingredient.getItems())
+            .map(stack -> stack.copyWithCount(ingredient.count()))
+            .toList();
     }
 }
