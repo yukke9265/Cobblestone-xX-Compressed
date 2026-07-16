@@ -16,6 +16,8 @@
 - [ブロック設定手順](./block-property-setup.md)
 - [状態付きブロック手順](./block-state-guide.md)
 - [機械系ブロック手順](./machine-block-guide.md)
+- [機械共通化 長期ロードマップ](./machine-commonization-roadmap.md)
+- [機械共通化 Phase 0 / Phase 1 実施計画](./commonization/README.md)
 - [機能ブロック用レシピ作成手順](./machine-recipe-guide.md)
 - [JEI 機械レシピ連携手順](./jei-machine-recipe-guide.md)
 - [発光圧縮ブロック実装例](./glowing-compressed-block-example.md)
