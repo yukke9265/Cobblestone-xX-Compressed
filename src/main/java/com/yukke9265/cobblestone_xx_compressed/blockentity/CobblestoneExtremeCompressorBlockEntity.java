@@ -2,9 +2,6 @@ package com.yukke9265.cobblestone_xx_compressed.blockentity;
 
 import java.util.Optional;
 
-import javax.annotation.Nonnull;
-
-import com.yukke9265.cobblestone_xx_compressed.block.OnOffBlock;
 import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneExtremeCompressorMenu;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneExtremeCompressorRecipe;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModBlockEntities;
@@ -24,7 +21,6 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
@@ -87,197 +83,25 @@ public class CobblestoneExtremeCompressorBlockEntity extends PoweredMachineBlock
         }
     };
 
-    private final IItemHandler inputAutomationHandler = new IItemHandler() {
-        @Override
-        public int getSlots() {
-            return 1;
-        }
-
-        @Override
-        public @Nonnull ItemStack getStackInSlot(int slot) {
-            if (slot == 0) {
-                return CobblestoneExtremeCompressorBlockEntity.this.itemStackHandler.getStackInSlot(INPUT_SLOT_INDEX);
-            }
-
-            return ItemStack.EMPTY;
-        }
-
-        @Override
-        public @Nonnull ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-            if (slot == 0) {
-                return CobblestoneExtremeCompressorBlockEntity.this.itemStackHandler.insertItem(INPUT_SLOT_INDEX, stack, simulate);
-            }
-
-            return stack;
-        }
-
-        @Override
-        public @Nonnull ItemStack extractItem(int slot, int amount, boolean simulate) {
-            return ItemStack.EMPTY;
-        }
-
-        @Override
-        public int getSlotLimit(int slot) {
-            if (slot == 0) {
-                return CobblestoneExtremeCompressorBlockEntity.this.itemStackHandler.getSlotLimit(INPUT_SLOT_INDEX);
-            }
-
-            return 0;
-        }
-
-        @Override
-        public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-            if (slot == 0) {
-                return CobblestoneExtremeCompressorBlockEntity.this.itemStackHandler.isItemValid(INPUT_SLOT_INDEX, stack);
-            }
-
-            return false;
-        }
-    };
-
-    private final IItemHandler cobblestoneInputAutomationHandler = new IItemHandler() {
-        @Override
-        public int getSlots() {
-            return 1;
-        }
-
-        @Override
-        public @Nonnull ItemStack getStackInSlot(int slot) {
-            if (slot != 0) {
-                return ItemStack.EMPTY;
-            }
-
-            return CobblestoneExtremeCompressorBlockEntity.this.itemStackHandler.getStackInSlot(POWER_SLOT_INDEX);
-        }
-
-        @Override
-        public @Nonnull ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-            if (slot != 0) {
-                return stack;
-            }
-
-            return CobblestoneExtremeCompressorBlockEntity.this.itemStackHandler.insertItem(POWER_SLOT_INDEX, stack, simulate);
-        }
-
-        @Override
-        public @Nonnull ItemStack extractItem(int slot, int amount, boolean simulate) {
-            return ItemStack.EMPTY;
-        }
-
-        @Override
-        public int getSlotLimit(int slot) {
-            if (slot != 0) {
-                return 0;
-            }
-
-            return CobblestoneExtremeCompressorBlockEntity.this.itemStackHandler.getSlotLimit(POWER_SLOT_INDEX);
-        }
-
-        @Override
-        public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-            if (slot != 0) {
-                return false;
-            }
-
-            return CobblestoneExtremeCompressorBlockEntity.this.itemStackHandler.isItemValid(POWER_SLOT_INDEX, stack);
-        }
-    };
-
-    private final IItemHandler outputAutomationHandler = new IItemHandler() {
-        @Override
-        public int getSlots() {
-            return 1;
-        }
-
-        @Override
-        public @Nonnull ItemStack getStackInSlot(int slot) {
-            if (slot != 0) {
-                return ItemStack.EMPTY;
-            }
-
-            return CobblestoneExtremeCompressorBlockEntity.this.itemStackHandler.getStackInSlot(OUTPUT_SLOT_INDEX);
-        }
-
-        @Override
-        public @Nonnull ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-            return stack;
-        }
-
-        @Override
-        public @Nonnull ItemStack extractItem(int slot, int amount, boolean simulate) {
-            if (slot != 0) {
-                return ItemStack.EMPTY;
-            }
-
-            return CobblestoneExtremeCompressorBlockEntity.this.itemStackHandler.extractItem(OUTPUT_SLOT_INDEX, amount, simulate);
-        }
-
-        @Override
-        public int getSlotLimit(int slot) {
-            if (slot != 0) {
-                return 0;
-            }
-
-            return CobblestoneExtremeCompressorBlockEntity.this.itemStackHandler.getSlotLimit(OUTPUT_SLOT_INDEX);
-        }
-
-        @Override
-        public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-            return false;
-        }
-    };
-
-    private final IItemHandler automationAccessHandler = new IItemHandler() {
-        @Override
-        public int getSlots() {
-            return 5;
-        }
-
-        @Override
-        public @Nonnull ItemStack getStackInSlot(int slot) {
-            if (slot < 0 || slot >= 5) {
-                return ItemStack.EMPTY;
-            }
-
-            return CobblestoneExtremeCompressorBlockEntity.this.itemStackHandler.getStackInSlot(slot);
-        }
-
-        @Override
-        public @Nonnull ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-            if (slot == INPUT_SLOT_INDEX) {
-                return CobblestoneExtremeCompressorBlockEntity.this.itemStackHandler.insertItem(slot, stack, simulate);
-            }
-
-            return stack;
-        }
-
-        @Override
-        public @Nonnull ItemStack extractItem(int slot, int amount, boolean simulate) {
-            if (slot != OUTPUT_SLOT_INDEX) {
-                return ItemStack.EMPTY;
-            }
-
-            return CobblestoneExtremeCompressorBlockEntity.this.itemStackHandler.extractItem(OUTPUT_SLOT_INDEX, amount, simulate);
-        }
-
-        @Override
-        public int getSlotLimit(int slot) {
-            if (slot < 0 || slot >= 5) {
-                return 0;
-            }
-
-            return CobblestoneExtremeCompressorBlockEntity.this.itemStackHandler.getSlotLimit(slot);
-        }
-
-        @Override
-        public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-            if (slot < 0 || slot >= 5) {
-                return false;
-            }
-
-            return CobblestoneExtremeCompressorBlockEntity.this.itemStackHandler.isItemValid(slot, stack);
-        }
-    };
+    // 各面の mode が公開する入出力ルールだけを、この機械で明示します。
+    // handler の定型処理は helper 側へ集約し、従来と同じ inventory へ委譲します。
+    private final IItemHandler inputAutomationHandler = AutomationItemHandlerHelper.createInsertOnlyHandler(
+        this.itemStackHandler,
+        INPUT_SLOT_INDEX
+    );
+    private final IItemHandler cobblestoneInputAutomationHandler = AutomationItemHandlerHelper.createInsertOnlyHandler(
+        this.itemStackHandler,
+        POWER_SLOT_INDEX
+    );
+    private final IItemHandler outputAutomationHandler = AutomationItemHandlerHelper.createExtractOnlyHandler(
+        this.itemStackHandler,
+        OUTPUT_SLOT_INDEX
+    );
+    private final IItemHandler automationAccessHandler = AutomationItemHandlerHelper.createRestrictedAccessHandler(
+        this.itemStackHandler,
+        INPUT_SLOT_INDEX,
+        OUTPUT_SLOT_INDEX
+    );
 
     public CobblestoneExtremeCompressorBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.COBBLESTONE_EXTREME_COMPRESSOR_BLOCK_ENTITY.get(), pos, state);

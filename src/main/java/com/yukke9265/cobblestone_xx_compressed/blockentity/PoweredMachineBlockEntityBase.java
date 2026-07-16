@@ -165,19 +165,37 @@ public abstract class PoweredMachineBlockEntityBase<R> extends BaseBlockEntity {
         return EmptyItemHandler.INSTANCE;
     }
 
-    protected final void pushOutputToConfiguredSides() {
+    /**
+     * 完成品を automation 設定済みの面へ搬出します。
+     *
+     * 標準的な 1 出力機械は、この既定実装をそのまま使用します。
+     * 複数出力の機械だけは、出力スロットの順番と公開 mode を明示するために override します。
+     */
+    protected void pushOutputsToConfiguredSides() {
+        this.pushOutputSlotToConfiguredSides(
+            this.getOutputSlotIndex(),
+            AutomationMode.OUTPUT,
+            AutomationMode.IN_OUT
+        );
+    }
+
+    /**
+     * 指定した出力スロットを、指定された automation mode の面へ搬出します。
+     * 呼び出し順がそのまま搬出順になるため、複数出力機械でも優先順位を保てます。
+     */
+    protected final void pushOutputSlotToConfiguredSides(int outputSlotIndex, AutomationMode... targetModes) {
         ItemStackHandler itemStackHandler = this.getItemStackHandler();
         if (itemStackHandler == null) {
             return;
         }
 
-        ItemStack outputStack = itemStackHandler.getStackInSlot(this.getOutputSlotIndex());
+        ItemStack outputStack = itemStackHandler.getStackInSlot(outputSlotIndex);
         if (outputStack.isEmpty()) {
             return;
         }
 
-        ItemStack remainingOutput = this.pushItemStackToConfiguredSides(outputStack.copy(), AutomationMode.OUTPUT, AutomationMode.IN_OUT);
-        itemStackHandler.setStackInSlot(this.getOutputSlotIndex(), remainingOutput);
+        ItemStack remainingOutput = this.pushItemStackToConfiguredSides(outputStack.copy(), targetModes);
+        itemStackHandler.setStackInSlot(outputSlotIndex, remainingOutput);
     }
 
     @Override
@@ -235,7 +253,7 @@ public abstract class PoweredMachineBlockEntityBase<R> extends BaseBlockEntity {
             currentLevel.setBlock(this.worldPosition, updatedState, 3);
         }
 
-        this.pushOutputToConfiguredSides();
+        this.pushOutputsToConfiguredSides();
     }
 
     protected final void resetProgress() {

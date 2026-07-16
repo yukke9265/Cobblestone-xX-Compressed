@@ -2,24 +2,16 @@ package com.yukke9265.cobblestone_xx_compressed.blockentity;
 
 import java.util.Optional;
 
-import javax.annotation.Nonnull;
-
-import com.yukke9265.cobblestone_xx_compressed.block.OnOffBlock;
 import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneMixerMenu;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneMixerRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.DoubleItemRecipeInput;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModBlockEntities;
-import com.yukke9265.cobblestone_xx_compressed.registry.ModBlocks;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModRecipeTypes;
-import com.yukke9265.cobblestone_xx_compressed.util.LongDataHelper;
 
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
@@ -34,8 +26,13 @@ import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import net.neoforged.neoforge.items.wrapper.EmptyItemHandler;
 
-@SuppressWarnings("null")
-public class CobblestoneMixerBlockEntity extends BaseBlockEntity implements MenuProvider {
+/**
+ * 2 種類の入力を混合して 1 種類の結果を作る powered machine です。
+ *
+ * CP、progress、保存、同期、停止時の処理は PoweredMachineBlockEntityBase に統一し、
+ * 2 入力の照合、投入順、消費量だけをこのクラスに残します。
+ */
+public class CobblestoneMixerBlockEntity extends PoweredMachineBlockEntityBase<CobblestoneMixerRecipe> implements MenuProvider {
     public static final int INPUT_SLOT_1_INDEX = 0;
     public static final int INPUT_SLOT_2_INDEX = 1;
     public static final int POWER_SLOT_INDEX = 2;
@@ -43,22 +40,6 @@ public class CobblestoneMixerBlockEntity extends BaseBlockEntity implements Menu
     public static final int ACCELERATION_SLOT_INDEX = 4;
     public static final int ENERGIZED_CUBE_SLOT_INDEX = 5;
     public static final long MAX_COBBLESTONE_POWER = 16000L;
-
-    private static final int DATA_INDEX_PROGRESS = 0;
-    private static final int DATA_INDEX_MAX_PROGRESS = 1;
-    private static final int DATA_INDEX_STORED_POWER = 2;
-    private static final int DATA_INDEX_STORED_POWER_UPPER = 3;
-    private static final int DATA_INDEX_MAX_STORED_POWER = 4;
-    private static final int DATA_INDEX_MAX_STORED_POWER_UPPER = 5;
-    private static final int DATA_INDEX_AUTOMATION_START = 6;
-    private static final int DATA_INDEX_CURRENT_POWER_RATE = DATA_INDEX_AUTOMATION_START + AUTOMATION_FACE_COUNT;
-    private static final int DATA_INDEX_CURRENT_POWER_RATE_UPPER = DATA_INDEX_CURRENT_POWER_RATE + 1;
-    private static final int DATA_INDEX_AUTO_EXPORT = DATA_INDEX_CURRENT_POWER_RATE_UPPER + 1;
-
-    private int progress = 0;
-    private int maxProgress = 0;
-    private long storedCobblestonePower = 0L;
-    private boolean isAvailable = true;
 
     private final FixedSizeItemStackHandler itemStackHandler = new FixedSizeItemStackHandler(6) {
         @Override
@@ -68,7 +49,7 @@ public class CobblestoneMixerBlockEntity extends BaseBlockEntity implements Menu
             }
 
             if (slot == POWER_SLOT_INDEX) {
-                return CobblestoneCrusherBlockEntity.isCobblestonePowerItem(stack);
+                return isCobblestonePowerItem(stack);
             }
 
             if (slot == ACCELERATION_SLOT_INDEX) {
@@ -97,350 +78,47 @@ public class CobblestoneMixerBlockEntity extends BaseBlockEntity implements Menu
         }
     };
 
-    private final IItemHandler inputAutomationHandler = new IItemHandler() {
-        @Override
-        public int getSlots() {
-            return 2;
-        }
-
-        @Override
-        public @Nonnull ItemStack getStackInSlot(int slot) {
-            if (slot == 0) {
-                return CobblestoneMixerBlockEntity.this.itemStackHandler.getStackInSlot(INPUT_SLOT_1_INDEX);
-            }
-
-            if (slot == 1) {
-                return CobblestoneMixerBlockEntity.this.itemStackHandler.getStackInSlot(INPUT_SLOT_2_INDEX);
-            }
-
-            return ItemStack.EMPTY;
-        }
-
-        @Override
-        public @Nonnull ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-            if (slot != 0 && slot != 1) {
-                return stack;
-            }
-
-            ItemStack remainingStack = CobblestoneMixerBlockEntity.this.itemStackHandler.insertItem(INPUT_SLOT_1_INDEX, stack, simulate);
-            if (!remainingStack.isEmpty()) {
-                remainingStack = CobblestoneMixerBlockEntity.this.itemStackHandler.insertItem(INPUT_SLOT_2_INDEX, remainingStack, simulate);
-            }
-
-            return remainingStack;
-        }
-
-        @Override
-        public @Nonnull ItemStack extractItem(int slot, int amount, boolean simulate) {
-            return ItemStack.EMPTY;
-        }
-
-        @Override
-        public int getSlotLimit(int slot) {
-            if (slot == 0) {
-                return CobblestoneMixerBlockEntity.this.itemStackHandler.getSlotLimit(INPUT_SLOT_1_INDEX);
-            }
-
-            if (slot == 1) {
-                return CobblestoneMixerBlockEntity.this.itemStackHandler.getSlotLimit(INPUT_SLOT_2_INDEX);
-            }
-
-            return 0;
-        }
-
-        @Override
-        public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-            return slot == 0 || slot == 1;
-        }
-    };
-
-    private final IItemHandler inputSlot1AutomationHandler = new IItemHandler() {
-        @Override
-        public int getSlots() {
-            return 1;
-        }
-
-        @Override
-        public @Nonnull ItemStack getStackInSlot(int slot) {
-            if (slot != 0) {
-                return ItemStack.EMPTY;
-            }
-
-            return CobblestoneMixerBlockEntity.this.itemStackHandler.getStackInSlot(INPUT_SLOT_1_INDEX);
-        }
-
-        @Override
-        public @Nonnull ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-            if (slot != 0) {
-                return stack;
-            }
-
-            return CobblestoneMixerBlockEntity.this.itemStackHandler.insertItem(INPUT_SLOT_1_INDEX, stack, simulate);
-        }
-
-        @Override
-        public @Nonnull ItemStack extractItem(int slot, int amount, boolean simulate) {
-            return ItemStack.EMPTY;
-        }
-
-        @Override
-        public int getSlotLimit(int slot) {
-            if (slot != 0) {
-                return 0;
-            }
-
-            return CobblestoneMixerBlockEntity.this.itemStackHandler.getSlotLimit(INPUT_SLOT_1_INDEX);
-        }
-
-        @Override
-        public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-            if (slot != 0) {
-                return false;
-            }
-
-            return CobblestoneMixerBlockEntity.this.itemStackHandler.isItemValid(INPUT_SLOT_1_INDEX, stack);
-        }
-    };
-
-    private final IItemHandler inputSlot2AutomationHandler = new IItemHandler() {
-        @Override
-        public int getSlots() {
-            return 1;
-        }
-
-        @Override
-        public @Nonnull ItemStack getStackInSlot(int slot) {
-            if (slot != 0) {
-                return ItemStack.EMPTY;
-            }
-
-            return CobblestoneMixerBlockEntity.this.itemStackHandler.getStackInSlot(INPUT_SLOT_2_INDEX);
-        }
-
-        @Override
-        public @Nonnull ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-            if (slot != 0) {
-                return stack;
-            }
-
-            return CobblestoneMixerBlockEntity.this.itemStackHandler.insertItem(INPUT_SLOT_2_INDEX, stack, simulate);
-        }
-
-        @Override
-        public @Nonnull ItemStack extractItem(int slot, int amount, boolean simulate) {
-            return ItemStack.EMPTY;
-        }
-
-        @Override
-        public int getSlotLimit(int slot) {
-            if (slot != 0) {
-                return 0;
-            }
-
-            return CobblestoneMixerBlockEntity.this.itemStackHandler.getSlotLimit(INPUT_SLOT_2_INDEX);
-        }
-
-        @Override
-        public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-            if (slot != 0) {
-                return false;
-            }
-
-            return CobblestoneMixerBlockEntity.this.itemStackHandler.isItemValid(INPUT_SLOT_2_INDEX, stack);
-        }
-    };
-
-    private final IItemHandler cobblestoneInputAutomationHandler = new IItemHandler() {
-        @Override
-        public int getSlots() {
-            return 1;
-        }
-
-        @Override
-        public @Nonnull ItemStack getStackInSlot(int slot) {
-            if (slot != 0) {
-                return ItemStack.EMPTY;
-            }
-
-            return CobblestoneMixerBlockEntity.this.itemStackHandler.getStackInSlot(POWER_SLOT_INDEX);
-        }
-
-        @Override
-        public @Nonnull ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-            if (slot != 0) {
-                return stack;
-            }
-
-            return CobblestoneMixerBlockEntity.this.itemStackHandler.insertItem(POWER_SLOT_INDEX, stack, simulate);
-        }
-
-        @Override
-        public @Nonnull ItemStack extractItem(int slot, int amount, boolean simulate) {
-            return ItemStack.EMPTY;
-        }
-
-        @Override
-        public int getSlotLimit(int slot) {
-            if (slot != 0) {
-                return 0;
-            }
-
-            return CobblestoneMixerBlockEntity.this.itemStackHandler.getSlotLimit(POWER_SLOT_INDEX);
-        }
-
-        @Override
-        public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-            if (slot != 0) {
-                return false;
-            }
-
-            return CobblestoneMixerBlockEntity.this.itemStackHandler.isItemValid(POWER_SLOT_INDEX, stack);
-        }
-    };
-
-    private final IItemHandler outputAutomationHandler = new IItemHandler() {
-        @Override
-        public int getSlots() {
-            return 1;
-        }
-
-        @Override
-        public @Nonnull ItemStack getStackInSlot(int slot) {
-            if (slot != 0) {
-                return ItemStack.EMPTY;
-            }
-
-            return CobblestoneMixerBlockEntity.this.itemStackHandler.getStackInSlot(OUTPUT_SLOT_INDEX);
-        }
-
-        @Override
-        public @Nonnull ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-            return stack;
-        }
-
-        @Override
-        public @Nonnull ItemStack extractItem(int slot, int amount, boolean simulate) {
-            if (slot != 0) {
-                return ItemStack.EMPTY;
-            }
-
-            return CobblestoneMixerBlockEntity.this.itemStackHandler.extractItem(OUTPUT_SLOT_INDEX, amount, simulate);
-        }
-
-        @Override
-        public int getSlotLimit(int slot) {
-            if (slot != 0) {
-                return 0;
-            }
-
-            return CobblestoneMixerBlockEntity.this.itemStackHandler.getSlotLimit(OUTPUT_SLOT_INDEX);
-        }
-
-        @Override
-        public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-            return false;
-        }
-    };
-
-    private final IItemHandler automationAccessHandler = new IItemHandler() {
-        @Override
-        public int getSlots() {
-            return 6;
-        }
-
-        @Override
-        public @Nonnull ItemStack getStackInSlot(int slot) {
-            if (slot < 0 || slot >= 6) {
-                return ItemStack.EMPTY;
-            }
-
-            return CobblestoneMixerBlockEntity.this.itemStackHandler.getStackInSlot(slot);
-        }
-
-        @Override
-        public @Nonnull ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-            if (slot == INPUT_SLOT_1_INDEX || slot == INPUT_SLOT_2_INDEX) {
-                return CobblestoneMixerBlockEntity.this.itemStackHandler.insertItem(slot, stack, simulate);
-            }
-
-            return stack;
-        }
-
-        @Override
-        public @Nonnull ItemStack extractItem(int slot, int amount, boolean simulate) {
-            if (slot != OUTPUT_SLOT_INDEX) {
-                return ItemStack.EMPTY;
-            }
-
-            return CobblestoneMixerBlockEntity.this.itemStackHandler.extractItem(OUTPUT_SLOT_INDEX, amount, simulate);
-        }
-
-        @Override
-        public int getSlotLimit(int slot) {
-            if (slot < 0 || slot >= 6) {
-                return 0;
-            }
-
-            return CobblestoneMixerBlockEntity.this.itemStackHandler.getSlotLimit(slot);
-        }
-
-        @Override
-        public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-            if (slot < 0 || slot >= 6) {
-                return false;
-            }
-
-            return CobblestoneMixerBlockEntity.this.itemStackHandler.isItemValid(slot, stack);
-        }
-    };
+    // INPUT は入力 1、入力 2 の順に投入します。INPUT_1 と INPUT_2 は個別の入力面です。
+    private final IItemHandler inputAutomationHandler = AutomationItemHandlerHelper.createSequentialInsertOnlyHandler(
+        this.itemStackHandler,
+        INPUT_SLOT_1_INDEX,
+        INPUT_SLOT_2_INDEX
+    );
+    private final IItemHandler inputSlot1AutomationHandler = AutomationItemHandlerHelper.createInsertOnlyHandler(
+        this.itemStackHandler,
+        INPUT_SLOT_1_INDEX
+    );
+    private final IItemHandler inputSlot2AutomationHandler = AutomationItemHandlerHelper.createInsertOnlyHandler(
+        this.itemStackHandler,
+        INPUT_SLOT_2_INDEX
+    );
+    private final IItemHandler cobblestoneInputAutomationHandler = AutomationItemHandlerHelper.createInsertOnlyHandler(
+        this.itemStackHandler,
+        POWER_SLOT_INDEX
+    );
+    private final IItemHandler outputAutomationHandler = AutomationItemHandlerHelper.createExtractOnlyHandler(
+        this.itemStackHandler,
+        OUTPUT_SLOT_INDEX
+    );
+    private final IItemHandler automationAccessHandler = AutomationItemHandlerHelper.createRestrictedAccessHandler(
+        this.itemStackHandler,
+        new int[] {INPUT_SLOT_1_INDEX, INPUT_SLOT_2_INDEX},
+        new int[] {OUTPUT_SLOT_INDEX}
+    );
 
     public CobblestoneMixerBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.COBBLESTONE_MIXER_BLOCK_ENTITY.get(), pos, state);
     }
 
-    public int getProgress() {
-        return this.progress;
-    }
-
-    public int getMaxProgress() {
-        return this.maxProgress;
-    }
-
-    public long getStoredCobblestonePower() {
-        return this.storedCobblestonePower;
-    }
-
-    public long getMaxCobblestonePower() {
-        return MAX_COBBLESTONE_POWER * this.getEnergizedCubeMultiplier();
-    }
-
-    public long getCurrentCobblestonePowerConsumption() {
-        if (!this.isAvailable) {
-            return 0L;
-        }
-
-        var recipeHolder = this.getCurrentRecipe();
-        if (recipeHolder.isEmpty()) {
-            return 0L;
-        }
-
-        var recipe = recipeHolder.get().value();
-        if (!this.canProcess(recipe)) {
-            return 0L;
-        }
-
-        long cobblestonePowerPerTick = recipe.getCobblestonePowerPerTick();
-        return cobblestonePowerPerTick * this.getProgressStep(cobblestonePowerPerTick);
-    }
-
-    public boolean getIsAvailable() {
-        return this.isAvailable;
-    }
-
+    @Override
     public ItemStackHandler getItemStackHandler() {
         return this.itemStackHandler;
     }
 
+    /**
+     * Mixer は INPUT_1 と INPUT_2 を持つため、標準 powered machine の単一入力 routing ではなく
+     * この機械固有の routing を使用します。
+     */
     public IItemHandler getAutomationItemHandler(Direction side) {
         if (side == null) {
             return this.automationAccessHandler;
@@ -476,96 +154,19 @@ public class CobblestoneMixerBlockEntity extends BaseBlockEntity implements Menu
         return EmptyItemHandler.INSTANCE;
     }
 
-    public void reverseIsAvailable() {
-        if (this.level == null || this.level.isClientSide) {
-            return;
-        }
-
-        this.isAvailable = !this.isAvailable;
-        this.setChanged();
+    @Override
+    protected long getBaseMaxCobblestonePower() {
+        return MAX_COBBLESTONE_POWER;
     }
 
     @Override
-    public void tick() {
-        if (this.level == null || this.level.isClientSide) {
-            return;
-        }
-
-        Level currentLevel = this.level;
-        BlockState currentState = this.getBlockState();
-        boolean shouldTurnOn = false;
-
-        this.clampStoredCobblestonePower();
-        this.tryAbsorbCobblestonePower();
-
-        Optional<RecipeHolder<CobblestoneMixerRecipe>> recipeHolder = this.getCurrentRecipe();
-        if (this.isAvailable && recipeHolder.isPresent()) {
-            CobblestoneMixerRecipe recipe = recipeHolder.get().value();
-            if (this.maxProgress != recipe.getProcessingTime()) {
-                this.maxProgress = recipe.getProcessingTime();
-                this.setChanged();
-            }
-
-            if (this.canProcess(recipe)) {
-                int progressStep = this.getProgressStep(recipe.getCobblestonePowerPerTick());
-                this.progress += progressStep;
-                this.storedCobblestonePower -= recipe.getCobblestonePowerPerTick() * progressStep;
-                shouldTurnOn = true;
-                this.setChanged();
-
-                if (this.progress >= this.maxProgress) {
-                    this.craft(recipe);
-                    this.progress = 0;
-                    this.setChanged();
-                }
-            } else if (this.progress != 0) {
-                this.progress = 0;
-                this.setChanged();
-            }
-        } else {
-            if (this.progress != 0) {
-                this.progress = 0;
-                this.setChanged();
-            }
-
-            if (this.maxProgress != 0) {
-                this.maxProgress = 0;
-                this.setChanged();
-            }
-        }
-
-        BlockState updatedState = currentState.setValue(OnOffBlock.ON, shouldTurnOn);
-        if (updatedState != currentState) {
-            currentLevel.setBlock(this.worldPosition, updatedState, 3);
-        }
-
-        this.pushOutputToConfiguredSides();
+    protected int getPowerSlotIndex() {
+        return POWER_SLOT_INDEX;
     }
 
-    private void pushOutputToConfiguredSides() {
-        ItemStack outputStack = this.itemStackHandler.getStackInSlot(OUTPUT_SLOT_INDEX);
-        if (outputStack.isEmpty()) {
-            return;
-        }
-
-        ItemStack remainingOutput = this.pushItemStackToConfiguredSides(outputStack.copy(), AutomationMode.OUTPUT, AutomationMode.IN_OUT);
-        this.itemStackHandler.setStackInSlot(OUTPUT_SLOT_INDEX, remainingOutput);
-    }
-
-    private void tryAbsorbCobblestonePower() {
-        ItemStack powerStack = this.itemStackHandler.getStackInSlot(POWER_SLOT_INDEX);
-        long convertedPower = CobblestoneCrusherBlockEntity.getCobblestonePowerValueForAutomation(powerStack);
-        if (convertedPower <= 0) {
-            return;
-        }
-
-        if (this.storedCobblestonePower + convertedPower > this.getMaxCobblestonePower()) {
-            return;
-        }
-
-        powerStack.shrink(1);
-        this.storedCobblestonePower += convertedPower;
-        this.setChanged();
+    @Override
+    protected int getOutputSlotIndex() {
+        return OUTPUT_SLOT_INDEX;
     }
 
     @SuppressWarnings("null")
@@ -589,7 +190,8 @@ public class CobblestoneMixerBlockEntity extends BaseBlockEntity implements Menu
         return false;
     }
 
-    private Optional<RecipeHolder<CobblestoneMixerRecipe>> getCurrentRecipe() {
+    @Override
+    protected Optional<CobblestoneMixerRecipe> findMatchingRecipe() {
         Level currentLevel = this.level;
         if (currentLevel == null) {
             return Optional.empty();
@@ -602,94 +204,36 @@ public class CobblestoneMixerBlockEntity extends BaseBlockEntity implements Menu
         }
 
         DoubleItemRecipeInput input = new DoubleItemRecipeInput(firstInputStack, secondInputStack);
-        return currentLevel.getRecipeManager().getRecipeFor(ModRecipeTypes.COBBLESTONE_MIXER.get(), input, currentLevel);
+        Optional<RecipeHolder<CobblestoneMixerRecipe>> recipeHolder = currentLevel.getRecipeManager().getRecipeFor(
+            ModRecipeTypes.COBBLESTONE_MIXER.get(),
+            input,
+            currentLevel
+        );
+        return recipeHolder.map(RecipeHolder::value);
     }
 
-    private boolean canProcess(CobblestoneMixerRecipe recipe) {
-        int progressStep = this.getProgressStep(recipe.getCobblestonePowerPerTick());
-        if (progressStep <= 0) {
-            return false;
-        }
-
+    @Override
+    protected boolean canProcessRecipe(CobblestoneMixerRecipe recipe) {
         return this.canOutput(recipe);
     }
 
-    private int getProgressStep(long cobblestonePowerPerTick) {
-        if (cobblestonePowerPerTick <= 0) {
-            return 0;
-        }
-
-        int accelerationMultiplier = this.getAccelerationMultiplier();
-        int remainingProgress = this.maxProgress - this.progress;
-        if (remainingProgress <= 0) {
-            return 0;
-        }
-
-        int maxProgressStep = Math.min(accelerationMultiplier, remainingProgress);
-        long maxPowerStep = this.storedCobblestonePower / cobblestonePowerPerTick;
-        return Math.min(maxProgressStep, (int) Math.min(Integer.MAX_VALUE, maxPowerStep));
+    @Override
+    protected boolean shouldResetProgress(CobblestoneMixerRecipe recipe) {
+        return !this.canOutput(recipe);
     }
 
-    private int getAccelerationMultiplier() {
-        if (this.itemStackHandler.getSlots() <= ACCELERATION_SLOT_INDEX) {
-            return 1;
-        }
-
-        ItemStack accelerationStack = this.itemStackHandler.getStackInSlot(ACCELERATION_SLOT_INDEX);
-        int multiplier = MachineUpgradeHelper.getAccelerationMultiplier(accelerationStack);
-        if (multiplier <= 0) {
-            return 1;
-        }
-
-        return multiplier;
+    @Override
+    protected int getRecipeProcessingTime(CobblestoneMixerRecipe recipe) {
+        return recipe.getProcessingTime();
     }
 
-    private int getEnergizedCubeMultiplier() {
-        if (this.itemStackHandler.getSlots() <= ENERGIZED_CUBE_SLOT_INDEX) {
-            return 1;
-        }
-
-        ItemStack energizedCubeStack = this.itemStackHandler.getStackInSlot(ENERGIZED_CUBE_SLOT_INDEX);
-        int multiplier = MachineUpgradeHelper.getEnergizedCubeMultiplier(energizedCubeStack);
-        if (multiplier <= 0) {
-            return 1;
-        }
-
-        return multiplier;
+    @Override
+    protected long getRecipeCobblestonePowerPerTick(CobblestoneMixerRecipe recipe) {
+        return recipe.getCobblestonePowerPerTick();
     }
 
-    private void clampStoredCobblestonePower() {
-        long maxCobblestonePower = this.getMaxCobblestonePower();
-        if (this.storedCobblestonePower > maxCobblestonePower) {
-            this.storedCobblestonePower = maxCobblestonePower;
-            this.setChanged();
-        }
-    }
-
-    private boolean canOutput(CobblestoneMixerRecipe recipe) {
-        Level currentLevel = this.level;
-        if (currentLevel == null) {
-            return false;
-        }
-
-        ItemStack resultStack = recipe.getResultItem(currentLevel.registryAccess());
-        if (resultStack.isEmpty()) {
-            return false;
-        }
-
-        ItemStack outputStack = this.itemStackHandler.getStackInSlot(OUTPUT_SLOT_INDEX);
-        if (outputStack.isEmpty()) {
-            return true;
-        }
-
-        if (!ItemStack.isSameItemSameComponents(outputStack, resultStack)) {
-            return false;
-        }
-
-        return outputStack.getCount() + resultStack.getCount() <= outputStack.getMaxStackSize();
-    }
-
-    private void craft(CobblestoneMixerRecipe recipe) {
+    @Override
+    protected void finishProcessing(CobblestoneMixerRecipe recipe) {
         Level currentLevel = this.level;
         if (currentLevel == null) {
             return;
@@ -717,28 +261,27 @@ public class CobblestoneMixerBlockEntity extends BaseBlockEntity implements Menu
         outputStack.grow(resultStack.getCount());
     }
 
-    @Override
-    protected void saveAdditional(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider registries) {
-        super.saveAdditional(tag, registries);
-        tag.putInt("progress", this.progress);
-        tag.putInt("maxProgress", this.maxProgress);
-        tag.putLong("storedCobblestonePower", this.storedCobblestonePower);
-        tag.putBoolean("isAvailable", this.isAvailable);
-        this.saveAutomationModes(tag);
-        tag.put("inventory", this.itemStackHandler.serializeNBT(registries));
-    }
-
-    @Override
-    protected void loadAdditional(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider registries) {
-        super.loadAdditional(tag, registries);
-        this.progress = tag.getInt("progress");
-        this.maxProgress = tag.getInt("maxProgress");
-        this.storedCobblestonePower = tag.getLong("storedCobblestonePower");
-        this.isAvailable = tag.getBoolean("isAvailable");
-        this.loadAutomationModes(tag);
-        if (tag.contains("inventory", Tag.TAG_COMPOUND)) {
-            this.itemStackHandler.deserializeNBTKeepingSize(registries, tag.getCompound("inventory"));
+    private boolean canOutput(CobblestoneMixerRecipe recipe) {
+        Level currentLevel = this.level;
+        if (currentLevel == null) {
+            return false;
         }
+
+        ItemStack resultStack = recipe.getResultItem(currentLevel.registryAccess());
+        if (resultStack.isEmpty()) {
+            return false;
+        }
+
+        ItemStack outputStack = this.itemStackHandler.getStackInSlot(OUTPUT_SLOT_INDEX);
+        if (outputStack.isEmpty()) {
+            return true;
+        }
+
+        if (!ItemStack.isSameItemSameComponents(outputStack, resultStack)) {
+            return false;
+        }
+
+        return outputStack.getCount() + resultStack.getCount() <= outputStack.getMaxStackSize();
     }
 
     @Override
@@ -751,81 +294,17 @@ public class CobblestoneMixerBlockEntity extends BaseBlockEntity implements Menu
         ContainerData mixerData = new ContainerData() {
             @Override
             public int get(int index) {
-                if (index == DATA_INDEX_PROGRESS) {
-                    return progress;
-                }
-
-                if (index == DATA_INDEX_MAX_PROGRESS) {
-                    return maxProgress;
-                }
-
-                if (index == DATA_INDEX_STORED_POWER) {
-                    return LongDataHelper.lowerInt(storedCobblestonePower);
-                }
-
-                if (index == DATA_INDEX_STORED_POWER_UPPER) {
-                    return LongDataHelper.upperInt(storedCobblestonePower);
-                }
-
-                if (index == DATA_INDEX_MAX_STORED_POWER) {
-                    return LongDataHelper.lowerInt(getMaxCobblestonePower());
-                }
-
-                if (index == DATA_INDEX_MAX_STORED_POWER_UPPER) {
-                    return LongDataHelper.upperInt(getMaxCobblestonePower());
-                }
-
-                if (index == DATA_INDEX_CURRENT_POWER_RATE) {
-                    return LongDataHelper.lowerInt(getCurrentCobblestonePowerConsumption());
-                }
-
-                if (index == DATA_INDEX_CURRENT_POWER_RATE_UPPER) {
-                    return LongDataHelper.upperInt(getCurrentCobblestonePowerConsumption());
-                }
-
-                int automationIndex = index - DATA_INDEX_AUTOMATION_START;
-                if (automationIndex >= 0 && automationIndex < AUTOMATION_FACE_COUNT) {
-                    return getAutomationModeId(automationIndex);
-                }
-
-                if (index == DATA_INDEX_AUTO_EXPORT) {
-                    return getAutoExportEnabledId();
-                }
-
-                return 0;
+                return CobblestoneMixerBlockEntity.this.getPoweredMachineCommonData(index, 0);
             }
 
             @Override
             public void set(int index, int value) {
-                if (index == DATA_INDEX_PROGRESS) {
-                    progress = value;
-                }
-
-                if (index == DATA_INDEX_MAX_PROGRESS) {
-                    maxProgress = value;
-                }
-
-                if (index == DATA_INDEX_STORED_POWER) {
-                    storedCobblestonePower = LongDataHelper.toLong(value, LongDataHelper.upperInt(storedCobblestonePower));
-                }
-
-                if (index == DATA_INDEX_STORED_POWER_UPPER) {
-                    storedCobblestonePower = LongDataHelper.toLong(LongDataHelper.lowerInt(storedCobblestonePower), value);
-                }
-
-                int automationIndex = index - DATA_INDEX_AUTOMATION_START;
-                if (automationIndex >= 0 && automationIndex < AUTOMATION_FACE_COUNT) {
-                    setAutomationMode(automationIndex, AutomationMode.fromId(value));
-                }
-
-                if (index == DATA_INDEX_AUTO_EXPORT) {
-                    setAutoExportEnabled(value != 0);
-                }
+                CobblestoneMixerBlockEntity.this.setPoweredMachineCommonData(index, value, 0);
             }
 
             @Override
             public int getCount() {
-                return DATA_INDEX_AUTO_EXPORT + 1;
+                return CobblestoneMixerBlockEntity.this.getPoweredMachineDataCount(0);
             }
         };
 
