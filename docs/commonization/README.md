@@ -1,20 +1,18 @@
-# 機械共通化 Phase 0 / Phase 1 実施計画
+# 機械共通化ドキュメント
 
-このフォルダは、機械共通化を小さく安全に進めるための作業メモを置く場所です。
+powered machine のBlockEntity共通化は完了しています。全体の結果は [Powered Machine 共通化まとめ](./SUMMARY.md) を参照してください。
 
-最初の対象は、すでに共通基盤を利用している次の 3 機械です。
+このフォルダには、移行時の判断、互換性契約、手動確認項目を残しています。
 
-1. Cobblestone Crusher
-2. Cobblestone Extreme Compressor
-3. Cobblestone Powered Furnace
+| 文書 | 用途 |
+| --- | --- |
+| [SUMMARY.md](./SUMMARY.md) | 完了した共通化の対象、共通責務、統一仕様 |
+| [PROGRESS.md](./PROGRESS.md) | フェーズごとの実装・確認状況 |
+| [machine-commonization-roadmap.md](./machine-commonization-roadmap.md) | 今後の機械追加と周辺層改善の指針 |
+| `phase-*.md` | 個別機械の移行内容とゲーム内確認項目 |
+| `*-specification.md` | Phase 0で固定した移行前の仕様 |
 
-この 3 機械は [PoweredMachineBlockEntityBase](../../src/main/java/com/yukke9265/cobblestone_xx_compressed/blockentity/PoweredMachineBlockEntityBase.java) を継承しているため、レシピ処理や GUI の大きな変更をせず、automation handler の重複から安全に整理できます。
-
-関連する全体方針は、[機械共通化 長期ロードマップ](../machine-commonization-roadmap.md) を参照してください。
-
-Phase 0 で確認した現行仕様の差分と、今後それを統一する方針は、[Phase 0 調査結果と挙動統一方針](./phase-0-findings.md) を参照してください。
-
-Phase 2 で Centrifuge を複数出力 powered machine として移行する設計は、[Phase 2: Centrifuge の複数出力共通化計画](./phase-2-centrifuge-plan.md) を参照してください。
+以下は開始時点のPhase 0 / Phase 1計画の記録です。
 
 ---
 

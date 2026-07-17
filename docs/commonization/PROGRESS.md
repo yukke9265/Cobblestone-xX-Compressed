@@ -1,9 +1,16 @@
-## 概要
-共通化計画の進捗を記載するドキュメントです。現在の状況、次のステップ、課題などを整理し、次のアクションを明確にすることを目的としています。
+# 共通化進捗
 
-## 進捗状況
-- 共通化計画のドキュメントを作成
-- Phase 0 のコード調査を完了し、Crusher、Extreme Compressor、Powered Furnace、Centrifuge、Mixer の現行仕様表を追加
+## 現在の状態
+
+- powered machine のBlockEntity共通化は完了
+- 共通化結果は [SUMMARY.md](./SUMMARY.md) を参照
+- 最終移行対象の Chemical Reactor はゲーム内確認済み
+- 最終移行対象の Fluid Mixer はゲーム内確認済み
+- 各フェーズの詳細な設計と確認項目は対応する `phase-*.md` に残す
+
+## 履歴の扱い
+
+以下は移行中に記録した作業ログです。途中の「未実施」「次タスク」は当時の記録であり、現在の進捗を表しません。最終状態はこの文書の冒頭と [SUMMARY.md](./SUMMARY.md) を正とします。
 
 ## Phase 0 の確認状況
 - コード上の仕様固定: 完了
@@ -172,7 +179,7 @@ Phase 1 の確認が完了したら、Phase 2 の準備として Centrifuge の�
 - `ContainerData` は fluid automation を含むhelperを使用し、既存 Menu が要求する36要素を維持する
 - item 出力がないため、基底のitem auto exportは無効化し、`onAutoExportFluid()` で出力fluidの `OUTPUT` / `IN_OUT` 面への搬出を維持した
 - CP不足ではprogressを維持し、入力fluid不足、recipe不一致、出力fluidの種類不一致または容量不足、停止ではprogressをresetする共通仕様へ統一した
-- `gradlew.bat compileJava` は成功した。詳細な互換性と手動確認項目は [Phase 10: Fluid Mixer の複数タンク共通化計画](./phase-10-fluid-mixer-plan.md) を参照
+- `gradlew.bat compileJava` は成功し、ゲーム内確認も完了した。詳細な互換性と手動確認項目は [Phase 10: Fluid Mixer の複数タンク共通化計画](./phase-10-fluid-mixer-plan.md) を参照
 
 ## Phase 1 に向けた整理
 - Crusher、Extreme Compressor、Powered Furnace は、単一入力、CP 入力、単一出力、IN_OUT の handler 構造が同じ
