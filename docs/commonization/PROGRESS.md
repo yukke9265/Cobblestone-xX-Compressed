@@ -104,7 +104,75 @@ Phase 1 の確認が完了したら、Phase 2 の準備として Centrifuge の�
 - `INPUT` の item 種別による tool / enchanted book の振り分け、`INPUT_1` / `INPUT_2`、エンチャント評価、2 入力の消費、高コスト時の飽和 CP/t 計算は Enchanter 固有の処理として維持した
 - CP 不足中の GUI 用 CP/t は 0 と表示する。これは、実際に CP を消費している tick だけを表示する共通 powered machine の仕様に統一したもの
 - `gradlew.bat compileJava` は成功した
-- ゲーム内の手動確認は未実施。2 入力の面別投入、エンチャント競合、CP 不足からの再開、高コスト時の容量、出力搬出、保存・再読込、GUI、JEI を確認する
+- ゲーム内確認は完了。2 入力の投入、エンチャント評価、CP 不足からの再開を確認した
+
+## Phase 4 の Melter 移行
+- Melter は item 入力・fluid 出力の powered machine として `PoweredMachineBlockEntityBase<CobblestoneMelterRecipe>` へ移行する
+- 流体タンク、fluid capability、GUI からの fluid container 操作、流体 auto export は Melter 固有の処理として維持する
+- 基底には、既定で何もしない流体 auto export hook を追加する。Melter だけが hook を override し、fluid `OUTPUT` 面へ搬出する
+- Melter には item 出力がないため、item の既定 auto export は Melter 側で無効化する
+- CP 不足時の progress reset は、他の powered machine と同じ progress 維持・CP 回復後の再開へ意図的に統一する
+- 詳細な実装順とゲーム内確認項目は [Phase 4: Melter の流体出力共通化計画](./phase-4-melter-plan.md) を参照
+- Melter の Menu を開くと `ContainerData` が 20 個しか生成されず、既存 Menu が要求する 26 個と不一致になっていた。`PoweredMachineBlockEntityBase` に fluid automation を含む同期 helper を追加し、item mode 6 面・fluid mode 6 面を含めた 26 個を同期するよう修正した
+- 修正後の `gradlew.bat compileJava` は成功した。UI を開き、item / fluid の面設定と CP・fluid 表示が同期されることを確認する
+
+## Phase 5 の Crystallization Chamber 移行
+- Crystallization Chamber は fluid 1 入力・item 1 出力の powered machine として `PoweredMachineBlockEntityBase<CobblestoneCrystallizationChamberRecipe>` へ移行した
+- CP、progress、upgrade、保存、`ContainerData`、item 出力の auto export は基底クラスを使用する
+- 流体タンク、fluid capability、GUI の fluid container 操作は固有処理として維持した
+- CP input、item output、`IN_OUT` の item handler は `AutomationItemHandlerHelper` に置き換えた。公開 slot と挿入・抽出の可否は変更していない
+- `ContainerData` は fluid automation を含む helper を使用し、既存 Menu が要求する 24 要素を維持する
+- CP 不足だけの場合は progress を維持し、CP 回復後に再開するよう変更した。流体不足、recipe 不一致、出力詰まり、停止では progress を reset する
+- `gradlew.bat compileJava` は成功した。詳細な互換性と手動確認項目は [Phase 5: Crystallization Chamber の流体入力共通化計画](./phase-5-crystallization-chamber-plan.md) を参照
+
+## Phase 6 の Dissolution Chamber 移行
+- Dissolution Chamber は item 1 入力・fluid 1 入力・fluid 1 出力の powered machine として `PoweredMachineBlockEntityBase<CobblestoneDissolutionChamberRecipe>` へ移行した
+- CP、progress、upgrade、保存、`ContainerData` は基底クラスを使用する
+- 入力・出力タンク、fluid capability、GUI の fluid container 操作、fluid auto export は固有処理として維持した
+- item 入力、CP 入力、`IN_OUT` の item handler は `AutomationItemHandlerHelper` に置き換えた。公開 slot と挿入・抽出の可否は変更していない
+- item 出力がないため、基底の item auto export は no-op にし、`onAutoExportFluid()` で出力 fluid の `OUTPUT` / `IN_OUT` 面への搬出を維持した
+- `ContainerData` は fluid automation を含む helper を使用し、既存 Menu が要求する 31 要素を維持する
+- CP 不足だけの場合は progress を維持し、CP 回復後に再開するよう変更した。item 不足、入力 fluid 不足、recipe 不一致、出力 fluid の種類不一致または容量不足、停止では progress を reset する
+- `gradlew.bat compileJava` は成功した。詳細な互換性と手動確認項目は [Phase 6: Dissolution Chamber の複数流体タンク共通化計画](./phase-6-dissolution-chamber-plan.md) を参照
+
+## Phase 7 の Reaction Chamber 移行
+- Reaction Chamber は item 2 入力・fluid 1 入力・item 1 出力の powered machine として `PoweredMachineBlockEntityBase<CobblestoneReactionChamberRecipe>` へ移行した
+- CP、progress、upgrade、保存、`ContainerData`、item 出力の auto export は基底クラスを使用する
+- fluid タンク、fluid capability、GUI の fluid container 操作、2 入力の recipe 照合は固有処理として維持した
+- `INPUT` の入力 1・入力 2 への順次投入、`INPUT_1`、`INPUT_2`、CP 入力、item 出力、`IN_OUT` の item handler は `AutomationItemHandlerHelper` に置き換えた。公開 slot と移動条件は維持している
+- `ContainerData` は fluid automation を含む helper を使用し、既存 Menu が要求する 26 要素を維持する
+- CP 不足だけの場合は progress を維持し、CP 回復後に再開するよう変更した。item 不足、fluid 不足、recipe 不一致、出力詰まり、停止では progress を reset する
+- auto export は item 出力だけを対象に統一し、入力 fluid を自動搬出する旧挙動は廃止した。fluid `OUTPUT` / `IN_OUT` capability による取り出しは維持する
+- `gradlew.bat compileJava` は成功した。詳細な互換性と手動確認項目は [Phase 7: Reaction Chamber の複合入力共通化計画](./phase-7-reaction-chamber-plan.md) を参照
+
+## Phase 8 の Assembly Machine 移行
+- Assembly Machine は item 6入力・fluid 1入力・item 1出力の powered machine として `PoweredMachineBlockEntityBase<CobblestoneAssemblyMachineRecipe>` へ移行した
+- CP、progress、停止、upgrade、保存、`ContainerData`、item 出力の auto export は基底クラスを使用する
+- item入力の順次投入、6入力とfluidを使うrecipe照合・消費、input fluid tank、fluid capability、GUIのfluid container操作は固有処理として維持した
+- `INPUT`、`INPUT_1`、`INPUT_2`、CP入力、item出力、`IN_OUT` の item handler は `AutomationItemHandlerHelper` に置き換えた。公開slotと投入順は変更していない
+- `ContainerData` は fluid automation を含むhelperを使用し、既存 Menu が要求する26要素を維持する
+- CP不足ではprogressを維持し、材料不足、fluid不足、出力詰まり、停止ではprogressをresetする共通仕様へ統一した
+- `gradlew.bat compileJava` は成功した。詳細な互換性と手動確認項目は [Phase 8: Assembly Machine の複合入力共通化計画](./phase-8-assembly-machine-plan.md) を参照
+
+## Phase 9 の Chemical Reactor 移行
+- Chemical Reactor は item 2入力・2出力、fluid 2入力・2出力の powered machine として `PoweredMachineBlockEntityBase<CobblestoneChemicalReactorRecipe>` へ移行した
+- CP、progress、停止、upgrade、保存、`ContainerData`、item 出力の auto export は基底クラスを使用する
+- 2種類のitem・fluid入力のrecipe照合、対応するslot・tankの消費、2 item出力、2 fluid出力、4 tankのfluid capability、GUIのfluid container操作は固有処理として維持した
+- `INPUT`、`INPUT_1`、`INPUT_2`、CP入力、`OUTPUT`、`OUTPUT_1`、`OUTPUT_2`、`IN_OUT` の item handler は `AutomationItemHandlerHelper` に置き換えた。公開slotと投入順は変更していない
+- `ContainerData` は fluid automation を含むhelperを使用し、既存 Menu が要求する41要素を維持する
+- itemとfluidのauto exportは、どちらも出力1から出力2の順を維持する
+- CP不足ではprogressを維持し、材料不足、fluid不足、item出力詰まり、fluid出力の種類不一致または容量不足、停止ではprogressをresetする共通仕様へ統一した
+- `gradlew.bat compileJava` は成功し、ゲーム内確認も完了した。詳細な互換性と手動確認項目は [Phase 9: Chemical Reactor の複合入出力共通化計画](./phase-9-chemical-reactor-plan.md) を参照
+
+## Phase 10 の Fluid Mixer 移行
+- Fluid Mixer は fluid 2入力・1出力の powered machine として `PoweredMachineBlockEntityBase<CobblestoneFluidMixerRecipe>` へ移行した
+- CP、progress、停止、upgrade、保存、`ContainerData`は基底クラスを使用する
+- 2種類のfluid入力のrecipe照合、対応するtankからの消費、出力fluidの生成、3 tankのfluid capability、GUIのfluid container操作は固有処理として維持した
+- CP入力と `IN_OUT` の item handler は `AutomationItemHandlerHelper` に置き換えた。CP以外のitem移動を許可しない既存仕様は変更していない
+- `ContainerData` は fluid automation を含むhelperを使用し、既存 Menu が要求する36要素を維持する
+- item 出力がないため、基底のitem auto exportは無効化し、`onAutoExportFluid()` で出力fluidの `OUTPUT` / `IN_OUT` 面への搬出を維持した
+- CP不足ではprogressを維持し、入力fluid不足、recipe不一致、出力fluidの種類不一致または容量不足、停止ではprogressをresetする共通仕様へ統一した
+- `gradlew.bat compileJava` は成功した。詳細な互換性と手動確認項目は [Phase 10: Fluid Mixer の複数タンク共通化計画](./phase-10-fluid-mixer-plan.md) を参照
 
 ## Phase 1 に向けた整理
 - Crusher、Extreme Compressor、Powered Furnace は、単一入力、CP 入力、単一出力、IN_OUT の handler 構造が同じ

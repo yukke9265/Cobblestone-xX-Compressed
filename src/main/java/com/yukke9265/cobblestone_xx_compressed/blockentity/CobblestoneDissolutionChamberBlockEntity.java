@@ -2,12 +2,9 @@ package com.yukke9265.cobblestone_xx_compressed.blockentity;
 
 import java.util.Optional;
 
-import javax.annotation.Nonnull;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import com.yukke9265.cobblestone_xx_compressed.block.OnOffBlock;
 import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneDissolutionChamberMenu;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneDissolutionChamberRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.DissolutionChamberRecipeInput;
@@ -39,7 +36,14 @@ import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import net.neoforged.neoforge.items.wrapper.EmptyItemHandler;
 
-public class CobblestoneDissolutionChamberBlockEntity extends BaseBlockEntity implements MenuProvider {
+/**
+ * item と fluid を fluid に変換する powered machine です。
+ *
+ * CP、progress、保存、同期、停止処理は PoweredMachineBlockEntityBase に統一し、
+ * 入力・出力タンク、fluid capability、container 操作だけをこのクラスに残します。
+ */
+@SuppressWarnings("null")
+public class CobblestoneDissolutionChamberBlockEntity extends PoweredMachineBlockEntityBase<CobblestoneDissolutionChamberRecipe> implements MenuProvider {
     public static final int INPUT_SLOT_INDEX = 0;
     public static final int POWER_SLOT_INDEX = 1;
     public static final int ACCELERATION_SLOT_INDEX = 2;
@@ -48,12 +52,7 @@ public class CobblestoneDissolutionChamberBlockEntity extends BaseBlockEntity im
     public static final long MAX_INPUT_FLUID_AMOUNT = 64_000L;
     public static final long MAX_OUTPUT_FLUID_AMOUNT = 64_000L;
 
-    private static final int DATA_INDEX_PROGRESS = 0;
-    private static final int DATA_INDEX_MAX_PROGRESS = 1;
-    private static final int DATA_INDEX_STORED_POWER = 2;
-    private static final int DATA_INDEX_STORED_POWER_UPPER = 3;
-    private static final int DATA_INDEX_MAX_STORED_POWER = 4;
-    private static final int DATA_INDEX_MAX_STORED_POWER_UPPER = 5;
+    private static final int MACHINE_SPECIFIC_DATA_COUNT = 10;
     private static final int DATA_INDEX_INPUT_FLUID = 6;
     private static final int DATA_INDEX_INPUT_FLUID_UPPER = 7;
     private static final int DATA_INDEX_MAX_INPUT_FLUID = 8;
@@ -64,20 +63,10 @@ public class CobblestoneDissolutionChamberBlockEntity extends BaseBlockEntity im
     private static final int DATA_INDEX_MAX_OUTPUT_FLUID = 13;
     private static final int DATA_INDEX_MAX_OUTPUT_FLUID_UPPER = 14;
     private static final int DATA_INDEX_OUTPUT_FLUID_ID = 15;
-    private static final int DATA_INDEX_ITEM_AUTOMATION_START = 16;
-    private static final int DATA_INDEX_FLUID_AUTOMATION_START = DATA_INDEX_ITEM_AUTOMATION_START + AUTOMATION_FACE_COUNT;
-    private static final int DATA_INDEX_CURRENT_POWER_RATE = DATA_INDEX_FLUID_AUTOMATION_START + AUTOMATION_FACE_COUNT;
-    private static final int DATA_INDEX_CURRENT_POWER_RATE_UPPER = DATA_INDEX_CURRENT_POWER_RATE + 1;
-    private static final int DATA_INDEX_AUTO_EXPORT = DATA_INDEX_CURRENT_POWER_RATE_UPPER + 1;
-
-    private int progress;
-    private int maxProgress;
-    private long storedCobblestonePower;
     private long storedInputFluidAmount;
     private long storedOutputFluidAmount;
     private FluidStack storedInputFluid = FluidStack.EMPTY;
     private FluidStack storedOutputFluid = FluidStack.EMPTY;
-    private boolean isAvailable = true;
 
     private final FixedSizeItemStackHandler itemStackHandler = new FixedSizeItemStackHandler(4) {
         @Override
@@ -112,55 +101,19 @@ public class CobblestoneDissolutionChamberBlockEntity extends BaseBlockEntity im
         }
     };
 
-    private final IItemHandler inputAutomationHandler = new SingleSlotAutomationHandler(INPUT_SLOT_INDEX, true);
-    private final IItemHandler cobblestoneInputAutomationHandler = new SingleSlotAutomationHandler(POWER_SLOT_INDEX, true);
-    private final IItemHandler automationAccessHandler = new IItemHandler() {
-        @Override
-        public int getSlots() {
-            return 4;
-        }
-
-        @Override
-        public @Nonnull ItemStack getStackInSlot(int slot) {
-            if (slot < 0 || slot >= 4) {
-                return ItemStack.EMPTY;
-            }
-
-            return CobblestoneDissolutionChamberBlockEntity.this.itemStackHandler.getStackInSlot(slot);
-        }
-
-        @Override
-        public @Nonnull ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-            if (slot == INPUT_SLOT_INDEX) {
-                return CobblestoneDissolutionChamberBlockEntity.this.itemStackHandler.insertItem(slot, stack, simulate);
-            }
-
-            return stack;
-        }
-
-        @Override
-        public @Nonnull ItemStack extractItem(int slot, int amount, boolean simulate) {
-            return ItemStack.EMPTY;
-        }
-
-        @Override
-        public int getSlotLimit(int slot) {
-            if (slot < 0 || slot >= 4) {
-                return 0;
-            }
-
-            return CobblestoneDissolutionChamberBlockEntity.this.itemStackHandler.getSlotLimit(slot);
-        }
-
-        @Override
-        public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-            if (slot < 0 || slot >= 4) {
-                return false;
-            }
-
-            return CobblestoneDissolutionChamberBlockEntity.this.itemStackHandler.isItemValid(slot, stack);
-        }
-    };
+    private final IItemHandler inputAutomationHandler = AutomationItemHandlerHelper.createInsertOnlyHandler(
+        this.itemStackHandler,
+        INPUT_SLOT_INDEX
+    );
+    private final IItemHandler cobblestoneInputAutomationHandler = AutomationItemHandlerHelper.createInsertOnlyHandler(
+        this.itemStackHandler,
+        POWER_SLOT_INDEX
+    );
+    private final IItemHandler automationAccessHandler = AutomationItemHandlerHelper.createRestrictedAccessHandler(
+        this.itemStackHandler,
+        new int[] {INPUT_SLOT_INDEX},
+        new int[0]
+    );
 
     private final IFluidHandler combinedFluidHandler = new DissolutionChamberFluidHandler(true, true, true);
     private final IFluidHandler inputFluidHandler = new DissolutionChamberFluidHandler(true, false, false);
@@ -173,41 +126,6 @@ public class CobblestoneDissolutionChamberBlockEntity extends BaseBlockEntity im
             this.setAutomationMode(index, AutomationMode.DISABLED);
             this.setFluidAutomationMode(index, AutomationMode.DISABLED);
         }
-    }
-
-    public int getProgress() {
-        return this.progress;
-    }
-
-    public int getMaxProgress() {
-        return this.maxProgress;
-    }
-
-    public long getStoredCobblestonePower() {
-        return this.storedCobblestonePower;
-    }
-
-    public long getMaxCobblestonePower() {
-        return MAX_COBBLESTONE_POWER * this.getEnergizedCubeMultiplier();
-    }
-
-    public long getCurrentCobblestonePowerConsumption() {
-        if (!this.isAvailable) {
-            return 0L;
-        }
-
-        var recipeHolder = this.getCurrentRecipe();
-        if (recipeHolder.isEmpty()) {
-            return 0L;
-        }
-
-        var recipe = recipeHolder.get().value();
-        if (!this.canProcess(recipe)) {
-            return 0L;
-        }
-
-        long cobblestonePowerPerTick = recipe.getCobblestonePowerPerTick();
-        return cobblestonePowerPerTick * this.getProgressStep(cobblestonePowerPerTick);
     }
 
     public long getStoredInputFluidAmount() {
@@ -242,21 +160,9 @@ public class CobblestoneDissolutionChamberBlockEntity extends BaseBlockEntity im
         return this.storedOutputFluid.copyWithAmount((int) Math.min(this.storedOutputFluidAmount, Integer.MAX_VALUE));
     }
 
-    public boolean getIsAvailable() {
-        return this.isAvailable;
-    }
-
+    @Override
     public ItemStackHandler getItemStackHandler() {
         return this.itemStackHandler;
-    }
-
-    public void reverseIsAvailable() {
-        if (this.level == null || this.level.isClientSide) {
-            return;
-        }
-
-        this.isAvailable = !this.isAvailable;
-        this.setChanged();
     }
 
     public IItemHandler getAutomationItemHandler(@Nullable Direction side) {
@@ -264,20 +170,13 @@ public class CobblestoneDissolutionChamberBlockEntity extends BaseBlockEntity im
             return this.automationAccessHandler;
         }
 
-        AutomationMode automationMode = this.getAutomationMode(AutomationSide.fromWorldSide(side, this.getBlockState()));
-        if (automationMode == AutomationMode.INPUT) {
-            return this.inputAutomationHandler;
-        }
-
-        if (automationMode == AutomationMode.COBBLESTONE_INPUT) {
-            return this.cobblestoneInputAutomationHandler;
-        }
-
-        if (automationMode == AutomationMode.IN_OUT) {
-            return this.automationAccessHandler;
-        }
-
-        return EmptyItemHandler.INSTANCE;
+        return this.getConfiguredAutomationItemHandler(
+            side,
+            this.inputAutomationHandler,
+            this.cobblestoneInputAutomationHandler,
+            EmptyItemHandler.INSTANCE,
+            this.automationAccessHandler
+        );
     }
 
     @Nullable
@@ -325,93 +224,6 @@ public class CobblestoneDissolutionChamberBlockEntity extends BaseBlockEntity im
     }
 
     @Override
-    public void tick() {
-        if (this.level == null || this.level.isClientSide) {
-            return;
-        }
-
-        Level currentLevel = this.level;
-        BlockState currentState = this.getBlockState();
-        boolean shouldTurnOn = false;
-
-        this.clampStoredCobblestonePower();
-        this.tryAbsorbCobblestonePower();
-
-        Optional<RecipeHolder<CobblestoneDissolutionChamberRecipe>> recipeHolder = this.getCurrentRecipe();
-        if (this.isAvailable && recipeHolder.isPresent()) {
-            CobblestoneDissolutionChamberRecipe recipe = recipeHolder.get().value();
-            if (this.maxProgress != recipe.getProcessingTime()) {
-                this.maxProgress = recipe.getProcessingTime();
-                this.setChanged();
-            }
-
-            if (this.canProcess(recipe)) {
-                int progressStep = this.getProgressStep(recipe.getCobblestonePowerPerTick());
-                this.progress += progressStep;
-                this.storedCobblestonePower -= recipe.getCobblestonePowerPerTick() * progressStep;
-                shouldTurnOn = true;
-                this.setChanged();
-
-                if (this.progress >= this.maxProgress) {
-                    this.craft(recipe);
-                    this.progress = 0;
-                    this.setChanged();
-                }
-            } else if (this.progress != 0) {
-                this.progress = 0;
-                this.setChanged();
-            }
-        } else {
-            if (this.progress != 0) {
-                this.progress = 0;
-                this.setChanged();
-            }
-
-            if (this.maxProgress != 0) {
-                this.maxProgress = 0;
-                this.setChanged();
-            }
-        }
-
-        BlockState updatedState = currentState.setValue(OnOffBlock.ON, shouldTurnOn);
-        if (updatedState != currentState) {
-            currentLevel.setBlock(this.worldPosition, updatedState, 3);
-        }
-
-        this.autoExportFluid();
-    }
-
-    @Override
-    public void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.loadAdditional(tag, registries);
-
-        this.itemStackHandler.deserializeNBT(registries, tag.getCompound("inventory"));
-        this.progress = tag.getInt("progress");
-        this.maxProgress = tag.getInt("maxProgress");
-        this.storedCobblestonePower = tag.getLong("storedCobblestonePower");
-        this.isAvailable = !tag.contains("isAvailable", Tag.TAG_BYTE) || tag.getBoolean("isAvailable");
-
-        this.loadStoredFluid(tag, registries, "inputFluid", true);
-        this.loadStoredFluid(tag, registries, "outputFluid", false);
-        this.loadAutomationModes(tag);
-    }
-
-    @Override
-    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.saveAdditional(tag, registries);
-
-        tag.put("inventory", this.itemStackHandler.serializeNBT(registries));
-        tag.putInt("progress", this.progress);
-        tag.putInt("maxProgress", this.maxProgress);
-        tag.putLong("storedCobblestonePower", this.storedCobblestonePower);
-        tag.putBoolean("isAvailable", this.isAvailable);
-
-        this.saveStoredFluid(tag, registries, "inputFluid", this.storedInputFluid, this.storedInputFluidAmount);
-        this.saveStoredFluid(tag, registries, "outputFluid", this.storedOutputFluid, this.storedOutputFluidAmount);
-        this.saveAutomationModes(tag);
-    }
-
-    @Override
     public Component getDisplayName() {
         return Component.translatable("block.cobblestonexxcompressed.cobblestone_dissolution_chamber");
     }
@@ -421,24 +233,6 @@ public class CobblestoneDissolutionChamberBlockEntity extends BaseBlockEntity im
         return new CobblestoneDissolutionChamberMenu(containerId, playerInventory, this, new ContainerData() {
             @Override
             public int get(int index) {
-                if (index == DATA_INDEX_PROGRESS) {
-                    return CobblestoneDissolutionChamberBlockEntity.this.progress;
-                }
-                if (index == DATA_INDEX_MAX_PROGRESS) {
-                    return CobblestoneDissolutionChamberBlockEntity.this.maxProgress;
-                }
-                if (index == DATA_INDEX_STORED_POWER) {
-                    return LongDataHelper.lowerInt(CobblestoneDissolutionChamberBlockEntity.this.storedCobblestonePower);
-                }
-                if (index == DATA_INDEX_STORED_POWER_UPPER) {
-                    return LongDataHelper.upperInt(CobblestoneDissolutionChamberBlockEntity.this.storedCobblestonePower);
-                }
-                if (index == DATA_INDEX_MAX_STORED_POWER) {
-                    return LongDataHelper.lowerInt(CobblestoneDissolutionChamberBlockEntity.this.getMaxCobblestonePower());
-                }
-                if (index == DATA_INDEX_MAX_STORED_POWER_UPPER) {
-                    return LongDataHelper.upperInt(CobblestoneDissolutionChamberBlockEntity.this.getMaxCobblestonePower());
-                }
                 if (index == DATA_INDEX_INPUT_FLUID) {
                     return LongDataHelper.lowerInt(CobblestoneDissolutionChamberBlockEntity.this.storedInputFluidAmount);
                 }
@@ -469,32 +263,29 @@ public class CobblestoneDissolutionChamberBlockEntity extends BaseBlockEntity im
                 if (index == DATA_INDEX_OUTPUT_FLUID_ID) {
                     return CobblestoneDissolutionChamberBlockEntity.this.getDisplayedOutputFluidId();
                 }
-                if (index >= DATA_INDEX_ITEM_AUTOMATION_START && index < DATA_INDEX_FLUID_AUTOMATION_START) {
-                    return CobblestoneDissolutionChamberBlockEntity.this.getAutomationModeId(index - DATA_INDEX_ITEM_AUTOMATION_START);
-                }
-                if (index >= DATA_INDEX_FLUID_AUTOMATION_START && index < DATA_INDEX_CURRENT_POWER_RATE) {
-                    return CobblestoneDissolutionChamberBlockEntity.this.getFluidAutomationModeId(index - DATA_INDEX_FLUID_AUTOMATION_START);
-                }
-                if (index == DATA_INDEX_CURRENT_POWER_RATE) {
-                    return LongDataHelper.lowerInt(CobblestoneDissolutionChamberBlockEntity.this.getCurrentCobblestonePowerConsumption());
-                }
-                if (index == DATA_INDEX_CURRENT_POWER_RATE_UPPER) {
-                    return LongDataHelper.upperInt(CobblestoneDissolutionChamberBlockEntity.this.getCurrentCobblestonePowerConsumption());
-                }
-                if (index == DATA_INDEX_AUTO_EXPORT) {
-                    return CobblestoneDissolutionChamberBlockEntity.this.getAutoExportEnabledId();
-                }
-
-                return 0;
+                return CobblestoneDissolutionChamberBlockEntity.this.getPoweredMachineCommonData(
+                    index,
+                    MACHINE_SPECIFIC_DATA_COUNT,
+                    true
+                );
             }
 
             @Override
             public void set(int index, int value) {
+                CobblestoneDissolutionChamberBlockEntity.this.setPoweredMachineCommonData(
+                    index,
+                    value,
+                    MACHINE_SPECIFIC_DATA_COUNT,
+                    true
+                );
             }
 
             @Override
             public int getCount() {
-                return DATA_INDEX_AUTO_EXPORT + 1;
+                return CobblestoneDissolutionChamberBlockEntity.this.getPoweredMachineDataCount(
+                    MACHINE_SPECIFIC_DATA_COUNT,
+                    true
+                );
             }
         });
     }
@@ -515,7 +306,8 @@ public class CobblestoneDissolutionChamberBlockEntity extends BaseBlockEntity im
         return BuiltInRegistries.FLUID.getId(this.storedOutputFluid.getFluid());
     }
 
-    private void autoExportFluid() {
+    @Override
+    protected void onAutoExportFluid() {
         if (!this.isAutoExportEnabled() || this.storedOutputFluid.isEmpty() || this.storedOutputFluidAmount <= 0L) {
             return;
         }
@@ -527,18 +319,6 @@ public class CobblestoneDissolutionChamberBlockEntity extends BaseBlockEntity im
         if (exportedAmount > 0) {
             this.drainOutputInternal(exportedAmount, IFluidHandler.FluidAction.EXECUTE);
         }
-    }
-
-    private void tryAbsorbCobblestonePower() {
-        ItemStack powerStack = this.itemStackHandler.getStackInSlot(POWER_SLOT_INDEX);
-        long convertedPower = CobblestoneCrusherBlockEntity.getCobblestonePowerValueForAutomation(powerStack);
-        if (convertedPower <= 0 || this.storedCobblestonePower + convertedPower > this.getMaxCobblestonePower()) {
-            return;
-        }
-
-        powerStack.shrink(1);
-        this.storedCobblestonePower += convertedPower;
-        this.setChanged();
     }
 
     @SuppressWarnings("null")
@@ -561,7 +341,24 @@ public class CobblestoneDissolutionChamberBlockEntity extends BaseBlockEntity im
         return false;
     }
 
-    private Optional<RecipeHolder<CobblestoneDissolutionChamberRecipe>> getCurrentRecipe() {
+    @Override
+    protected long getBaseMaxCobblestonePower() {
+        return MAX_COBBLESTONE_POWER;
+    }
+
+    @Override
+    protected int getPowerSlotIndex() {
+        return POWER_SLOT_INDEX;
+    }
+
+    @Override
+    protected int getOutputSlotIndex() {
+        // Dissolution Chamber は item 出力を持たず、item auto export を使用しません。
+        return -1;
+    }
+
+    @Override
+    protected Optional<CobblestoneDissolutionChamberRecipe> findMatchingRecipe() {
         Level currentLevel = this.level;
         if (currentLevel == null) {
             return Optional.empty();
@@ -573,14 +370,16 @@ public class CobblestoneDissolutionChamberBlockEntity extends BaseBlockEntity im
         }
 
         DissolutionChamberRecipeInput input = new DissolutionChamberRecipeInput(inputStack, this.getDisplayedInputFluid());
-        return currentLevel.getRecipeManager().getRecipeFor(ModRecipeTypes.COBBLESTONE_DISSOLUTION_CHAMBER.get(), input, currentLevel);
+        Optional<RecipeHolder<CobblestoneDissolutionChamberRecipe>> recipeHolder = currentLevel.getRecipeManager().getRecipeFor(
+            ModRecipeTypes.COBBLESTONE_DISSOLUTION_CHAMBER.get(),
+            input,
+            currentLevel
+        );
+        return recipeHolder.map(RecipeHolder::value);
     }
 
-    private boolean canProcess(CobblestoneDissolutionChamberRecipe recipe) {
-        if (this.getProgressStep(recipe.getCobblestonePowerPerTick()) <= 0) {
-            return false;
-        }
-
+    @Override
+    protected boolean canProcessRecipe(CobblestoneDissolutionChamberRecipe recipe) {
         if (this.storedInputFluidAmount < recipe.getFluidInput().getAmount()) {
             return false;
         }
@@ -597,46 +396,31 @@ public class CobblestoneDissolutionChamberBlockEntity extends BaseBlockEntity im
         return this.storedOutputFluidAmount + fluidOutput.getAmount() <= MAX_OUTPUT_FLUID_AMOUNT;
     }
 
-    private void craft(CobblestoneDissolutionChamberRecipe recipe) {
+    @Override
+    protected boolean shouldResetProgress(CobblestoneDissolutionChamberRecipe recipe) {
+        return !this.canProcessRecipe(recipe);
+    }
+
+    @Override
+    protected int getRecipeProcessingTime(CobblestoneDissolutionChamberRecipe recipe) {
+        return recipe.getProcessingTime();
+    }
+
+    @Override
+    protected long getRecipeCobblestonePowerPerTick(CobblestoneDissolutionChamberRecipe recipe) {
+        return recipe.getCobblestonePowerPerTick();
+    }
+
+    @Override
+    protected void finishProcessing(CobblestoneDissolutionChamberRecipe recipe) {
         this.itemStackHandler.getStackInSlot(INPUT_SLOT_INDEX).shrink(recipe.getItemInput().count());
         this.drainInputInternal(recipe.getFluidInput().getAmount(), IFluidHandler.FluidAction.EXECUTE);
         this.fillOutputInternal(recipe.getFluidOutput(), IFluidHandler.FluidAction.EXECUTE);
     }
 
-    private int getProgressStep(long cobblestonePowerPerTick) {
-        if (cobblestonePowerPerTick <= 0) {
-            return 0;
-        }
-
-        int accelerationMultiplier = this.getAccelerationMultiplier();
-        int remainingProgress = this.maxProgress - this.progress;
-        if (remainingProgress <= 0) {
-            return 0;
-        }
-
-        int maxProgressStep = Math.min(accelerationMultiplier, remainingProgress);
-        long maxPowerStep = this.storedCobblestonePower / cobblestonePowerPerTick;
-        return Math.min(maxProgressStep, (int) Math.min(Integer.MAX_VALUE, maxPowerStep));
-    }
-
-    private int getAccelerationMultiplier() {
-        ItemStack accelerationStack = this.itemStackHandler.getStackInSlot(ACCELERATION_SLOT_INDEX);
-        int multiplier = MachineUpgradeHelper.getAccelerationMultiplier(accelerationStack);
-        return Math.max(1, multiplier);
-    }
-
-    private int getEnergizedCubeMultiplier() {
-        ItemStack energizedCubeStack = this.itemStackHandler.getStackInSlot(ENERGIZED_CUBE_SLOT_INDEX);
-        int multiplier = MachineUpgradeHelper.getEnergizedCubeMultiplier(energizedCubeStack);
-        return Math.max(1, multiplier);
-    }
-
-    private void clampStoredCobblestonePower() {
-        long maxCobblestonePower = this.getMaxCobblestonePower();
-        if (this.storedCobblestonePower > maxCobblestonePower) {
-            this.storedCobblestonePower = maxCobblestonePower;
-            this.setChanged();
-        }
+    @Override
+    protected void pushOutputsToConfiguredSides() {
+        // Dissolution Chamber は item を出力しないため、基底の item auto export を使用しません。
     }
 
     private int fillInputInternal(FluidStack resource, IFluidHandler.FluidAction action) {
@@ -891,6 +675,18 @@ public class CobblestoneDissolutionChamberBlockEntity extends BaseBlockEntity im
         return executedFillAmount;
     }
 
+    @Override
+    protected void saveAdditionalPoweredMachineData(CompoundTag tag, HolderLookup.Provider registries) {
+        this.saveStoredFluid(tag, registries, "inputFluid", this.storedInputFluid, this.storedInputFluidAmount);
+        this.saveStoredFluid(tag, registries, "outputFluid", this.storedOutputFluid, this.storedOutputFluidAmount);
+    }
+
+    @Override
+    protected void loadAdditionalPoweredMachineData(CompoundTag tag, HolderLookup.Provider registries) {
+        this.loadStoredFluid(tag, registries, "inputFluid", true);
+        this.loadStoredFluid(tag, registries, "outputFluid", false);
+    }
+
     private void saveStoredFluid(CompoundTag tag, HolderLookup.Provider registries, String key, FluidStack fluidStack, long amount) {
         tag.putLong(key + "Amount", amount);
         if (fluidStack.isEmpty() || amount <= 0L) {
@@ -1013,55 +809,4 @@ public class CobblestoneDissolutionChamberBlockEntity extends BaseBlockEntity im
         }
     }
 
-    private class SingleSlotAutomationHandler implements IItemHandler {
-        private final int slotIndex;
-        private final boolean canInsert;
-
-        private SingleSlotAutomationHandler(int slotIndex, boolean canInsert) {
-            this.slotIndex = slotIndex;
-            this.canInsert = canInsert;
-        }
-
-        @Override
-        public int getSlots() {
-            return 1;
-        }
-
-        @Override
-        public @Nonnull ItemStack getStackInSlot(int slot) {
-            if (slot != 0) {
-                return ItemStack.EMPTY;
-            }
-
-            return CobblestoneDissolutionChamberBlockEntity.this.itemStackHandler.getStackInSlot(this.slotIndex);
-        }
-
-        @Override
-        public @Nonnull ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-            if (!this.canInsert || slot != 0) {
-                return stack;
-            }
-
-            return CobblestoneDissolutionChamberBlockEntity.this.itemStackHandler.insertItem(this.slotIndex, stack, simulate);
-        }
-
-        @Override
-        public @Nonnull ItemStack extractItem(int slot, int amount, boolean simulate) {
-            return ItemStack.EMPTY;
-        }
-
-        @Override
-        public int getSlotLimit(int slot) {
-            if (slot != 0) {
-                return 0;
-            }
-
-            return CobblestoneDissolutionChamberBlockEntity.this.itemStackHandler.getSlotLimit(this.slotIndex);
-        }
-
-        @Override
-        public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-            return this.canInsert && slot == 0 && CobblestoneDissolutionChamberBlockEntity.this.itemStackHandler.isItemValid(this.slotIndex, stack);
-        }
-    }
 }

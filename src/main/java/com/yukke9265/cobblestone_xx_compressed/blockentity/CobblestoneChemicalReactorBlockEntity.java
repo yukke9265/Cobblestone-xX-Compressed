@@ -7,7 +7,6 @@ import javax.annotation.Nonnull;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import com.yukke9265.cobblestone_xx_compressed.block.OnOffBlock;
 import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneChemicalReactorMenu;
 import com.yukke9265.cobblestone_xx_compressed.recipe.ChemicalReactorRecipeInput;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneChemicalReactorRecipe;
@@ -40,7 +39,7 @@ import net.neoforged.neoforge.items.ItemStackHandler;
 import net.neoforged.neoforge.items.wrapper.EmptyItemHandler;
 
 @SuppressWarnings("null")
-public class CobblestoneChemicalReactorBlockEntity extends BaseBlockEntity implements MenuProvider {
+public class CobblestoneChemicalReactorBlockEntity extends PoweredMachineBlockEntityBase<CobblestoneChemicalReactorRecipe> implements MenuProvider {
     public static final int INPUT_SLOT_1_INDEX = 0;
     public static final int INPUT_SLOT_2_INDEX = 1;
     public static final int POWER_SLOT_INDEX = 2;
@@ -54,12 +53,7 @@ public class CobblestoneChemicalReactorBlockEntity extends BaseBlockEntity imple
     public static final long MAX_OUTPUT_FLUID_1_AMOUNT = 64_000L;
     public static final long MAX_OUTPUT_FLUID_2_AMOUNT = 64_000L;
 
-    private static final int DATA_INDEX_PROGRESS = 0;
-    private static final int DATA_INDEX_MAX_PROGRESS = 1;
-    private static final int DATA_INDEX_STORED_POWER = 2;
-    private static final int DATA_INDEX_STORED_POWER_UPPER = 3;
-    private static final int DATA_INDEX_MAX_STORED_POWER = 4;
-    private static final int DATA_INDEX_MAX_STORED_POWER_UPPER = 5;
+    private static final int MACHINE_SPECIFIC_DATA_COUNT = 20;
     private static final int DATA_INDEX_INPUT_FLUID_1 = 6;
     private static final int DATA_INDEX_INPUT_FLUID_1_UPPER = 7;
     private static final int DATA_INDEX_MAX_INPUT_FLUID_1 = 8;
@@ -80,15 +74,6 @@ public class CobblestoneChemicalReactorBlockEntity extends BaseBlockEntity imple
     private static final int DATA_INDEX_MAX_OUTPUT_FLUID_2 = 23;
     private static final int DATA_INDEX_MAX_OUTPUT_FLUID_2_UPPER = 24;
     private static final int DATA_INDEX_OUTPUT_FLUID_2_ID = 25;
-    private static final int DATA_INDEX_ITEM_AUTOMATION_START = 26;
-    private static final int DATA_INDEX_FLUID_AUTOMATION_START = DATA_INDEX_ITEM_AUTOMATION_START + AUTOMATION_FACE_COUNT;
-    private static final int DATA_INDEX_CURRENT_POWER_RATE = DATA_INDEX_FLUID_AUTOMATION_START + AUTOMATION_FACE_COUNT;
-    private static final int DATA_INDEX_CURRENT_POWER_RATE_UPPER = DATA_INDEX_CURRENT_POWER_RATE + 1;
-    private static final int DATA_INDEX_AUTO_EXPORT = DATA_INDEX_CURRENT_POWER_RATE_UPPER + 1;
-
-    private int progress;
-    private int maxProgress;
-    private long storedCobblestonePower;
     private long storedInputFluid1Amount;
     private long storedInputFluid2Amount;
     private long storedOutputFluid1Amount;
@@ -97,7 +82,6 @@ public class CobblestoneChemicalReactorBlockEntity extends BaseBlockEntity imple
     private FluidStack storedInputFluid2 = FluidStack.EMPTY;
     private FluidStack storedOutputFluid1 = FluidStack.EMPTY;
     private FluidStack storedOutputFluid2 = FluidStack.EMPTY;
-    private boolean isAvailable = true;
 
     private final FixedSizeItemStackHandler itemStackHandler = new FixedSizeItemStackHandler(7) {
         @Override
@@ -136,167 +120,41 @@ public class CobblestoneChemicalReactorBlockEntity extends BaseBlockEntity imple
         }
     };
 
-    private final IItemHandler inputAutomationHandler = new IItemHandler() {
-        @Override
-        public int getSlots() {
-            return 2;
-        }
-
-        @Override
-        public @Nonnull ItemStack getStackInSlot(int slot) {
-            if (slot == 0) {
-                return CobblestoneChemicalReactorBlockEntity.this.itemStackHandler.getStackInSlot(INPUT_SLOT_1_INDEX);
-            }
-
-            if (slot == 1) {
-                return CobblestoneChemicalReactorBlockEntity.this.itemStackHandler.getStackInSlot(INPUT_SLOT_2_INDEX);
-            }
-
-            return ItemStack.EMPTY;
-        }
-
-        @Override
-        public @Nonnull ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-            if (slot != 0 && slot != 1) {
-                return stack;
-            }
-
-            ItemStack remainingStack = CobblestoneChemicalReactorBlockEntity.this.itemStackHandler.insertItem(INPUT_SLOT_1_INDEX, stack, simulate);
-            if (!remainingStack.isEmpty()) {
-                remainingStack = CobblestoneChemicalReactorBlockEntity.this.itemStackHandler.insertItem(INPUT_SLOT_2_INDEX, remainingStack, simulate);
-            }
-            return remainingStack;
-        }
-
-        @Override
-        public @Nonnull ItemStack extractItem(int slot, int amount, boolean simulate) {
-            return ItemStack.EMPTY;
-        }
-
-        @Override
-        public int getSlotLimit(int slot) {
-            return slot == 0 || slot == 1 ? CobblestoneChemicalReactorBlockEntity.this.itemStackHandler.getSlotLimit(INPUT_SLOT_1_INDEX) : 0;
-        }
-
-        @Override
-        public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-            return slot == 0 || slot == 1;
-        }
-    };
-
-    private final IItemHandler outputAutomationHandler = new IItemHandler() {
-        @Override
-        public int getSlots() {
-            return 2;
-        }
-
-        @Override
-        public @Nonnull ItemStack getStackInSlot(int slot) {
-            if (slot == 0) {
-                return CobblestoneChemicalReactorBlockEntity.this.itemStackHandler.getStackInSlot(OUTPUT_SLOT_1_INDEX);
-            }
-
-            if (slot == 1) {
-                return CobblestoneChemicalReactorBlockEntity.this.itemStackHandler.getStackInSlot(OUTPUT_SLOT_2_INDEX);
-            }
-
-            return ItemStack.EMPTY;
-        }
-
-        @Override
-        public @Nonnull ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-            return stack;
-        }
-
-        @Override
-        public @Nonnull ItemStack extractItem(int slot, int amount, boolean simulate) {
-            if (slot == 0) {
-                return CobblestoneChemicalReactorBlockEntity.this.itemStackHandler.extractItem(OUTPUT_SLOT_1_INDEX, amount, simulate);
-            }
-
-            if (slot == 1) {
-                return CobblestoneChemicalReactorBlockEntity.this.itemStackHandler.extractItem(OUTPUT_SLOT_2_INDEX, amount, simulate);
-            }
-
-            return ItemStack.EMPTY;
-        }
-
-        @Override
-        public int getSlotLimit(int slot) {
-            if (slot == 0) {
-                return CobblestoneChemicalReactorBlockEntity.this.itemStackHandler.getSlotLimit(OUTPUT_SLOT_1_INDEX);
-            }
-
-            if (slot == 1) {
-                return CobblestoneChemicalReactorBlockEntity.this.itemStackHandler.getSlotLimit(OUTPUT_SLOT_2_INDEX);
-            }
-
-            return 0;
-        }
-
-        @Override
-        public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-            return false;
-        }
-    };
-
-    private final IItemHandler inputSlot1AutomationHandler = new SingleSlotAutomationHandler(INPUT_SLOT_1_INDEX, true, false);
-    private final IItemHandler inputSlot2AutomationHandler = new SingleSlotAutomationHandler(INPUT_SLOT_2_INDEX, true, false);
-    private final IItemHandler cobblestoneInputAutomationHandler = new SingleSlotAutomationHandler(POWER_SLOT_INDEX, true, false);
-    private final IItemHandler outputSlot1AutomationHandler = new SingleSlotAutomationHandler(OUTPUT_SLOT_1_INDEX, false, true);
-    private final IItemHandler outputSlot2AutomationHandler = new SingleSlotAutomationHandler(OUTPUT_SLOT_2_INDEX, false, true);
-
-    private final IItemHandler automationAccessHandler = new IItemHandler() {
-        @Override
-        public int getSlots() {
-            return 7;
-        }
-
-        @Override
-        public @Nonnull ItemStack getStackInSlot(int slot) {
-            if (slot < 0 || slot >= 7) {
-                return ItemStack.EMPTY;
-            }
-
-            return CobblestoneChemicalReactorBlockEntity.this.itemStackHandler.getStackInSlot(slot);
-        }
-
-        @Override
-        public @Nonnull ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-            if (slot == INPUT_SLOT_1_INDEX || slot == INPUT_SLOT_2_INDEX) {
-                return CobblestoneChemicalReactorBlockEntity.this.itemStackHandler.insertItem(slot, stack, simulate);
-            }
-
-            return stack;
-        }
-
-        @Override
-        public @Nonnull ItemStack extractItem(int slot, int amount, boolean simulate) {
-            if (slot == OUTPUT_SLOT_1_INDEX || slot == OUTPUT_SLOT_2_INDEX) {
-                return CobblestoneChemicalReactorBlockEntity.this.itemStackHandler.extractItem(slot, amount, simulate);
-            }
-
-            return ItemStack.EMPTY;
-        }
-
-        @Override
-        public int getSlotLimit(int slot) {
-            if (slot < 0 || slot >= 7) {
-                return 0;
-            }
-
-            return CobblestoneChemicalReactorBlockEntity.this.itemStackHandler.getSlotLimit(slot);
-        }
-
-        @Override
-        public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-            if (slot < 0 || slot >= 7) {
-                return false;
-            }
-
-            return CobblestoneChemicalReactorBlockEntity.this.itemStackHandler.isItemValid(slot, stack);
-        }
-    };
+    private final IItemHandler inputAutomationHandler = AutomationItemHandlerHelper.createSequentialInsertOnlyHandler(
+        this.itemStackHandler,
+        INPUT_SLOT_1_INDEX,
+        INPUT_SLOT_2_INDEX
+    );
+    private final IItemHandler outputAutomationHandler = AutomationItemHandlerHelper.createMultipleExtractOnlyHandler(
+        this.itemStackHandler,
+        OUTPUT_SLOT_1_INDEX,
+        OUTPUT_SLOT_2_INDEX
+    );
+    private final IItemHandler inputSlot1AutomationHandler = AutomationItemHandlerHelper.createInsertOnlyHandler(
+        this.itemStackHandler,
+        INPUT_SLOT_1_INDEX
+    );
+    private final IItemHandler inputSlot2AutomationHandler = AutomationItemHandlerHelper.createInsertOnlyHandler(
+        this.itemStackHandler,
+        INPUT_SLOT_2_INDEX
+    );
+    private final IItemHandler cobblestoneInputAutomationHandler = AutomationItemHandlerHelper.createInsertOnlyHandler(
+        this.itemStackHandler,
+        POWER_SLOT_INDEX
+    );
+    private final IItemHandler outputSlot1AutomationHandler = AutomationItemHandlerHelper.createExtractOnlyHandler(
+        this.itemStackHandler,
+        OUTPUT_SLOT_1_INDEX
+    );
+    private final IItemHandler outputSlot2AutomationHandler = AutomationItemHandlerHelper.createExtractOnlyHandler(
+        this.itemStackHandler,
+        OUTPUT_SLOT_2_INDEX
+    );
+    private final IItemHandler automationAccessHandler = AutomationItemHandlerHelper.createRestrictedAccessHandler(
+        this.itemStackHandler,
+        new int[] {INPUT_SLOT_1_INDEX, INPUT_SLOT_2_INDEX},
+        new int[] {OUTPUT_SLOT_1_INDEX, OUTPUT_SLOT_2_INDEX}
+    );
 
     private final IFluidHandler internalFluidHandler = new ChemicalReactorFluidHandler(true, true);
     private final IFluidHandler inputFluidHandler = new ChemicalReactorFluidHandler(true, false);
@@ -312,41 +170,6 @@ public class CobblestoneChemicalReactorBlockEntity extends BaseBlockEntity imple
         for (int index = 0; index < AUTOMATION_FACE_COUNT; index++) {
             this.setFluidAutomationMode(index, AutomationMode.DISABLED);
         }
-    }
-
-    public int getProgress() {
-        return this.progress;
-    }
-
-    public int getMaxProgress() {
-        return this.maxProgress;
-    }
-
-    public long getStoredCobblestonePower() {
-        return this.storedCobblestonePower;
-    }
-
-    public long getMaxCobblestonePower() {
-        return MAX_COBBLESTONE_POWER * this.getEnergizedCubeMultiplier();
-    }
-
-    public long getCurrentCobblestonePowerConsumption() {
-        if (!this.isAvailable) {
-            return 0L;
-        }
-
-        var recipeHolder = this.getCurrentRecipe();
-        if (recipeHolder.isEmpty()) {
-            return 0L;
-        }
-
-        var recipe = recipeHolder.get().value();
-        if (!this.canProcess(recipe)) {
-            return 0L;
-        }
-
-        long cobblestonePowerPerTick = recipe.getCobblestonePowerPerTick();
-        return cobblestonePowerPerTick * this.getProgressStep(cobblestonePowerPerTick);
     }
 
     public long getStoredInputFluid1Amount() {
@@ -397,21 +220,68 @@ public class CobblestoneChemicalReactorBlockEntity extends BaseBlockEntity imple
         return this.createDisplayedFluid(this.storedOutputFluid2, this.storedOutputFluid2Amount);
     }
 
-    public boolean getIsAvailable() {
-        return this.isAvailable;
-    }
-
+    @Override
     public ItemStackHandler getItemStackHandler() {
         return this.itemStackHandler;
     }
 
-    public void reverseIsAvailable() {
-        if (this.level == null || this.level.isClientSide) {
-            return;
+    @Override
+    protected long getBaseMaxCobblestonePower() {
+        return MAX_COBBLESTONE_POWER;
+    }
+
+    @Override
+    protected int getPowerSlotIndex() {
+        return POWER_SLOT_INDEX;
+    }
+
+    @Override
+    protected int getOutputSlotIndex() {
+        return OUTPUT_SLOT_1_INDEX;
+    }
+
+    @Override
+    protected Optional<CobblestoneChemicalReactorRecipe> findMatchingRecipe() {
+        Level currentLevel = this.level;
+        if (currentLevel == null) {
+            return Optional.empty();
         }
 
-        this.isAvailable = !this.isAvailable;
-        this.setChanged();
+        ChemicalReactorRecipeInput input = this.createRecipeInput();
+        if (input.isEmpty()) {
+            return Optional.empty();
+        }
+
+        return currentLevel.getRecipeManager()
+            .getRecipeFor(ModRecipeTypes.COBBLESTONE_CHEMICAL_REACTOR.get(), input, currentLevel)
+            .map(RecipeHolder::value);
+    }
+
+    @Override
+    protected boolean canProcessRecipe(CobblestoneChemicalReactorRecipe recipe) {
+        return this.hasRequiredInputs(recipe)
+            && this.canOutputItems(recipe)
+            && this.canOutputFluids(recipe);
+    }
+
+    @Override
+    protected boolean shouldResetProgress(CobblestoneChemicalReactorRecipe recipe) {
+        return !this.canProcessRecipe(recipe);
+    }
+
+    @Override
+    protected int getRecipeProcessingTime(CobblestoneChemicalReactorRecipe recipe) {
+        return recipe.getProcessingTime();
+    }
+
+    @Override
+    protected long getRecipeCobblestonePowerPerTick(CobblestoneChemicalReactorRecipe recipe) {
+        return recipe.getCobblestonePowerPerTick();
+    }
+
+    @Override
+    protected void finishProcessing(CobblestoneChemicalReactorRecipe recipe) {
+        this.craft(recipe);
     }
 
     public IItemHandler getAutomationItemHandler(@Nullable Direction side) {
@@ -495,72 +365,7 @@ public class CobblestoneChemicalReactorBlockEntity extends BaseBlockEntity imple
     }
 
     @Override
-    public void tick() {
-        if (this.level == null || this.level.isClientSide) {
-            return;
-        }
-
-        Level currentLevel = this.level;
-        BlockState currentState = this.getBlockState();
-        boolean shouldTurnOn = false;
-
-        this.clampStoredCobblestonePower();
-        this.tryAbsorbCobblestonePower();
-
-        Optional<RecipeHolder<CobblestoneChemicalReactorRecipe>> recipeHolder = this.getCurrentRecipe();
-        if (this.isAvailable && recipeHolder.isPresent()) {
-            CobblestoneChemicalReactorRecipe recipe = recipeHolder.get().value();
-            if (this.maxProgress != recipe.getProcessingTime()) {
-                this.maxProgress = recipe.getProcessingTime();
-                this.setChanged();
-            }
-
-            if (this.canProcess(recipe)) {
-                int progressStep = this.getProgressStep(recipe.getCobblestonePowerPerTick());
-                this.progress += progressStep;
-                this.storedCobblestonePower -= recipe.getCobblestonePowerPerTick() * progressStep;
-                shouldTurnOn = true;
-                this.setChanged();
-
-                if (this.progress >= this.maxProgress) {
-                    this.craft(recipe);
-                    this.progress = 0;
-                    this.setChanged();
-                }
-            } else if (this.progress != 0) {
-                this.progress = 0;
-                this.setChanged();
-            }
-        } else {
-            if (this.progress != 0) {
-                this.progress = 0;
-                this.setChanged();
-            }
-
-            if (this.maxProgress != 0) {
-                this.maxProgress = 0;
-                this.setChanged();
-            }
-        }
-
-        BlockState updatedState = currentState.setValue(OnOffBlock.ON, shouldTurnOn);
-        if (updatedState != currentState) {
-            currentLevel.setBlock(this.worldPosition, updatedState, 3);
-        }
-
-        this.pushOutputsToConfiguredSides();
-        this.autoExportFluid();
-    }
-
-    @Override
-    protected void saveAdditional(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider registries) {
-        super.saveAdditional(tag, registries);
-        tag.putInt("progress", this.progress);
-        tag.putInt("maxProgress", this.maxProgress);
-        tag.putLong("storedCobblestonePower", this.storedCobblestonePower);
-        tag.putBoolean("isAvailable", this.isAvailable);
-        this.saveAutomationModes(tag);
-        tag.put("inventory", this.itemStackHandler.serializeNBT(registries));
+    protected void saveAdditionalPoweredMachineData(CompoundTag tag, HolderLookup.Provider registries) {
         this.saveStoredFluid(tag, registries, "inputFluid1", this.storedInputFluid1, this.storedInputFluid1Amount);
         this.saveStoredFluid(tag, registries, "inputFluid2", this.storedInputFluid2, this.storedInputFluid2Amount);
         this.saveStoredFluid(tag, registries, "outputFluid1", this.storedOutputFluid1, this.storedOutputFluid1Amount);
@@ -568,17 +373,7 @@ public class CobblestoneChemicalReactorBlockEntity extends BaseBlockEntity imple
     }
 
     @Override
-    protected void loadAdditional(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider registries) {
-        super.loadAdditional(tag, registries);
-        this.progress = tag.getInt("progress");
-        this.maxProgress = tag.getInt("maxProgress");
-        this.storedCobblestonePower = tag.getLong("storedCobblestonePower");
-        this.isAvailable = !tag.contains("isAvailable", Tag.TAG_BYTE) || tag.getBoolean("isAvailable");
-        this.loadAutomationModes(tag);
-        if (tag.contains("inventory", Tag.TAG_COMPOUND)) {
-            this.itemStackHandler.deserializeNBTKeepingSize(registries, tag.getCompound("inventory"));
-        }
-
+    protected void loadAdditionalPoweredMachineData(CompoundTag tag, HolderLookup.Provider registries) {
         this.loadStoredFluid(tag, registries, "inputFluid1", 0);
         this.loadStoredFluid(tag, registries, "inputFluid2", 1);
         this.loadStoredFluid(tag, registries, "outputFluid1", 2);
@@ -605,29 +400,11 @@ public class CobblestoneChemicalReactorBlockEntity extends BaseBlockEntity imple
         ContainerData chemicalReactorData = new ContainerData() {
             @Override
             public int get(int index) {
-                if (index == DATA_INDEX_PROGRESS) {
-                    return progress;
-                }
-                if (index == DATA_INDEX_MAX_PROGRESS) {
-                    return maxProgress;
-                }
-                if (index == DATA_INDEX_STORED_POWER) {
-                    return LongDataHelper.lowerInt(storedCobblestonePower);
-                }
-                if (index == DATA_INDEX_STORED_POWER_UPPER) {
-                    return LongDataHelper.upperInt(storedCobblestonePower);
-                }
-                if (index == DATA_INDEX_MAX_STORED_POWER) {
-                    return LongDataHelper.lowerInt(getMaxCobblestonePower());
-                }
-                if (index == DATA_INDEX_MAX_STORED_POWER_UPPER) {
-                    return LongDataHelper.upperInt(getMaxCobblestonePower());
-                }
                 if (index == DATA_INDEX_INPUT_FLUID_1) {
-                    return LongDataHelper.lowerInt(storedInputFluid1Amount);
+                    return LongDataHelper.lowerInt(CobblestoneChemicalReactorBlockEntity.this.storedInputFluid1Amount);
                 }
                 if (index == DATA_INDEX_INPUT_FLUID_1_UPPER) {
-                    return LongDataHelper.upperInt(storedInputFluid1Amount);
+                    return LongDataHelper.upperInt(CobblestoneChemicalReactorBlockEntity.this.storedInputFluid1Amount);
                 }
                 if (index == DATA_INDEX_MAX_INPUT_FLUID_1) {
                     return LongDataHelper.lowerInt(MAX_INPUT_FLUID_1_AMOUNT);
@@ -639,10 +416,10 @@ public class CobblestoneChemicalReactorBlockEntity extends BaseBlockEntity imple
                     return CobblestoneChemicalReactorBlockEntity.this.getDisplayedFluidId(0);
                 }
                 if (index == DATA_INDEX_INPUT_FLUID_2) {
-                    return LongDataHelper.lowerInt(storedInputFluid2Amount);
+                    return LongDataHelper.lowerInt(CobblestoneChemicalReactorBlockEntity.this.storedInputFluid2Amount);
                 }
                 if (index == DATA_INDEX_INPUT_FLUID_2_UPPER) {
-                    return LongDataHelper.upperInt(storedInputFluid2Amount);
+                    return LongDataHelper.upperInt(CobblestoneChemicalReactorBlockEntity.this.storedInputFluid2Amount);
                 }
                 if (index == DATA_INDEX_MAX_INPUT_FLUID_2) {
                     return LongDataHelper.lowerInt(MAX_INPUT_FLUID_2_AMOUNT);
@@ -654,10 +431,10 @@ public class CobblestoneChemicalReactorBlockEntity extends BaseBlockEntity imple
                     return CobblestoneChemicalReactorBlockEntity.this.getDisplayedFluidId(1);
                 }
                 if (index == DATA_INDEX_OUTPUT_FLUID_1) {
-                    return LongDataHelper.lowerInt(storedOutputFluid1Amount);
+                    return LongDataHelper.lowerInt(CobblestoneChemicalReactorBlockEntity.this.storedOutputFluid1Amount);
                 }
                 if (index == DATA_INDEX_OUTPUT_FLUID_1_UPPER) {
-                    return LongDataHelper.upperInt(storedOutputFluid1Amount);
+                    return LongDataHelper.upperInt(CobblestoneChemicalReactorBlockEntity.this.storedOutputFluid1Amount);
                 }
                 if (index == DATA_INDEX_MAX_OUTPUT_FLUID_1) {
                     return LongDataHelper.lowerInt(MAX_OUTPUT_FLUID_1_AMOUNT);
@@ -669,10 +446,10 @@ public class CobblestoneChemicalReactorBlockEntity extends BaseBlockEntity imple
                     return CobblestoneChemicalReactorBlockEntity.this.getDisplayedFluidId(2);
                 }
                 if (index == DATA_INDEX_OUTPUT_FLUID_2) {
-                    return LongDataHelper.lowerInt(storedOutputFluid2Amount);
+                    return LongDataHelper.lowerInt(CobblestoneChemicalReactorBlockEntity.this.storedOutputFluid2Amount);
                 }
                 if (index == DATA_INDEX_OUTPUT_FLUID_2_UPPER) {
-                    return LongDataHelper.upperInt(storedOutputFluid2Amount);
+                    return LongDataHelper.upperInt(CobblestoneChemicalReactorBlockEntity.this.storedOutputFluid2Amount);
                 }
                 if (index == DATA_INDEX_MAX_OUTPUT_FLUID_2) {
                     return LongDataHelper.lowerInt(MAX_OUTPUT_FLUID_2_AMOUNT);
@@ -683,31 +460,29 @@ public class CobblestoneChemicalReactorBlockEntity extends BaseBlockEntity imple
                 if (index == DATA_INDEX_OUTPUT_FLUID_2_ID) {
                     return CobblestoneChemicalReactorBlockEntity.this.getDisplayedFluidId(3);
                 }
-                if (index >= DATA_INDEX_ITEM_AUTOMATION_START && index < DATA_INDEX_FLUID_AUTOMATION_START) {
-                    return CobblestoneChemicalReactorBlockEntity.this.getAutomationModeId(index - DATA_INDEX_ITEM_AUTOMATION_START);
-                }
-                if (index >= DATA_INDEX_FLUID_AUTOMATION_START && index < DATA_INDEX_CURRENT_POWER_RATE) {
-                    return CobblestoneChemicalReactorBlockEntity.this.getFluidAutomationModeId(index - DATA_INDEX_FLUID_AUTOMATION_START);
-                }
-                if (index == DATA_INDEX_CURRENT_POWER_RATE) {
-                    return LongDataHelper.lowerInt(CobblestoneChemicalReactorBlockEntity.this.getCurrentCobblestonePowerConsumption());
-                }
-                if (index == DATA_INDEX_CURRENT_POWER_RATE_UPPER) {
-                    return LongDataHelper.upperInt(CobblestoneChemicalReactorBlockEntity.this.getCurrentCobblestonePowerConsumption());
-                }
-                if (index == DATA_INDEX_AUTO_EXPORT) {
-                    return CobblestoneChemicalReactorBlockEntity.this.getAutoExportEnabledId();
-                }
-                return 0;
+                return CobblestoneChemicalReactorBlockEntity.this.getPoweredMachineCommonData(
+                    index,
+                    MACHINE_SPECIFIC_DATA_COUNT,
+                    true
+                );
             }
 
             @Override
             public void set(int index, int value) {
+                CobblestoneChemicalReactorBlockEntity.this.setPoweredMachineCommonData(
+                    index,
+                    value,
+                    MACHINE_SPECIFIC_DATA_COUNT,
+                    true
+                );
             }
 
             @Override
             public int getCount() {
-                return DATA_INDEX_AUTO_EXPORT + 1;
+                return CobblestoneChemicalReactorBlockEntity.this.getPoweredMachineDataCount(
+                    MACHINE_SPECIFIC_DATA_COUNT,
+                    true
+                );
             }
         };
 
@@ -722,21 +497,24 @@ public class CobblestoneChemicalReactorBlockEntity extends BaseBlockEntity imple
         return storedFluid.copyWithAmount((int) Math.min(storedAmount, Integer.MAX_VALUE));
     }
 
-    private void pushOutputsToConfiguredSides() {
-        ItemStack outputStack1 = this.itemStackHandler.getStackInSlot(OUTPUT_SLOT_1_INDEX);
-        if (!outputStack1.isEmpty()) {
-            ItemStack remainingOutput1 = this.pushItemStackToConfiguredSides(outputStack1.copy(), AutomationMode.OUTPUT, AutomationMode.OUTPUT_1, AutomationMode.IN_OUT);
-            this.itemStackHandler.setStackInSlot(OUTPUT_SLOT_1_INDEX, remainingOutput1);
-        }
-
-        ItemStack outputStack2 = this.itemStackHandler.getStackInSlot(OUTPUT_SLOT_2_INDEX);
-        if (!outputStack2.isEmpty()) {
-            ItemStack remainingOutput2 = this.pushItemStackToConfiguredSides(outputStack2.copy(), AutomationMode.OUTPUT, AutomationMode.OUTPUT_2, AutomationMode.IN_OUT);
-            this.itemStackHandler.setStackInSlot(OUTPUT_SLOT_2_INDEX, remainingOutput2);
-        }
+    @Override
+    protected void pushOutputsToConfiguredSides() {
+        this.pushOutputSlotToConfiguredSides(
+            OUTPUT_SLOT_1_INDEX,
+            AutomationMode.OUTPUT,
+            AutomationMode.OUTPUT_1,
+            AutomationMode.IN_OUT
+        );
+        this.pushOutputSlotToConfiguredSides(
+            OUTPUT_SLOT_2_INDEX,
+            AutomationMode.OUTPUT,
+            AutomationMode.OUTPUT_2,
+            AutomationMode.IN_OUT
+        );
     }
 
-    private void autoExportFluid() {
+    @Override
+    protected void onAutoExportFluid() {
         if (!this.isAutoExportEnabled()) {
             return;
         }
@@ -758,18 +536,6 @@ public class CobblestoneChemicalReactorBlockEntity extends BaseBlockEntity imple
         if (exportedAmount > 0) {
             this.drainTankInternal(tankIndex, exportedAmount, IFluidHandler.FluidAction.EXECUTE);
         }
-    }
-
-    private void tryAbsorbCobblestonePower() {
-        ItemStack powerStack = this.itemStackHandler.getStackInSlot(POWER_SLOT_INDEX);
-        long convertedPower = CobblestoneCrusherBlockEntity.getCobblestonePowerValueForAutomation(powerStack);
-        if (convertedPower <= 0 || this.storedCobblestonePower + convertedPower > this.getMaxCobblestonePower()) {
-            return;
-        }
-
-        powerStack.shrink(1);
-        this.storedCobblestonePower += convertedPower;
-        this.setChanged();
     }
 
     @SuppressWarnings("null")
@@ -795,33 +561,6 @@ public class CobblestoneChemicalReactorBlockEntity extends BaseBlockEntity imple
         }
 
         return false;
-    }
-
-    private Optional<RecipeHolder<CobblestoneChemicalReactorRecipe>> getCurrentRecipe() {
-        Level currentLevel = this.level;
-        if (currentLevel == null) {
-            return Optional.empty();
-        }
-
-        ChemicalReactorRecipeInput input = this.createRecipeInput();
-        if (input.isEmpty()) {
-            return Optional.empty();
-        }
-
-        return currentLevel.getRecipeManager().getRecipeFor(ModRecipeTypes.COBBLESTONE_CHEMICAL_REACTOR.get(), input, currentLevel);
-    }
-
-    private boolean canProcess(CobblestoneChemicalReactorRecipe recipe) {
-        if (this.getProgressStep(recipe.getCobblestonePowerPerTick()) <= 0) {
-            return false;
-        }
-        if (!this.hasRequiredInputs(recipe)) {
-            return false;
-        }
-        if (!this.canOutputItems(recipe)) {
-            return false;
-        }
-        return this.canOutputFluids(recipe);
     }
 
     private boolean hasRequiredInputs(CobblestoneChemicalReactorRecipe recipe) {
@@ -925,42 +664,6 @@ public class CobblestoneChemicalReactorBlockEntity extends BaseBlockEntity imple
         }
 
         outputStack.grow(resultStack.getCount());
-    }
-
-    private int getProgressStep(long cobblestonePowerPerTick) {
-        if (cobblestonePowerPerTick <= 0) {
-            return 0;
-        }
-
-        int accelerationMultiplier = this.getAccelerationMultiplier();
-        int remainingProgress = this.maxProgress - this.progress;
-        if (remainingProgress <= 0) {
-            return 0;
-        }
-
-        int maxProgressStep = Math.min(accelerationMultiplier, remainingProgress);
-        long maxPowerStep = this.storedCobblestonePower / cobblestonePowerPerTick;
-        return Math.min(maxProgressStep, (int) Math.min(Integer.MAX_VALUE, maxPowerStep));
-    }
-
-    private int getAccelerationMultiplier() {
-        ItemStack accelerationStack = this.itemStackHandler.getStackInSlot(ACCELERATION_SLOT_INDEX);
-        int multiplier = MachineUpgradeHelper.getAccelerationMultiplier(accelerationStack);
-        return Math.max(1, multiplier);
-    }
-
-    private int getEnergizedCubeMultiplier() {
-        ItemStack energizedCubeStack = this.itemStackHandler.getStackInSlot(ENERGIZED_CUBE_SLOT_INDEX);
-        int multiplier = MachineUpgradeHelper.getEnergizedCubeMultiplier(energizedCubeStack);
-        return Math.max(1, multiplier);
-    }
-
-    private void clampStoredCobblestonePower() {
-        long maxCobblestonePower = this.getMaxCobblestonePower();
-        if (this.storedCobblestonePower > maxCobblestonePower) {
-            this.storedCobblestonePower = maxCobblestonePower;
-            this.setChanged();
-        }
     }
 
     private boolean handleFluidIndicatorClick(Player player, boolean processAll, int tankIndex) {
@@ -1342,56 +1045,6 @@ public class CobblestoneChemicalReactorBlockEntity extends BaseBlockEntity imple
         if (currentLevel != null) {
             BlockState currentState = this.getBlockState();
             currentLevel.sendBlockUpdated(this.worldPosition, currentState, currentState, 3);
-        }
-    }
-
-    private class SingleSlotAutomationHandler implements IItemHandler {
-        private final int slotIndex;
-        private final boolean canInsert;
-        private final boolean canExtract;
-
-        private SingleSlotAutomationHandler(int slotIndex, boolean canInsert, boolean canExtract) {
-            this.slotIndex = slotIndex;
-            this.canInsert = canInsert;
-            this.canExtract = canExtract;
-        }
-
-        @Override
-        public int getSlots() {
-            return 1;
-        }
-
-        @Override
-        public @Nonnull ItemStack getStackInSlot(int slot) {
-            return slot == 0 ? CobblestoneChemicalReactorBlockEntity.this.itemStackHandler.getStackInSlot(this.slotIndex) : ItemStack.EMPTY;
-        }
-
-        @Override
-        public @Nonnull ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-            if (!this.canInsert || slot != 0) {
-                return stack;
-            }
-
-            return CobblestoneChemicalReactorBlockEntity.this.itemStackHandler.insertItem(this.slotIndex, stack, simulate);
-        }
-
-        @Override
-        public @Nonnull ItemStack extractItem(int slot, int amount, boolean simulate) {
-            if (!this.canExtract || slot != 0) {
-                return ItemStack.EMPTY;
-            }
-
-            return CobblestoneChemicalReactorBlockEntity.this.itemStackHandler.extractItem(this.slotIndex, amount, simulate);
-        }
-
-        @Override
-        public int getSlotLimit(int slot) {
-            return slot == 0 ? CobblestoneChemicalReactorBlockEntity.this.itemStackHandler.getSlotLimit(this.slotIndex) : 0;
-        }
-
-        @Override
-        public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-            return this.canInsert && slot == 0 && CobblestoneChemicalReactorBlockEntity.this.itemStackHandler.isItemValid(this.slotIndex, stack);
         }
     }
 
