@@ -180,6 +180,15 @@ public abstract class PoweredMachineBlockEntityBase<R> extends BaseBlockEntity {
     }
 
     /**
+     * 流体出力を持つ機械が、auto export を行うための hook です。
+     *
+     * item 出力だけを持つ標準機械では何もしません。流体タンクを持つ継承先だけが
+     * override し、流体の種類や容量に応じた搬出処理を実装します。
+     */
+    protected void onAutoExportFluid() {
+    }
+
+    /**
      * 指定した出力スロットを、指定された automation mode の面へ搬出します。
      * 呼び出し順がそのまま搬出順になるため、複数出力機械でも優先順位を保てます。
      */
@@ -254,6 +263,7 @@ public abstract class PoweredMachineBlockEntityBase<R> extends BaseBlockEntity {
         }
 
         this.pushOutputsToConfiguredSides();
+        this.onAutoExportFluid();
     }
 
     protected final void resetProgress() {
@@ -324,7 +334,13 @@ public abstract class PoweredMachineBlockEntityBase<R> extends BaseBlockEntity {
         return multiplier;
     }
 
-    private int getEnergizedCubeMultiplier() {
+    /**
+     * energized cube による容量倍率を返します。
+     *
+     * 通常は getMaxCobblestonePower() 内部だけで使用しますが、Enchanter のように
+     * 機械固有の必要容量と比較する機械でも、同じ倍率規則を使えるようにします。
+     */
+    protected final int getEnergizedCubeMultiplier() {
         ItemStackHandler itemStackHandler = this.getItemStackHandler();
         if (itemStackHandler == null) {
             return 1;
@@ -468,7 +484,24 @@ public abstract class PoweredMachineBlockEntityBase<R> extends BaseBlockEntity {
         return this.getAutoExportDataIndex(machineSpecificDataCount) + 1;
     }
 
+    /**
+     * item と fluid の両方で automation 設定を持つ powered machine 用の同期数です。
+     *
+     * 機械固有データ、item automation、fluid automation、CP/t、auto export の順で
+     * ContainerData を並べます。通常の item 専用機械は既存の overload を使用します。
+     */
+    protected final int getPoweredMachineDataCount(int machineSpecificDataCount, boolean includesFluidAutomation) {
+        return this.getAutoExportDataIndex(machineSpecificDataCount, includesFluidAutomation) + 1;
+    }
+
     protected final int getPoweredMachineCommonData(int index, int machineSpecificDataCount) {
+        return this.getPoweredMachineCommonData(index, machineSpecificDataCount, false);
+    }
+
+    /**
+     * item と fluid の automation mode を両方同期する powered machine 用の共通データ取得です。
+     */
+    protected final int getPoweredMachineCommonData(int index, int machineSpecificDataCount, boolean includesFluidAutomation) {
         if (index == DATA_INDEX_PROGRESS) {
             return this.progress;
         }
@@ -498,15 +531,22 @@ public abstract class PoweredMachineBlockEntityBase<R> extends BaseBlockEntity {
             return this.getAutomationModeId(automationIndex);
         }
 
-        if (index == this.getCurrentPowerRateDataIndex(machineSpecificDataCount)) {
+        int fluidAutomationStartDataIndex = this.getFluidAutomationStartDataIndex(machineSpecificDataCount, includesFluidAutomation);
+        if (includesFluidAutomation
+            && index >= fluidAutomationStartDataIndex
+            && index < fluidAutomationStartDataIndex + AUTOMATION_FACE_COUNT) {
+            return this.getFluidAutomationModeId(index - fluidAutomationStartDataIndex);
+        }
+
+        if (index == this.getCurrentPowerRateDataIndex(machineSpecificDataCount, includesFluidAutomation)) {
             return LongDataHelper.lowerInt(this.getCurrentCobblestonePowerConsumption());
         }
 
-        if (index == this.getCurrentPowerRateUpperDataIndex(machineSpecificDataCount)) {
+        if (index == this.getCurrentPowerRateUpperDataIndex(machineSpecificDataCount, includesFluidAutomation)) {
             return LongDataHelper.upperInt(this.getCurrentCobblestonePowerConsumption());
         }
 
-        if (index == this.getAutoExportDataIndex(machineSpecificDataCount)) {
+        if (index == this.getAutoExportDataIndex(machineSpecificDataCount, includesFluidAutomation)) {
             return this.getAutoExportEnabledId();
         }
 
@@ -514,6 +554,18 @@ public abstract class PoweredMachineBlockEntityBase<R> extends BaseBlockEntity {
     }
 
     protected final boolean setPoweredMachineCommonData(int index, int value, int machineSpecificDataCount) {
+        return this.setPoweredMachineCommonData(index, value, machineSpecificDataCount, false);
+    }
+
+    /**
+     * item と fluid の automation mode を両方同期する powered machine 用の共通データ設定です。
+     */
+    protected final boolean setPoweredMachineCommonData(
+        int index,
+        int value,
+        int machineSpecificDataCount,
+        boolean includesFluidAutomation
+    ) {
         if (index == DATA_INDEX_PROGRESS) {
             this.progress = value;
             return true;
@@ -540,11 +592,43 @@ public abstract class PoweredMachineBlockEntityBase<R> extends BaseBlockEntity {
             return true;
         }
 
-        if (index == this.getAutoExportDataIndex(machineSpecificDataCount)) {
+        int fluidAutomationStartDataIndex = this.getFluidAutomationStartDataIndex(machineSpecificDataCount, includesFluidAutomation);
+        if (includesFluidAutomation
+            && index >= fluidAutomationStartDataIndex
+            && index < fluidAutomationStartDataIndex + AUTOMATION_FACE_COUNT) {
+            this.setFluidAutomationMode(index - fluidAutomationStartDataIndex, AutomationMode.fromId(value));
+            return true;
+        }
+
+        if (index == this.getAutoExportDataIndex(machineSpecificDataCount, includesFluidAutomation)) {
             this.setAutoExportEnabled(value != 0);
             return true;
         }
 
         return false;
+    }
+
+    private int getFluidAutomationStartDataIndex(int machineSpecificDataCount, boolean includesFluidAutomation) {
+        if (!includesFluidAutomation) {
+            return -1;
+        }
+
+        return this.getAutomationStartDataIndex(machineSpecificDataCount) + AUTOMATION_FACE_COUNT;
+    }
+
+    private int getCurrentPowerRateDataIndex(int machineSpecificDataCount, boolean includesFluidAutomation) {
+        if (!includesFluidAutomation) {
+            return this.getCurrentPowerRateDataIndex(machineSpecificDataCount);
+        }
+
+        return this.getFluidAutomationStartDataIndex(machineSpecificDataCount, true) + AUTOMATION_FACE_COUNT;
+    }
+
+    private int getCurrentPowerRateUpperDataIndex(int machineSpecificDataCount, boolean includesFluidAutomation) {
+        return this.getCurrentPowerRateDataIndex(machineSpecificDataCount, includesFluidAutomation) + 1;
+    }
+
+    private int getAutoExportDataIndex(int machineSpecificDataCount, boolean includesFluidAutomation) {
+        return this.getCurrentPowerRateUpperDataIndex(machineSpecificDataCount, includesFluidAutomation) + 1;
     }
 }

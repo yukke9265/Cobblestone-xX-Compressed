@@ -14,7 +14,7 @@
 
 ## 1. 現在地
 
-すでに、単一入力・単一出力を中心とする powered machine 系には土台があります。
+powered machine のBlockEntity共通化は完了しています。結果の一覧は [Powered Machine 共通化まとめ](./SUMMARY.md) を参照してください。
 
 | 層 | 現在の共通基盤 | 主な責務 |
 | --- | --- | --- |
@@ -71,9 +71,9 @@ flowchart TD
 | 系統 | 代表機械 | 主な差分 | 優先度 |
 | --- | --- | --- | --- |
 | 標準 powered | Crusher、Extreme Compressor、Powered Furnace | item 1入力・1出力、CP、upgrade | 完了・維持 |
-| 複数 item | Mixer、Centrifuge、Laser Drill、Stone Break Simulator | 2以上の入力または出力、出力順序 | 高 |
-| item + fluid | Melter、Dissolution Chamber、Crystallization Chamber、Reaction Chamber | fluid tank、容器処理、fluid automation | 中 |
-| 複雑複合 | Chemical Reactor、Assembly Machine、Fluid Mixer | 複数 item と複数 fluid、個別レシピ構造 | 中・後半 |
+| 複数 item | Mixer、Centrifuge、Laser Drill、Enchanter | 2以上の入力または出力、出力順序 | 完了・維持 |
+| item + fluid | Melter、Dissolution Chamber、Crystallization Chamber、Reaction Chamber | fluid tank、容器処理、fluid automation | 完了・維持 |
+| 複雑複合 | Chemical Reactor、Assembly Machine、Fluid Mixer | 複数 item と複数 fluid、個別レシピ構造 | 完了・維持 |
 | 特殊用途 | Enchanter、Tank、FE Generator、Generator | レシピ加工以外の固有状態 | 個別設計 |
 | 非 powered | Cobblestone Furnace | 燃料燃焼の状態遷移 | powered 基盤には入れない |
 
@@ -92,6 +92,8 @@ flowchart TD
 特に `ContainerData` の index は GUI 同期の通信契約です。既存 index の意味を変えず、追加データは後ろへ追加します。
 
 ## 5. 実施フェーズ
+
+以下は実装時に使用した設計フェーズの記録です。powered machine のBlockEntity移行は完了しており、現在の優先順位は「9. 今後の優先順位」を参照します。
 
 ### Phase 0: 現状を固定する
 
@@ -262,16 +264,13 @@ BlockEntity の移行が安定してから、周辺層の重複を整理しま�
 3. recipe の CP/t と総 CP が `MachineRecipePowerTiers` の定義と一致する
 4. `build` または `runClient` で実際のレシピを確認する
 
-## 9. 優先順位
+## 9. 今後の優先順位
 
-次回以降は次の順で進めます。
+BlockEntityの移行フェーズは完了している。今後は次の順で進める。
 
-1. Phase 0 の比較表を作り、現状の仕様と統一対象の差分を固定する
-2. Phase 1 で標準 powered machine の automation handler 重複を小さく減らす
-3. Phase 2 で Centrifuge を試験移行する
-4. Centrifuge の結果を反映して Mixer を移行する
-5. Phase 3 の fluid 契約を設計文書として確定する
-6. Phase 4 以降を 1 機械ずつ進める
+1. 新規powered machineでは、最も近い既存機械を参照して基底classのhookを実装する
+2. UI、JEI、datagenのテンプレート化は、個別の改善作業として小さく分けて進める
+3. 非powered機械と特殊用途機械は、CP加工の基底へ無理に統合せず個別設計を維持する
 
 ## 10. 完了の定義
 
