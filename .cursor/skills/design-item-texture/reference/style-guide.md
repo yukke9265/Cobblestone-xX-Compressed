@@ -63,7 +63,7 @@ After recolor, confirm each variant:
 
 ## Checking results
 
-1. **Pixel dump** for alpha and margins (most reliable)
+1. **`scripts/dump_texture.ps1 -Path <png>`** — bbox, opaque count, `internal_holes` (must be 0)
 2. Read the PNG with the image Read tool
 3. Compare against a known good sibling
 4. In-game: no purple-black; color matches the intended tier/source item

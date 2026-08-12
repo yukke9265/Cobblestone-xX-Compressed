@@ -36,6 +36,32 @@
   - 共通の tier 色パレットです。
   - 上端 1 行を左から読み、先頭を基準色、右側を variant 色として使います。
 
+- `configs/OreColors.png`
+  - 原石タイプ別の色パレットです（tier ではなく copper / iron / gold など）。
+  - index 0 は基準灰、index 1 以降が各原石の代表色です。
+
+- `texture_utils.ps1`
+  - テクスチャ生成の共通ヘルパーです。
+  - ベース修復、pixel map 生成、アクセント配置、ピクセルダンプなどを提供します。
+
+- `dump_texture.ps1`
+  - PNG の 16×16 ピクセルダンプと bbox / internal_holes を表示します。
+  - 生成後の確認用に使います。
+
+- `sample_vanilla_item_color.ps1`
+  - バニラアイテム PNG から多い色をサンプルします。
+  - `OreColors.png` に色を追加するときに使います。
+
+- `generate_crushed_raw_ore_textures.ps1`
+  - 粉砕原石（crushed_raw_ore）ファミリー用の多段ラッパーです。
+  - 修復 → 再着色 → 銅の緑化アクセントまで一括実行します。
+
+- `configs/crushed_raw_ore_texture_config.psd1`
+  - 粉砕原石の再着色設定です。
+
+- `configs/crushed_raw_ore_copper_accents.psd1`
+  - 銅バリアントの緑化アクセント座標です。緑の量を変えるときはここを編集します。
+
 - `generate_cobblestone_bread_textures.ps1`
   - 丸石パン用の薄いラッパーです。
   - 共通スクリプトへ上の設定ファイルを渡すだけなので、普段はこちらを実行すれば十分です。
@@ -183,3 +209,42 @@ tier 用 PNG を出力します。
 2. `configs/cobblestone_bread_texture_config.psd1` の `VariantOutputNames` に対応する出力名を追加する
 
 その後で `generate_cobblestone_bread_textures.ps1` を実行すれば、新しい PNG が生成されます.
+
+## Ore family (crushed_raw_ore)
+
+原石タイプ別（tier 別ではない）のテクスチャは `OreColors.png` を使います。
+
+```powershell
+.\scripts\generate_crushed_raw_ore_textures.ps1
+```
+
+生成後の確認:
+
+```powershell
+.\scripts\dump_texture.ps1 -Path src/main/resources/assets/cobblestonexxcompressed/textures/item/crushed_raw_ore/crushed_raw_copper.png
+```
+
+`internal_holes=0` であること、bbox がおおよそ 14×14 前後であることを確認します。
+
+バニラ原石から色を取るとき:
+
+```powershell
+.\scripts\sample_vanilla_item_color.ps1 -Path D:\1.21.1\assets\minecraft\textures\item\raw_copper.png
+```
+
+新しい原石を追加するとき:
+
+1. `OreColors.png` の右端に色を追加（既存 index は変更しない）
+2. `configs/crushed_raw_ore_texture_config.psd1` に出力名と palette index を追加
+3. 必要なら `configs/crushed_raw_ore_<ore>_accents.psd1` を追加
+4. `generate_crushed_raw_ore_textures.ps1` を再実行
+
+## Validation helpers
+
+```powershell
+# ピクセルダンプ + bbox + 内部の透明穴チェック
+.\scripts\dump_texture.ps1 -Path <png>
+
+# サマリーだけ
+.\scripts\dump_texture.ps1 -Path <png> -SummaryOnly
+```

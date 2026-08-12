@@ -41,7 +41,11 @@ Use `OreColors.png` when variants follow **ore type**, not cobblestone tier. See
 ## Core files
 
 - Shared recolor engine: `scripts/generate_recolored_textures.ps1`
+- Shared texture helpers: `scripts/texture_utils.ps1` (repair, pixel map, accents, dump)
+- Validation: `scripts/dump_texture.ps1`
+- Vanilla color sampling: `scripts/sample_vanilla_item_color.ps1`
 - Per-family configs: `scripts/configs/*_texture_config.psd1`
+- Variant accent configs (when needed): `scripts/configs/*_accents.psd1`
 - Tier palette: `scripts/configs/TierColors.png`
 - Ore palette: `scripts/configs/OreColors.png`
 - Thin wrappers: `scripts/generate_*_textures.ps1`
@@ -51,7 +55,9 @@ Reference implementation (ore family + multi-stage wrapper): `crushed_raw_ore` �
 
 ## Validation
 
-- Base and outputs are 16x16 PNG with **true transparent** background (not white/black fill)
+1. Run `scripts/dump_texture.ps1 -Path <png>` — check **bbox**, **internal_holes=0**, margins
+2. Read the PNG with the image Read tool
+3. Base and outputs are 16x16 PNG with **true transparent** background (not white/black fill)
 - Outer edge uses dark outline `#525252` on base (recolors to family dark tone)
 - Content bbox roughly **14×14 with 1px margin** on each side (adjust if item looks too small)
 - File names match registry id / model `layer0`

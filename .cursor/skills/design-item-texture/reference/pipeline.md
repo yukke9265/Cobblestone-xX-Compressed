@@ -6,6 +6,25 @@ This project's standard post-process is luminance-preserving tinting.
 
 `scripts/generate_recolored_textures.ps1 -ConfigPath <config.psd1>`
 
+Shared helpers live in `scripts/texture_utils.ps1` (dot-source from family wrappers):
+
+| Function | Use |
+|----------|-----|
+| `Repair-ItemTextureBase` | Transparent bg + `#525252` outline before recolor |
+| `New-PixelMapBitmap` | Build 16×16 base from string map + symbol table |
+| `Test-PixelMapSymbols` | Fail fast if map uses undefined symbols |
+| `Apply-TextureAccentPixels` | Post-recolor accents on inner pixels only |
+| `Write-TextureDump` | Pixel dump + bbox + internal hole count |
+| `New-OreColorsPalette` | Create/refresh `OreColors.png` |
+| `Get-VanillaItemDominantColors` | Sample colors from a reference item PNG |
+
+CLI wrappers:
+
+```powershell
+.\scripts\dump_texture.ps1 -Path src/main/resources/.../crushed_raw_copper.png
+.\scripts\sample_vanilla_item_color.ps1 -Path D:\1.21.1\assets\minecraft\textures\item\raw_copper.png
+```
+
 Behavior (important for design):
 
 - Skips fully transparent pixels
@@ -89,7 +108,21 @@ Example config (`scripts/configs/crushed_raw_ore_texture_config.psd1`):
 }
 ```
 
-When adding iron, gold, etc.: add palette columns, extend `VariantOutputNames` and `VariantPaletteIndices`, rerun the wrapper.
+When adding iron, gold, etc.:
+
+1. Sample mid-tone with `sample_vanilla_item_color.ps1` from `raw_<ore>.png`
+2. Add a column to `OreColors.png` (do not reshuffle existing indices)
+3. Extend `VariantOutputNames` and `VariantPaletteIndices` in the family config
+4. Rerun the family wrapper
+
+## Adding a new ore to crushed_raw_ore
+
+1. `.\scripts\sample_vanilla_item_color.ps1 -Path <vanilla raw_ore png>`
+2. Add the mid-tone hex to `OreColors.png` via `New-OreColorsPalette` in the wrapper (append only)
+3. Update `crushed_raw_ore_texture_config.psd1`
+4. If the ore needs accents recolor cannot do (e.g. copper green), add `configs/crushed_raw_ore_<ore>_accents.psd1` and call `Apply-TextureAccentPixels` in the wrapper
+5. `.\scripts\generate_crushed_raw_ore_textures.ps1`
+6. `.\scripts\dump_texture.ps1 -Path ...\crushed_raw_<ore>.png` — confirm `internal_holes=0`
 
 ## Base repair (before recolor)
 
@@ -98,21 +131,40 @@ Run before `generate_recolored_textures.ps1` when the base may have bad backgrou
 1. **Transparency**: pixels with `A < 32` or RGB ≥ 240 (white from AI drafts) → fully transparent
 2. **Outline**: every opaque pixel with a transparent 4-neighbor → `#525252` (recolors to family dark tone, e.g. `#5B3422` for copper)
 
-Reference: `Repair-CrushedRawOreBase` in `scripts/generate_crushed_raw_ore_textures.ps1`.
+Reference: `Repair-ItemTextureBase` in `scripts/texture_utils.ps1`.
 
 **Caution**: repair overwrites outer-edge pixels to `#525252`. Hand-edited outline colors on the perimeter will be reset on each run.
+
+## Pixel map bases (script-authored art)
+
+For new 16×16 bases, prefer `New-PixelMapBitmap` in `texture_utils.ps1`:
+
+```powershell
+$pixelMap = @('................', '......EE88......', ...)
+$colorBySymbol = @{ '.' = $null; '5' = '#525252'; '6' = '#616161'; ... }
+$bitmap = New-PixelMapBitmap -PixelMap $pixelMap -ColorBySymbol $colorBySymbol
+```
+
+Rules:
+
+- **Every symbol in the map must exist in `$colorBySymbol`** — undefined symbols become transparent and cause internal holes (a common bug).
+- `Test-PixelMapSymbols` runs automatically inside `New-PixelMapBitmap`.
+- After changing the map, rerun repair + recolor; **re-check accent coordinates** if the family uses post-recolor accents.
 
 ## Multi-stage wrapper example: crushed_raw_ore
 
 `scripts/generate_crushed_raw_ore_textures.ps1` — use as a template for ore families that need extra steps:
 
 ```
-1. Repair-CrushedRawOreBase   (transparent bg + #525252 outline)
-2. generate_recolored_textures.ps1
-3. Variant-specific accents     (e.g. copper oxide green on inner pixels only)
+1. New-OreColorsPalette (if needed)
+2. New-PixelMapBitmap base (or hand-edited PNG)
+3. Repair-ItemTextureBase
+4. generate_recolored_textures.ps1
+5. Apply-TextureAccentPixels from configs/*_accents.psd1
+6. dump_texture.ps1 — internal_holes must be 0
 ```
 
-Copper oxide accents: hand-picked coordinates, applied only where the pixel is opaque **and not** on the outer outline. Re-check coordinates after resizing the base.
+Copper oxide accents: `scripts/configs/crushed_raw_ore_copper_accents.psd1` — hand-picked coordinates, applied only where the pixel is opaque **and not** on the outer outline. Re-check coordinates after resizing the base.
 
 ## Adding a new item family
 

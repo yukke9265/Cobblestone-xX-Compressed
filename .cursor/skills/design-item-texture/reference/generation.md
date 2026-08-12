@@ -5,8 +5,9 @@ Use generation only when there is no close existing base to edit. Prefer copy-ed
 ## Preferred order
 
 1. **Copy + edit** an existing family base (best consistency)
-2. **Hand-pixel** a new 16x16 base in the reference tint
-3. **GenerateImage** for a large concept, then **post-process down to 16x16**, then repair + recolor
+2. **Pixel map in PowerShell** via `New-PixelMapBitmap` in `texture_utils.ps1` (reproducible; see [pipeline.md](pipeline.md#pixel-map-bases-script-authored-art))
+3. **Hand-pixel** a new 16x16 base in an image editor
+4. **GenerateImage** for a large concept, then **post-process down to 16x16**, then repair + recolor
 
 ## GenerateImage path (when used)
 
