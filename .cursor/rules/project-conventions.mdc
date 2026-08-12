@@ -1,0 +1,38 @@
+---
+description: Minecraft NeoForge 1.21.1 モッド開発の共通方針（言語・スタイル・検証・skill案内）
+alwaysApply: true
+---
+
+# Project Conventions
+
+詳細は `AGENTS.md` に従う。要点だけここに置く。
+
+## Environment
+- Java 21 / Minecraft 1.21.1 / NeoForge 1.21.1
+
+## Response Style
+- 日本語・簡潔。先に結論。Java 初心者向けに順序立てて説明する。
+
+## Code Style
+- コメントは日本語・最小限（目的・前提・結果）。
+- 素直な制御フローと分かりやすい変数名を優先する。
+- lambda / Stream / 複雑なジェネリクスは利点が明確なときだけ使う。
+
+## Implementation
+- 既存の流れ・命名・構造を維持し、変更は小さく分ける。
+- client 専用と server 共通を混ぜない。
+- 生成物は `src/generated/resources` 前提。
+
+## Verification
+- まず影響の小さい確認。`gradlew.bat build` / `runClient` / `runData`。
+
+## Skills（正は `.cursor/skills/`）
+| 作業 | Skill |
+|------|--------|
+| ブロック | `add-block-workflow` |
+| アイテム | `add-item-workflow` |
+| アイテムテクスチャ（再色・後処理） | `design-item-texture` |
+| 流体 | `add-fluid-workflow` |
+| 機械 / BE / GUI / JEI | `add-machine-workflow` |
+
+該当作業では実装前にその `SKILL.md`（と必要なら `reference/`）を読む。

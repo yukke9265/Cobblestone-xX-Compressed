@@ -1,0 +1,15 @@
+---
+description: Java / NeoForge 実装時の注意点（登録・イベント・datagen・client/server）
+globs: "**/*.java"
+alwaysApply: false
+---
+
+# Java / NeoForge Notes
+
+- Minecraft 1.21.1 + NeoForge 1.21.1 を基準にする。
+- Java 21 の新構文は読みやすさが上がる場合だけ使う。
+- client 専用処理と server 共通処理は混ぜない。
+- 登録、イベント購読、リソース配置、datagen 出力先の違いに注意する。
+- 生成物は `src/generated/resources` に置く。
+- 既存の registry / datagen / UI パターンに合わせ、差分は最小にする。
+- エラー時は失敗条件を明示する。
