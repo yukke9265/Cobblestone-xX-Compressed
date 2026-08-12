@@ -35,6 +35,19 @@ Because post-process multiplies by luminance ratio:
 - Keep specular / rim pixels either brighter or as low-alpha highlights
 - Do not bake strong unrelated hues into the base if those areas should recolor
 - Hues recolor cannot produce (e.g. copper green oxide) → add in wrapper **after** recolor, on **inner** pixels only
+- Recolor keeps **base** luminance shape — it does not copy the source item's brightness distribution
+
+### Base highlight targets (ore families)
+
+Before recolor, check base brightness with `Get-TextureBrightnessStats` or `dump_texture.ps1`:
+
+| Check | Target | Why |
+|-------|--------|-----|
+| Light pixels (lum ≥ 170) | **≥ 10%** | crushed outputs inherit base highlight ratio |
+| Luminance range (max/min) | **≥ 2.0×** | readable shading after tint |
+| Outline share | **≤ 30%** | outer `#525252` stays dark after recolor |
+
+If crushed variants look darker than the source raw item, brighten palette (`-Mode Bright`) first; then add `A`/`B` highlight symbols to the base.
 
 ## What to avoid
 
@@ -59,11 +72,13 @@ After recolor, confirm each variant:
 1. No tinted halo outside the silhouette
 2. Outline recolored to dark family tone
 3. Compare visually with a known-good sibling item (e.g. `tier_copper_cobblestone_dust`)
-4. In-game: no purple-black; color matches intended source
+4. Run `compare_texture_brightness.ps1` when matching a source item's brightness
+5. In-game: no purple-black; color matches intended source
 
 ## Checking results
 
 1. **`scripts/dump_texture.ps1 -Path <png>`** — bbox, opaque count, `internal_holes` (must be 0)
-2. Read the PNG with the image Read tool
-3. Compare against a known good sibling
-4. In-game: no purple-black; color matches the intended tier/source item
+2. **`scripts/compare_texture_brightness.ps1`** — avg luminance, dark/mid/light ratio vs source item
+3. Read the PNG with the image Read tool
+4. Compare against a known good sibling
+5. In-game: no purple-black; color matches the intended tier/source item

@@ -17,12 +17,16 @@ Shared helpers live in `scripts/texture_utils.ps1` (dot-source from family wrapp
 | `Write-TextureDump` | Pixel dump + bbox + internal hole count |
 | `New-OreColorsPalette` | Create/refresh `OreColors.png` |
 | `Get-VanillaItemDominantColors` | Sample colors from a reference item PNG |
+| `Get-ItemPaletteColor` | Pick palette hex (`-Mode Mid|Bright|Highlight`) |
+| `Get-TextureBrightnessStats` | Luminance stats for one PNG |
+| `Compare-TextureBrightness` | Compare reference vs output brightness |
 
 CLI wrappers:
 
 ```powershell
 .\scripts\dump_texture.ps1 -Path src/main/resources/.../crushed_raw_copper.png
-.\scripts\sample_vanilla_item_color.ps1 -Path D:\1.21.1\assets\minecraft\textures\item\raw_copper.png
+.\scripts\sample_vanilla_item_color.ps1 -Path D:\1.21.1\assets\minecraft\textures\item\raw_copper.png -Mode Bright
+.\scripts\compare_texture_brightness.ps1 -ReferencePath D:\1.21.1\assets\minecraft\textures\item\raw_gold.png -OutputPath src/main/resources/.../crushed_raw_gold.png
 ```
 
 Behavior (important for design):
@@ -88,8 +92,48 @@ Use when variants are **ore type** (copper, iron, gold, …), not cobblestone ti
 
 - Location: `scripts/configs/OreColors.png`
 - Index 0: reference gray (same role as TierColors index 0 — base is painted in this)
-- Index 1+: one color per ore, sampled from vanilla item textures (e.g. `raw_copper` → `#C4704A`)
+- Index 1+: one color per ore, sampled from source item textures (e.g. `raw_copper` → `#E97A52` with `-Mode Bright`)
 - Extend the top row when adding ores; do not reshuffle existing indices
+
+## Palette sampling
+
+Recolor uses **base luminance ratios**, not the source item's brightness distribution. A darker base or mid-tone palette often makes outputs look too dark.
+
+### Modes (`Get-ItemPaletteColor` / `sample_vanilla_item_color.ps1 -Mode`)
+
+| Mode | When to use | Rule |
+|------|-------------|------|
+| `Bright` | **Default for ore families** | Top 5 by count → brightest with lum ≤ 230 (skip `#000000`) |
+| `Mid` | Tier families, muted look | Top 5 by count → median luminance |
+| `Highlight` | Needs extra pop | Top 12 by count → brightest with enough pixel count |
+| `List` | Inspection only | Print dominant colors with luminance |
+
+```powershell
+.\scripts\sample_vanilla_item_color.ps1 -Path D:\1.21.1\assets\minecraft\textures\item\raw_gold.png -Mode Bright
+.\scripts\sample_vanilla_item_color.ps1 -Path D:\1.21.1\assets\minecraft\textures\item\raw_gold.png -Mode List
+```
+
+In wrappers, prefer auto-sampling from a source path map:
+
+```powershell
+$sample = Get-ItemPaletteColor -TexturePath $sourcePath -Mode Bright
+$paletteColors += $sample.Hex
+```
+
+### Brightness compare (after generation)
+
+```powershell
+.\scripts\compare_texture_brightness.ps1 `
+  -ReferencePath D:\1.21.1\assets\minecraft\textures\item\raw_gold.png `
+  -OutputPath src/main/resources/assets/cobblestonexxcompressed/textures/item/crushed_raw_ore/crushed_raw_gold.png
+```
+
+Starting thresholds:
+
+- `avg_ratio` ≥ **0.7** (output avg / reference avg)
+- output `light_pct` ≥ **5%** (pixels with lum ≥ 170)
+
+Warnings mean: brighten palette, or add base highlights (`A`/`B` in pixel map). Outline pixels (~25–30%) stay dark by design.
 
 Example config (`scripts/configs/crushed_raw_ore_texture_config.psd1`):
 
@@ -110,19 +154,19 @@ Example config (`scripts/configs/crushed_raw_ore_texture_config.psd1`):
 
 When adding iron, gold, etc.:
 
-1. Sample mid-tone with `sample_vanilla_item_color.ps1` from `raw_<ore>.png`
+1. Sample with `sample_vanilla_item_color.ps1 -Mode Bright` from `raw_<ore>.png`
 2. Add a column to `OreColors.png` (do not reshuffle existing indices)
 3. Extend `VariantOutputNames` and `VariantPaletteIndices` in the family config
 4. Rerun the family wrapper
+5. Run `compare_texture_brightness.ps1` for each new variant
 
 ## Adding a new ore to crushed_raw_ore
 
-1. `.\scripts\sample_vanilla_item_color.ps1 -Path <vanilla raw_ore png>`
-2. Add the mid-tone hex to `OreColors.png` via `New-OreColorsPalette` in the wrapper (append only)
-3. Update `crushed_raw_ore_texture_config.psd1`
-4. If the ore needs accents recolor cannot do (e.g. copper green), add `configs/crushed_raw_ore_<ore>_accents.psd1` and call `Apply-TextureAccentPixels` in the wrapper
-5. `.\scripts\generate_crushed_raw_ore_textures.ps1`
-6. `.\scripts\dump_texture.ps1 -Path ...\crushed_raw_<ore>.png` — confirm `internal_holes=0`
+1. Add source path to `$oreSourcePaths` in `generate_crushed_raw_ore_textures.ps1`
+2. Extend `crushed_raw_ore_texture_config.psd1` (`VariantOutputNames` + `VariantPaletteIndices`)
+3. If the ore needs accents recolor cannot do (e.g. copper green), add `configs/crushed_raw_ore_<ore>_accents.psd1` and call `Apply-TextureAccentPixels` in the wrapper
+4. `.\scripts\generate_crushed_raw_ore_textures.ps1` (auto-samples palette + brightness report)
+5. `.\scripts\dump_texture.ps1 -Path ...\crushed_raw_<ore>.png` — confirm `internal_holes=0`
 
 ## Base repair (before recolor)
 
@@ -156,12 +200,13 @@ Rules:
 `scripts/generate_crushed_raw_ore_textures.ps1` — use as a template for ore families that need extra steps:
 
 ```
-1. New-OreColorsPalette (if needed)
+1. New-OreColorsPalette (auto-sample with Get-ItemPaletteColor -Mode Bright)
 2. New-PixelMapBitmap base (or hand-edited PNG)
 3. Repair-ItemTextureBase
 4. generate_recolored_textures.ps1
 5. Apply-TextureAccentPixels from configs/*_accents.psd1
 6. dump_texture.ps1 — internal_holes must be 0
+7. Compare-TextureBrightness — check avg_ratio and light_pct
 ```
 
 Copper oxide accents: `scripts/configs/crushed_raw_ore_copper_accents.psd1` — hand-picked coordinates, applied only where the pixel is opaque **and not** on the outer outline. Re-check coordinates after resizing the base.
@@ -182,19 +227,22 @@ Preferred order:
 
 1. If the item is already a tier variant → use the matching `TierColors` index
 2. If the item is a vanilla ore → use or add a slot in `OreColors.png`
-3. If not in either palette → sample the item's main opaque mid-tone into a new palette row
+3. If not in either palette → sample with `Get-ItemPaletteColor -Mode Bright` (ore) or `Mid` (tier)
 4. Prefer extending shared palettes only when the color will be reused across families
 
 ## Fix loop
 
-If variants look muddy, flat, wrong hue, or have colored background:
+If variants look muddy, flat, wrong hue, colored background, or **too dark**:
 
-1. **Check base alpha** — white fill tinted by recolor is the most common bug
-2. Fix **base** shading (more contrast in luminance)
-3. Confirm base mid-tone matches the **reference** palette color
-4. Confirm outline (`#525252`) on outer edge
-5. Adjust content size (target 14×14 bbox, 1px margin) if item looks too small
-6. Regenerate all variants
-7. Re-apply variant-specific accents if coordinates shifted
+1. Run `compare_texture_brightness.ps1` — check `avg_ratio` and `light_pct`
+2. **Brighten palette** — `sample_vanilla_item_color.ps1 -Mode Bright`, or `-Mode Highlight`
+3. **Add base highlights** — more `A`/`B` symbols in pixel map (recolor preserves base luminance shape)
+4. **Check base alpha** — white fill tinted by recolor is the most common bug
+5. Fix **base** shading (more contrast in luminance)
+6. Confirm base mid-tone matches the **reference** palette color
+7. Confirm outline (`#525252`) on outer edge
+8. Adjust content size (target 14×14 bbox, 1px margin) if item looks too small
+9. Regenerate all variants
+10. Re-apply variant-specific accents if coordinates shifted
 
 Avoid hand-editing every variant PNG unless one-off art is required.

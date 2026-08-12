@@ -229,15 +229,29 @@ tier 用 PNG を出力します。
 バニラ原石から色を取るとき:
 
 ```powershell
+# 一覧（輝度付き）
 .\scripts\sample_vanilla_item_color.ps1 -Path D:\1.21.1\assets\minecraft\textures\item\raw_copper.png
+
+# パレット用（ore ファミリーは Bright 推奨）
+.\scripts\sample_vanilla_item_color.ps1 -Path D:\1.21.1\assets\minecraft\textures\item\raw_copper.png -Mode Bright
 ```
+
+生成後の明るさ比較:
+
+```powershell
+.\scripts\compare_texture_brightness.ps1 `
+  -ReferencePath D:\1.21.1\assets\minecraft\textures\item\raw_gold.png `
+  -OutputPath src/main/resources/assets/cobblestonexxcompressed/textures/item/crushed_raw_ore/crushed_raw_gold.png
+```
+
+合格目安: `avg_ratio >= 0.7`, 明部 (lum>=170) >= 5%. WARN が出たらパレットを Bright で再サンプル、またはベースのハイライト (`A`/`B` 記号) を増やす。
 
 新しい原石を追加するとき:
 
-1. `OreColors.png` の右端に色を追加（既存 index は変更しない）
+1. `generate_crushed_raw_ore_textures.ps1` の `$oreSourcePaths` にパスを追加
 2. `configs/crushed_raw_ore_texture_config.psd1` に出力名と palette index を追加
 3. 必要なら `configs/crushed_raw_ore_<ore>_accents.psd1` を追加
-4. `generate_crushed_raw_ore_textures.ps1` を再実行
+4. `generate_crushed_raw_ore_textures.ps1` を再実行（パレット自動取得 + 明るさレポート付き）
 
 ## Validation helpers
 
@@ -247,4 +261,10 @@ tier 用 PNG を出力します。
 
 # サマリーだけ
 .\scripts\dump_texture.ps1 -Path <png> -SummaryOnly
+
+# パレット色サンプル（-Mode Bright / Mid / Highlight / List）
+.\scripts\sample_vanilla_item_color.ps1 -Path <raw_ore.png> -Mode Bright
+
+# 元テクスチャとの明るさ比較
+.\scripts\compare_texture_brightness.ps1 -ReferencePath <raw.png> -OutputPath <crushed.png>
 ```

@@ -19,6 +19,7 @@ Item registration, models, lang, and recipes stay in `add-item-workflow`. This s
 4. Run **post-processing** with `scripts/generate_recolored_textures.ps1` via a config + wrapper.
 5. Apply **family-specific post-steps** in the wrapper when needed (e.g. copper oxide spots).
 6. Confirm output path, file name, and that the item model `layer0` matches.
+7. **Compare brightness** against the source item — see [pipeline.md](reference/pipeline.md#palette-sampling).
 
 ## Tier vs ore (material axis)
 
@@ -36,14 +37,16 @@ Use `OreColors.png` when variants follow **ore type**, not cobblestone tier. See
 3. Keep color identity in the chosen palette — do not invent a parallel palette unless necessary.
 4. Add or update config + `scripts/generate_*_textures.ps1` wrapper.
 5. Run the wrapper; **verify with pixel dump** (margins, alpha) and Read tool (images).
-6. Hand-tweak the base if shading, silhouette, or size is wrong, then regenerate variants.
+6. **Compare brightness** with `compare_texture_brightness.ps1` or wrapper output.
+7. Hand-tweak the base if shading, silhouette, size, or brightness is wrong, then regenerate variants.
 
 ## Core files
 
 - Shared recolor engine: `scripts/generate_recolored_textures.ps1`
-- Shared texture helpers: `scripts/texture_utils.ps1` (repair, pixel map, accents, dump)
+- Shared texture helpers: `scripts/texture_utils.ps1` (repair, pixel map, accents, dump, palette sampling, brightness compare)
 - Validation: `scripts/dump_texture.ps1`
-- Vanilla color sampling: `scripts/sample_vanilla_item_color.ps1`
+- Palette sampling: `scripts/sample_vanilla_item_color.ps1` (`-Mode Bright` recommended for ore families)
+- Brightness compare: `scripts/compare_texture_brightness.ps1`
 - Per-family configs: `scripts/configs/*_texture_config.psd1`
 - Variant accent configs (when needed): `scripts/configs/*_accents.psd1`
 - Tier palette: `scripts/configs/TierColors.png`
@@ -56,13 +59,21 @@ Reference implementation (ore family + multi-stage wrapper): `crushed_raw_ore` �
 ## Validation
 
 1. Run `scripts/dump_texture.ps1 -Path <png>` — check **bbox**, **internal_holes=0**, margins
-2. Read the PNG with the image Read tool
-3. Base and outputs are 16x16 PNG with **true transparent** background (not white/black fill)
+2. Run `scripts/compare_texture_brightness.ps1` — compare output vs source item brightness
+3. Read the PNG with the image Read tool
+4. Base and outputs are 16x16 PNG with **true transparent** background (not white/black fill)
 - Outer edge uses dark outline `#525252` on base (recolors to family dark tone)
 - Content bbox roughly **14×14 with 1px margin** on each side (adjust if item looks too small)
 - File names match registry id / model `layer0`
 - Variants keep readable shading (not flat fills)
 - No purple-black missing texture in-game after `processResources` / `runClient`
+
+**Brightness thresholds (ore families, starting point):**
+
+- crushed avg / reference avg ≥ **0.7**
+- crushed light pixels (lum ≥ 170) ≥ **5%**
+
+If warnings appear: brighten palette (`-Mode Bright`), or add base highlights (`A`/`B` symbols in pixel map). See [pipeline.md](reference/pipeline.md#fix-loop).
 
 Full checklist: [style-guide.md](reference/style-guide.md#base-validation-checklist).
 

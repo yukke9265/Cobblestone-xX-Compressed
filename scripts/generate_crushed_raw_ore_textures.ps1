@@ -58,11 +58,31 @@ $copperAccentConfigPath = Join-Path $PSScriptRoot 'configs\crushed_raw_ore_coppe
 $sharedScriptPath = Join-Path $PSScriptRoot 'generate_recolored_textures.ps1'
 $copperOutputPath = Join-Path $textureDirectory 'crushed_raw_copper.png'
 
-# index 0: 基準灰（TierColors と同じ）、index 1: raw_copper の代表色。
-New-OreColorsPalette -OutputPath $palettePath -PaletteColors @(
-    '#B3B1AF'
-    '#C4704A'
-)
+# 色ソースは1か所に集約。パレットは Get-ItemPaletteColor -Mode Bright で自動取得。
+$oreSourcePaths = [ordered]@{
+    copper   = 'D:\1.21.1\assets\minecraft\textures\item\raw_copper.png'
+    gold     = 'D:\1.21.1\assets\minecraft\textures\item\raw_gold.png'
+    iron     = 'D:\1.21.1\assets\minecraft\textures\item\raw_iron.png'
+    lead     = 'D:\Mekanism\src\main\resources\assets\mekanism\textures\item\raw_lead.png'
+    osmium   = 'D:\Mekanism\src\main\resources\assets\mekanism\textures\item\raw_osmium.png'
+    tin      = 'D:\Mekanism\src\main\resources\assets\mekanism\textures\item\raw_tin.png'
+    uranium  = 'D:\Mekanism\src\main\resources\assets\mekanism\textures\item\raw_uranium.png'
+    naquadah = 'D:\Mekanism-Extras\src\main\resources\assets\mekanism_extras\textures\item\raw_naquadah.png'
+}
+
+$paletteColors = @('#B3B1AF')
+foreach ($oreName in $oreSourcePaths.Keys) {
+    $sourcePath = $oreSourcePaths[$oreName]
+    if (-not (Test-Path $sourcePath)) {
+        throw "Source texture not found for ${oreName}: $sourcePath"
+    }
+
+    $sample = Get-ItemPaletteColor -TexturePath $sourcePath -Mode Bright
+    Write-Output ("sampled ${oreName}: $($sample.Hex) lum=$($sample.Luminance)")
+    $paletteColors += $sample.Hex
+}
+
+New-OreColorsPalette -OutputPath $palettePath -PaletteColors $paletteColors
 
 New-CrushedRawOreBaseTexture -OutputPath $baseTexturePath
 Repair-ItemTextureBase -BaseTexturePath $baseTexturePath
@@ -70,3 +90,24 @@ Repair-ItemTextureBase -BaseTexturePath $baseTexturePath
 
 $copperAccents = Import-PowerShellDataFile -Path $copperAccentConfigPath
 Apply-TextureAccentPixels -TexturePath $copperOutputPath -AccentPixels $copperAccents
+
+$brightnessPairs = @()
+foreach ($oreName in $oreSourcePaths.Keys) {
+    $brightnessPairs += @{
+        Name = "crushed_raw_$oreName"
+        ReferencePath = $oreSourcePaths[$oreName]
+        OutputPath = Join-Path $textureDirectory "crushed_raw_$oreName.png"
+    }
+}
+
+$comparison = Compare-TextureBrightness -Pairs $brightnessPairs
+Write-Output '=== brightness compare ==='
+foreach ($result in $comparison.Results) {
+    $status = if ($result.Warnings) { "WARN($($result.Warnings))" } else { 'OK' }
+    Write-Output ("[{0}] {1} ref={2} out={3} ratio={4} light={5}" -f `
+        $status, $result.Name, $result.ReferenceAverage, $result.OutputAverage, $result.AverageRatio, $result.OutputDarkMidLight)
+}
+
+if ($comparison.HasWarning) {
+    Write-Output 'Brightness warning: consider brighter palette sampling or more base highlights.'
+}

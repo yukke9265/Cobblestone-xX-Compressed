@@ -414,3 +414,240 @@ function Get-VanillaItemDominantColors {
             }
         }
 }
+
+function Get-TextureLuminance {
+    param(
+        [System.Drawing.Color]$Color
+    )
+
+    return (0.2126 * $Color.R) + (0.7152 * $Color.G) + (0.0722 * $Color.B)
+}
+
+function Get-TextureBrightnessStats {
+    param(
+        [string]$TexturePath
+    )
+
+    if (-not (Test-Path $TexturePath)) {
+        throw "Texture not found: $TexturePath"
+    }
+
+    $bitmapFileHandle = [System.Drawing.Bitmap]::FromFile($TexturePath)
+    $bitmap = New-Object System.Drawing.Bitmap($bitmapFileHandle)
+    $bitmapFileHandle.Dispose()
+
+    $opaqueLuminances = New-Object System.Collections.Generic.List[double]
+    $outlineLuminances = New-Object System.Collections.Generic.List[double]
+    $innerLuminances = New-Object System.Collections.Generic.List[double]
+    $bucketDark = 0
+    $bucketMid = 0
+    $bucketLight = 0
+
+    try {
+        for ($y = 0; $y -lt $bitmap.Height; $y++) {
+            for ($x = 0; $x -lt $bitmap.Width; $x++) {
+                $color = $bitmap.GetPixel($x, $y)
+
+                if ($color.A -le 200) {
+                    continue
+                }
+
+                $luminance = Get-TextureLuminance $color
+                $opaqueLuminances.Add($luminance) | Out-Null
+
+                if ($luminance -lt 85) {
+                    $bucketDark++
+                }
+                elseif ($luminance -lt 170) {
+                    $bucketMid++
+                }
+                else {
+                    $bucketLight++
+                }
+
+                $isOutline = $false
+                foreach ($offset in @(@(-1, 0), @(1, 0), @(0, -1), @(0, 1))) {
+                    $neighborX = $x + $offset[0]
+                    $neighborY = $y + $offset[1]
+
+                    if ($neighborX -lt 0 -or $neighborY -lt 0 -or $neighborX -ge $bitmap.Width -or $neighborY -ge $bitmap.Height) {
+                        $isOutline = $true
+                        break
+                    }
+
+                    $neighbor = $bitmap.GetPixel($neighborX, $neighborY)
+                    if ($neighbor.A -eq 0) {
+                        $isOutline = $true
+                        break
+                    }
+                }
+
+                if ($isOutline) {
+                    $outlineLuminances.Add($luminance) | Out-Null
+                }
+                else {
+                    $innerLuminances.Add($luminance) | Out-Null
+                }
+            }
+        }
+    }
+    finally {
+        $bitmap.Dispose()
+    }
+
+    $opaqueCount = $opaqueLuminances.Count
+    if ($opaqueCount -eq 0) {
+        throw "No opaque pixels found: $TexturePath"
+    }
+
+    $average = ($opaqueLuminances | Measure-Object -Average).Average
+    $outlineAverage = 0.0
+    if ($outlineLuminances.Count -gt 0) {
+        $outlineAverage = ($outlineLuminances | Measure-Object -Average).Average
+    }
+
+    $innerAverage = 0.0
+    if ($innerLuminances.Count -gt 0) {
+        $innerAverage = ($innerLuminances | Measure-Object -Average).Average
+    }
+
+    return [PSCustomObject]@{
+        Path = $TexturePath
+        OpaqueCount = $opaqueCount
+        AverageLuminance = [Math]::Round($average, 1)
+        MinLuminance = [Math]::Round(($opaqueLuminances | Measure-Object -Minimum).Minimum, 1)
+        MaxLuminance = [Math]::Round(($opaqueLuminances | Measure-Object -Maximum).Maximum, 1)
+        PctDark = [Math]::Round(100.0 * $bucketDark / $opaqueCount, 1)
+        PctMid = [Math]::Round(100.0 * $bucketMid / $opaqueCount, 1)
+        PctLight = [Math]::Round(100.0 * $bucketLight / $opaqueCount, 1)
+        OutlinePct = [Math]::Round(100.0 * $outlineLuminances.Count / $opaqueCount, 1)
+        OutlineAverageLuminance = [Math]::Round($outlineAverage, 1)
+        InnerAverageLuminance = [Math]::Round($innerAverage, 1)
+    }
+}
+
+function Get-ItemPaletteColor {
+    param(
+        [string]$TexturePath,
+        [ValidateSet('Mid', 'Bright', 'Highlight')]
+        [string]$Mode = 'Bright',
+
+        [int]$TopCount = 12,
+        [double]$BrightMaxLuminance = 230.0,
+        [double]$HighlightMaxLuminance = 250.0,
+        [double]$MinLuminance = 50.0
+    )
+
+    $colors = @(Get-VanillaItemDominantColors -TexturePath $TexturePath -TopCount $TopCount)
+    if ($colors.Count -eq 0) {
+        throw "No sample colors found: $TexturePath"
+    }
+
+    $candidates = @()
+    foreach ($color in $colors) {
+        $drawingColor = [System.Drawing.Color]::FromArgb(255, $color.Red, $color.Green, $color.Blue)
+        $luminance = Get-TextureLuminance $drawingColor
+
+        if ($color.Hex -eq '#000000' -or $luminance -lt $MinLuminance) {
+            continue
+        }
+
+        $candidates += [PSCustomObject]@{
+            Hex = $color.Hex
+            Count = $color.Count
+            Luminance = $luminance
+        }
+    }
+
+    if ($candidates.Count -eq 0) {
+        throw "No usable palette candidates found: $TexturePath"
+    }
+
+    $topByCount = @($candidates | Sort-Object Count -Descending | Select-Object -First 5)
+    $maxCount = ($topByCount | Measure-Object Count -Maximum).Maximum
+    $picked = $null
+
+    if ($Mode -eq 'Mid') {
+        $sortedByLuminance = @($topByCount | Sort-Object Luminance)
+        $middleIndex = [Math]::Floor(($sortedByLuminance.Count - 1) / 2)
+        $picked = $sortedByLuminance[$middleIndex]
+    }
+    elseif ($Mode -eq 'Bright') {
+        $picked = $topByCount |
+            Where-Object { $_.Luminance -le $BrightMaxLuminance } |
+            Sort-Object Luminance -Descending |
+            Select-Object -First 1
+    }
+    else {
+        $minCount = [Math]::Max(3, [Math]::Floor($maxCount * 0.15))
+        $picked = $candidates |
+            Where-Object { $_.Count -ge $minCount -and $_.Luminance -le $HighlightMaxLuminance } |
+            Sort-Object Luminance -Descending |
+            Select-Object -First 1
+    }
+
+    if (-not $picked) {
+        $picked = $candidates | Sort-Object Luminance -Descending | Select-Object -First 1
+    }
+
+    return [PSCustomObject]@{
+        Hex = $picked.Hex
+        Count = $picked.Count
+        Luminance = [Math]::Round($picked.Luminance, 1)
+        Mode = $Mode
+        SourcePath = $TexturePath
+    }
+}
+
+function Compare-TextureBrightness {
+    param(
+        [array]$Pairs,
+        [double]$MinAverageRatio = 0.7,
+        [double]$MinLightPct = 5.0,
+        [switch]$FailOnWarning
+    )
+
+    $results = @()
+    $hasWarning = $false
+
+    foreach ($pair in $Pairs) {
+        $referenceStats = Get-TextureBrightnessStats -TexturePath $pair.ReferencePath
+        $outputStats = Get-TextureBrightnessStats -TexturePath $pair.OutputPath
+
+        $averageRatio = 0.0
+        if ($referenceStats.AverageLuminance -gt 0) {
+            $averageRatio = $outputStats.AverageLuminance / $referenceStats.AverageLuminance
+        }
+
+        $warnings = @()
+        if ($averageRatio -lt $MinAverageRatio) {
+            $warnings += "avg_ratio"
+        }
+        if ($outputStats.PctLight -lt $MinLightPct) {
+            $warnings += "light_pct"
+        }
+
+        if ($warnings.Count -gt 0) {
+            $hasWarning = $true
+        }
+
+        $results += [PSCustomObject]@{
+            Name = $pair.Name
+            ReferenceAverage = $referenceStats.AverageLuminance
+            OutputAverage = $outputStats.AverageLuminance
+            AverageDelta = [Math]::Round($outputStats.AverageLuminance - $referenceStats.AverageLuminance, 1)
+            AverageRatio = [Math]::Round($averageRatio, 2)
+            ReferenceDarkMidLight = "$($referenceStats.PctDark)/$($referenceStats.PctMid)/$($referenceStats.PctLight)"
+            OutputDarkMidLight = "$($outputStats.PctDark)/$($outputStats.PctMid)/$($outputStats.PctLight)"
+            OutputOutlinePct = $outputStats.OutlinePct
+            Warnings = ($warnings -join ',')
+        }
+    }
+
+    return [PSCustomObject]@{
+        Results = $results
+        HasWarning = $hasWarning
+        MinAverageRatio = $MinAverageRatio
+        MinLightPct = $MinLightPct
+    }
+}
