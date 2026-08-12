@@ -4,8 +4,8 @@ import java.util.Optional;
 
 import com.yukke9265.cobblestone_xx_compressed.menu.CobblestonePoweredFurnaceMenu;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestonePoweredFurnaceRecipe;
+import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestonePoweredFurnaceRecipeHelper;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModBlockEntities;
-import com.yukke9265.cobblestone_xx_compressed.registry.ModRecipeTypes;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -18,8 +18,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.items.IItemHandler;
@@ -116,22 +114,12 @@ public class CobblestonePoweredFurnaceBlockEntity extends PoweredMachineBlockEnt
 
     @SuppressWarnings("null")
     public boolean canQuickMoveToInput(ItemStack stack) {
-        if (stack.isEmpty()) {
-            return false;
-        }
-
         Level currentLevel = this.level;
         if (currentLevel == null) {
             return false;
         }
 
-        for (RecipeHolder<CobblestonePoweredFurnaceRecipe> recipeHolder : currentLevel.getRecipeManager().getAllRecipesFor(ModRecipeTypes.COBBLESTONE_POWERED_FURNACE.get())) {
-            if (recipeHolder.value().getIngredient().test(stack)) {
-                return true;
-            }
-        }
-
-        return false;
+        return CobblestonePoweredFurnaceRecipeHelper.isValidInput(currentLevel, stack);
     }
 
     @Override
@@ -152,17 +140,7 @@ public class CobblestonePoweredFurnaceBlockEntity extends PoweredMachineBlockEnt
         }
 
         ItemStack inputStack = this.itemStackHandler.getStackInSlot(INPUT_SLOT_INDEX);
-        if (inputStack.isEmpty()) {
-            return Optional.empty();
-        }
-
-        SingleRecipeInput input = new SingleRecipeInput(inputStack);
-        Optional<RecipeHolder<CobblestonePoweredFurnaceRecipe>> recipeHolder = currentLevel.getRecipeManager().getRecipeFor(
-            ModRecipeTypes.COBBLESTONE_POWERED_FURNACE.get(),
-            input,
-            currentLevel
-        );
-        return recipeHolder.map(RecipeHolder::value);
+        return CobblestonePoweredFurnaceRecipeHelper.findMatchingRecipe(currentLevel, inputStack);
     }
 
     @Override

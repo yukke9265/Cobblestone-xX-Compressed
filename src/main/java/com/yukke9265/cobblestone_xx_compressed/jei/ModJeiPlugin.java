@@ -55,6 +55,7 @@ import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneLaserDrillRecip
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneMelterRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneMixerRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestonePoweredFurnaceRecipe;
+import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestonePoweredFurnaceRecipeHelper;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneReactionChamberRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneCrystallizationChamberRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.StoneBreakSimulatorRecipe;
@@ -432,11 +433,9 @@ public class ModJeiPlugin implements IModPlugin {
             .toList();
         registration.addRecipes(COBBLESTONE_FURNACE_DEFINITION.recipeType(), recipes);
 
-        List<CobblestonePoweredFurnaceRecipe> poweredFurnaceRecipes = minecraft.level.getRecipeManager()
-            .getAllRecipesFor(ModRecipeTypes.COBBLESTONE_POWERED_FURNACE.get())
-            .stream()
-            .map(RecipeHolder::value)
-            .toList();
+        // 独自レシピ + 通常かまど全件（cookingTime を total CP に換算）を同じカテゴリへ出す。
+        List<CobblestonePoweredFurnaceRecipe> poweredFurnaceRecipes =
+            CobblestonePoweredFurnaceRecipeHelper.collectAllDisplayRecipes(minecraft.level);
         registration.addRecipes(COBBLESTONE_POWERED_FURNACE_DEFINITION.recipeType(), poweredFurnaceRecipes);
 
         List<CobblestoneExtremeCompressorRecipe> extremeCompressorRecipes = minecraft.level.getRecipeManager()
