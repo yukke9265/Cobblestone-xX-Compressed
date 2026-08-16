@@ -67,8 +67,11 @@ public class CobblestoneEnchanterRecipeCategory implements IRecipeCategory<Cobbl
 
     @Override
     public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, @Nonnull CobblestoneEnchanterRecipe recipe, @Nonnull IFocusGroup focuses) {
-        builder.addSlot(RecipeIngredientRole.CATALYST, MachineGuiLayouts.Enchanter.POWER_SLOT_X - BACKGROUND_U, MachineGuiLayouts.Enchanter.POWER_SLOT_Y - BACKGROUND_V)
-            .addItemStacks(JeiCobblestonePowerItems.getCatalystItems());
+        JeiCobblestonePowerItems.addPowerSlot(
+            builder,
+            MachineGuiLayouts.Enchanter.POWER_SLOT_X - BACKGROUND_U,
+            MachineGuiLayouts.Enchanter.POWER_SLOT_Y - BACKGROUND_V
+        );
 
         builder.addSlot(RecipeIngredientRole.INPUT, MachineGuiLayouts.Enchanter.TOOL_SLOT_X - BACKGROUND_U, MachineGuiLayouts.Enchanter.TOOL_SLOT_Y - BACKGROUND_V)
             .addItemStack(recipe.getJeiPreviewTool());

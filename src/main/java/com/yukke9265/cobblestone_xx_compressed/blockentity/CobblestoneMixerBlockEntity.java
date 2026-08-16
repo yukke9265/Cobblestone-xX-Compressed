@@ -39,9 +39,10 @@ public class CobblestoneMixerBlockEntity extends PoweredMachineBlockEntityBase<C
     public static final int OUTPUT_SLOT_INDEX = 3;
     public static final int ACCELERATION_SLOT_INDEX = 4;
     public static final int ENERGIZED_CUBE_SLOT_INDEX = 5;
+    public static final int PARALLEL_SLOT_INDEX = 6;
     public static final long MAX_COBBLESTONE_POWER = 16000L;
 
-    private final FixedSizeItemStackHandler itemStackHandler = new FixedSizeItemStackHandler(6) {
+    private final FixedSizeItemStackHandler itemStackHandler = new FixedSizeItemStackHandler(7) {
         @Override
         public boolean isItemValid(int slot, @NotNull ItemStack stack) {
             if (slot == OUTPUT_SLOT_INDEX) {
@@ -60,6 +61,10 @@ public class CobblestoneMixerBlockEntity extends PoweredMachineBlockEntityBase<C
                 return MachineUpgradeHelper.isEnergizedCube(stack);
             }
 
+            if (slot == PARALLEL_SLOT_INDEX) {
+                return MachineUpgradeHelper.isParallelChip(stack);
+            }
+
             return true;
         }
 
@@ -70,7 +75,7 @@ public class CobblestoneMixerBlockEntity extends PoweredMachineBlockEntityBase<C
 
         @Override
         public int getSlotLimit(int slot) {
-            if (slot == ACCELERATION_SLOT_INDEX || slot == ENERGIZED_CUBE_SLOT_INDEX) {
+            if (slot == ACCELERATION_SLOT_INDEX || slot == ENERGIZED_CUBE_SLOT_INDEX || slot == PARALLEL_SLOT_INDEX) {
                 return 1;
             }
 

@@ -38,7 +38,7 @@ public class CobblestoneCrusherMenu extends PoweredMachineMenuBase<CobblestoneCr
         AutomationMode.COBBLESTONE_INPUT
     };
 
-    private static final int DATA_COUNT = 9 + BaseBlockEntity.AUTOMATION_FACE_COUNT;
+    private static final int DATA_COUNT = 10 + BaseBlockEntity.AUTOMATION_FACE_COUNT;
     private static final int DATA_INDEX_PROGRESS = 0;
     private static final int DATA_INDEX_MAX_PROGRESS = 1;
     private static final int DATA_INDEX_STORED_POWER = 2;
@@ -48,7 +48,8 @@ public class CobblestoneCrusherMenu extends PoweredMachineMenuBase<CobblestoneCr
     private static final int DATA_INDEX_CURRENT_POWER_RATE = 6 + BaseBlockEntity.AUTOMATION_FACE_COUNT;
     private static final int DATA_INDEX_CURRENT_POWER_RATE_UPPER = DATA_INDEX_CURRENT_POWER_RATE + 1;
     private static final int DATA_INDEX_AUTO_EXPORT = DATA_INDEX_CURRENT_POWER_RATE_UPPER + 1;
-    private static final int MACHINE_SLOT_COUNT = 5;
+    private static final int DATA_INDEX_AUTO_INSERT = DATA_INDEX_AUTO_EXPORT + 1;
+    private static final int MACHINE_SLOT_COUNT = 6;
 
     private final CobblestoneCrusherBlockEntity crusherBlockEntity;
     private final ContainerData crusherData;
@@ -104,12 +105,20 @@ public class CobblestoneCrusherMenu extends PoweredMachineMenuBase<CobblestoneCr
         return this.crusherData.get(DATA_INDEX_AUTO_EXPORT) != 0;
     }
 
+    public boolean isAutoInsertEnabled() {
+        return this.crusherData.get(DATA_INDEX_AUTO_INSERT) != 0;
+    }
+
     public int getAutomationButtonId(AutomationSide automationSide) {
         return this.getAutomationButtonId(automationSide.getIndex());
     }
 
     public int getAutoExportButtonId() {
         return this.getAutoExportToggleButtonId();
+    }
+
+    public int getAutoInsertButtonId() {
+        return this.getAutoInsertToggleButtonId();
     }
 
     @Override
@@ -142,6 +151,13 @@ public class CobblestoneCrusherMenu extends PoweredMachineMenuBase<CobblestoneCr
                 sourceStack,
                 CobblestoneCrusherBlockEntity.ENERGIZED_CUBE_SLOT_INDEX,
                 CobblestoneCrusherBlockEntity.ENERGIZED_CUBE_SLOT_INDEX + 1,
+                false
+            );
+        } else if (MachineUpgradeHelper.isParallelChip(sourceStack)) {
+            movedToMachine = this.moveItemStackTo(
+                sourceStack,
+                CobblestoneCrusherBlockEntity.PARALLEL_SLOT_INDEX,
+                CobblestoneCrusherBlockEntity.PARALLEL_SLOT_INDEX + 1,
                 false
             );
         } else if (this.crusherBlockEntity.canQuickMoveToInput(sourceStack)) {
@@ -177,6 +193,10 @@ public class CobblestoneCrusherMenu extends PoweredMachineMenuBase<CobblestoneCr
         }
 
         if (this.handleAutoExportButtonClick(this.crusherBlockEntity, id)) {
+            return true;
+        }
+
+        if (this.handleAutoInsertButtonClick(this.crusherBlockEntity, id)) {
             return true;
         }
 
@@ -220,6 +240,12 @@ public class CobblestoneCrusherMenu extends PoweredMachineMenuBase<CobblestoneCr
             @Override
             public boolean mayPlace(ItemStack stack) {
                 return MachineUpgradeHelper.isEnergizedCube(stack);
+            }
+        });
+        this.addSlot(new SlotItemHandler(itemStackHandler, CobblestoneCrusherBlockEntity.PARALLEL_SLOT_INDEX, MachineGuiLayouts.UPGRADE_SLOT_X, MachineGuiLayouts.PARALLEL_SLOT_Y) {
+            @Override
+            public boolean mayPlace(ItemStack stack) {
+                return MachineUpgradeHelper.isParallelChip(stack);
             }
         });
     }

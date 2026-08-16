@@ -1,0 +1,14 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "mekanism"
+    }
+  ],
+  "type": "cobblestonexxcompressed:stone_break_simulator",
+  "cobblestone_power_per_tick": 4,
+  "ingredient": {
+    "tag": "c:ores/osmium"
+  },
+  "total_cobblestone_power": 800
+}

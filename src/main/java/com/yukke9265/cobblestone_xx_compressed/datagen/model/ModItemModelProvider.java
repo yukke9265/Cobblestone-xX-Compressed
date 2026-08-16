@@ -153,6 +153,12 @@ public class ModItemModelProvider extends ItemModelProvider {
             registerCobblestoneEnergizedCubeItemModel(tier.getItem());
         }
 
+        registerCobblestoneParallelChipItemModel(ModItems.COBBLESTONE_PARALLEL_CHIP);
+
+        for (ModItems.TierCobblestoneParallelChip tier : ModItems.TierCobblestoneParallelChip.values()) {
+            registerCobblestoneParallelChipItemModel(tier.getItem());
+        }
+
         registerFluidBucketItemModel(ModFluids.MOLTEN_COMPRESSED_COBBLESTONE.getBucketItem());
         for (ModFluids.TierMoltenCompressedCobblestone tier : ModFluids.TierMoltenCompressedCobblestone.values()) {
             registerFluidBucketItemModel(tier.getFluidEntry().getBucketItem());
@@ -260,6 +266,10 @@ public class ModItemModelProvider extends ItemModelProvider {
 
     private void registerCobblestoneEnergizedCubeItemModel(DeferredItem<Item> item) {
         registerGeneratedItemModel(item, "cobblestone_energized_cube");
+    }
+
+    private void registerCobblestoneParallelChipItemModel(DeferredItem<Item> item) {
+        registerGeneratedItemModel(item, "cobblestone_parallel_module");
     }
 
     private void registerFluidBucketItemModel(DeferredItem<? extends Item> item) {

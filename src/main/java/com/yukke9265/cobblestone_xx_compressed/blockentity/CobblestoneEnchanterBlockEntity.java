@@ -45,9 +45,10 @@ public class CobblestoneEnchanterBlockEntity extends PoweredMachineBlockEntityBa
     public static final int OUTPUT_SLOT_INDEX = 3;
     public static final int ACCELERATION_SLOT_INDEX = 4;
     public static final int ENERGIZED_CUBE_SLOT_INDEX = 5;
+    public static final int PARALLEL_SLOT_INDEX = 6;
     public static final long MAX_COBBLESTONE_POWER = 16384L;
 
-    private final FixedSizeItemStackHandler itemStackHandler = new FixedSizeItemStackHandler(6) {
+    private final FixedSizeItemStackHandler itemStackHandler = new FixedSizeItemStackHandler(7) {
         @Override
         public boolean isItemValid(int slot, @NotNull ItemStack stack) {
             if (slot == OUTPUT_SLOT_INDEX) {
@@ -74,6 +75,10 @@ public class CobblestoneEnchanterBlockEntity extends PoweredMachineBlockEntityBa
                 return MachineUpgradeHelper.isEnergizedCube(stack);
             }
 
+            if (slot == PARALLEL_SLOT_INDEX) {
+                return MachineUpgradeHelper.isParallelChip(stack);
+            }
+
             return false;
         }
 
@@ -84,7 +89,7 @@ public class CobblestoneEnchanterBlockEntity extends PoweredMachineBlockEntityBa
 
         @Override
         public int getSlotLimit(int slot) {
-            if (slot == ACCELERATION_SLOT_INDEX || slot == ENERGIZED_CUBE_SLOT_INDEX) {
+            if (slot == ACCELERATION_SLOT_INDEX || slot == ENERGIZED_CUBE_SLOT_INDEX || slot == PARALLEL_SLOT_INDEX) {
                 return 1;
             }
 
@@ -195,7 +200,7 @@ public class CobblestoneEnchanterBlockEntity extends PoweredMachineBlockEntityBa
             return false;
         }
 
-        if (MachineUpgradeHelper.isAccelerationChip(stack) || MachineUpgradeHelper.isEnergizedCube(stack)) {
+        if (MachineUpgradeHelper.isAccelerationChip(stack) || MachineUpgradeHelper.isEnergizedCube(stack) || MachineUpgradeHelper.isParallelChip(stack)) {
             return false;
         }
 
@@ -391,14 +396,35 @@ public class CobblestoneEnchanterBlockEntity extends PoweredMachineBlockEntityBa
         }
 
         // 高レベルエンチャントでも 1 tick 分以上は蓄えられるようにして、
-        // acceleration chip があるときはその分の同時消費も受け止めます。
-        return this.multiplySaturating(evaluation.cobblestonePowerPerTick(), this.getAccelerationMultiplier());
+        // acceleration chip と parallel chip があるときはその分の同時消費も受け止めます。
+        long oneTickConsumption = this.multiplySaturating(evaluation.cobblestonePowerPerTick(), this.getAccelerationMultiplier());
+        long extraCraftConsumption = this.multiplySaturating(
+            this.multiplySaturating(evaluation.cobblestonePowerPerTick(), recipeOptional.get().getProcessingTicks()),
+            this.getParallelExtraCraftCount()
+        );
+        return this.addSaturating(oneTickConsumption, extraCraftConsumption);
     }
 
     private int getAccelerationMultiplier() {
         ItemStack accelerationStack = this.itemStackHandler.getStackInSlot(ACCELERATION_SLOT_INDEX);
         int multiplier = MachineUpgradeHelper.getAccelerationMultiplier(accelerationStack);
         return Math.max(1, multiplier);
+    }
+
+    private long addSaturating(long left, long right) {
+        if (left <= 0L) {
+            return Math.max(0L, right);
+        }
+
+        if (right <= 0L) {
+            return left;
+        }
+
+        if (left > Long.MAX_VALUE - right) {
+            return Long.MAX_VALUE;
+        }
+
+        return left + right;
     }
 
     private long multiplySaturating(long value, int multiplier) {

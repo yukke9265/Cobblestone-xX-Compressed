@@ -41,7 +41,7 @@ public class CobblestoneDissolutionChamberMenu extends BaseMenu {
         AutomationMode.IN_OUT
     };
 
-    private static final int DATA_COUNT = 19 + BaseBlockEntity.AUTOMATION_FACE_COUNT * 2;
+    private static final int DATA_COUNT = 20 + BaseBlockEntity.AUTOMATION_FACE_COUNT * 2;
     private static final int DATA_INDEX_PROGRESS = 0;
     private static final int DATA_INDEX_MAX_PROGRESS = 1;
     private static final int DATA_INDEX_STORED_POWER = 2;
@@ -57,10 +57,11 @@ public class CobblestoneDissolutionChamberMenu extends BaseMenu {
     private static final int DATA_INDEX_CURRENT_POWER_RATE = DATA_INDEX_FLUID_AUTOMATION_START + BaseBlockEntity.AUTOMATION_FACE_COUNT;
     private static final int DATA_INDEX_CURRENT_POWER_RATE_UPPER = DATA_INDEX_CURRENT_POWER_RATE + 1;
     private static final int DATA_INDEX_AUTO_EXPORT = DATA_INDEX_CURRENT_POWER_RATE_UPPER + 1;
+    private static final int DATA_INDEX_AUTO_INSERT = DATA_INDEX_AUTO_EXPORT + 1;
 
     private static final int OUTPUT_FLUID_INDICATOR_BUTTON_ID = 402;
     private static final int OUTPUT_FLUID_INDICATOR_SHIFT_BUTTON_ID = 403;
-    private static final int MACHINE_SLOT_COUNT = 4;
+    private static final int MACHINE_SLOT_COUNT = 5;
     private static final int PLAYER_INVENTORY_COLUMNS = 9;
     private static final int PLAYER_INVENTORY_ROWS = 3;
     private static final int HOTBAR_SLOT_COUNT = 9;
@@ -155,6 +156,10 @@ public class CobblestoneDissolutionChamberMenu extends BaseMenu {
         return this.dissolutionChamberData.get(DATA_INDEX_AUTO_EXPORT) != 0;
     }
 
+    public boolean isAutoInsertEnabled() {
+        return this.dissolutionChamberData.get(DATA_INDEX_AUTO_INSERT) != 0;
+    }
+
     public int getItemAutomationButtonId(AutomationSide automationSide) {
         return this.getAutomationButtonId(automationSide.getIndex());
     }
@@ -165,6 +170,10 @@ public class CobblestoneDissolutionChamberMenu extends BaseMenu {
 
     public int getAutoExportButtonId() {
         return this.getAutoExportToggleButtonId();
+    }
+
+    public int getAutoInsertButtonId() {
+        return this.getAutoInsertToggleButtonId();
     }
 
     public int getInputFluidInteractionButtonId() {
@@ -214,7 +223,11 @@ public class CobblestoneDissolutionChamberMenu extends BaseMenu {
             return this.dissolutionChamberBlockEntity.handleOutputFluidIndicatorClick(player, true);
         }
 
-        return this.handleAutoExportButtonClick(this.dissolutionChamberBlockEntity, id);
+        if (this.handleAutoExportButtonClick(this.dissolutionChamberBlockEntity, id)) {
+            return true;
+        }
+
+        return this.handleAutoInsertButtonClick(this.dissolutionChamberBlockEntity, id);
     }
 
     @Override
@@ -266,6 +279,13 @@ public class CobblestoneDissolutionChamberMenu extends BaseMenu {
                     sourceStack,
                     CobblestoneDissolutionChamberBlockEntity.ENERGIZED_CUBE_SLOT_INDEX,
                     CobblestoneDissolutionChamberBlockEntity.ENERGIZED_CUBE_SLOT_INDEX + 1,
+                    false
+                );
+            } else if (MachineUpgradeHelper.isParallelChip(sourceStack)) {
+                movedToMachine = this.moveItemStackTo(
+                    sourceStack,
+                    CobblestoneDissolutionChamberBlockEntity.PARALLEL_SLOT_INDEX,
+                    CobblestoneDissolutionChamberBlockEntity.PARALLEL_SLOT_INDEX + 1,
                     false
                 );
             } else if (this.dissolutionChamberBlockEntity.canQuickMoveToInput(sourceStack)) {
@@ -360,6 +380,12 @@ public class CobblestoneDissolutionChamberMenu extends BaseMenu {
             @Override
             public boolean mayPlace(ItemStack stack) {
                 return MachineUpgradeHelper.isEnergizedCube(stack);
+            }
+        });
+        this.addSlot(new SlotItemHandler(itemStackHandler, CobblestoneDissolutionChamberBlockEntity.PARALLEL_SLOT_INDEX, MachineGuiLayouts.UPGRADE_SLOT_X, MachineGuiLayouts.PARALLEL_SLOT_Y) {
+            @Override
+            public boolean mayPlace(ItemStack stack) {
+                return MachineUpgradeHelper.isParallelChip(stack);
             }
         });
     }

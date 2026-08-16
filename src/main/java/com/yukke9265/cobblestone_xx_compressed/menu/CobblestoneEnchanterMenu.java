@@ -41,17 +41,18 @@ public class CobblestoneEnchanterMenu extends BaseMenu {
         AutomationMode.COBBLESTONE_INPUT
     };
 
-    private static final int DATA_COUNT = 9 + BaseBlockEntity.AUTOMATION_FACE_COUNT;
+    private static final int DATA_COUNT = 10 + BaseBlockEntity.AUTOMATION_FACE_COUNT;
     private static final int DATA_INDEX_PROGRESS = 0;
     private static final int DATA_INDEX_MAX_PROGRESS = 1;
     private static final int DATA_INDEX_STORED_POWER = 2;
     private static final int DATA_INDEX_MAX_STORED_POWER = 4;
     private static final int DATA_INDEX_CURRENT_POWER_RATE = 6 + BaseBlockEntity.AUTOMATION_FACE_COUNT;
     private static final int DATA_INDEX_AUTO_EXPORT = DATA_INDEX_CURRENT_POWER_RATE + 2;
+    private static final int DATA_INDEX_AUTO_INSERT = DATA_INDEX_AUTO_EXPORT + 1;
     private static final int PLAYER_INVENTORY_COLUMNS = 9;
     private static final int PLAYER_INVENTORY_ROWS = 3;
     private static final int HOTBAR_SLOT_COUNT = 9;
-    private static final int MACHINE_SLOT_COUNT = 6;
+    private static final int MACHINE_SLOT_COUNT = 7;
     private static final int PLAYER_INVENTORY_START_INDEX = MACHINE_SLOT_COUNT;
     private static final int PLAYER_INVENTORY_SLOT_COUNT = PLAYER_INVENTORY_ROWS * PLAYER_INVENTORY_COLUMNS;
     private static final int HOTBAR_START_INDEX = PLAYER_INVENTORY_START_INDEX + PLAYER_INVENTORY_SLOT_COUNT;
@@ -111,12 +112,20 @@ public class CobblestoneEnchanterMenu extends BaseMenu {
         return this.enchanterData.get(DATA_INDEX_AUTO_EXPORT) != 0;
     }
 
+    public boolean isAutoInsertEnabled() {
+        return this.enchanterData.get(DATA_INDEX_AUTO_INSERT) != 0;
+    }
+
     public int getAutomationButtonId(AutomationSide automationSide) {
         return this.getAutomationButtonId(automationSide.getIndex());
     }
 
     public int getAutoExportButtonId() {
         return this.getAutoExportToggleButtonId();
+    }
+
+    public int getAutoInsertButtonId() {
+        return this.getAutoInsertToggleButtonId();
     }
 
     @Override
@@ -130,7 +139,11 @@ public class CobblestoneEnchanterMenu extends BaseMenu {
             return true;
         }
 
-        return this.handleAutoExportButtonClick(this.enchanterBlockEntity, id);
+        if (this.handleAutoExportButtonClick(this.enchanterBlockEntity, id)) {
+            return true;
+        }
+
+        return this.handleAutoInsertButtonClick(this.enchanterBlockEntity, id);
     }
 
     @Override
@@ -174,6 +187,8 @@ public class CobblestoneEnchanterMenu extends BaseMenu {
                 movedToMachine = this.moveItemStackTo(sourceStack, CobblestoneEnchanterBlockEntity.ACCELERATION_SLOT_INDEX, CobblestoneEnchanterBlockEntity.ACCELERATION_SLOT_INDEX + 1, false);
             } else if (MachineUpgradeHelper.isEnergizedCube(sourceStack)) {
                 movedToMachine = this.moveItemStackTo(sourceStack, CobblestoneEnchanterBlockEntity.ENERGIZED_CUBE_SLOT_INDEX, CobblestoneEnchanterBlockEntity.ENERGIZED_CUBE_SLOT_INDEX + 1, false);
+            } else if (MachineUpgradeHelper.isParallelChip(sourceStack)) {
+                movedToMachine = this.moveItemStackTo(sourceStack, CobblestoneEnchanterBlockEntity.PARALLEL_SLOT_INDEX, CobblestoneEnchanterBlockEntity.PARALLEL_SLOT_INDEX + 1, false);
             } else if (CobblestoneCrusherBlockEntity.isCobblestonePowerItem(sourceStack)) {
                 movedToMachine = this.moveItemStackTo(sourceStack, CobblestoneEnchanterBlockEntity.POWER_SLOT_INDEX, CobblestoneEnchanterBlockEntity.POWER_SLOT_INDEX + 1, false);
             } else if (sourceStack.is(Items.ENCHANTED_BOOK)) {
@@ -268,6 +283,12 @@ public class CobblestoneEnchanterMenu extends BaseMenu {
             @Override
             public boolean mayPlace(@Nonnull ItemStack stack) {
                 return MachineUpgradeHelper.isEnergizedCube(stack);
+            }
+        });
+        this.addSlot(new SlotItemHandler(itemStackHandler, CobblestoneEnchanterBlockEntity.PARALLEL_SLOT_INDEX, MachineGuiLayouts.UPGRADE_SLOT_X, MachineGuiLayouts.PARALLEL_SLOT_Y) {
+            @Override
+            public boolean mayPlace(@Nonnull ItemStack stack) {
+                return MachineUpgradeHelper.isParallelChip(stack);
             }
         });
     }

@@ -35,6 +35,8 @@ public class CobblestoneMelterScreen extends BaseScreen<CobblestoneMelterMenu> {
     private static final int AUTOMATION_PANEL_Y = 20;
     private static final int AUTO_EXPORT_BUTTON_WIDTH = 94;
     private static final int AUTO_EXPORT_BUTTON_HEIGHT = 20;
+    private static final int AUTO_INSERT_BUTTON_WIDTH = 94;
+    private static final int AUTO_INSERT_BUTTON_HEIGHT = 20;
     private static final int SIDE_BUTTON_WIDTH = 62;
     private static final int SIDE_BUTTON_HEIGHT = 20;
     private static final int SIDE_BUTTON_X_OFFSET = 4;
@@ -51,6 +53,7 @@ public class CobblestoneMelterScreen extends BaseScreen<CobblestoneMelterMenu> {
     private static final int FLUID_SLOT_Y = MachineGuiLayouts.PoweredMachine.MACHINE_SLOT_Y;
     private static final Component ACCELERATION_TOOLTIP = Component.literal("acceleration_chip");
     private static final Component ENERGIZED_CUBE_TOOLTIP = Component.literal("energized_cube");
+    private static final Component PARALLEL_TOOLTIP = Component.literal("parallel_chip");
 
     private static final ResourceLocation BACKGROUND_TEXTURE =
         ResourceLocation.fromNamespaceAndPath(CobblestonexXCompressed.MODID, "textures/gui/cobblestone_melter.png");
@@ -61,6 +64,7 @@ public class CobblestoneMelterScreen extends BaseScreen<CobblestoneMelterMenu> {
     private final Button[] itemAutomationButtons = new Button[AUTOMATION_SIDES.length];
     private final Button[] fluidAutomationButtons = new Button[AUTOMATION_SIDES.length];
     private Button autoExportButton;
+    private Button autoInsertButton;
 
     public CobblestoneMelterScreen(CobblestoneMelterMenu menu, Inventory inventory, Component title) {
         super(menu, inventory, title);
@@ -95,6 +99,17 @@ public class CobblestoneMelterScreen extends BaseScreen<CobblestoneMelterMenu> {
                     this.topPos + this.imageHeight - SIDE_BUTTON_HEIGHT - AUTO_EXPORT_BUTTON_HEIGHT - 2,
                     AUTO_EXPORT_BUTTON_WIDTH,
                     AUTO_EXPORT_BUTTON_HEIGHT
+                )
+                .build()
+        );
+
+        this.autoInsertButton = this.addRenderableWidget(
+            Button.builder(Component.empty(), button -> this.sendMenuButtonClick(this.menu.getAutoInsertButtonId()))
+                .bounds(
+                    this.leftPos + this.imageWidth + SIDE_BUTTON_X_OFFSET,
+                    this.topPos + this.imageHeight - SIDE_BUTTON_HEIGHT - AUTO_EXPORT_BUTTON_HEIGHT - AUTO_INSERT_BUTTON_HEIGHT - 4,
+                    AUTO_INSERT_BUTTON_WIDTH,
+                    AUTO_INSERT_BUTTON_HEIGHT
                 )
                 .build()
         );
@@ -142,6 +157,10 @@ public class CobblestoneMelterScreen extends BaseScreen<CobblestoneMelterMenu> {
         if (this.autoExportButton != null) {
             this.autoExportButton.setMessage(this.createCheckboxLabel(this.menu.isAutoExportEnabled(), "gui.cobblestonexxcompressed.auto_export"));
         }
+
+        if (this.autoInsertButton != null) {
+            this.autoInsertButton.setMessage(this.createCheckboxLabel(this.menu.isAutoInsertEnabled(), "gui.cobblestonexxcompressed.auto_insert"));
+        }
     }
 
     private Component createAutomationButtonLabel(AutomationSide side, AutomationMode mode) {
@@ -179,6 +198,7 @@ public class CobblestoneMelterScreen extends BaseScreen<CobblestoneMelterMenu> {
         this.renderCobblestoneSlotPart(guiGraphics, x + MachineGuiLayouts.PoweredMachine.POWER_SLOT_X, y + MachineGuiLayouts.PoweredMachine.POWER_SLOT_Y);
         this.renderNormalSlotPart(guiGraphics, x + MachineGuiLayouts.UPGRADE_SLOT_X, y + MachineGuiLayouts.ACCELERATION_SLOT_Y);
         this.renderNormalSlotPart(guiGraphics, x + MachineGuiLayouts.UPGRADE_SLOT_X, y + MachineGuiLayouts.ENERGIZED_CUBE_SLOT_Y);
+        this.renderNormalSlotPart(guiGraphics, x + MachineGuiLayouts.UPGRADE_SLOT_X, y + MachineGuiLayouts.PARALLEL_SLOT_Y);
         this.renderProgressFramePart(guiGraphics, x + MachineGuiLayouts.PoweredMachine.PROGRESS_BAR_X, y + MachineGuiLayouts.PoweredMachine.PROGRESS_BAR_Y);
 
         int progress = this.menu.getProgress();
@@ -272,6 +292,7 @@ public class CobblestoneMelterScreen extends BaseScreen<CobblestoneMelterMenu> {
 
         this.renderExternalSlotHoverLabel(guiGraphics, mouseX, mouseY, MachineGuiLayouts.UPGRADE_SLOT_X, MachineGuiLayouts.ACCELERATION_SLOT_Y, ACCELERATION_TOOLTIP);
         this.renderExternalSlotHoverLabel(guiGraphics, mouseX, mouseY, MachineGuiLayouts.UPGRADE_SLOT_X, MachineGuiLayouts.ENERGIZED_CUBE_SLOT_Y, ENERGIZED_CUBE_TOOLTIP);
+        this.renderExternalSlotHoverLabel(guiGraphics, mouseX, mouseY, MachineGuiLayouts.UPGRADE_SLOT_X, MachineGuiLayouts.PARALLEL_SLOT_Y, PARALLEL_TOOLTIP);
 
         if (this.isMouseOverFluidIndicator(mouseX, mouseY)) {
             this.renderFluidHoverLabel(guiGraphics, mouseX, mouseY);

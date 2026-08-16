@@ -48,6 +48,7 @@ public class CobblestoneMelterBlockEntity extends PoweredMachineBlockEntityBase<
     public static final int POWER_SLOT_INDEX = 1;
     public static final int ACCELERATION_SLOT_INDEX = 2;
     public static final int ENERGIZED_CUBE_SLOT_INDEX = 3;
+    public static final int PARALLEL_SLOT_INDEX = 4;
     public static final long MAX_COBBLESTONE_POWER = 4096000L;
     public static final long MAX_FLUID_AMOUNT = 64_000L;
 
@@ -61,7 +62,7 @@ public class CobblestoneMelterBlockEntity extends PoweredMachineBlockEntityBase<
     private long storedFluidAmount;
     private FluidStack storedFluid = FluidStack.EMPTY;
 
-    private final FixedSizeItemStackHandler itemStackHandler = new FixedSizeItemStackHandler(4) {
+    private final FixedSizeItemStackHandler itemStackHandler = new FixedSizeItemStackHandler(5) {
         @Override
         public boolean isItemValid(int slot, @NotNull ItemStack stack) {
             if (slot == POWER_SLOT_INDEX) {
@@ -76,6 +77,10 @@ public class CobblestoneMelterBlockEntity extends PoweredMachineBlockEntityBase<
                 return MachineUpgradeHelper.isEnergizedCube(stack);
             }
 
+            if (slot == PARALLEL_SLOT_INDEX) {
+                return MachineUpgradeHelper.isParallelChip(stack);
+            }
+
             return slot == INPUT_SLOT_INDEX;
         }
 
@@ -86,7 +91,7 @@ public class CobblestoneMelterBlockEntity extends PoweredMachineBlockEntityBase<
 
         @Override
         public int getSlotLimit(int slot) {
-            if (slot == ACCELERATION_SLOT_INDEX || slot == ENERGIZED_CUBE_SLOT_INDEX) {
+            if (slot == ACCELERATION_SLOT_INDEX || slot == ENERGIZED_CUBE_SLOT_INDEX || slot == PARALLEL_SLOT_INDEX) {
                 return 1;
             }
 

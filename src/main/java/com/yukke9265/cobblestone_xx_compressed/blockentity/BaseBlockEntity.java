@@ -1,5 +1,7 @@
 package com.yukke9265.cobblestone_xx_compressed.blockentity;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -9,11 +11,13 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidUtil;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
 import net.neoforged.neoforge.items.ItemStackHandler;
+import net.neoforged.neoforge.items.wrapper.EmptyItemHandler;
 
 @SuppressWarnings("null")
 public class BaseBlockEntity extends BlockEntity {
@@ -36,6 +40,7 @@ public class BaseBlockEntity extends BlockEntity {
         AutomationMode.DISABLED
     };
     private boolean autoExportEnabled;
+    private boolean autoInsertEnabled;
 
     public BaseBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState state) {
         super(blockEntityType, pos, state);
@@ -56,6 +61,23 @@ public class BaseBlockEntity extends BlockEntity {
 
     public void toggleAutoExportEnabled() {
         this.setAutoExportEnabled(!this.autoExportEnabled);
+    }
+
+    public boolean isAutoInsertEnabled() {
+        return this.autoInsertEnabled;
+    }
+
+    public int getAutoInsertEnabledId() {
+        return this.autoInsertEnabled ? 1 : 0;
+    }
+
+    public void setAutoInsertEnabled(boolean autoInsertEnabled) {
+        this.autoInsertEnabled = autoInsertEnabled;
+        this.setChanged();
+    }
+
+    public void toggleAutoInsertEnabled() {
+        this.setAutoInsertEnabled(!this.autoInsertEnabled);
     }
 
     public AutomationMode getAutomationMode(int index) {
@@ -196,6 +218,7 @@ public class BaseBlockEntity extends BlockEntity {
         }
 
         tag.putBoolean("autoExportEnabled", this.autoExportEnabled);
+        tag.putBoolean("autoInsertEnabled", this.autoInsertEnabled);
     }
 
     protected void loadAutomationModes(CompoundTag tag) {
@@ -208,6 +231,7 @@ public class BaseBlockEntity extends BlockEntity {
         }
 
         this.setAutoExportEnabled(tag.getBoolean("autoExportEnabled"));
+        this.setAutoInsertEnabled(tag.getBoolean("autoInsertEnabled"));
     }
 
     public CompoundTag createAutomationCopyData() {
@@ -231,6 +255,10 @@ public class BaseBlockEntity extends BlockEntity {
 
     protected int getEnergizedCubeUpgradeSlotIndex() {
         return this.getUpgradeSlotIndexByFieldName("ENERGIZED_CUBE_SLOT_INDEX");
+    }
+
+    protected int getParallelUpgradeSlotIndex() {
+        return this.getUpgradeSlotIndexByFieldName("PARALLEL_SLOT_INDEX");
     }
 
     private int getUpgradeSlotIndexByFieldName(String fieldName) {
@@ -284,7 +312,9 @@ public class BaseBlockEntity extends BlockEntity {
             return false;
         }
 
-        if (!MachineUpgradeHelper.isAccelerationChip(stack) && !MachineUpgradeHelper.isEnergizedCube(stack)) {
+        if (!MachineUpgradeHelper.isAccelerationChip(stack)
+            && !MachineUpgradeHelper.isEnergizedCube(stack)
+            && !MachineUpgradeHelper.isParallelChip(stack)) {
             return false;
         }
 
@@ -300,6 +330,11 @@ public class BaseBlockEntity extends BlockEntity {
 
         if (MachineUpgradeHelper.isEnergizedCube(stack)
             && this.canInstallUpgradeItemInSlot(itemStackHandler, stack, this.getEnergizedCubeUpgradeSlotIndex())) {
+            return true;
+        }
+
+        if (MachineUpgradeHelper.isParallelChip(stack)
+            && this.canInstallUpgradeItemInSlot(itemStackHandler, stack, this.getParallelUpgradeSlotIndex())) {
             return true;
         }
 
@@ -323,6 +358,11 @@ public class BaseBlockEntity extends BlockEntity {
 
         if (MachineUpgradeHelper.isEnergizedCube(stack)
             && this.tryInstallUpgradeItemInSlot(itemStackHandler, stack, this.getEnergizedCubeUpgradeSlotIndex(), simulate)) {
+            return true;
+        }
+
+        if (MachineUpgradeHelper.isParallelChip(stack)
+            && this.tryInstallUpgradeItemInSlot(itemStackHandler, stack, this.getParallelUpgradeSlotIndex(), simulate)) {
             return true;
         }
 
@@ -410,6 +450,129 @@ public class BaseBlockEntity extends BlockEntity {
         }
 
         return remainingStack;
+    }
+
+    /**
+     * 面ごとの item 公開 handler です。
+     * 未対応の機械は空 handler を返し、自動搬入は何もしません。
+     */
+    public IItemHandler getAutomationItemHandler(@Nullable Direction side) {
+        return EmptyItemHandler.INSTANCE;
+    }
+
+    /**
+     * 面ごとの fluid 公開 handler です。
+     * 液体を持たない機械は null を返し、自動搬入は何もしません。
+     */
+    @Nullable
+    public IFluidHandler getFluidHandler(@Nullable Direction side) {
+        return null;
+    }
+
+    /**
+     * INPUT 系の面から、隣ブロックの item / fluid を取り込みます。
+     * IN_OUT 面は吸い込み対象にしません。
+     */
+    protected final void pullInputsFromConfiguredSides() {
+        if (!this.autoInsertEnabled) {
+            return;
+        }
+
+        this.pullItemsFromConfiguredSides();
+        this.pullFluidsFromConfiguredSides();
+    }
+
+    private void pullItemsFromConfiguredSides() {
+        Level currentLevel = this.level;
+        if (currentLevel == null) {
+            return;
+        }
+
+        BlockState currentState = this.getBlockState();
+        for (Direction direction : Direction.values()) {
+            AutomationSide automationSide = AutomationSide.fromWorldSide(direction, currentState);
+            if (!this.getAutomationMode(automationSide).isInputMode()) {
+                continue;
+            }
+
+            IItemHandler ownHandler = this.getAutomationItemHandler(direction);
+            if (ownHandler == null || ownHandler.getSlots() <= 0) {
+                continue;
+            }
+
+            IItemHandler neighborHandler = currentLevel.getCapability(
+                Capabilities.ItemHandler.BLOCK,
+                this.worldPosition.relative(direction),
+                direction.getOpposite()
+            );
+            if (neighborHandler == null) {
+                continue;
+            }
+
+            this.transferItemsFromNeighbor(neighborHandler, ownHandler);
+        }
+    }
+
+    private void pullFluidsFromConfiguredSides() {
+        Level currentLevel = this.level;
+        if (currentLevel == null) {
+            return;
+        }
+
+        BlockState currentState = this.getBlockState();
+        for (Direction direction : Direction.values()) {
+            AutomationSide automationSide = AutomationSide.fromWorldSide(direction, currentState);
+            if (!this.getFluidAutomationMode(automationSide).isInputMode()) {
+                continue;
+            }
+
+            IFluidHandler ownHandler = this.getFluidHandler(direction);
+            if (ownHandler == null) {
+                continue;
+            }
+
+            IFluidHandler neighborHandler = currentLevel.getCapability(
+                Capabilities.FluidHandler.BLOCK,
+                this.worldPosition.relative(direction),
+                direction.getOpposite()
+            );
+            if (neighborHandler == null) {
+                continue;
+            }
+
+            FluidUtil.tryFluidTransfer(ownHandler, neighborHandler, Integer.MAX_VALUE, true);
+        }
+    }
+
+    private void transferItemsFromNeighbor(IItemHandler sourceHandler, IItemHandler destinationHandler) {
+        for (int slot = 0; slot < sourceHandler.getSlots(); slot++) {
+            ItemStack simulatedExtract = sourceHandler.extractItem(slot, Integer.MAX_VALUE, true);
+            if (simulatedExtract.isEmpty()) {
+                continue;
+            }
+
+            ItemStack simulatedRemaining = ItemHandlerHelper.insertItem(destinationHandler, simulatedExtract, true);
+            int insertableCount = simulatedExtract.getCount() - simulatedRemaining.getCount();
+            if (insertableCount <= 0) {
+                continue;
+            }
+
+            ItemStack extractedStack = sourceHandler.extractItem(slot, insertableCount, false);
+            if (extractedStack.isEmpty()) {
+                continue;
+            }
+
+            ItemStack leftoverStack = ItemHandlerHelper.insertItem(destinationHandler, extractedStack, false);
+            if (leftoverStack.isEmpty()) {
+                continue;
+            }
+
+            // ごく稀に simulate と実行の間で隣が変わった場合は、できるだけ元へ戻します。
+            ItemStack putBackStack = sourceHandler.insertItem(slot, leftoverStack, false);
+            if (!putBackStack.isEmpty()) {
+                ItemHandlerHelper.insertItem(sourceHandler, putBackStack, false);
+            }
+        }
     }
 
     private boolean matchesAnyAutomationMode(AutomationMode currentMode, AutomationMode[] targetModes) {

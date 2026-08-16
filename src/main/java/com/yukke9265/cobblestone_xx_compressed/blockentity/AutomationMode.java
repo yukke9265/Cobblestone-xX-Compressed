@@ -37,6 +37,10 @@ public enum AutomationMode {
         return this == OUTPUT || this == OUTPUT_1 || this == OUTPUT_2 || this == IN_OUT;
     }
 
+    public boolean isInputMode() {
+        return this == INPUT || this == INPUT_1 || this == INPUT_2 || this == COBBLESTONE_INPUT;
+    }
+
     public AutomationMode next() {
         return switch (this) {
             case DISABLED -> INPUT;

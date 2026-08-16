@@ -85,8 +85,7 @@ public class CobblestoneMixerRecipeCategory implements IRecipeCategory<Cobblesto
 
     @Override
     public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, @Nonnull CobblestoneMixerRecipe recipe, @Nonnull IFocusGroup focuses) {
-        builder.addSlot(RecipeIngredientRole.CATALYST, POWER_SLOT_X, POWER_SLOT_Y)
-            .addItemStacks(JeiCobblestonePowerItems.getCatalystItems());
+        JeiCobblestonePowerItems.addPowerSlot(builder, POWER_SLOT_X, POWER_SLOT_Y);
 
         builder.addSlot(RecipeIngredientRole.INPUT, INPUT_SLOT_1_X, INPUT_SLOT_1_Y)
             .addItemStacks(getDisplayStacks(recipe.getFirstInput()));

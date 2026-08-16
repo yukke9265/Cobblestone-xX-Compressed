@@ -49,6 +49,7 @@ public class CobblestoneAssemblyMachineBlockEntity extends PoweredMachineBlockEn
     public static final int OUTPUT_SLOT_INDEX = 7;
     public static final int ACCELERATION_SLOT_INDEX = 8;
     public static final int ENERGIZED_CUBE_SLOT_INDEX = 9;
+    public static final int PARALLEL_SLOT_INDEX = 10;
     public static final long MAX_COBBLESTONE_POWER = 4194304000L;
     public static final long MAX_INPUT_FLUID_AMOUNT = 64_000L;
 
@@ -61,7 +62,7 @@ public class CobblestoneAssemblyMachineBlockEntity extends PoweredMachineBlockEn
     private long storedInputFluidAmount;
     private FluidStack storedInputFluid = FluidStack.EMPTY;
 
-    private final FixedSizeItemStackHandler itemStackHandler = new FixedSizeItemStackHandler(10) {
+    private final FixedSizeItemStackHandler itemStackHandler = new FixedSizeItemStackHandler(11) {
         @Override
         public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
             if (slot == OUTPUT_SLOT_INDEX) {
@@ -80,6 +81,10 @@ public class CobblestoneAssemblyMachineBlockEntity extends PoweredMachineBlockEn
                 return MachineUpgradeHelper.isEnergizedCube(stack);
             }
 
+            if (slot == PARALLEL_SLOT_INDEX) {
+                return MachineUpgradeHelper.isParallelChip(stack);
+            }
+
             return slot >= INPUT_SLOT_1_INDEX && slot <= INPUT_SLOT_6_INDEX;
         }
 
@@ -90,7 +95,7 @@ public class CobblestoneAssemblyMachineBlockEntity extends PoweredMachineBlockEn
 
         @Override
         public int getSlotLimit(int slot) {
-            if (slot == ACCELERATION_SLOT_INDEX || slot == ENERGIZED_CUBE_SLOT_INDEX) {
+            if (slot == ACCELERATION_SLOT_INDEX || slot == ENERGIZED_CUBE_SLOT_INDEX || slot == PARALLEL_SLOT_INDEX) {
                 return 1;
             }
 

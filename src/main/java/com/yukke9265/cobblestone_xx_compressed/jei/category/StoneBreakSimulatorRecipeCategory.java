@@ -65,8 +65,11 @@ public class StoneBreakSimulatorRecipeCategory implements IRecipeCategory<StoneB
 
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, StoneBreakSimulatorJeiRecipe recipe, IFocusGroup focuses) {
-        builder.addSlot(RecipeIngredientRole.CATALYST, MachineGuiLayouts.StoneBreakSimulator.POWER_SLOT_X - BACKGROUND_U, MachineGuiLayouts.StoneBreakSimulator.POWER_SLOT_Y - BACKGROUND_V)
-            .addItemStacks(JeiCobblestonePowerItems.getCatalystItems());
+        JeiCobblestonePowerItems.addPowerSlot(
+            builder,
+            MachineGuiLayouts.StoneBreakSimulator.POWER_SLOT_X - BACKGROUND_U,
+            MachineGuiLayouts.StoneBreakSimulator.POWER_SLOT_Y - BACKGROUND_V
+        );
 
         builder.addSlot(RecipeIngredientRole.INPUT, MachineGuiLayouts.StoneBreakSimulator.INPUT_SLOT_1_X - BACKGROUND_U, MachineGuiLayouts.StoneBreakSimulator.INPUT_SLOT_1_Y - BACKGROUND_V)
             .addItemStack(recipe.getInput());
@@ -75,13 +78,20 @@ public class StoneBreakSimulatorRecipeCategory implements IRecipeCategory<StoneB
             .addIngredients(recipe.getPickaxeIngredient());
 
         builder.addSlot(RecipeIngredientRole.OUTPUT, MachineGuiLayouts.StoneBreakSimulator.OUTPUT_SLOT_X[0] - BACKGROUND_U, MachineGuiLayouts.StoneBreakSimulator.OUTPUT_SLOT_Y[0] - BACKGROUND_V)
-            .addItemStack(recipe.getMainOutput().copy());
+            .addItemStack(recipe.getMainOutput().copy())
+            .addRichTooltipCallback((recipeSlotView, tooltip) -> {
+                if (!hasSilkTouchOutput(recipe)) {
+                    return;
+                }
+
+                tooltip.add(Component.translatable("jei.cobblestonexxcompressed.no_silk_touch"));
+            });
 
         for (int index = 0; index < recipe.getSubOutputs().size() && index + 1 < MachineGuiLayouts.StoneBreakSimulator.OUTPUT_SLOT_X.length; index++) {
             StoneBreakSimulatorJeiRecipe.BonusDrop bonusDrop = recipe.getSubOutputs().get(index);
             builder.addSlot(RecipeIngredientRole.OUTPUT, MachineGuiLayouts.StoneBreakSimulator.OUTPUT_SLOT_X[index + 1] - BACKGROUND_U, MachineGuiLayouts.StoneBreakSimulator.OUTPUT_SLOT_Y[index + 1] - BACKGROUND_V)
                 .addItemStack(bonusDrop.stack().copy())
-                .addRichTooltipCallback((recipeSlotView, tooltip) -> tooltip.add(Component.translatable("jei.cobblestonexxcompressed.chance", bonusDrop.chanceText())));
+                .addRichTooltipCallback((recipeSlotView, tooltip) -> tooltip.add(this.createBonusDropTooltip(bonusDrop)));
         }
     }
 
@@ -98,5 +108,23 @@ public class StoneBreakSimulatorRecipeCategory implements IRecipeCategory<StoneB
 
         guiGraphics.drawString(Minecraft.getInstance().font, recipe.getCobblestonePowerPerTick() + " CP/t", CPPT_LABEL_X, CPPT_LABEL_Y, 0x000000, false);
         guiGraphics.drawString(Minecraft.getInstance().font, recipe.getTotalCobblestonePower() + " total CP", TOTAL_CP_LABEL_X, TOTAL_CP_LABEL_Y, 0x000000, false);
+    }
+
+    private Component createBonusDropTooltip(StoneBreakSimulatorJeiRecipe.BonusDrop bonusDrop) {
+        if (StoneBreakSimulatorJeiRecipe.BonusDrop.SILK_TOUCH.equals(bonusDrop.chanceText())) {
+            return Component.translatable("jei.cobblestonexxcompressed.silk_touch");
+        }
+
+        return Component.translatable("jei.cobblestonexxcompressed.chance", bonusDrop.chanceText());
+    }
+
+    private static boolean hasSilkTouchOutput(StoneBreakSimulatorJeiRecipe recipe) {
+        for (StoneBreakSimulatorJeiRecipe.BonusDrop bonusDrop : recipe.getSubOutputs()) {
+            if (StoneBreakSimulatorJeiRecipe.BonusDrop.SILK_TOUCH.equals(bonusDrop.chanceText())) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

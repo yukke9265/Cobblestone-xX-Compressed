@@ -40,7 +40,7 @@ public class CobblestoneCrystallizationChamberMenu extends BaseMenu {
         AutomationMode.IN_OUT
     };
 
-    private static final int DATA_COUNT = 14 + BaseBlockEntity.AUTOMATION_FACE_COUNT * 2;
+    private static final int DATA_COUNT = 15 + BaseBlockEntity.AUTOMATION_FACE_COUNT * 2;
     private static final int DATA_INDEX_PROGRESS = 0;
     private static final int DATA_INDEX_MAX_PROGRESS = 1;
     private static final int DATA_INDEX_STORED_POWER = 2;
@@ -53,7 +53,8 @@ public class CobblestoneCrystallizationChamberMenu extends BaseMenu {
     private static final int DATA_INDEX_CURRENT_POWER_RATE = DATA_INDEX_FLUID_AUTOMATION_START + BaseBlockEntity.AUTOMATION_FACE_COUNT;
     private static final int DATA_INDEX_CURRENT_POWER_RATE_UPPER = DATA_INDEX_CURRENT_POWER_RATE + 1;
     private static final int DATA_INDEX_AUTO_EXPORT = DATA_INDEX_CURRENT_POWER_RATE_UPPER + 1;
-    private static final int MACHINE_SLOT_COUNT = 4;
+    private static final int DATA_INDEX_AUTO_INSERT = DATA_INDEX_AUTO_EXPORT + 1;
+    private static final int MACHINE_SLOT_COUNT = 5;
     private static final int PLAYER_INVENTORY_COLUMNS = 9;
     private static final int PLAYER_INVENTORY_ROWS = 3;
     private static final int HOTBAR_SLOT_COUNT = 9;
@@ -136,6 +137,10 @@ public class CobblestoneCrystallizationChamberMenu extends BaseMenu {
         return this.crystallizationChamberData.get(DATA_INDEX_AUTO_EXPORT) != 0;
     }
 
+    public boolean isAutoInsertEnabled() {
+        return this.crystallizationChamberData.get(DATA_INDEX_AUTO_INSERT) != 0;
+    }
+
     public int getItemAutomationButtonId(AutomationSide automationSide) {
         return this.getAutomationButtonId(automationSide.getIndex());
     }
@@ -146,6 +151,10 @@ public class CobblestoneCrystallizationChamberMenu extends BaseMenu {
 
     public int getAutoExportButtonId() {
         return this.getAutoExportToggleButtonId();
+    }
+
+    public int getAutoInsertButtonId() {
+        return this.getAutoInsertToggleButtonId();
     }
 
     public int getFluidInteractionButtonId() {
@@ -179,7 +188,11 @@ public class CobblestoneCrystallizationChamberMenu extends BaseMenu {
             return this.crystallizationChamberBlockEntity.handleFluidIndicatorClick(player, true);
         }
 
-        return this.handleAutoExportButtonClick(this.crystallizationChamberBlockEntity, id);
+        if (this.handleAutoExportButtonClick(this.crystallizationChamberBlockEntity, id)) {
+            return true;
+        }
+
+        return this.handleAutoInsertButtonClick(this.crystallizationChamberBlockEntity, id);
     }
 
     @Override
@@ -231,6 +244,13 @@ public class CobblestoneCrystallizationChamberMenu extends BaseMenu {
                     sourceStack,
                     CobblestoneCrystallizationChamberBlockEntity.ENERGIZED_CUBE_SLOT_INDEX,
                     CobblestoneCrystallizationChamberBlockEntity.ENERGIZED_CUBE_SLOT_INDEX + 1,
+                    false
+                );
+            } else if (MachineUpgradeHelper.isParallelChip(sourceStack)) {
+                movedToMachine = this.moveItemStackTo(
+                    sourceStack,
+                    CobblestoneCrystallizationChamberBlockEntity.PARALLEL_SLOT_INDEX,
+                    CobblestoneCrystallizationChamberBlockEntity.PARALLEL_SLOT_INDEX + 1,
                     false
                 );
             } else if (CobblestoneCrusherBlockEntity.isCobblestonePowerItem(sourceStack)) {
@@ -310,6 +330,12 @@ public class CobblestoneCrystallizationChamberMenu extends BaseMenu {
             @Override
             public boolean mayPlace(ItemStack stack) {
                 return MachineUpgradeHelper.isEnergizedCube(stack);
+            }
+        });
+        this.addSlot(new SlotItemHandler(itemStackHandler, CobblestoneCrystallizationChamberBlockEntity.PARALLEL_SLOT_INDEX, MachineGuiLayouts.UPGRADE_SLOT_X, MachineGuiLayouts.PARALLEL_SLOT_Y) {
+            @Override
+            public boolean mayPlace(ItemStack stack) {
+                return MachineUpgradeHelper.isParallelChip(stack);
             }
         });
     }

@@ -30,7 +30,7 @@ public class CobblestoneFEGeneratorMenu extends BaseMenu {
         AutomationMode.IN_OUT
     };
 
-    private static final int DATA_COUNT = 15 + BaseBlockEntity.AUTOMATION_FACE_COUNT;
+    private static final int DATA_COUNT = 16 + BaseBlockEntity.AUTOMATION_FACE_COUNT;
     private static final int DATA_INDEX_STORED_POWER = 0;
     private static final int DATA_INDEX_MAX_STORED_POWER = 2;
     private static final int DATA_INDEX_STORED_ENERGY = 4;
@@ -41,6 +41,7 @@ public class CobblestoneFEGeneratorMenu extends BaseMenu {
     private static final int DATA_INDEX_CURRENT_POWER_RATE = 12 + BaseBlockEntity.AUTOMATION_FACE_COUNT;
     private static final int DATA_INDEX_CURRENT_POWER_RATE_UPPER = DATA_INDEX_CURRENT_POWER_RATE + 1;
     private static final int DATA_INDEX_AUTO_EXPORT = DATA_INDEX_CURRENT_POWER_RATE_UPPER + 1;
+    private static final int DATA_INDEX_AUTO_INSERT = DATA_INDEX_AUTO_EXPORT + 1;
 
     private static final int MACHINE_SLOT_COUNT = 1;
     private static final int PLAYER_INVENTORY_COLUMNS = 9;
@@ -124,12 +125,20 @@ public class CobblestoneFEGeneratorMenu extends BaseMenu {
         return this.generatorData.get(DATA_INDEX_AUTO_EXPORT) != 0;
     }
 
+    public boolean isAutoInsertEnabled() {
+        return this.generatorData.get(DATA_INDEX_AUTO_INSERT) != 0;
+    }
+
     public int getAutomationButtonId(AutomationSide automationSide) {
         return this.getAutomationButtonId(automationSide.getIndex());
     }
 
     public int getAutoExportButtonId() {
         return this.getAutoExportToggleButtonId();
+    }
+
+    public int getAutoInsertButtonId() {
+        return this.getAutoInsertToggleButtonId();
     }
 
     @Override
@@ -144,6 +153,10 @@ public class CobblestoneFEGeneratorMenu extends BaseMenu {
         }
 
         if (this.handleAutoExportButtonClick(this.generatorBlockEntity, id)) {
+            return true;
+        }
+
+        if (this.handleAutoInsertButtonClick(this.generatorBlockEntity, id)) {
             return true;
         }
 

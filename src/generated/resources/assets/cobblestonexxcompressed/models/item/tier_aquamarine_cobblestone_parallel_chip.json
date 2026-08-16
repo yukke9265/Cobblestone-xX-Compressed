@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "cobblestonexxcompressed:item/cobblestone_parallel_module/tier_aquamarine_cobblestone_parallel_chip"
+  }
+}

@@ -75,8 +75,11 @@ public class CobblestoneChemicalReactorRecipeCategory implements IRecipeCategory
 
     @Override
     public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, @Nonnull CobblestoneChemicalReactorRecipe recipe, @Nonnull IFocusGroup focuses) {
-        builder.addSlot(RecipeIngredientRole.CATALYST, MachineGuiLayouts.ChemicalReactor.POWER_SLOT_X - BACKGROUND_U, MachineGuiLayouts.ChemicalReactor.POWER_SLOT_Y - BACKGROUND_V)
-            .addItemStacks(JeiCobblestonePowerItems.getCatalystItems());
+        JeiCobblestonePowerItems.addPowerSlot(
+            builder,
+            MachineGuiLayouts.ChemicalReactor.POWER_SLOT_X - BACKGROUND_U,
+            MachineGuiLayouts.ChemicalReactor.POWER_SLOT_Y - BACKGROUND_V
+        );
 
         if (recipe.hasFirstItemInput()) {
             builder.addSlot(RecipeIngredientRole.INPUT, MachineGuiLayouts.ChemicalReactor.INPUT_ITEM_1_SLOT_X - BACKGROUND_U, MachineGuiLayouts.ChemicalReactor.INPUT_ITEM_1_SLOT_Y - BACKGROUND_V)

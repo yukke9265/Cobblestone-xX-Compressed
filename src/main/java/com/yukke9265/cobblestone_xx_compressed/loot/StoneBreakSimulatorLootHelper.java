@@ -3,8 +3,13 @@ package com.yukke9265.cobblestone_xx_compressed.loot;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 
 public final class StoneBreakSimulatorLootHelper {
     private StoneBreakSimulatorLootHelper() {
@@ -45,6 +50,32 @@ public final class StoneBreakSimulatorLootHelper {
         }
 
         return new GeneratedDrops(mainDrop, List.copyOf(subDrops));
+    }
+
+    public static List<ItemStack> generateOreDrops(ItemStack oreInput, ItemStack toolStack, int brokenBlockCount, ServerLevel serverLevel, BlockPos machinePos) {
+        List<ItemStack> mergedDrops = new ArrayList<>();
+        if (oreInput.isEmpty() || serverLevel == null || machinePos == null) {
+            return mergedDrops;
+        }
+
+        Block block = Block.byItem(oreInput.getItem());
+        if (block == Blocks.AIR) {
+            return mergedDrops;
+        }
+
+        int safeBrokenBlockCount = Math.max(0, brokenBlockCount);
+        BlockState blockState = block.defaultBlockState();
+        ItemStack toolForLoot = toolStack.copy();
+        // ツルハシをそのまま渡すので、幸運とシルクタッチはバニラの loot table どおりに効きます。
+
+        for (int index = 0; index < safeBrokenBlockCount; index++) {
+            List<ItemStack> drops = Block.getDrops(blockState, serverLevel, machinePos, null, null, toolForLoot);
+            for (ItemStack drop : drops) {
+                mergeStack(mergedDrops, drop);
+            }
+        }
+
+        return mergedDrops;
     }
 
     private static int applyOreDropsFortune(int baseCount, int fortuneLevel, RandomSource random) {

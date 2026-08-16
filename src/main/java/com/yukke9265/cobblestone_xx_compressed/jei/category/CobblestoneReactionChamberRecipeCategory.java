@@ -81,8 +81,7 @@ public class CobblestoneReactionChamberRecipeCategory implements IRecipeCategory
 
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, CobblestoneReactionChamberRecipe recipe, IFocusGroup focuses) {
-        builder.addSlot(RecipeIngredientRole.CATALYST, POWER_SLOT_X, POWER_SLOT_Y)
-            .addItemStacks(JeiCobblestonePowerItems.getCatalystItems());
+        JeiCobblestonePowerItems.addPowerSlot(builder, POWER_SLOT_X, POWER_SLOT_Y);
 
         builder.addSlot(RecipeIngredientRole.INPUT, FLUID_SLOT_X, FLUID_SLOT_Y)
             .addIngredients(NeoForgeTypes.FLUID_STACK, List.of(recipe.getFluidInput()))

@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "cobblestonexxcompressed:tier_amethyst_compressed_cobblestone_singularity_fragment"
+    }
+  ],
+  "result": {
+    "count": 8,
+    "id": "cobblestonexxcompressed:tier_amethyst_compressed_cobblestone_singularity_bit"
+  }
+}

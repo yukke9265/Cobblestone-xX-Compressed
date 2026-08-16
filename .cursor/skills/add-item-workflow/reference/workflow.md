@@ -32,7 +32,7 @@
 - The texture is in the correct place
 - The recipe exists when needed
 - runData produced the expected generated JSON
-- processResources synced it to bin/main
+- generated JSON is in src/generated/resources (do not copy it into bin/main)
 - No purple-black texture or missing translation key appears in-game
 
 ## Implementation notes

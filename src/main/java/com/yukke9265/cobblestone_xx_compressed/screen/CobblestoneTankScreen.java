@@ -49,6 +49,8 @@ public class CobblestoneTankScreen extends BaseScreen<CobblestoneTankMenu> {
 
     private static final int AUTO_EXPORT_BUTTON_WIDTH = 94;
     private static final int AUTO_EXPORT_BUTTON_HEIGHT = 20;
+    private static final int AUTO_INSERT_BUTTON_WIDTH = 94;
+    private static final int AUTO_INSERT_BUTTON_HEIGHT = 20;
     private static final int AUTO_EXPORT_BUTTON_X_OFFSET = 4;
 
     private static final ResourceLocation BACKGROUND_TEXTURE =
@@ -57,6 +59,7 @@ public class CobblestoneTankScreen extends BaseScreen<CobblestoneTankMenu> {
     private final Button[] itemAutomationButtons = new Button[AUTOMATION_SIDES.length];
     private final Button[] fluidAutomationButtons = new Button[AUTOMATION_SIDES.length];
     private Button autoExportButton;
+    private Button autoInsertButton;
 
     private final int imageWidth = 176;
     private final int imageHeight = 166;
@@ -80,6 +83,17 @@ public class CobblestoneTankScreen extends BaseScreen<CobblestoneTankMenu> {
                     this.topPos + this.imageHeight - AUTO_EXPORT_BUTTON_HEIGHT,
                     AUTO_EXPORT_BUTTON_WIDTH,
                     AUTO_EXPORT_BUTTON_HEIGHT
+                )
+                .build()
+        );
+
+        this.autoInsertButton = this.addRenderableWidget(
+            Button.builder(Component.empty(), button -> this.sendMenuButtonClick(this.menu.getAutoInsertButtonId()))
+                .bounds(
+                    this.leftPos + this.imageWidth + AUTO_EXPORT_BUTTON_X_OFFSET,
+                    this.topPos + this.imageHeight - AUTO_EXPORT_BUTTON_HEIGHT - AUTO_INSERT_BUTTON_HEIGHT - 2,
+                    AUTO_INSERT_BUTTON_WIDTH,
+                    AUTO_INSERT_BUTTON_HEIGHT
                 )
                 .build()
         );
@@ -135,6 +149,10 @@ public class CobblestoneTankScreen extends BaseScreen<CobblestoneTankMenu> {
 
         if (this.autoExportButton != null) {
             this.autoExportButton.setMessage(this.createCheckboxLabel(this.menu.isAutoExportEnabled(), "gui.cobblestonexxcompressed.auto_export"));
+        }
+
+        if (this.autoInsertButton != null) {
+            this.autoInsertButton.setMessage(this.createCheckboxLabel(this.menu.isAutoInsertEnabled(), "gui.cobblestonexxcompressed.auto_insert"));
         }
     }
 

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.yukke9265.cobblestone_xx_compressed.loot.CompressedStoneLootDefinition;
+import com.yukke9265.cobblestone_xx_compressed.loot.OreBreakDefinition;
 import com.yukke9265.cobblestone_xx_compressed.recipe.StoneBreakSimulatorRecipe;
 
 import net.minecraft.tags.ItemTags;
@@ -65,24 +66,42 @@ public class StoneBreakSimulatorJeiRecipe {
         for (StoneBreakSimulatorRecipe recipe : recipes) {
             for (ItemStack inputStack : recipe.getIngredient().getItems()) {
                 CompressedStoneLootDefinition definition = CompressedStoneLootDefinition.findByStoneInput(inputStack);
-                if (definition == null) {
+                if (definition != null) {
+                    List<BonusDrop> subOutputs = new ArrayList<>();
+                    for (CompressedStoneLootDefinition.BonusLootEntry bonusDrop : definition.getBonusDrops()) {
+                        if (!bonusDrop.hasResolvedItem()) {
+                            continue;
+                        }
+
+                        subOutputs.add(new BonusDrop(new ItemStack(bonusDrop.getItem().get()), formatPercent(bonusDrop.getChance())));
+                    }
+
+                    jeiRecipes.add(new StoneBreakSimulatorJeiRecipe(
+                        inputStack.copy(),
+                        Ingredient.of(ItemTags.PICKAXES),
+                        new ItemStack(definition.getCobblestoneBlock().get()),
+                        List.copyOf(subOutputs),
+                        recipe.getTotalCobblestonePower(),
+                        recipe.getCobblestonePowerPerTick()
+                    ));
                     continue;
                 }
 
-                List<BonusDrop> subOutputs = new ArrayList<>();
-                for (CompressedStoneLootDefinition.BonusLootEntry bonusDrop : definition.getBonusDrops()) {
-                    if (!bonusDrop.hasResolvedItem()) {
-                        continue;
-                    }
+                OreBreakDefinition oreDefinition = OreBreakDefinition.findByInput(inputStack);
+                if (oreDefinition == null || !oreDefinition.hasResolvedJeiDrop()) {
+                    continue;
+                }
 
-                    subOutputs.add(new BonusDrop(new ItemStack(bonusDrop.getItem().get()), formatPercent(bonusDrop.getChance())));
+                List<BonusDrop> oreSubOutputs = new ArrayList<>();
+                if (!oreDefinition.dropsSelfWithoutSilkTouch()) {
+                    oreSubOutputs.add(new BonusDrop(inputStack.copy(), BonusDrop.SILK_TOUCH));
                 }
 
                 jeiRecipes.add(new StoneBreakSimulatorJeiRecipe(
                     inputStack.copy(),
                     Ingredient.of(ItemTags.PICKAXES),
-                    new ItemStack(definition.getCobblestoneBlock().get()),
-                    List.copyOf(subOutputs),
+                    oreDefinition.createJeiDropStack(),
+                    List.copyOf(oreSubOutputs),
                     recipe.getTotalCobblestonePower(),
                     recipe.getCobblestonePowerPerTick()
                 ));
@@ -97,5 +116,6 @@ public class StoneBreakSimulatorJeiRecipe {
     }
 
     public record BonusDrop(ItemStack stack, String chanceText) {
+        public static final String SILK_TOUCH = "silk_touch";
     }
 }

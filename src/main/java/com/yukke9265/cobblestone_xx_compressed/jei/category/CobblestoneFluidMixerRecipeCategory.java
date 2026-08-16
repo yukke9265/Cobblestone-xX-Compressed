@@ -79,8 +79,7 @@ public class CobblestoneFluidMixerRecipeCategory implements IRecipeCategory<Cobb
 
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, CobblestoneFluidMixerRecipe recipe, IFocusGroup focuses) {
-        builder.addSlot(RecipeIngredientRole.CATALYST, POWER_SLOT_X, POWER_SLOT_Y)
-            .addItemStacks(JeiCobblestonePowerItems.getCatalystItems());
+        JeiCobblestonePowerItems.addPowerSlot(builder, POWER_SLOT_X, POWER_SLOT_Y);
         builder.addSlot(RecipeIngredientRole.INPUT, INPUT_FLUID_1_SLOT_X, INPUT_FLUID_1_SLOT_Y)
             .addIngredients(NeoForgeTypes.FLUID_STACK, List.of(recipe.getFirstFluidInput()))
             .setFluidRenderer(Math.max(recipe.getFirstFluidInput().getAmount(), FluidType.BUCKET_VOLUME), false, 16, 16);

@@ -55,10 +55,16 @@ public class ModJapaneseLanguageProvider extends LanguageProvider {
         add("gui.cobblestonexxcompressed.fluid_amount", "液体量");
         add("gui.cobblestonexxcompressed.empty", "空");
         add("gui.cobblestonexxcompressed.auto_export", "自動搬出");
-        add("gui.cobblestonexxcompressed.start_stop", "開始/停止");
+        add("gui.cobblestonexxcompressed.auto_insert", "自動搬入");
+        add("jei.cobblestonexxcompressed.compressed_stone_loot", "圧縮石ドロップ");
+        add("jei.cobblestonexxcompressed.silk_touch", "シルクタッチ");
+        add("jei.cobblestonexxcompressed.no_silk_touch", "シルクタッチなし");
+        add("jei.cobblestonexxcompressed.chance", "確率: %s");
+        add("jei.cobblestonexxcompressed.count_range_fortune", "個数: %s-%s (幸運)");
         add("tooltip.cobblestonexxcompressed.compressed_cobblestone.compression", "x%s 圧縮");
         add("tooltip.cobblestonexxcompressed.cobblestone_energized_cube.capacity", "x%s CP容量");
         add("tooltip.cobblestonexxcompressed.cobblestone_acceleration_chip.rate", "x%s CP/t");
+        add("tooltip.cobblestonexxcompressed.cobblestone_parallel_chip.extra", "追加処理 +%s");
 
         TooltipTranslationEntries.addJapanese(this);
     }

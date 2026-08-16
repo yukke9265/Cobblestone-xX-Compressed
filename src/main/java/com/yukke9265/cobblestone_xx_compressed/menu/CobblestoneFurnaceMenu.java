@@ -30,10 +30,11 @@ public class CobblestoneFurnaceMenu extends BaseMenu {
         AutomationMode.IN_OUT
     };
 
-    private static final int DATA_COUNT = 3 + BaseBlockEntity.AUTOMATION_FACE_COUNT;
+    private static final int DATA_COUNT = 4 + BaseBlockEntity.AUTOMATION_FACE_COUNT;
     private static final int DATA_INDEX_BURN_TIME = 0;
     private static final int DATA_INDEX_MAX_BURN_TIME = 1;
     private static final int DATA_INDEX_AUTO_EXPORT = 2 + BaseBlockEntity.AUTOMATION_FACE_COUNT;
+    private static final int DATA_INDEX_AUTO_INSERT = DATA_INDEX_AUTO_EXPORT + 1;
     private static final int PLAYER_INVENTORY_COLUMNS = 9;
     private static final int PLAYER_INVENTORY_ROWS = 3;
     private static final int HOTBAR_SLOT_COUNT = 9;
@@ -98,12 +99,20 @@ public class CobblestoneFurnaceMenu extends BaseMenu {
         return this.furnaceData.get(DATA_INDEX_AUTO_EXPORT) != 0;
     }
 
+    public boolean isAutoInsertEnabled() {
+        return this.furnaceData.get(DATA_INDEX_AUTO_INSERT) != 0;
+    }
+
     public int getAutomationButtonId(AutomationSide automationSide) {
         return this.getAutomationButtonId(automationSide.getIndex());
     }
 
     public int getAutoExportButtonId() {
         return this.getAutoExportToggleButtonId();
+    }
+
+    public int getAutoInsertButtonId() {
+        return this.getAutoInsertToggleButtonId();
     }
 
     @Override
@@ -120,6 +129,10 @@ public class CobblestoneFurnaceMenu extends BaseMenu {
         }
 
         if (this.handleAutoExportButtonClick(this.furnaceBlockEntity, id)) {
+            return true;
+        }
+
+        if (this.handleAutoInsertButtonClick(this.furnaceBlockEntity, id)) {
             return true;
         }
 

@@ -35,7 +35,7 @@
 - The loot entry exists
 - The tool tag exists
 - runData produced the expected generated JSON
-- processResources synced it to bin/main
+- generated JSON is in src/generated/resources (do not copy it into bin/main)
 - No purple-black or transparent block errors appear in-game
 - The block drops correctly
 

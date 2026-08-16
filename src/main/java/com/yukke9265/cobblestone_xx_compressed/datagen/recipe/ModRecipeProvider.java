@@ -287,6 +287,7 @@ public class ModRecipeProvider extends RecipeProvider {
         buildCobblestoneMotorRecipes(output);
         buildCobblestoneAccelerationChipRecipes(output);
         buildCobblestoneEnergizedCubeRecipes(output);
+        buildCobblestoneParallelChipRecipes(output);
         buildCobblestoneMachineBlockRecipes(output);
         buildCustomMachineRecipes(output);
         buildConfigurationCardRecipe(output);
@@ -425,6 +426,7 @@ public class ModRecipeProvider extends RecipeProvider {
         // bit は通常の丸石 gem、tier 版は同じ tier の丸石 gem を 8 個外周へ並べて作ります。
         // fragment と singularity も同じ「8 個を外周へ置く」見た目でそろえ、
         // bit -> fragment -> singularity の段階がレシピ形状から追いやすいようにします。
+        // 各段階は圧縮丸石と同じく、1 個の単体クラフトで前段階 8 個へ戻せます。
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.COMPRESSED_COBBLESTONE_SINGULARITY_BIT.get())
             .pattern("CCC")
             .pattern("C C")
@@ -435,17 +437,35 @@ public class ModRecipeProvider extends RecipeProvider {
                 has(ModItems.COBBLESTONE_GEM.get())
             )
             .save(output, modRecipeId("compressed_cobblestone_singularity_bit"));
+        // 逆変換は単体クラフトで、8 個の gem へ戻します。
+        saveSingleItemUnpackRecipe(
+            output,
+            ModItems.COMPRESSED_COBBLESTONE_SINGULARITY_BIT.get(),
+            ModItems.COBBLESTONE_GEM.get(),
+            8,
+            "compressed_cobblestone_singularity_bit",
+            "cobblestone_gem"
+        );
 
         for (ModItems.TierCompressedCobblestoneSingularityBit tier : ModItems.TierCompressedCobblestoneSingularityBit.values()) {
             ItemLike cobblestoneGem = ModItems.TierCobblestoneGem.valueOf(tier.name()).getItem().get();
+            String gemRegistryName = ModItems.TierCobblestoneGem.valueOf(tier.name()).getRegistryName();
 
             ShapedRecipeBuilder.shaped(RecipeCategory.MISC, tier.getItem().get())
                 .pattern("CCC")
                 .pattern("C C")
                 .pattern("CCC")
                 .define('C', cobblestoneGem)
-                .unlockedBy("has_" + ModItems.TierCobblestoneGem.valueOf(tier.name()).getRegistryName(), has(cobblestoneGem))
+                .unlockedBy("has_" + gemRegistryName, has(cobblestoneGem))
                 .save(output, modRecipeId(tier.getRegistryName()));
+            saveSingleItemUnpackRecipe(
+                output,
+                tier.getItem().get(),
+                cobblestoneGem,
+                8,
+                tier.getRegistryName(),
+                gemRegistryName
+            );
         }
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.COMPRESSED_COBBLESTONE_SINGULARITY_FRAGMENT.get())
@@ -458,17 +478,34 @@ public class ModRecipeProvider extends RecipeProvider {
                 has(ModItems.COMPRESSED_COBBLESTONE_SINGULARITY_BIT.get())
             )
             .save(output, modRecipeId("compressed_cobblestone_singularity_fragment"));
+        saveSingleItemUnpackRecipe(
+            output,
+            ModItems.COMPRESSED_COBBLESTONE_SINGULARITY_FRAGMENT.get(),
+            ModItems.COMPRESSED_COBBLESTONE_SINGULARITY_BIT.get(),
+            8,
+            "compressed_cobblestone_singularity_fragment",
+            "compressed_cobblestone_singularity_bit"
+        );
 
         for (ModItems.TierCompressedCobblestoneSingularityFragment tier : ModItems.TierCompressedCobblestoneSingularityFragment.values()) {
             ItemLike singularityBit = ModItems.TierCompressedCobblestoneSingularityBit.valueOf(tier.name()).getItem().get();
+            String bitRegistryName = ModItems.TierCompressedCobblestoneSingularityBit.valueOf(tier.name()).getRegistryName();
 
             ShapedRecipeBuilder.shaped(RecipeCategory.MISC, tier.getItem().get())
                 .pattern("BBB")
                 .pattern("B B")
                 .pattern("BBB")
                 .define('B', singularityBit)
-                .unlockedBy("has_" + ModItems.TierCompressedCobblestoneSingularityBit.valueOf(tier.name()).getRegistryName(), has(singularityBit))
+                .unlockedBy("has_" + bitRegistryName, has(singularityBit))
                 .save(output, modRecipeId(tier.getRegistryName()));
+            saveSingleItemUnpackRecipe(
+                output,
+                tier.getItem().get(),
+                singularityBit,
+                8,
+                tier.getRegistryName(),
+                bitRegistryName
+            );
         }
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.COMPRESSED_COBBLESTONE_SINGULARITY.get())
@@ -481,18 +518,50 @@ public class ModRecipeProvider extends RecipeProvider {
                 has(ModItems.COMPRESSED_COBBLESTONE_SINGULARITY_FRAGMENT.get())
             )
             .save(output, modRecipeId("compressed_cobblestone_singularity"));
+        saveSingleItemUnpackRecipe(
+            output,
+            ModItems.COMPRESSED_COBBLESTONE_SINGULARITY.get(),
+            ModItems.COMPRESSED_COBBLESTONE_SINGULARITY_FRAGMENT.get(),
+            8,
+            "compressed_cobblestone_singularity",
+            "compressed_cobblestone_singularity_fragment"
+        );
 
         for (ModItems.TierCompressedCobblestoneSingularity tier : ModItems.TierCompressedCobblestoneSingularity.values()) {
             ItemLike singularityFragment = ModItems.TierCompressedCobblestoneSingularityFragment.valueOf(tier.name()).getItem().get();
+            String fragmentRegistryName = ModItems.TierCompressedCobblestoneSingularityFragment.valueOf(tier.name()).getRegistryName();
 
             ShapedRecipeBuilder.shaped(RecipeCategory.MISC, tier.getItem().get())
                 .pattern("FFF")
                 .pattern("F F")
                 .pattern("FFF")
                 .define('F', singularityFragment)
-                .unlockedBy("has_" + ModItems.TierCompressedCobblestoneSingularityFragment.valueOf(tier.name()).getRegistryName(), has(singularityFragment))
+                .unlockedBy("has_" + fragmentRegistryName, has(singularityFragment))
                 .save(output, modRecipeId(tier.getRegistryName()));
+            saveSingleItemUnpackRecipe(
+                output,
+                tier.getItem().get(),
+                singularityFragment,
+                8,
+                tier.getRegistryName(),
+                fragmentRegistryName
+            );
         }
+    }
+
+    // 圧縮丸石と同じく、1 個を作業台へ置くだけで前段階へ戻します。
+    private void saveSingleItemUnpackRecipe(
+        RecipeOutput output,
+        ItemLike packedItem,
+        ItemLike unpackedItem,
+        int unpackedCount,
+        String packedRegistryName,
+        String unpackedRegistryName
+    ) {
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, unpackedItem, unpackedCount)
+            .requires(packedItem)
+            .unlockedBy("has_" + packedRegistryName, has(packedItem))
+            .save(output, modRecipeId(packedRegistryName + "_to_" + unpackedRegistryName));
     }
 
     private void buildCobblestoneRodRecipes(RecipeOutput output) {
@@ -703,6 +772,33 @@ public class ModRecipeProvider extends RecipeProvider {
                 .define('A', compressedCobblestone)
                 .define('B', cobblestoneProcessor)
                 .unlockedBy("has_" + tier.getRegistryName(), has(cobblestoneProcessor))
+                .save(output, modRecipeId(tier.getRegistryName()));
+        }
+    }
+
+    private void buildCobblestoneParallelChipRecipes(RecipeOutput output) {
+        // Parallel Chip は、外周を圧縮丸石で囲み、中央へ singularity fragment を置く 3x3 レシピです。
+        // tier 版も同じ見た目のまま、対応する tier の圧縮丸石と fragment に差し替えます。
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.COBBLESTONE_PARALLEL_CHIP.get())
+            .pattern("AAA")
+            .pattern("ABA")
+            .pattern("AAA")
+            .define('A', ModItems.COMPRESSED_COBBLESTONE_ITEM.get())
+            .define('B', ModItems.COMPRESSED_COBBLESTONE_SINGULARITY_FRAGMENT.get())
+            .unlockedBy("has_compressed_cobblestone_singularity_fragment", has(ModItems.COMPRESSED_COBBLESTONE_SINGULARITY_FRAGMENT.get()))
+            .save(output, modRecipeId("cobblestone_parallel_chip"));
+
+        for (ModItems.TierCobblestoneParallelChip tier : ModItems.TierCobblestoneParallelChip.values()) {
+            ItemLike compressedCobblestone = ModItems.TierCompressedCobblestoneItem.valueOf(tier.name()).getItem().get();
+            ItemLike singularityFragment = ModItems.TierCompressedCobblestoneSingularityFragment.valueOf(tier.name()).getItem().get();
+
+            ShapedRecipeBuilder.shaped(RecipeCategory.MISC, tier.getItem().get())
+                .pattern("AAA")
+                .pattern("ABA")
+                .pattern("AAA")
+                .define('A', compressedCobblestone)
+                .define('B', singularityFragment)
+                .unlockedBy("has_" + tier.getRegistryName(), has(singularityFragment))
                 .save(output, modRecipeId(tier.getRegistryName()));
         }
     }

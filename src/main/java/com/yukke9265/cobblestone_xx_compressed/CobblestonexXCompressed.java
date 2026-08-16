@@ -161,6 +161,10 @@ public class CobblestonexXCompressed {
                 for (ModItems.TierCobblestoneEnergizedCube tier : ModItems.TierCobblestoneEnergizedCube.values()) {
                     output.accept(tier.getItem().get());
                 }
+                output.accept(ModItems.COBBLESTONE_PARALLEL_CHIP.get());
+                for (ModItems.TierCobblestoneParallelChip tier : ModItems.TierCobblestoneParallelChip.values()) {
+                    output.accept(tier.getItem().get());
+                }
                 output.accept(ModItems.COBBLESTONE_BREAD.get());
                 for (ModItems.TierCobblestoneBread tier : ModItems.TierCobblestoneBread.values()) {
                     output.accept(tier.getItem().get());

@@ -46,7 +46,7 @@ public class CobblestoneAssemblyMachineMenu extends BaseMenu {
         AutomationMode.IN_OUT
     };
 
-    private static final int DATA_COUNT = 14 + BaseBlockEntity.AUTOMATION_FACE_COUNT * 2;
+    private static final int DATA_COUNT = 15 + BaseBlockEntity.AUTOMATION_FACE_COUNT * 2;
     private static final int DATA_INDEX_PROGRESS = 0;
     private static final int DATA_INDEX_MAX_PROGRESS = 1;
     private static final int DATA_INDEX_STORED_POWER = 2;
@@ -59,7 +59,8 @@ public class CobblestoneAssemblyMachineMenu extends BaseMenu {
     private static final int DATA_INDEX_CURRENT_POWER_RATE = DATA_INDEX_FLUID_AUTOMATION_START + BaseBlockEntity.AUTOMATION_FACE_COUNT;
     private static final int DATA_INDEX_CURRENT_POWER_RATE_UPPER = DATA_INDEX_CURRENT_POWER_RATE + 1;
     private static final int DATA_INDEX_AUTO_EXPORT = DATA_INDEX_CURRENT_POWER_RATE_UPPER + 1;
-    private static final int MACHINE_SLOT_COUNT = 10;
+    private static final int DATA_INDEX_AUTO_INSERT = DATA_INDEX_AUTO_EXPORT + 1;
+    private static final int MACHINE_SLOT_COUNT = 11;
     private static final int PLAYER_INVENTORY_COLUMNS = 9;
     private static final int PLAYER_INVENTORY_ROWS = 3;
     private static final int HOTBAR_SLOT_COUNT = 9;
@@ -142,6 +143,10 @@ public class CobblestoneAssemblyMachineMenu extends BaseMenu {
         return this.assemblyMachineData.get(DATA_INDEX_AUTO_EXPORT) != 0;
     }
 
+    public boolean isAutoInsertEnabled() {
+        return this.assemblyMachineData.get(DATA_INDEX_AUTO_INSERT) != 0;
+    }
+
     public int getItemAutomationButtonId(AutomationSide automationSide) {
         return this.getAutomationButtonId(automationSide.getIndex());
     }
@@ -152,6 +157,10 @@ public class CobblestoneAssemblyMachineMenu extends BaseMenu {
 
     public int getAutoExportButtonId() {
         return this.getAutoExportToggleButtonId();
+    }
+
+    public int getAutoInsertButtonId() {
+        return this.getAutoInsertToggleButtonId();
     }
 
     public int getFluidInteractionButtonId() {
@@ -185,7 +194,11 @@ public class CobblestoneAssemblyMachineMenu extends BaseMenu {
             return this.assemblyMachineBlockEntity.handleFluidIndicatorClick(player, true);
         }
 
-        return this.handleAutoExportButtonClick(this.assemblyMachineBlockEntity, id);
+        if (this.handleAutoExportButtonClick(this.assemblyMachineBlockEntity, id)) {
+            return true;
+        }
+
+        return this.handleAutoInsertButtonClick(this.assemblyMachineBlockEntity, id);
     }
 
     @Override
@@ -229,6 +242,8 @@ public class CobblestoneAssemblyMachineMenu extends BaseMenu {
                 movedToMachine = this.moveItemStackTo(sourceStack, CobblestoneAssemblyMachineBlockEntity.ACCELERATION_SLOT_INDEX, CobblestoneAssemblyMachineBlockEntity.ACCELERATION_SLOT_INDEX + 1, false);
             } else if (MachineUpgradeHelper.isEnergizedCube(sourceStack)) {
                 movedToMachine = this.moveItemStackTo(sourceStack, CobblestoneAssemblyMachineBlockEntity.ENERGIZED_CUBE_SLOT_INDEX, CobblestoneAssemblyMachineBlockEntity.ENERGIZED_CUBE_SLOT_INDEX + 1, false);
+            } else if (MachineUpgradeHelper.isParallelChip(sourceStack)) {
+                movedToMachine = this.moveItemStackTo(sourceStack, CobblestoneAssemblyMachineBlockEntity.PARALLEL_SLOT_INDEX, CobblestoneAssemblyMachineBlockEntity.PARALLEL_SLOT_INDEX + 1, false);
             } else if (this.assemblyMachineBlockEntity.canQuickMoveToInput(sourceStack)) {
                 movedToMachine = this.moveItemStackTo(sourceStack, CobblestoneAssemblyMachineBlockEntity.INPUT_SLOT_1_INDEX, CobblestoneAssemblyMachineBlockEntity.POWER_SLOT_INDEX, false);
             }
@@ -317,6 +332,12 @@ public class CobblestoneAssemblyMachineMenu extends BaseMenu {
             @Override
             public boolean mayPlace(@Nonnull ItemStack stack) {
                 return MachineUpgradeHelper.isEnergizedCube(stack);
+            }
+        });
+        this.addSlot(new SlotItemHandler(itemStackHandler, CobblestoneAssemblyMachineBlockEntity.PARALLEL_SLOT_INDEX, MachineGuiLayouts.UPGRADE_SLOT_X, MachineGuiLayouts.PARALLEL_SLOT_Y) {
+            @Override
+            public boolean mayPlace(@Nonnull ItemStack stack) {
+                return MachineUpgradeHelper.isParallelChip(stack);
             }
         });
     }

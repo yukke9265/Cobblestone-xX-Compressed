@@ -1,7 +1,6 @@
 package com.yukke9265.cobblestone_xx_compressed.block;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 import com.yukke9265.cobblestone_xx_compressed.blockentity.CobblestoneAssemblyMachineBlockEntity;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModBlockEntities;
@@ -29,7 +28,7 @@ public class CobblestoneAssemblyMachineBlock extends OnOffBlock {
     }
 
     @Override
-    public <T extends BlockEntity> @Nullable BlockEntityTicker<T> getTicker(@Nonnull Level level, @Nonnull BlockState state, @Nonnull BlockEntityType<T> blockEntityType) {
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(@Nonnull Level level, @Nonnull BlockState state, @Nonnull BlockEntityType<T> blockEntityType) {
         if (blockEntityType == ModBlockEntities.COBBLESTONE_ASSEMBLY_MACHINE_BLOCK_ENTITY.get()) {
             return (currentLevel, currentPos, currentState, blockEntity) -> {
                 if (blockEntity instanceof CobblestoneAssemblyMachineBlockEntity assemblyMachineBlockEntity) {

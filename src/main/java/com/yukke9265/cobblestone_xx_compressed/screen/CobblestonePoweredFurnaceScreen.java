@@ -138,6 +138,16 @@ public class CobblestonePoweredFurnaceScreen extends PoweredMachineScreenBase<Co
     }
 
     @Override
+    protected int getAutoInsertButtonId() {
+        return this.menu.getAutoInsertButtonId();
+    }
+
+    @Override
+    protected boolean isAutoInsertEnabled() {
+        return this.menu.isAutoInsertEnabled();
+    }
+
+    @Override
     protected ResourceLocation getJeiRecipeCategoryId() {
         return ModJeiIds.COBBLESTONE_POWERED_FURNACE;
     }

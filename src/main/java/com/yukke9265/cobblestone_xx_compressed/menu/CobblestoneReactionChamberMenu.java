@@ -44,7 +44,7 @@ public class CobblestoneReactionChamberMenu extends BaseMenu {
         AutomationMode.IN_OUT
     };
 
-    private static final int DATA_COUNT = 14 + BaseBlockEntity.AUTOMATION_FACE_COUNT * 2;
+    private static final int DATA_COUNT = 15 + BaseBlockEntity.AUTOMATION_FACE_COUNT * 2;
     private static final int DATA_INDEX_PROGRESS = 0;
     private static final int DATA_INDEX_MAX_PROGRESS = 1;
     private static final int DATA_INDEX_STORED_POWER = 2;
@@ -57,7 +57,8 @@ public class CobblestoneReactionChamberMenu extends BaseMenu {
     private static final int DATA_INDEX_CURRENT_POWER_RATE = DATA_INDEX_FLUID_AUTOMATION_START + BaseBlockEntity.AUTOMATION_FACE_COUNT;
     private static final int DATA_INDEX_CURRENT_POWER_RATE_UPPER = DATA_INDEX_CURRENT_POWER_RATE + 1;
     private static final int DATA_INDEX_AUTO_EXPORT = DATA_INDEX_CURRENT_POWER_RATE_UPPER + 1;
-    private static final int MACHINE_SLOT_COUNT = 6;
+    private static final int DATA_INDEX_AUTO_INSERT = DATA_INDEX_AUTO_EXPORT + 1;
+    private static final int MACHINE_SLOT_COUNT = 7;
     private static final int PLAYER_INVENTORY_COLUMNS = 9;
     private static final int PLAYER_INVENTORY_ROWS = 3;
     private static final int HOTBAR_SLOT_COUNT = 9;
@@ -140,6 +141,10 @@ public class CobblestoneReactionChamberMenu extends BaseMenu {
         return this.reactionChamberData.get(DATA_INDEX_AUTO_EXPORT) != 0;
     }
 
+    public boolean isAutoInsertEnabled() {
+        return this.reactionChamberData.get(DATA_INDEX_AUTO_INSERT) != 0;
+    }
+
     public int getItemAutomationButtonId(AutomationSide automationSide) {
         return this.getAutomationButtonId(automationSide.getIndex());
     }
@@ -150,6 +155,10 @@ public class CobblestoneReactionChamberMenu extends BaseMenu {
 
     public int getAutoExportButtonId() {
         return this.getAutoExportToggleButtonId();
+    }
+
+    public int getAutoInsertButtonId() {
+        return this.getAutoInsertToggleButtonId();
     }
 
     public int getFluidInteractionButtonId() {
@@ -183,7 +192,11 @@ public class CobblestoneReactionChamberMenu extends BaseMenu {
             return this.reactionChamberBlockEntity.handleFluidIndicatorClick(player, true);
         }
 
-        return this.handleAutoExportButtonClick(this.reactionChamberBlockEntity, id);
+        if (this.handleAutoExportButtonClick(this.reactionChamberBlockEntity, id)) {
+            return true;
+        }
+
+        return this.handleAutoInsertButtonClick(this.reactionChamberBlockEntity, id);
     }
 
     @Override
@@ -235,6 +248,13 @@ public class CobblestoneReactionChamberMenu extends BaseMenu {
                     sourceStack,
                     CobblestoneReactionChamberBlockEntity.ENERGIZED_CUBE_SLOT_INDEX,
                     CobblestoneReactionChamberBlockEntity.ENERGIZED_CUBE_SLOT_INDEX + 1,
+                    false
+                );
+            } else if (MachineUpgradeHelper.isParallelChip(sourceStack)) {
+                movedToMachine = this.moveItemStackTo(
+                    sourceStack,
+                    CobblestoneReactionChamberBlockEntity.PARALLEL_SLOT_INDEX,
+                    CobblestoneReactionChamberBlockEntity.PARALLEL_SLOT_INDEX + 1,
                     false
                 );
             } else if (this.reactionChamberBlockEntity.canQuickMoveToInput(sourceStack)) {
@@ -336,6 +356,12 @@ public class CobblestoneReactionChamberMenu extends BaseMenu {
             @Override
             public boolean mayPlace(ItemStack stack) {
                 return MachineUpgradeHelper.isEnergizedCube(stack);
+            }
+        });
+        this.addSlot(new SlotItemHandler(itemStackHandler, CobblestoneReactionChamberBlockEntity.PARALLEL_SLOT_INDEX, MachineGuiLayouts.UPGRADE_SLOT_X, MachineGuiLayouts.PARALLEL_SLOT_Y) {
+            @Override
+            public boolean mayPlace(ItemStack stack) {
+                return MachineUpgradeHelper.isParallelChip(stack);
             }
         });
     }

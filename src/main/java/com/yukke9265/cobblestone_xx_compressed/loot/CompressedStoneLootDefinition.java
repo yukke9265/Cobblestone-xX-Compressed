@@ -28,7 +28,7 @@ public class CompressedStoneLootDefinition {
             ModBlocks.COMPRESSED_STONE,
             ModBlocks.COMPRESSED_COBBLESTONE,
             bonusDrop(ModItems.COBBLESTONE_GEM, 0.8d),
-            bonusDrop(() -> Items.BONE, 0.01d),
+            bonusDrop(() -> Items.STRING, 0.01d),
             bonusDrop(() -> Items.FLINT, 0.01d)
         ),
         new CompressedStoneLootDefinition(

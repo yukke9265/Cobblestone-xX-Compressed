@@ -138,6 +138,16 @@ public class CobblestoneCrusherScreen extends PoweredMachineScreenBase<Cobblesto
     }
 
     @Override
+    protected int getAutoInsertButtonId() {
+        return this.menu.getAutoInsertButtonId();
+    }
+
+    @Override
+    protected boolean isAutoInsertEnabled() {
+        return this.menu.isAutoInsertEnabled();
+    }
+
+    @Override
     protected ResourceLocation getJeiRecipeCategoryId() {
         return ModJeiIds.COBBLESTONE_CRUSHER;
     }

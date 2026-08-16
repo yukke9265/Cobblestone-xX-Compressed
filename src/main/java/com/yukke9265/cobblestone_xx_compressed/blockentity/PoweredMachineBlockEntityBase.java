@@ -86,7 +86,12 @@ public abstract class PoweredMachineBlockEntityBase<R> extends BaseBlockEntity {
             return 0L;
         }
 
-        return cobblestonePowerPerTick * progressStep;
+        long consumption = cobblestonePowerPerTick * progressStep;
+        if (this.progress + progressStep < this.maxProgress) {
+            return consumption;
+        }
+
+        return consumption + this.getParallelExtraCraftConsumption(recipe, this.storedCobblestonePower - consumption);
     }
 
     public void reverseIsAvailable() {
@@ -218,6 +223,7 @@ public abstract class PoweredMachineBlockEntityBase<R> extends BaseBlockEntity {
         boolean shouldTurnOn = false;
 
         this.clampStoredCobblestonePower();
+        this.pullInputsFromConfiguredSides();
         this.tryAbsorbCobblestonePower();
 
         if (!this.isAvailable) {
@@ -245,6 +251,7 @@ public abstract class PoweredMachineBlockEntityBase<R> extends BaseBlockEntity {
                         if (this.progress >= this.maxProgress) {
                             this.finishProcessing(recipe);
                             this.resetProgress();
+                            this.processParallelExtraCrafts();
                         }
                     }
                 } else if (this.shouldResetProgress(recipe)) {
@@ -332,6 +339,81 @@ public abstract class PoweredMachineBlockEntityBase<R> extends BaseBlockEntity {
         }
 
         return multiplier;
+    }
+
+    /**
+     * 1 tick で今のレシピを完了したあと、余り CP で追加完了できる回数を返します。
+     *
+     * チップが無いときは 0 です。あるときは tier に応じて +1, +2, +3... と加算します。
+     */
+    protected final int getParallelExtraCraftCount() {
+        ItemStackHandler itemStackHandler = this.getItemStackHandler();
+        if (itemStackHandler == null) {
+            return 0;
+        }
+
+        int parallelSlotIndex = this.getParallelUpgradeSlotIndex();
+        if (parallelSlotIndex < 0 || itemStackHandler.getSlots() <= parallelSlotIndex) {
+            return 0;
+        }
+
+        ItemStack parallelStack = itemStackHandler.getStackInSlot(parallelSlotIndex);
+        return MachineUpgradeHelper.getParallelExtraCraftCount(parallelStack);
+    }
+
+    /**
+     * 完了直後の余り CP で、同じレシピを追加完了します。
+     *
+     * 追加回数はチップ倍率、余り CP、入力残数、出力空きの最小です。
+     * 1 回分すら入らなくなった時点で止め、使わなかった CP は残します。
+     */
+    private void processParallelExtraCrafts() {
+        int extraLimit = this.getParallelExtraCraftCount();
+        if (extraLimit <= 0) {
+            return;
+        }
+
+        int extraDone = 0;
+        while (extraDone < extraLimit) {
+            Optional<R> extraRecipeOptional = this.findMatchingRecipe();
+            if (extraRecipeOptional.isEmpty()) {
+                return;
+            }
+
+            R extraRecipe = extraRecipeOptional.get();
+            this.updateMaxProgress(this.getRecipeProcessingTime(extraRecipe));
+            if (this.maxProgress <= 0 || !this.canProcessRecipe(extraRecipe)) {
+                return;
+            }
+
+            long cobblestonePowerPerTick = this.getRecipeCobblestonePowerPerTick(extraRecipe);
+            long totalCobblestonePower = cobblestonePowerPerTick * (long) this.maxProgress;
+            if (totalCobblestonePower <= 0L || this.storedCobblestonePower < totalCobblestonePower) {
+                return;
+            }
+
+            this.finishProcessing(extraRecipe);
+            this.storedCobblestonePower -= totalCobblestonePower;
+            extraDone++;
+            this.setChanged();
+        }
+    }
+
+    private long getParallelExtraCraftConsumption(R recipe, long leftoverPower) {
+        int extraLimit = this.getParallelExtraCraftCount();
+        if (extraLimit <= 0 || leftoverPower <= 0L || this.maxProgress <= 0) {
+            return 0L;
+        }
+
+        long cobblestonePowerPerTick = this.getRecipeCobblestonePowerPerTick(recipe);
+        long totalCobblestonePower = cobblestonePowerPerTick * (long) this.maxProgress;
+        if (totalCobblestonePower <= 0L || leftoverPower < totalCobblestonePower) {
+            return 0L;
+        }
+
+        long extraFromPower = leftoverPower / totalCobblestonePower;
+        long extraCount = Math.min(extraLimit, extraFromPower);
+        return extraCount * totalCobblestonePower;
     }
 
     /**
@@ -480,18 +562,22 @@ public abstract class PoweredMachineBlockEntityBase<R> extends BaseBlockEntity {
         return this.getCurrentPowerRateUpperDataIndex(machineSpecificDataCount) + 1;
     }
 
-    protected final int getPoweredMachineDataCount(int machineSpecificDataCount) {
+    protected final int getAutoInsertDataIndex(int machineSpecificDataCount) {
         return this.getAutoExportDataIndex(machineSpecificDataCount) + 1;
+    }
+
+    protected final int getPoweredMachineDataCount(int machineSpecificDataCount) {
+        return this.getAutoInsertDataIndex(machineSpecificDataCount) + 1;
     }
 
     /**
      * item と fluid の両方で automation 設定を持つ powered machine 用の同期数です。
      *
-     * 機械固有データ、item automation、fluid automation、CP/t、auto export の順で
+     * 機械固有データ、item automation、fluid automation、CP/t、auto export、auto insert の順で
      * ContainerData を並べます。通常の item 専用機械は既存の overload を使用します。
      */
     protected final int getPoweredMachineDataCount(int machineSpecificDataCount, boolean includesFluidAutomation) {
-        return this.getAutoExportDataIndex(machineSpecificDataCount, includesFluidAutomation) + 1;
+        return this.getAutoInsertDataIndex(machineSpecificDataCount, includesFluidAutomation) + 1;
     }
 
     protected final int getPoweredMachineCommonData(int index, int machineSpecificDataCount) {
@@ -550,6 +636,10 @@ public abstract class PoweredMachineBlockEntityBase<R> extends BaseBlockEntity {
             return this.getAutoExportEnabledId();
         }
 
+        if (index == this.getAutoInsertDataIndex(machineSpecificDataCount, includesFluidAutomation)) {
+            return this.getAutoInsertEnabledId();
+        }
+
         return 0;
     }
 
@@ -605,6 +695,11 @@ public abstract class PoweredMachineBlockEntityBase<R> extends BaseBlockEntity {
             return true;
         }
 
+        if (index == this.getAutoInsertDataIndex(machineSpecificDataCount, includesFluidAutomation)) {
+            this.setAutoInsertEnabled(value != 0);
+            return true;
+        }
+
         return false;
     }
 
@@ -630,5 +725,9 @@ public abstract class PoweredMachineBlockEntityBase<R> extends BaseBlockEntity {
 
     private int getAutoExportDataIndex(int machineSpecificDataCount, boolean includesFluidAutomation) {
         return this.getCurrentPowerRateUpperDataIndex(machineSpecificDataCount, includesFluidAutomation) + 1;
+    }
+
+    private int getAutoInsertDataIndex(int machineSpecificDataCount, boolean includesFluidAutomation) {
+        return this.getAutoExportDataIndex(machineSpecificDataCount, includesFluidAutomation) + 1;
     }
 }

@@ -47,8 +47,11 @@ public class CobblestoneEnchanterScreen extends BaseScreen<CobblestoneEnchanterM
     private static final int START_BUTTON_X_OFFSET = 4;
     private static final int AUTO_EXPORT_BUTTON_WIDTH = 94;
     private static final int AUTO_EXPORT_BUTTON_HEIGHT = 20;
+    private static final int AUTO_INSERT_BUTTON_WIDTH = 94;
+    private static final int AUTO_INSERT_BUTTON_HEIGHT = 20;
     private static final Component ACCELERATION_TOOLTIP = Component.literal("acceleration_chip");
     private static final Component ENERGIZED_CUBE_TOOLTIP = Component.literal("energized_cube");
+    private static final Component PARALLEL_TOOLTIP = Component.literal("parallel_chip");
 
     private static final ResourceLocation BACKGROUND_TEXTURE =
         ResourceLocation.fromNamespaceAndPath(CobblestonexXCompressed.MODID, "textures/gui/cobblestone_mixer.png");
@@ -58,6 +61,7 @@ public class CobblestoneEnchanterScreen extends BaseScreen<CobblestoneEnchanterM
 
     private final Button[] automationButtons = new Button[AUTOMATION_SIDES.length];
     private Button autoExportButton;
+    private Button autoInsertButton;
 
     public CobblestoneEnchanterScreen(CobblestoneEnchanterMenu menu, Inventory inventory, Component title) {
         super(menu, inventory, title);
@@ -86,6 +90,12 @@ public class CobblestoneEnchanterScreen extends BaseScreen<CobblestoneEnchanterM
                 .build()
         );
 
+        this.autoInsertButton = this.addRenderableWidget(
+            Button.builder(Component.empty(), button -> this.sendMenuButtonClick(this.menu.getAutoInsertButtonId()))
+                .bounds(this.leftPos + this.imageWidth + START_BUTTON_X_OFFSET, this.topPos + this.imageHeight - START_BUTTON_HEIGHT - AUTO_EXPORT_BUTTON_HEIGHT - AUTO_INSERT_BUTTON_HEIGHT - 4, AUTO_INSERT_BUTTON_WIDTH, AUTO_INSERT_BUTTON_HEIGHT)
+                .build()
+        );
+
         int automationPanelX = this.leftPos - AUTOMATION_PANEL_X_OFFSET - AUTOMATION_BUTTON_WIDTH;
         for (AutomationSide side : AUTOMATION_SIDES) {
             int y = this.topPos + AUTOMATION_PANEL_Y + AUTOMATION_LEGEND_LINE_HEIGHT * 3 + 6 + side.getIndex() * AUTOMATION_BUTTON_SPACING;
@@ -98,6 +108,7 @@ public class CobblestoneEnchanterScreen extends BaseScreen<CobblestoneEnchanterM
 
         this.refreshAutomationButtons();
         this.refreshAutoExportButton();
+        this.refreshAutoInsertButton();
     }
 
     @Override
@@ -105,6 +116,7 @@ public class CobblestoneEnchanterScreen extends BaseScreen<CobblestoneEnchanterM
         super.containerTick();
         this.refreshAutomationButtons();
         this.refreshAutoExportButton();
+        this.refreshAutoInsertButton();
     }
 
     private void refreshAutomationButtons() {
@@ -119,6 +131,12 @@ public class CobblestoneEnchanterScreen extends BaseScreen<CobblestoneEnchanterM
     private void refreshAutoExportButton() {
         if (this.autoExportButton != null) {
             this.autoExportButton.setMessage(this.createCheckboxLabel(this.menu.isAutoExportEnabled(), "gui.cobblestonexxcompressed.auto_export"));
+        }
+    }
+
+    private void refreshAutoInsertButton() {
+        if (this.autoInsertButton != null) {
+            this.autoInsertButton.setMessage(this.createCheckboxLabel(this.menu.isAutoInsertEnabled(), "gui.cobblestonexxcompressed.auto_insert"));
         }
     }
 
@@ -156,6 +174,7 @@ public class CobblestoneEnchanterScreen extends BaseScreen<CobblestoneEnchanterM
         this.renderNormalSlotPart(guiGraphics, x + MachineGuiLayouts.Enchanter.OUTPUT_SLOT_X, y + MachineGuiLayouts.Enchanter.OUTPUT_SLOT_Y);
         this.renderNormalSlotPart(guiGraphics, x + MachineGuiLayouts.UPGRADE_SLOT_X, y + MachineGuiLayouts.ACCELERATION_SLOT_Y);
         this.renderNormalSlotPart(guiGraphics, x + MachineGuiLayouts.UPGRADE_SLOT_X, y + MachineGuiLayouts.ENERGIZED_CUBE_SLOT_Y);
+        this.renderNormalSlotPart(guiGraphics, x + MachineGuiLayouts.UPGRADE_SLOT_X, y + MachineGuiLayouts.PARALLEL_SLOT_Y);
         this.renderProgressFramePart(guiGraphics, x + MachineGuiLayouts.Enchanter.PROGRESS_BAR_X, y + MachineGuiLayouts.Enchanter.PROGRESS_BAR_Y);
 
         int progress = this.menu.getProgress();
@@ -220,6 +239,7 @@ public class CobblestoneEnchanterScreen extends BaseScreen<CobblestoneEnchanterM
         }
         this.renderExternalSlotHoverLabel(guiGraphics, mouseX, mouseY, MachineGuiLayouts.UPGRADE_SLOT_X, MachineGuiLayouts.ACCELERATION_SLOT_Y, ACCELERATION_TOOLTIP);
         this.renderExternalSlotHoverLabel(guiGraphics, mouseX, mouseY, MachineGuiLayouts.UPGRADE_SLOT_X, MachineGuiLayouts.ENERGIZED_CUBE_SLOT_Y, ENERGIZED_CUBE_TOOLTIP);
+        this.renderExternalSlotHoverLabel(guiGraphics, mouseX, mouseY, MachineGuiLayouts.UPGRADE_SLOT_X, MachineGuiLayouts.PARALLEL_SLOT_Y, PARALLEL_TOOLTIP);
     }
 
     @Override

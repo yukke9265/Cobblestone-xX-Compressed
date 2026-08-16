@@ -33,6 +33,8 @@ public class CobblestoneFurnaceScreen extends BaseScreen<CobblestoneFurnaceMenu>
     private static final int AUTOMATION_LEGEND_LINE_HEIGHT = 10;
     private static final int AUTO_EXPORT_BUTTON_WIDTH = 94;
     private static final int AUTO_EXPORT_BUTTON_HEIGHT = 20;
+    private static final int AUTO_INSERT_BUTTON_WIDTH = 94;
+    private static final int AUTO_INSERT_BUTTON_HEIGHT = 20;
     private static final int JEI_CLICK_AREA_X = 80;
     private static final int JEI_CLICK_AREA_Y = 35;
     private static final int JEI_CLICK_AREA_WIDTH = 16;
@@ -44,6 +46,7 @@ public class CobblestoneFurnaceScreen extends BaseScreen<CobblestoneFurnaceMenu>
     private int progressBarHeight;
     private final Button[] automationButtons = new Button[AUTOMATION_SIDES.length];
     private Button autoExportButton;
+    private Button autoInsertButton;
 
     // CobblestoneFurnaceScreen クラスは、Cobblestone Furnace のインターフェースを定義するスクリーンクラスです。
     // 引数には、対応するメニュー、プレイヤーのインベントリ、そしてスクリーンのタイトルが渡されます。
@@ -90,6 +93,17 @@ public class CobblestoneFurnaceScreen extends BaseScreen<CobblestoneFurnaceMenu>
             ).build()
         );
 
+        this.autoInsertButton = this.addRenderableWidget(
+            Button.builder(
+                Component.empty(), button -> this.onAutoInsertButtonPressed()
+            ).bounds(
+                this.leftPos + this.imageWidth + 4,
+                this.topPos + this.imageHeight - AUTO_EXPORT_BUTTON_HEIGHT - AUTO_INSERT_BUTTON_HEIGHT - 2,
+                AUTO_INSERT_BUTTON_WIDTH,
+                AUTO_INSERT_BUTTON_HEIGHT
+            ).build()
+        );
+
         int automationPanelX = this.leftPos - AUTOMATION_PANEL_X_OFFSET - AUTOMATION_BUTTON_WIDTH;
         for (int index = 0; index < AUTOMATION_SIDES.length; index++) {
             AutomationSide side = AUTOMATION_SIDES[index];
@@ -99,6 +113,7 @@ public class CobblestoneFurnaceScreen extends BaseScreen<CobblestoneFurnaceMenu>
 
         this.refreshAutomationButtons();
         this.refreshAutoExportButton();
+        this.refreshAutoInsertButton();
     }
 
     private void addAutomationButton(AutomationSide side, int x, int y) {
@@ -125,6 +140,10 @@ public class CobblestoneFurnaceScreen extends BaseScreen<CobblestoneFurnaceMenu>
         this.sendMenuButtonClick(this.menu.getAutoExportButtonId());
     }
 
+    private void onAutoInsertButtonPressed() {
+        this.sendMenuButtonClick(this.menu.getAutoInsertButtonId());
+    }
+
     private void refreshAutomationButtons() {
         for (AutomationSide side : AUTOMATION_SIDES) {
             int index = side.getIndex();
@@ -138,6 +157,12 @@ public class CobblestoneFurnaceScreen extends BaseScreen<CobblestoneFurnaceMenu>
     private void refreshAutoExportButton() {
         if (this.autoExportButton != null) {
             this.autoExportButton.setMessage(this.createCheckboxLabel(this.menu.isAutoExportEnabled(), "gui.cobblestonexxcompressed.auto_export"));
+        }
+    }
+
+    private void refreshAutoInsertButton() {
+        if (this.autoInsertButton != null) {
+            this.autoInsertButton.setMessage(this.createCheckboxLabel(this.menu.isAutoInsertEnabled(), "gui.cobblestonexxcompressed.auto_insert"));
         }
     }
 
@@ -169,6 +194,7 @@ public class CobblestoneFurnaceScreen extends BaseScreen<CobblestoneFurnaceMenu>
         super.containerTick();
         this.refreshAutomationButtons();
         this.refreshAutoExportButton();
+        this.refreshAutoInsertButton();
     }
 
     @Override

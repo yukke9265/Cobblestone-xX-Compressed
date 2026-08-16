@@ -56,6 +56,7 @@ public class CobblestoneFEGeneratorBlockEntity extends BaseBlockEntity implement
     private static final int DATA_INDEX_CURRENT_POWER_RATE = DATA_INDEX_AUTOMATION_START + AUTOMATION_FACE_COUNT;
     private static final int DATA_INDEX_CURRENT_POWER_RATE_UPPER = DATA_INDEX_CURRENT_POWER_RATE + 1;
     private static final int DATA_INDEX_AUTO_EXPORT = DATA_INDEX_CURRENT_POWER_RATE_UPPER + 1;
+    private static final int DATA_INDEX_AUTO_INSERT = DATA_INDEX_AUTO_EXPORT + 1;
 
     private long storedCobblestonePower;
     private long storedForgeEnergy;
@@ -251,6 +252,7 @@ public class CobblestoneFEGeneratorBlockEntity extends BaseBlockEntity implement
 
         this.clampStoredCobblestonePower();
         this.clampStoredForgeEnergy();
+        this.pullInputsFromConfiguredSides();
         this.tryAbsorbCobblestonePower();
         this.lastConvertedForgeEnergy = 0L;
         this.lastExportedForgeEnergy = 0L;
@@ -495,6 +497,10 @@ public class CobblestoneFEGeneratorBlockEntity extends BaseBlockEntity implement
                     return getAutoExportEnabledId();
                 }
 
+                if (index == DATA_INDEX_AUTO_INSERT) {
+                    return getAutoInsertEnabledId();
+                }
+
                 return 0;
             }
 
@@ -540,11 +546,15 @@ public class CobblestoneFEGeneratorBlockEntity extends BaseBlockEntity implement
                 if (index == DATA_INDEX_AUTO_EXPORT) {
                     setAutoExportEnabled(value != 0);
                 }
+
+                if (index == DATA_INDEX_AUTO_INSERT) {
+                    setAutoInsertEnabled(value != 0);
+                }
             }
 
             @Override
             public int getCount() {
-                return DATA_INDEX_AUTO_EXPORT + 1;
+                return DATA_INDEX_AUTO_INSERT + 1;
             }
         };
 

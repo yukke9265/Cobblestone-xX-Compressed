@@ -6,6 +6,7 @@ import com.yukke9265.cobblestone_xx_compressed.blockitem.DescribedBlockItem;
 import com.yukke9265.cobblestone_xx_compressed.item.ConfigurationCardItem;
 import com.yukke9265.cobblestone_xx_compressed.item.CobblestoneAccelerationChipItem;
 import com.yukke9265.cobblestone_xx_compressed.item.CobblestoneEnergizedCubeItem;
+import com.yukke9265.cobblestone_xx_compressed.item.CobblestoneParallelChipItem;
 import com.yukke9265.cobblestone_xx_compressed.util.TooltipTranslationKeys;
 
 import net.minecraft.world.effect.MobEffectInstance;
@@ -442,6 +443,10 @@ public class ModItems {
         return ITEMS.register(name, () -> new CobblestoneEnergizedCubeItem(createCobblestoneComponentProperties()));
     }
 
+    private static DeferredItem<Item> registerTierCobblestoneParallelChip(String name) {
+        return ITEMS.register(name, () -> new CobblestoneParallelChipItem(createCobblestoneComponentProperties()));
+    }
+
     private static DeferredItem<BlockItem> registerCompressedCobblestoneBlockItem(String name, DeferredBlock<Block> block) {
         return ITEMS.registerSimpleBlockItem(name, block);
     }
@@ -601,6 +606,9 @@ public class ModItems {
 
     public static final DeferredItem<Item> COBBLESTONE_ENERGIZED_CUBE =
         ITEMS.register("cobblestone_energized_cube", () -> new CobblestoneEnergizedCubeItem(createCobblestoneComponentProperties()));
+
+    public static final DeferredItem<Item> COBBLESTONE_PARALLEL_CHIP =
+        ITEMS.register("cobblestone_parallel_chip", () -> new CobblestoneParallelChipItem(createCobblestoneComponentProperties()));
 
     // 丸石ワイヤー系は tier ごとに登録名と英語名の規則がそろっているため、
     // enum にまとめておくと lang・model・creative tab 側で同じ順番を再利用できます。
@@ -865,6 +873,46 @@ public class ModItems {
         private DeferredItem<Item> item;
 
         TierCobblestoneAccelerationChip(String registryName, String englishDisplayName) {
+            this.registryName = registryName;
+            this.englishDisplayName = englishDisplayName;
+        }
+
+        public String getRegistryName() {
+            return this.registryName;
+        }
+
+        public String getEnglishDisplayName() {
+            return this.englishDisplayName;
+        }
+
+        public DeferredItem<Item> getItem() {
+            return this.item;
+        }
+
+        private void setItem(DeferredItem<Item> item) {
+            this.item = item;
+        }
+    }
+
+    public enum TierCobblestoneParallelChip {
+        COPPER("tier_copper_cobblestone_parallel_chip", "Copper Cobblestone Parallel Chip"),
+        IRON("tier_iron_cobblestone_parallel_chip", "Iron Cobblestone Parallel Chip"),
+        GOLD("tier_gold_cobblestone_parallel_chip", "Gold Cobblestone Parallel Chip"),
+        AMETHYST("tier_amethyst_cobblestone_parallel_chip", "Amethyst Cobblestone Parallel Chip"),
+        AQUAMARINE("tier_aquamarine_cobblestone_parallel_chip", "Aquamarine Cobblestone Parallel Chip"),
+        TOPAZ("tier_topaz_cobblestone_parallel_chip", "Topaz Cobblestone Parallel Chip"),
+        RUBY("tier_ruby_cobblestone_parallel_chip", "Ruby Cobblestone Parallel Chip"),
+        SAPPHIRE("tier_sapphire_cobblestone_parallel_chip", "Sapphire Cobblestone Parallel Chip"),
+        DIAMOND("tier_diamond_cobblestone_parallel_chip", "Diamond Cobblestone Parallel Chip"),
+        EMERALD("tier_emerald_cobblestone_parallel_chip", "Emerald Cobblestone Parallel Chip"),
+        NETHERITE("tier_netherite_cobblestone_parallel_chip", "Netherite Cobblestone Parallel Chip"),
+        OBSIDIAN("tier_obsidian_cobblestone_parallel_chip", "Obsidian Cobblestone Parallel Chip");
+
+        private final String registryName;
+        private final String englishDisplayName;
+        private DeferredItem<Item> item;
+
+        TierCobblestoneParallelChip(String registryName, String englishDisplayName) {
             this.registryName = registryName;
             this.englishDisplayName = englishDisplayName;
         }
@@ -1225,6 +1273,12 @@ public class ModItems {
     static {
         for (TierCobblestoneEnergizedCube tier : TierCobblestoneEnergizedCube.values()) {
             tier.setItem(registerTierCobblestoneEnergizedCube(tier.getRegistryName()));
+        }
+    }
+
+    static {
+        for (TierCobblestoneParallelChip tier : TierCobblestoneParallelChip.values()) {
+            tier.setItem(registerTierCobblestoneParallelChip(tier.getRegistryName()));
         }
     }
 

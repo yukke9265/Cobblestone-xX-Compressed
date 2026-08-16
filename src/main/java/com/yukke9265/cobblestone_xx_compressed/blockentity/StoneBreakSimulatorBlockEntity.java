@@ -9,11 +9,11 @@ import org.jetbrains.annotations.NotNull;
 
 import com.yukke9265.cobblestone_xx_compressed.block.OnOffBlock;
 import com.yukke9265.cobblestone_xx_compressed.loot.CompressedStoneLootDefinition;
+import com.yukke9265.cobblestone_xx_compressed.loot.OreBreakDefinition;
 import com.yukke9265.cobblestone_xx_compressed.loot.StoneBreakSimulatorLootHelper;
 import com.yukke9265.cobblestone_xx_compressed.menu.StoneBreakSimulatorMenu;
 import com.yukke9265.cobblestone_xx_compressed.recipe.StoneBreakSimulatorRecipe;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModBlockEntities;
-import com.yukke9265.cobblestone_xx_compressed.registry.ModBlocks;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModRecipeTypes;
 import com.yukke9265.cobblestone_xx_compressed.util.LongDataHelper;
 
@@ -27,6 +27,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.ItemTags;
@@ -40,6 +41,8 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
@@ -55,6 +58,7 @@ public class StoneBreakSimulatorBlockEntity extends BaseBlockEntity implements M
     public static final int SUB_OUTPUT_END_INDEX = 8;
     public static final int ACCELERATION_SLOT_INDEX = 9;
     public static final int ENERGIZED_CUBE_SLOT_INDEX = 10;
+    public static final int PARALLEL_SLOT_INDEX = 11;
     public static final long MAX_COBBLESTONE_POWER = 16000L;
 
     private static final int OUTPUT_SLOT_COUNT = 6;
@@ -68,6 +72,7 @@ public class StoneBreakSimulatorBlockEntity extends BaseBlockEntity implements M
     private static final int DATA_INDEX_CURRENT_POWER_RATE = DATA_INDEX_AUTOMATION_START + AUTOMATION_FACE_COUNT;
     private static final int DATA_INDEX_CURRENT_POWER_RATE_UPPER = DATA_INDEX_CURRENT_POWER_RATE + 1;
     private static final int DATA_INDEX_AUTO_EXPORT = DATA_INDEX_CURRENT_POWER_RATE_UPPER + 1;
+    private static final int DATA_INDEX_AUTO_INSERT = DATA_INDEX_AUTO_EXPORT + 1;
     private static final int[] ALL_OUTPUT_SLOTS = new int[] { 3, 4, 5, 6, 7, 8 };
     private static final int[] SUB_OUTPUT_SLOTS = new int[] { 4, 5, 6, 7, 8 };
 
@@ -76,7 +81,7 @@ public class StoneBreakSimulatorBlockEntity extends BaseBlockEntity implements M
     private long storedCobblestonePower = 0L;
     private boolean isAvailable = true;
 
-    private final FixedSizeItemStackHandler itemStackHandler = new FixedSizeItemStackHandler(11) {
+    private final FixedSizeItemStackHandler itemStackHandler = new FixedSizeItemStackHandler(12) {
         @Override
         public boolean isItemValid(int slot, @NotNull ItemStack stack) {
             if (StoneBreakSimulatorBlockEntity.this.isOutputSlot(slot)) {
@@ -84,7 +89,7 @@ public class StoneBreakSimulatorBlockEntity extends BaseBlockEntity implements M
             }
 
             if (slot == INPUT_SLOT_1_INDEX) {
-                return CompressedStoneLootDefinition.findByStoneInput(stack) != null;
+                return StoneBreakSimulatorBlockEntity.this.isSupportedBreakInput(stack);
             }
 
             if (slot == INPUT_SLOT_2_INDEX) {
@@ -103,6 +108,10 @@ public class StoneBreakSimulatorBlockEntity extends BaseBlockEntity implements M
                 return MachineUpgradeHelper.isEnergizedCube(stack);
             }
 
+            if (slot == PARALLEL_SLOT_INDEX) {
+                return MachineUpgradeHelper.isParallelChip(stack);
+            }
+
             return false;
         }
 
@@ -113,7 +122,7 @@ public class StoneBreakSimulatorBlockEntity extends BaseBlockEntity implements M
 
         @Override
         public int getSlotLimit(int slot) {
-            if (slot == INPUT_SLOT_2_INDEX || slot == ACCELERATION_SLOT_INDEX || slot == ENERGIZED_CUBE_SLOT_INDEX) {
+            if (slot == INPUT_SLOT_2_INDEX || slot == ACCELERATION_SLOT_INDEX || slot == ENERGIZED_CUBE_SLOT_INDEX || slot == PARALLEL_SLOT_INDEX) {
                 return 1;
             }
 
@@ -166,7 +175,22 @@ public class StoneBreakSimulatorBlockEntity extends BaseBlockEntity implements M
         }
 
         long cobblestonePowerPerTick = recipe.getCobblestonePowerPerTick();
-        return cobblestonePowerPerTick * this.getProgressStep(cobblestonePowerPerTick);
+        int progressStep = this.getProgressStep(cobblestonePowerPerTick);
+        long consumption = cobblestonePowerPerTick * progressStep;
+        if (progressStep <= 0 || this.progress + progressStep < this.maxProgress) {
+            return consumption;
+        }
+
+        ItemStack toolStack = this.itemStackHandler.getStackInSlot(INPUT_SLOT_2_INDEX);
+        long leftoverPower = this.storedCobblestonePower - consumption;
+        long totalCobblestonePower = this.getAdjustedTotalCobblestonePower(recipe, toolStack);
+        int extraLimit = this.getParallelExtraCraftCount();
+        if (extraLimit <= 0 || leftoverPower < totalCobblestonePower || totalCobblestonePower <= 0L) {
+            return consumption;
+        }
+
+        long extraCount = Math.min(extraLimit, leftoverPower / totalCobblestonePower);
+        return consumption + extraCount * totalCobblestonePower;
     }
 
     public boolean getIsAvailable() {
@@ -241,6 +265,7 @@ public class StoneBreakSimulatorBlockEntity extends BaseBlockEntity implements M
         boolean shouldTurnOn = false;
 
         this.clampStoredCobblestonePower();
+        this.pullInputsFromConfiguredSides();
         this.tryAbsorbCobblestonePower();
 
         Optional<RecipeHolder<StoneBreakSimulatorRecipe>> recipeHolder = this.getCurrentRecipe();
@@ -265,6 +290,7 @@ public class StoneBreakSimulatorBlockEntity extends BaseBlockEntity implements M
                 if (this.progress >= this.maxProgress) {
                     this.craft(recipe);
                     this.progress = 0;
+                    this.processParallelExtraCrafts();
                     this.setChanged();
                 }
             } else if (this.progress != 0) {
@@ -408,6 +434,42 @@ public class StoneBreakSimulatorBlockEntity extends BaseBlockEntity implements M
         return multiplier;
     }
 
+    private int getParallelExtraCraftCount() {
+        ItemStack parallelStack = this.itemStackHandler.getStackInSlot(PARALLEL_SLOT_INDEX);
+        return MachineUpgradeHelper.getParallelExtraCraftCount(parallelStack);
+    }
+
+    private void processParallelExtraCrafts() {
+        int extraLimit = this.getParallelExtraCraftCount();
+        if (extraLimit <= 0) {
+            return;
+        }
+
+        int extraDone = 0;
+        while (extraDone < extraLimit) {
+            Optional<RecipeHolder<StoneBreakSimulatorRecipe>> extraRecipeHolder = this.getCurrentRecipe();
+            if (extraRecipeHolder.isEmpty()) {
+                return;
+            }
+
+            StoneBreakSimulatorRecipe extraRecipe = extraRecipeHolder.get().value();
+            if (!this.canProcess(extraRecipe)) {
+                return;
+            }
+
+            ItemStack toolStack = this.itemStackHandler.getStackInSlot(INPUT_SLOT_2_INDEX);
+            long totalCobblestonePower = this.getAdjustedTotalCobblestonePower(extraRecipe, toolStack);
+            if (totalCobblestonePower <= 0L || this.storedCobblestonePower < totalCobblestonePower) {
+                return;
+            }
+
+            this.craft(extraRecipe);
+            this.storedCobblestonePower -= totalCobblestonePower;
+            extraDone++;
+            this.setChanged();
+        }
+    }
+
     private int getEnergizedCubeMultiplier() {
         ItemStack energizedCubeStack = this.itemStackHandler.getStackInSlot(ENERGIZED_CUBE_SLOT_INDEX);
         int multiplier = MachineUpgradeHelper.getEnergizedCubeMultiplier(energizedCubeStack);
@@ -427,16 +489,84 @@ public class StoneBreakSimulatorBlockEntity extends BaseBlockEntity implements M
     }
 
     private boolean canOutput(StoneBreakSimulatorRecipe recipe, ItemStack toolStack) {
-        CompressedStoneLootDefinition definition = this.getCurrentLootDefinition();
-        if (definition == null) {
-            return false;
-        }
-
         int blockCount = this.getCraftBlockCount(toolStack);
         if (blockCount <= 0) {
             return false;
         }
 
+        CompressedStoneLootDefinition definition = this.getCurrentLootDefinition();
+        if (definition != null) {
+            return this.canOutputCompressedStone(definition, blockCount);
+        }
+
+        return this.canOutputOre(toolStack, blockCount);
+    }
+
+    private void craft(StoneBreakSimulatorRecipe recipe) {
+        Level currentLevel = this.level;
+        if (currentLevel == null) {
+            return;
+        }
+
+        ItemStack inputStack = this.itemStackHandler.getStackInSlot(INPUT_SLOT_1_INDEX);
+        ItemStack toolStack = this.itemStackHandler.getStackInSlot(INPUT_SLOT_2_INDEX);
+        int blockCount = this.getCraftBlockCount(toolStack);
+        if (blockCount <= 0) {
+            return;
+        }
+
+        CompressedStoneLootDefinition definition = CompressedStoneLootDefinition.findByStoneInput(inputStack);
+        if (definition != null) {
+            int fortuneLevel = this.getEnchantmentLevel(toolStack, "fortune");
+            StoneBreakSimulatorLootHelper.GeneratedDrops generatedDrops = StoneBreakSimulatorLootHelper.generateDrops(
+                definition,
+                blockCount,
+                fortuneLevel,
+                currentLevel.random
+            );
+
+            this.insertMainOutput(generatedDrops.mainDrop());
+            this.insertIntoOutputSlots(SUB_OUTPUT_SLOTS, generatedDrops.subDrops());
+            inputStack.shrink(blockCount);
+            this.playBreakSound(currentLevel);
+            return;
+        }
+
+        if (!(currentLevel instanceof ServerLevel serverLevel)) {
+            return;
+        }
+
+        List<ItemStack> oreDrops = StoneBreakSimulatorLootHelper.generateOreDrops(
+            inputStack,
+            toolStack,
+            blockCount,
+            serverLevel,
+            this.worldPosition
+        );
+        if (!this.canInsertIntoOutputSlots(ALL_OUTPUT_SLOTS, oreDrops)) {
+            return;
+        }
+
+        this.insertIntoOutputSlots(ALL_OUTPUT_SLOTS, oreDrops);
+        inputStack.shrink(blockCount);
+        this.playBreakSound(currentLevel);
+    }
+
+    private void insertMainOutput(ItemStack mainDrop) {
+        if (mainDrop.isEmpty()) {
+            return;
+        }
+
+        ItemStack existingStack = this.itemStackHandler.getStackInSlot(MAIN_OUTPUT_SLOT_INDEX);
+        if (existingStack.isEmpty()) {
+            this.itemStackHandler.setStackInSlot(MAIN_OUTPUT_SLOT_INDEX, mainDrop.copy());
+            return;
+        }
+
+        existingStack.grow(mainDrop.getCount());
+    }
+
+    private boolean canOutputCompressedStone(CompressedStoneLootDefinition definition, int blockCount) {
         ItemStack expectedMainOutput = new ItemStack(definition.getCobblestoneBlock().get(), blockCount);
         if (expectedMainOutput.getCount() > expectedMainOutput.getMaxStackSize()) {
             return false;
@@ -454,69 +584,97 @@ public class StoneBreakSimulatorBlockEntity extends BaseBlockEntity implements M
         return outputStack.getCount() + expectedMainOutput.getCount() <= outputStack.getMaxStackSize();
     }
 
-    private void craft(StoneBreakSimulatorRecipe recipe) {
+    private boolean canOutputOre(ItemStack toolStack, int blockCount) {
         Level currentLevel = this.level;
-        if (currentLevel == null) {
-            return;
+        if (!(currentLevel instanceof ServerLevel serverLevel)) {
+            return false;
         }
 
         ItemStack inputStack = this.itemStackHandler.getStackInSlot(INPUT_SLOT_1_INDEX);
-        ItemStack toolStack = this.itemStackHandler.getStackInSlot(INPUT_SLOT_2_INDEX);
-        CompressedStoneLootDefinition definition = CompressedStoneLootDefinition.findByStoneInput(inputStack);
-        if (definition == null) {
-            return;
+        BlockState oreState = this.getOreBlockState(inputStack);
+        if (oreState == null) {
+            return false;
         }
 
-        int blockCount = this.getCraftBlockCount(toolStack);
-        if (blockCount <= 0) {
-            return;
+        if (!this.canHarvestSimulatedBlock(toolStack, oreState)) {
+            return false;
         }
 
-        int fortuneLevel = this.getEnchantmentLevel(toolStack, "fortune");
-        StoneBreakSimulatorLootHelper.GeneratedDrops generatedDrops = StoneBreakSimulatorLootHelper.generateDrops(
-            definition,
+        List<ItemStack> oreDrops = StoneBreakSimulatorLootHelper.generateOreDrops(
+            inputStack,
+            toolStack,
             blockCount,
-            fortuneLevel,
-            currentLevel.random
+            serverLevel,
+            this.worldPosition
         );
-
-        this.insertMainOutput(generatedDrops.mainDrop());
-        this.insertSubOutputs(generatedDrops.subDrops());
-        inputStack.shrink(blockCount);
-
-        // 実際に石を壊したような完了感が出るように、レシピ完了時に破壊音を鳴らします。
-        currentLevel.playSound(null, this.worldPosition, SoundEvents.STONE_BREAK, SoundSource.BLOCKS, 0.5F, 1.0F);
+        return this.canInsertIntoOutputSlots(ALL_OUTPUT_SLOTS, oreDrops);
     }
 
-    private void insertMainOutput(ItemStack mainDrop) {
-        if (mainDrop.isEmpty()) {
-            return;
+    private boolean canHarvestSimulatedBlock(ItemStack toolStack, BlockState blockState) {
+        if (!blockState.requiresCorrectToolForDrops()) {
+            return true;
         }
 
-        ItemStack existingStack = this.itemStackHandler.getStackInSlot(MAIN_OUTPUT_SLOT_INDEX);
-        if (existingStack.isEmpty()) {
-            this.itemStackHandler.setStackInSlot(MAIN_OUTPUT_SLOT_INDEX, mainDrop.copy());
-            return;
-        }
-
-        existingStack.grow(mainDrop.getCount());
+        return toolStack.isCorrectToolForDrops(blockState);
     }
 
-    private void insertSubOutputs(List<ItemStack> subDrops) {
-        for (ItemStack subDrop : subDrops) {
-            int remainingCount = subDrop.getCount();
+    private BlockState getOreBlockState(ItemStack inputStack) {
+        if (inputStack.isEmpty()) {
+            return null;
+        }
 
-            for (int slotIndex : SUB_OUTPUT_SLOTS) {
-                if (remainingCount <= 0) {
-                    break;
-                }
+        Block block = Block.byItem(inputStack.getItem());
+        if (block == Blocks.AIR) {
+            return null;
+        }
 
-                ItemStack existingStack = this.itemStackHandler.getStackInSlot(slotIndex);
-                if (existingStack.isEmpty()) {
-                    continue;
-                }
+        return block.defaultBlockState();
+    }
 
-                if (!ItemStack.isSameItemSameComponents(existingStack, subDrop)) {
+    private void insertIntoOutputSlots(int[] slotIndexes, List<ItemStack> drops) {
+        for (ItemStack drop : drops) {
+            this.insertRemainingIntoOutputSlots(slotIndexes, drop, drop.getCount());
+        }
+    }
+
+    private boolean canInsertIntoOutputSlots(int[] slotIndexes, List<ItemStack> drops) {
+        ItemStack[] simulatedSlots = this.copyOutputSlots(slotIndexes);
+        for (ItemStack drop : drops) {
+            int remainingCount = this.insertRemainingIntoSimulatedSlots(simulatedSlots, drop, drop.getCount());
+            if (remainingCount > 0) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private ItemStack[] copyOutputSlots(int[] slotIndexes) {
+        ItemStack[] copies = new ItemStack[slotIndexes.length];
+        for (int index = 0; index < slotIndexes.length; index++) {
+            copies[index] = this.itemStackHandler.getStackInSlot(slotIndexes[index]).copy();
+        }
+
+        return copies;
+    }
+
+    private int insertRemainingIntoSimulatedSlots(ItemStack[] simulatedSlots, ItemStack drop, int remainingCount) {
+        int remaining = remainingCount;
+        remaining = this.mergeIntoExistingSlots(simulatedSlots, drop, remaining, true);
+        remaining = this.mergeIntoExistingSlots(simulatedSlots, drop, remaining, false);
+        return remaining;
+    }
+
+    private int mergeIntoExistingSlots(ItemStack[] simulatedSlots, ItemStack drop, int remainingCount, boolean fillExistingOnly) {
+        int remaining = remainingCount;
+        for (int index = 0; index < simulatedSlots.length; index++) {
+            if (remaining <= 0) {
+                break;
+            }
+
+            ItemStack existingStack = simulatedSlots[index];
+            if (fillExistingOnly) {
+                if (existingStack.isEmpty() || !ItemStack.isSameItemSameComponents(existingStack, drop)) {
                     continue;
                 }
 
@@ -525,28 +683,74 @@ public class StoneBreakSimulatorBlockEntity extends BaseBlockEntity implements M
                     continue;
                 }
 
-                int movedCount = Math.min(space, remainingCount);
+                int movedCount = Math.min(space, remaining);
                 existingStack.grow(movedCount);
-                remainingCount -= movedCount;
+                remaining -= movedCount;
+                continue;
             }
 
-            for (int slotIndex : SUB_OUTPUT_SLOTS) {
-                if (remainingCount <= 0) {
-                    break;
-                }
-
-                ItemStack existingStack = this.itemStackHandler.getStackInSlot(slotIndex);
-                if (!existingStack.isEmpty()) {
-                    continue;
-                }
-
-                ItemStack newStack = subDrop.copy();
-                int movedCount = Math.min(newStack.getMaxStackSize(), remainingCount);
-                newStack.setCount(movedCount);
-                this.itemStackHandler.setStackInSlot(slotIndex, newStack);
-                remainingCount -= movedCount;
+            if (!existingStack.isEmpty()) {
+                continue;
             }
+
+            ItemStack newStack = drop.copy();
+            int movedCount = Math.min(newStack.getMaxStackSize(), remaining);
+            newStack.setCount(movedCount);
+            simulatedSlots[index] = newStack;
+            remaining -= movedCount;
         }
+
+        return remaining;
+    }
+
+    private void insertRemainingIntoOutputSlots(int[] slotIndexes, ItemStack drop, int remainingCount) {
+        int remaining = remainingCount;
+
+        for (int slotIndex : slotIndexes) {
+            if (remaining <= 0) {
+                break;
+            }
+
+            ItemStack existingStack = this.itemStackHandler.getStackInSlot(slotIndex);
+            if (existingStack.isEmpty()) {
+                continue;
+            }
+
+            if (!ItemStack.isSameItemSameComponents(existingStack, drop)) {
+                continue;
+            }
+
+            int space = existingStack.getMaxStackSize() - existingStack.getCount();
+            if (space <= 0) {
+                continue;
+            }
+
+            int movedCount = Math.min(space, remaining);
+            existingStack.grow(movedCount);
+            remaining -= movedCount;
+        }
+
+        for (int slotIndex : slotIndexes) {
+            if (remaining <= 0) {
+                break;
+            }
+
+            ItemStack existingStack = this.itemStackHandler.getStackInSlot(slotIndex);
+            if (!existingStack.isEmpty()) {
+                continue;
+            }
+
+            ItemStack newStack = drop.copy();
+            int movedCount = Math.min(newStack.getMaxStackSize(), remaining);
+            newStack.setCount(movedCount);
+            this.itemStackHandler.setStackInSlot(slotIndex, newStack);
+            remaining -= movedCount;
+        }
+    }
+
+    private void playBreakSound(Level currentLevel) {
+        // 実際に石を壊したような完了感が出るように、レシピ完了時に破壊音を鳴らします。
+        currentLevel.playSound(null, this.worldPosition, SoundEvents.STONE_BREAK, SoundSource.BLOCKS, 0.5F, 1.0F);
     }
 
     private int getCraftBlockCount(ItemStack toolStack) {
@@ -583,6 +787,18 @@ public class StoneBreakSimulatorBlockEntity extends BaseBlockEntity implements M
 
     private CompressedStoneLootDefinition getCurrentLootDefinition() {
         return CompressedStoneLootDefinition.findByStoneInput(this.itemStackHandler.getStackInSlot(INPUT_SLOT_1_INDEX));
+    }
+
+    private boolean isSupportedBreakInput(ItemStack stack) {
+        if (CompressedStoneLootDefinition.findByStoneInput(stack) != null) {
+            return true;
+        }
+
+        if (OreBreakDefinition.findByInput(stack) != null) {
+            return true;
+        }
+
+        return this.canQuickMoveToInput(stack);
     }
 
     private boolean isPickaxe(ItemStack stack) {
@@ -885,6 +1101,10 @@ public class StoneBreakSimulatorBlockEntity extends BaseBlockEntity implements M
                     return getAutoExportEnabledId();
                 }
 
+                if (index == DATA_INDEX_AUTO_INSERT) {
+                    return getAutoInsertEnabledId();
+                }
+
                 return 0;
             }
 
@@ -894,7 +1114,7 @@ public class StoneBreakSimulatorBlockEntity extends BaseBlockEntity implements M
 
             @Override
             public int getCount() {
-                return DATA_INDEX_AUTO_EXPORT + 1;
+                return DATA_INDEX_AUTO_INSERT + 1;
             }
         };
 

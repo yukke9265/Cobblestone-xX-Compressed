@@ -17,7 +17,10 @@ Minecraft 1.21.1 / NeoForge 1.21.1 向けの mod です。
 gradlew.bat compileJava
 gradlew.bat runClient
 gradlew.bat runData
+gradlew.bat build
 ```
+
+配布用 jar は `build/libs` に出力されます。バージョン番号は `gradle.properties` の `mod_version` です。Cursor では **Terminal: Run Build Task**（Ctrl+Shift+B）でも同じ `build` を実行できます。
 
 `runData` は専用の `run-data` ディレクトリを使う設定にしてあり、通常プレイ用の `run` と分離しています。
 
@@ -25,7 +28,7 @@ gradlew.bat runData
 
 データ生成の出力先は `src/generated/resources` です。
 
-VS Code / Java 実行時に generated resources が見えないことがあるため、このプロジェクトでは `processResources` / `classes` / `runData` の後に `bin/main` へ同期する設定を入れています。
+デバッグ起動は `bin/main` ではなく、Gradle の `build/classes/java/main` と `build/resources/main` を mod として読みます。`bin/main` を使うと、言語サーバーの出力が空のときに `is not a valid mod file` で落ちます。
 
 ## 補足
 

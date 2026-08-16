@@ -1,0 +1,8 @@
+{
+  "type": "cobblestonexxcompressed:stone_break_simulator",
+  "cobblestone_power_per_tick": 4,
+  "ingredient": {
+    "item": "minecraft:deepslate_lapis_ore"
+  },
+  "total_cobblestone_power": 800
+}

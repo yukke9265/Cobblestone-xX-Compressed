@@ -48,8 +48,11 @@ public class CobblestoneLaserDrillScreen extends BaseScreen<CobblestoneLaserDril
     private static final int START_BUTTON_X_OFFSET = 4;
     private static final int AUTO_EXPORT_BUTTON_WIDTH = 94;
     private static final int AUTO_EXPORT_BUTTON_HEIGHT = 20;
+    private static final int AUTO_INSERT_BUTTON_WIDTH = 94;
+    private static final int AUTO_INSERT_BUTTON_HEIGHT = 20;
     private static final Component ACCELERATION_TOOLTIP = Component.literal("acceleration_chip");
     private static final Component ENERGIZED_CUBE_TOOLTIP = Component.literal("energized_cube");
+    private static final Component PARALLEL_TOOLTIP = Component.literal("parallel_chip");
 
     private static final ResourceLocation BACKGROUND_TEXTURE =
         ResourceLocation.fromNamespaceAndPath(CobblestonexXCompressed.MODID, "textures/gui/cobblestone_centrifuge.png");
@@ -59,6 +62,7 @@ public class CobblestoneLaserDrillScreen extends BaseScreen<CobblestoneLaserDril
 
     private final Button[] automationButtons = new Button[AUTOMATION_SIDES.length];
     private Button autoExportButton;
+    private Button autoInsertButton;
     private final int progressBarX = MachineGuiLayouts.LaserDrill.PROGRESS_BAR_X;
     private final int progressBarY = MachineGuiLayouts.LaserDrill.PROGRESS_BAR_Y;
     private final int progressBarWidth = MachineGuiLayouts.LaserDrill.PROGRESS_BAR_WIDTH;
@@ -101,6 +105,17 @@ public class CobblestoneLaserDrillScreen extends BaseScreen<CobblestoneLaserDril
             ).build()
         );
 
+        this.autoInsertButton = this.addRenderableWidget(
+            Button.builder(
+                Component.empty(), button -> this.onAutoInsertButtonPressed()
+            ).bounds(
+                this.leftPos + this.imageWidth + START_BUTTON_X_OFFSET,
+                this.topPos + this.imageHeight - START_BUTTON_HEIGHT - AUTO_EXPORT_BUTTON_HEIGHT - AUTO_INSERT_BUTTON_HEIGHT - 4,
+                AUTO_INSERT_BUTTON_WIDTH,
+                AUTO_INSERT_BUTTON_HEIGHT
+            ).build()
+        );
+
         int automationPanelX = this.leftPos - AUTOMATION_PANEL_X_OFFSET - AUTOMATION_BUTTON_WIDTH;
         for (int index = 0; index < AUTOMATION_SIDES.length; index++) {
             AutomationSide side = AUTOMATION_SIDES[index];
@@ -110,6 +125,7 @@ public class CobblestoneLaserDrillScreen extends BaseScreen<CobblestoneLaserDril
 
         this.refreshAutomationButtons();
         this.refreshAutoExportButton();
+        this.refreshAutoInsertButton();
     }
 
     private void addAutomationButton(AutomationSide side, int x, int y) {
@@ -134,6 +150,10 @@ public class CobblestoneLaserDrillScreen extends BaseScreen<CobblestoneLaserDril
         this.sendMenuButtonClick(this.menu.getAutoExportButtonId());
     }
 
+    private void onAutoInsertButtonPressed() {
+        this.sendMenuButtonClick(this.menu.getAutoInsertButtonId());
+    }
+
     private void refreshAutomationButtons() {
         for (AutomationSide side : AUTOMATION_SIDES) {
             int index = side.getIndex();
@@ -147,6 +167,12 @@ public class CobblestoneLaserDrillScreen extends BaseScreen<CobblestoneLaserDril
     private void refreshAutoExportButton() {
         if (this.autoExportButton != null) {
             this.autoExportButton.setMessage(this.createCheckboxLabel(this.menu.isAutoExportEnabled(), "gui.cobblestonexxcompressed.auto_export"));
+        }
+    }
+
+    private void refreshAutoInsertButton() {
+        if (this.autoInsertButton != null) {
+            this.autoInsertButton.setMessage(this.createCheckboxLabel(this.menu.isAutoInsertEnabled(), "gui.cobblestonexxcompressed.auto_insert"));
         }
     }
 
@@ -177,6 +203,7 @@ public class CobblestoneLaserDrillScreen extends BaseScreen<CobblestoneLaserDril
         super.containerTick();
         this.refreshAutomationButtons();
         this.refreshAutoExportButton();
+        this.refreshAutoInsertButton();
     }
 
     @Override
@@ -191,6 +218,7 @@ public class CobblestoneLaserDrillScreen extends BaseScreen<CobblestoneLaserDril
         this.renderNormalSlotPart(guiGraphics, x + MachineGuiLayouts.LaserDrill.OUTPUT_SLOT_2_X, y + MachineGuiLayouts.LaserDrill.MACHINE_SLOT_Y);
         this.renderNormalSlotPart(guiGraphics, x + MachineGuiLayouts.UPGRADE_SLOT_X, y + MachineGuiLayouts.ACCELERATION_SLOT_Y);
         this.renderNormalSlotPart(guiGraphics, x + MachineGuiLayouts.UPGRADE_SLOT_X, y + MachineGuiLayouts.ENERGIZED_CUBE_SLOT_Y);
+        this.renderNormalSlotPart(guiGraphics, x + MachineGuiLayouts.UPGRADE_SLOT_X, y + MachineGuiLayouts.PARALLEL_SLOT_Y);
         this.renderProgressFramePart(guiGraphics, x + this.progressBarX, y + this.progressBarY);
 
         int progress = this.menu.getProgress();
@@ -255,6 +283,7 @@ public class CobblestoneLaserDrillScreen extends BaseScreen<CobblestoneLaserDril
         }
         this.renderExternalSlotHoverLabel(guiGraphics, mouseX, mouseY, MachineGuiLayouts.UPGRADE_SLOT_X, MachineGuiLayouts.ACCELERATION_SLOT_Y, ACCELERATION_TOOLTIP);
         this.renderExternalSlotHoverLabel(guiGraphics, mouseX, mouseY, MachineGuiLayouts.UPGRADE_SLOT_X, MachineGuiLayouts.ENERGIZED_CUBE_SLOT_Y, ENERGIZED_CUBE_TOOLTIP);
+        this.renderExternalSlotHoverLabel(guiGraphics, mouseX, mouseY, MachineGuiLayouts.UPGRADE_SLOT_X, MachineGuiLayouts.PARALLEL_SLOT_Y, PARALLEL_TOOLTIP);
     }
 
     @Override

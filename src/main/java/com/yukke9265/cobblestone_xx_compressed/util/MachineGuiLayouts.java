@@ -14,6 +14,7 @@ public final class MachineGuiLayouts {
     public static final int UPGRADE_SLOT_X = 176;
     public static final int ACCELERATION_SLOT_Y = 12;
     public static final int ENERGIZED_CUBE_SLOT_Y = ACCELERATION_SLOT_Y + SLOT_SIZE;
+    public static final int PARALLEL_SLOT_Y = ENERGIZED_CUBE_SLOT_Y + SLOT_SIZE;
 
     private MachineGuiLayouts() {
     }

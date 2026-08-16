@@ -82,6 +82,10 @@
   - Cobblestone Energized Cube 用の薄いラッパーです。
   - 共通スクリプトへ energized cube 用設定を渡します。
 
+- `generate_cobblestone_parallel_chip_textures.ps1`
+  - Cobblestone Parallel Chip 用の薄いラッパーです。
+  - 共通スクリプトへ parallel module 用設定を渡します。
+
 - `generate_cobblestone_dust_textures.ps1`
   - 丸石ダスト用の薄いラッパーです。
   - 共通スクリプトへ丸石ダスト用設定を渡します。
@@ -147,6 +151,15 @@ Cobblestone Energized Cube を生成するときは次を実行します。
 ```
 
 これで `src/main/resources/assets/cobblestonexxcompressed/textures/item/cobblestone_energized_cube` に
+tier 用 PNG を出力します。
+
+Cobblestone Parallel Chip を生成するときは次を実行します。
+
+```powershell
+.\scripts\generate_cobblestone_parallel_chip_textures.ps1
+```
+
+これで `src/main/resources/assets/cobblestonexxcompressed/textures/item/cobblestone_parallel_module` に
 tier 用 PNG を出力します。
 
 丸石ダストを生成するときは次を実行します。

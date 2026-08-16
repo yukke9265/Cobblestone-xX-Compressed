@@ -44,11 +44,15 @@ public abstract class PoweredMachineScreenBase<T extends BaseMenu> extends BaseS
     private static final int START_BUTTON_X_OFFSET = 4;
     private static final int AUTO_EXPORT_BUTTON_WIDTH = 94;
     private static final int AUTO_EXPORT_BUTTON_HEIGHT = 20;
+    private static final int AUTO_INSERT_BUTTON_WIDTH = 94;
+    private static final int AUTO_INSERT_BUTTON_HEIGHT = 20;
     private static final Component ACCELERATION_TOOLTIP = Component.literal("acceleration_chip");
     private static final Component ENERGIZED_CUBE_TOOLTIP = Component.literal("energized_cube");
+    private static final Component PARALLEL_TOOLTIP = Component.literal("parallel_chip");
 
     private final Button[] automationButtons = new Button[AUTOMATION_SIDES.length];
     private Button autoExportButton;
+    private Button autoInsertButton;
 
     protected PoweredMachineScreenBase(T menu, Inventory inventory, Component title) {
         super(menu, inventory, title);
@@ -104,6 +108,10 @@ public abstract class PoweredMachineScreenBase<T extends BaseMenu> extends BaseS
 
     protected abstract boolean isAutoExportEnabled();
 
+    protected abstract int getAutoInsertButtonId();
+
+    protected abstract boolean isAutoInsertEnabled();
+
     protected abstract ResourceLocation getJeiRecipeCategoryId();
 
     protected int getAccelerationSlotX() {
@@ -120,6 +128,14 @@ public abstract class PoweredMachineScreenBase<T extends BaseMenu> extends BaseS
 
     protected int getEnergizedCubeSlotY() {
         return MachineGuiLayouts.ENERGIZED_CUBE_SLOT_Y;
+    }
+
+    protected int getParallelSlotX() {
+        return MachineGuiLayouts.UPGRADE_SLOT_X;
+    }
+
+    protected int getParallelSlotY() {
+        return MachineGuiLayouts.PARALLEL_SLOT_Y;
     }
 
     protected int getJeiClickAreaX() {
@@ -170,6 +186,17 @@ public abstract class PoweredMachineScreenBase<T extends BaseMenu> extends BaseS
             ).build()
         );
 
+        this.autoInsertButton = this.addRenderableWidget(
+            Button.builder(
+                Component.empty(), button -> this.onAutoInsertButtonPressed()
+            ).bounds(
+                this.leftPos + this.imageWidth + START_BUTTON_X_OFFSET,
+                this.topPos + this.imageHeight - START_BUTTON_HEIGHT - AUTO_EXPORT_BUTTON_HEIGHT - AUTO_INSERT_BUTTON_HEIGHT - 4,
+                AUTO_INSERT_BUTTON_WIDTH,
+                AUTO_INSERT_BUTTON_HEIGHT
+            ).build()
+        );
+
         int automationPanelX = this.leftPos - AUTOMATION_PANEL_X_OFFSET - AUTOMATION_BUTTON_WIDTH;
         for (int index = 0; index < AUTOMATION_SIDES.length; index++) {
             AutomationSide side = AUTOMATION_SIDES[index];
@@ -179,6 +206,7 @@ public abstract class PoweredMachineScreenBase<T extends BaseMenu> extends BaseS
 
         this.refreshAutomationButtons();
         this.refreshAutoExportButton();
+        this.refreshAutoInsertButton();
     }
 
     private void addAutomationButton(AutomationSide side, int x, int y) {
@@ -203,6 +231,10 @@ public abstract class PoweredMachineScreenBase<T extends BaseMenu> extends BaseS
         this.sendMenuButtonClick(this.getAutoExportButtonId());
     }
 
+    private void onAutoInsertButtonPressed() {
+        this.sendMenuButtonClick(this.getAutoInsertButtonId());
+    }
+
     private void refreshAutomationButtons() {
         for (AutomationSide side : AUTOMATION_SIDES) {
             int index = side.getIndex();
@@ -216,6 +248,12 @@ public abstract class PoweredMachineScreenBase<T extends BaseMenu> extends BaseS
     private void refreshAutoExportButton() {
         if (this.autoExportButton != null) {
             this.autoExportButton.setMessage(this.createCheckboxLabel(this.isAutoExportEnabled(), "gui.cobblestonexxcompressed.auto_export"));
+        }
+    }
+
+    private void refreshAutoInsertButton() {
+        if (this.autoInsertButton != null) {
+            this.autoInsertButton.setMessage(this.createCheckboxLabel(this.isAutoInsertEnabled(), "gui.cobblestonexxcompressed.auto_insert"));
         }
     }
 
@@ -246,6 +284,7 @@ public abstract class PoweredMachineScreenBase<T extends BaseMenu> extends BaseS
         super.containerTick();
         this.refreshAutomationButtons();
         this.refreshAutoExportButton();
+        this.refreshAutoInsertButton();
     }
 
     @Override
@@ -259,6 +298,7 @@ public abstract class PoweredMachineScreenBase<T extends BaseMenu> extends BaseS
         this.renderNormalSlotPart(guiGraphics, x + this.getMachineOutputSlotX(), y + this.getMachineOutputSlotY());
         this.renderNormalSlotPart(guiGraphics, x + this.getAccelerationSlotX(), y + this.getAccelerationSlotY());
         this.renderNormalSlotPart(guiGraphics, x + this.getEnergizedCubeSlotX(), y + this.getEnergizedCubeSlotY());
+        this.renderNormalSlotPart(guiGraphics, x + this.getParallelSlotX(), y + this.getParallelSlotY());
         this.renderProgressFramePart(guiGraphics, x + this.getProgressBarX(), y + this.getProgressBarY());
 
         int progress = this.getProgressValue();
@@ -323,6 +363,7 @@ public abstract class PoweredMachineScreenBase<T extends BaseMenu> extends BaseS
         }
         this.renderExternalSlotHoverLabel(guiGraphics, mouseX, mouseY, this.getAccelerationSlotX(), this.getAccelerationSlotY(), ACCELERATION_TOOLTIP);
         this.renderExternalSlotHoverLabel(guiGraphics, mouseX, mouseY, this.getEnergizedCubeSlotX(), this.getEnergizedCubeSlotY(), ENERGIZED_CUBE_TOOLTIP);
+        this.renderExternalSlotHoverLabel(guiGraphics, mouseX, mouseY, this.getParallelSlotX(), this.getParallelSlotY(), PARALLEL_TOOLTIP);
         this.renderAdditionalHoverLabels(guiGraphics, mouseX, mouseY);
     }
 

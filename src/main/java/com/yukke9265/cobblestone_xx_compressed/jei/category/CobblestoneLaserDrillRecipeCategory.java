@@ -81,8 +81,7 @@ public class CobblestoneLaserDrillRecipeCategory implements IRecipeCategory<Cobb
 
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, CobblestoneLaserDrillRecipe recipe, IFocusGroup focuses) {
-        builder.addSlot(RecipeIngredientRole.CATALYST, POWER_SLOT_X, POWER_SLOT_Y)
-            .addItemStacks(JeiCobblestonePowerItems.getCatalystItems());
+        JeiCobblestonePowerItems.addPowerSlot(builder, POWER_SLOT_X, POWER_SLOT_Y);
 
         builder.addSlot(RecipeIngredientRole.INPUT, INPUT_SLOT_X, INPUT_SLOT_Y)
             .addIngredients(recipe.getIngredient());

@@ -5,6 +5,8 @@ import java.util.List;
 
 import com.yukke9265.cobblestone_xx_compressed.registry.ModBlocks;
 
+import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
+import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
@@ -23,5 +25,12 @@ public final class JeiCobblestonePowerItems {
         }
 
         return List.copyOf(stacks);
+    }
+
+    // CP 燃料はレシピ画面には出すが、JEI の検索対象にはしない。
+    // CATALYST だと圧縮丸石の使用レシピに全機械が並んでしまう。
+    public static void addPowerSlot(IRecipeLayoutBuilder builder, int x, int y) {
+        builder.addSlot(RecipeIngredientRole.RENDER_ONLY, x, y)
+            .addItemStacks(getCatalystItems());
     }
 }

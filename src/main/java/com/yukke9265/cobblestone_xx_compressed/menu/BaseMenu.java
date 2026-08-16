@@ -21,6 +21,7 @@ import net.neoforged.neoforge.fluids.FluidStack;
 public class BaseMenu extends AbstractContainerMenu {
     protected static final int AUTOMATION_BUTTON_ID_BASE = 100;
     protected static final int AUTO_EXPORT_BUTTON_ID = 200;
+    protected static final int AUTO_INSERT_BUTTON_ID = 201;
     protected static final int FLUID_AUTOMATION_BUTTON_ID_BASE = 300;
     protected static final int FLUID_INDICATOR_BUTTON_ID = 400;
     protected static final int FLUID_INDICATOR_SHIFT_BUTTON_ID = 401;
@@ -154,6 +155,23 @@ public class BaseMenu extends AbstractContainerMenu {
         }
 
         blockEntity.toggleAutoExportEnabled();
+        return true;
+    }
+
+    protected final int getAutoInsertToggleButtonId() {
+        return AUTO_INSERT_BUTTON_ID;
+    }
+
+    protected final boolean isAutoInsertButtonId(int buttonId) {
+        return buttonId == AUTO_INSERT_BUTTON_ID;
+    }
+
+    protected final boolean handleAutoInsertButtonClick(BaseBlockEntity blockEntity, int buttonId) {
+        if (!this.isAutoInsertButtonId(buttonId)) {
+            return false;
+        }
+
+        blockEntity.toggleAutoInsertEnabled();
         return true;
     }
 

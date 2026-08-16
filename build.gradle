@@ -23,7 +23,9 @@ sourceSets.main.resources {
 
     // 開発時のみ使うことが多いリソースを最終成果物から除外します
     exclude("**/*.bbmodel") // BlockBench のプロジェクトファイル
-    exclude("src/generated/**/.cache") // datagen のキャッシュファイル
+    // srcDir からの相対パスで除外する。src/generated/** だと効かず、
+    // .cache が bin/main に入り Debug ビルドが Resource already exists で落ちる。
+    exclude("**/.cache/**")
 }
 
 repositories {
@@ -163,6 +165,9 @@ var generateModMetadata = tasks.register("generateModMetadata", ProcessResources
             mod_version            : mod_version,
     ]
     inputs.properties replaceProperties
+    // Windows の既定文字コード (MS932) だと日本語コメントが壊れて
+    // クライアント起動時に neoforge.mods.toml を読めなくなるため、UTF-8 で置換する。
+    filteringCharset = 'UTF-8'
     expand replaceProperties
     from "src/main/templates"
     into "build/generated/sources/modMetadata"
@@ -173,35 +178,75 @@ sourceSets.main.resources.srcDir generateModMetadata
 // generateModMetadata を毎回手動実行しなくて済むよう、プロジェクト再読み込みのたびに実行します
 neoForge.ideSyncTask generateModMetadata
 
-// このワークスペースでは、VS Code / Java 側の起動時に bin/main が mod の実体として
-// 読まれている形跡があります。src/generated/resources のみへ JSON を置くと、
-// datagen の出力が bin/main へ入らず、lang や item model が見つからないことがあります。
-// そのため、Gradle 側で classes / processResources 実行後に generated resources を
-// bin/main へ同期して、IDE 起動時も同じ JSON を参照できるようにします。
-def syncIdeGeneratedResources = tasks.register('syncIdeGeneratedResources', Copy) {
-    from 'src/generated/resources'
-    into 'bin/main'
-}
+// Debug 起動は bin/main を見ると、言語サーバーの出力が空・未完成のときに
+// "is not a valid mod file" で落ちる。Gradle の classes / resources を使う。
+// パスは configuration cache のため、タスク登録時に確定しておく。
+def vscodeLaunchFile = file('.vscode/launch.json')
+def vscodeClassesDir = file('build/classes/java/main')
+def vscodeResourcesDir = file('build/resources/main')
+def vscodeModId = project.mod_id
 
-tasks.named('processResources').configure {
-    finalizedBy(syncIdeGeneratedResources)
-}
+def syncVscodeLaunchModFolders = tasks.register('syncVscodeLaunchModFolders') {
+    doLast {
+        if (!vscodeLaunchFile.exists()) {
+            return
+        }
 
-tasks.named('classes').configure {
-    finalizedBy(syncIdeGeneratedResources)
+        def desired = "-Dfml.modFolders=${vscodeModId}%%${vscodeClassesDir.canonicalFile.absolutePath};${vscodeModId}%%${vscodeResourcesDir.canonicalFile.absolutePath}"
+        def desiredJson = desired.replace('\\', '\\\\').replace('=', '\\u003d')
+        def text = vscodeLaunchFile.getText('UTF-8')
+        def patched = text.replaceAll(
+            /-Dfml\.modFolders(?:\\u003d|=)[^"]*/,
+            java.util.regex.Matcher.quoteReplacement(desiredJson)
+        )
+        if (patched != text) {
+            vscodeLaunchFile.write(patched, 'UTF-8')
+        }
+    }
 }
+neoForge.ideSyncTask syncVscodeLaunchModFolders
 
-// VS Code / Java の実行構成では bin/main 側の JSON が使われることがあるため、
-// 起動前に generated resources を同期しておきます。
-['runClient', 'runServer', 'runGameTestServer'].each { taskName ->
+['prepareClientRun', 'prepareDataRun', 'prepareServerRun', 'prepareGameTestServerRun'].each { taskName ->
     tasks.named(taskName).configure {
-        dependsOn(syncIdeGeneratedResources)
+        finalizedBy(syncVscodeLaunchModFolders)
     }
 }
 
-// runData の直後にも同期して、生成した最新 JSON をそのまま IDE 実行へ反映します。
-tasks.named('runData').configure {
-    finalizedBy(syncIdeGeneratedResources)
+tasks.named('processResources').configure {
+    filteringCharset = 'UTF-8'
+}
+
+// Cursor のエージェント用 Gradle は GRADLE_USER_HOME が一時フォルダになる。
+// その状態で prepareDataRun すると build/moddev の Data 起動ファイルが
+// 一時キャッシュを指し、Debug Data が fml_loader を二重読み込みして落ちる。
+// 起動ファイルを作るときは、ユーザーの .gradle を明示する。
+// 例: gradlew.bat -g "%USERPROFILE%\.gradle" prepareDataRun
+def assertModdevUsesUserGradleHome = { fileName ->
+    def moddevFile = file("build/moddev/${fileName}")
+    if (!moddevFile.exists()) {
+        return
+    }
+
+    def text = moddevFile.getText('UTF-8')
+    if (text.contains('cursor-sandbox-cache')) {
+        throw new GradleException(
+            "${moddevFile.name} が Cursor の一時 Gradle キャッシュを指しています。" +
+            "gradlew.bat -g \"%USERPROFILE%\\.gradle\" prepareDataRun を実行してください。"
+        )
+    }
+}
+
+tasks.named('writeDataLegacyClasspath').configure {
+    doLast {
+        assertModdevUsesUserGradleHome('dataLegacyClasspath.txt')
+    }
+}
+
+tasks.named('prepareDataRun').configure {
+    doLast {
+        assertModdevUsesUserGradleHome('dataRunVmArgs.txt')
+        assertModdevUsesUserGradleHome('dataLegacyClasspath.txt')
+    }
 }
 
 // maven-publish プラグインで公開できるようにする設定例です

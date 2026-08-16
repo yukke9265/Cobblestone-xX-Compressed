@@ -86,8 +86,18 @@ final class MachineRecipeOutputHelper {
         long totalCobblestonePower,
         long cobblestonePowerPerTick
     ) {
+        saveStoneBreakSimulatorRecipe(output, recipeName, Ingredient.of(ingredient), totalCobblestonePower, cobblestonePowerPerTick);
+    }
+
+    public static void saveStoneBreakSimulatorRecipe(
+        RecipeOutput output,
+        String recipeName,
+        Ingredient ingredient,
+        long totalCobblestonePower,
+        long cobblestonePowerPerTick
+    ) {
         StoneBreakSimulatorRecipe recipe = new StoneBreakSimulatorRecipe(
-            Ingredient.of(ingredient),
+            ingredient,
             totalCobblestonePower,
             cobblestonePowerPerTick
         );

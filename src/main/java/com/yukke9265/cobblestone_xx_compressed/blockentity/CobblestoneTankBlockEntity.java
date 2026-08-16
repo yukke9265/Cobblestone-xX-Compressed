@@ -47,6 +47,7 @@ public class CobblestoneTankBlockEntity extends BaseBlockEntity implements MenuP
     private static final int DATA_INDEX_ITEM_AUTOMATION_START = 5;
     private static final int DATA_INDEX_FLUID_AUTOMATION_START = DATA_INDEX_ITEM_AUTOMATION_START + AUTOMATION_FACE_COUNT;
     private static final int DATA_INDEX_AUTO_EXPORT = DATA_INDEX_FLUID_AUTOMATION_START + AUTOMATION_FACE_COUNT;
+    private static final int DATA_INDEX_AUTO_INSERT = DATA_INDEX_AUTO_EXPORT + 1;
 
     private final long maxFluidAmount;
     private long storedFluidAmount;
@@ -310,6 +311,7 @@ public class CobblestoneTankBlockEntity extends BaseBlockEntity implements MenuP
             return;
         }
 
+        this.pullInputsFromConfiguredSides();
         this.processFluidContainerItem();
         this.autoExportFluid();
     }
@@ -723,7 +725,7 @@ public class CobblestoneTankBlockEntity extends BaseBlockEntity implements MenuP
     }
 
     @Override
-    public @Nullable AbstractContainerMenu createMenu(int containerId, Inventory playerInventory, Player player) {
+    public AbstractContainerMenu createMenu(int containerId, Inventory playerInventory, Player player) {
         ContainerData tankData = new ContainerData() {
             @Override
             public int get(int index) {
@@ -759,6 +761,10 @@ public class CobblestoneTankBlockEntity extends BaseBlockEntity implements MenuP
                     return CobblestoneTankBlockEntity.this.isAutoExportEnabled() ? 1 : 0;
                 }
 
+                if (index == DATA_INDEX_AUTO_INSERT) {
+                    return CobblestoneTankBlockEntity.this.getAutoInsertEnabledId();
+                }
+
                 return 0;
             }
 
@@ -768,7 +774,7 @@ public class CobblestoneTankBlockEntity extends BaseBlockEntity implements MenuP
 
             @Override
             public int getCount() {
-                return DATA_INDEX_AUTO_EXPORT + 1;
+                return DATA_INDEX_AUTO_INSERT + 1;
             }
         };
 

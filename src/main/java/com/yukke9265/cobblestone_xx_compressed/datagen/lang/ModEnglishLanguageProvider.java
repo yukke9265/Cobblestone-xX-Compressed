@@ -138,6 +138,11 @@ public class ModEnglishLanguageProvider extends LanguageProvider {
             addItem(tier.getItem(), tier.getEnglishDisplayName());
         }
 
+        addItem(ModItems.COBBLESTONE_PARALLEL_CHIP, "Cobblestone Parallel Chip");
+        for (ModItems.TierCobblestoneParallelChip tier : ModItems.TierCobblestoneParallelChip.values()) {
+            addItem(tier.getItem(), tier.getEnglishDisplayName());
+        }
+
         add("fluid_type.cobblestonexxcompressed.molten_compressed_cobblestone", "Molten Compressed Cobblestone");
         addBlock(ModFluids.MOLTEN_COMPRESSED_COBBLESTONE.getFluidBlock(), "Molten Compressed Cobblestone");
         addItem(ModFluids.MOLTEN_COMPRESSED_COBBLESTONE.getBucketItem(), "Molten Compressed Cobblestone Bucket");
@@ -231,10 +236,12 @@ public class ModEnglishLanguageProvider extends LanguageProvider {
         add("gui.cobblestonexxcompressed.fluid_amount", "Fluid Amount");
         add("gui.cobblestonexxcompressed.empty", "Empty");
         add("gui.cobblestonexxcompressed.auto_export", "Auto Export");
+        add("gui.cobblestonexxcompressed.auto_insert", "Auto Insert");
         add("gui.cobblestonexxcompressed.start_stop", "Start/Stop");
         add("tooltip.cobblestonexxcompressed.compressed_cobblestone.compression", "x%s compressed");
         add("tooltip.cobblestonexxcompressed.cobblestone_energized_cube.capacity", "x%s CP capacity");
         add("tooltip.cobblestonexxcompressed.cobblestone_acceleration_chip.rate", "x%s CP/t");
+        add("tooltip.cobblestonexxcompressed.cobblestone_parallel_chip.extra", "+%s extra crafts");
         add("tooltip.cobblestonexxcompressed.configuration_card.empty", "No configuration stored");
         add("tooltip.cobblestonexxcompressed.configuration_card.stored", "Stored: %s");
         add("message.cobblestonexxcompressed.configuration_card.copied", "Copied automation settings from %s");

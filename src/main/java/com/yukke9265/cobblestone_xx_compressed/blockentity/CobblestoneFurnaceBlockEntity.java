@@ -39,6 +39,7 @@ public class CobblestoneFurnaceBlockEntity extends BaseBlockEntity implements Me
     private static final int DATA_INDEX_MAX_BURN_TIME = 1;
     private static final int DATA_INDEX_AUTOMATION_START = 2;
     private static final int DATA_INDEX_AUTO_EXPORT = DATA_INDEX_AUTOMATION_START + AUTOMATION_FACE_COUNT;
+    private static final int DATA_INDEX_AUTO_INSERT = DATA_INDEX_AUTO_EXPORT + 1;
 
     private int burnTime = 60; // 炉の燃焼時間を管理する変数。初期値は60にしています。
     private int maxBurnTime = 60; // 炉の最大燃焼時間を管理する変数。初期値は60にしています。
@@ -281,6 +282,9 @@ public class CobblestoneFurnaceBlockEntity extends BaseBlockEntity implements Me
         if (this.level == null || this.level.isClientSide) {
             return; // ワールドが存在しない場合やクライアント側の場合は処理を行わない
         }
+
+        this.pullInputsFromConfiguredSides();
+
         // このブロックの現在のブロック状態を取得（ブロックのプロパティ情報を含む）
         Level currentLevel = this.level;
         BlockState currentState = this.getBlockState();
@@ -460,6 +464,10 @@ public class CobblestoneFurnaceBlockEntity extends BaseBlockEntity implements Me
                     return getAutoExportEnabledId();
                 }
 
+                if (index == DATA_INDEX_AUTO_INSERT) {
+                    return getAutoInsertEnabledId();
+                }
+
                 return 0;
             }
 
@@ -481,11 +489,15 @@ public class CobblestoneFurnaceBlockEntity extends BaseBlockEntity implements Me
                 if (index == DATA_INDEX_AUTO_EXPORT) {
                     setAutoExportEnabled(value != 0);
                 }
+
+                if (index == DATA_INDEX_AUTO_INSERT) {
+                    setAutoInsertEnabled(value != 0);
+                }
             }
 
             @Override
             public int getCount() {
-                return DATA_INDEX_AUTO_EXPORT + 1;
+                return DATA_INDEX_AUTO_INSERT + 1;
             }
         };
 

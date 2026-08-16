@@ -9,6 +9,8 @@ public final class MachineUpgradeHelper {
     private static final int FIRST_TIER_ACCELERATION_MULTIPLIER = 4;
     private static final int NORMAL_ENERGIZED_CUBE_MULTIPLIER = 4;
     private static final int FIRST_TIER_ENERGIZED_CUBE_MULTIPLIER = 16;
+    private static final int NORMAL_PARALLEL_EXTRA_CRAFT_COUNT = 1;
+    private static final int FIRST_TIER_PARALLEL_EXTRA_CRAFT_COUNT = 2;
 
     private MachineUpgradeHelper() {
     }
@@ -19,6 +21,10 @@ public final class MachineUpgradeHelper {
 
     public static boolean isEnergizedCube(ItemStack stack) {
         return getEnergizedCubeMultiplier(stack) > 0;
+    }
+
+    public static boolean isParallelChip(ItemStack stack) {
+        return getParallelExtraCraftCount(stack) > 0;
     }
 
     public static int getAccelerationMultiplier(ItemStack stack) {
@@ -58,6 +64,27 @@ public final class MachineUpgradeHelper {
             }
 
             multiplier *= 4;
+        }
+
+        return 0;
+    }
+
+    public static int getParallelExtraCraftCount(ItemStack stack) {
+        if (stack.isEmpty()) {
+            return 0;
+        }
+
+        if (stack.is(ModItems.COBBLESTONE_PARALLEL_CHIP.get())) {
+            return NORMAL_PARALLEL_EXTRA_CRAFT_COUNT;
+        }
+
+        int extraCraftCount = FIRST_TIER_PARALLEL_EXTRA_CRAFT_COUNT;
+        for (ModItems.TierCobblestoneParallelChip tier : ModItems.TierCobblestoneParallelChip.values()) {
+            if (stack.is(tier.getItem().get())) {
+                return extraCraftCount;
+            }
+
+            extraCraftCount++;
         }
 
         return 0;
