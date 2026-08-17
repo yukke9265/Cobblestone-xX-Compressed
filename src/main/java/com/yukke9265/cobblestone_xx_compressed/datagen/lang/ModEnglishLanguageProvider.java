@@ -244,9 +244,10 @@ public class ModEnglishLanguageProvider extends LanguageProvider {
         add("tooltip.cobblestonexxcompressed.cobblestone_parallel_chip.extra", "+%s extra crafts");
         add("tooltip.cobblestonexxcompressed.configuration_card.empty", "No configuration stored");
         add("tooltip.cobblestonexxcompressed.configuration_card.stored", "Stored: %s");
-        add("message.cobblestonexxcompressed.configuration_card.copied", "Copied automation settings from %s");
-        add("message.cobblestonexxcompressed.configuration_card.pasted", "Pasted automation settings to %s");
-        add("message.cobblestonexxcompressed.configuration_card.cleared", "Cleared stored automation settings");
+        add("tooltip.cobblestonexxcompressed.configuration_card.upgrade", "Upgrade: %s");
+        add("message.cobblestonexxcompressed.configuration_card.copied", "Copied configuration from %s");
+        add("message.cobblestonexxcompressed.configuration_card.pasted", "Pasted configuration to %s");
+        add("message.cobblestonexxcompressed.configuration_card.cleared", "Cleared stored configuration");
         add("message.cobblestonexxcompressed.configuration_card.incompatible", "Stored settings can only be pasted to the same machine type");
         TooltipTranslationEntries.addEnglish(this);
         add("jei.cobblestonexxcompressed.compressed_stone_loot", "Compressed Stone Loot");

@@ -8,6 +8,7 @@ import com.yukke9265.cobblestone_xx_compressed.blockentity.BaseBlockEntity;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
@@ -34,6 +35,7 @@ public class ConfigurationCardItem extends Item {
     private static final String BLOCK_NAME_TAG = "StoredBlockName";
     private static final String TOOLTIP_EMPTY_KEY = "tooltip.cobblestonexxcompressed.configuration_card.empty";
     private static final String TOOLTIP_STORED_KEY = "tooltip.cobblestonexxcompressed.configuration_card.stored";
+    private static final String TOOLTIP_UPGRADE_KEY = "tooltip.cobblestonexxcompressed.configuration_card.upgrade";
     private static final String MESSAGE_COPIED_KEY = "message.cobblestonexxcompressed.configuration_card.copied";
     private static final String MESSAGE_PASTED_KEY = "message.cobblestonexxcompressed.configuration_card.pasted";
     private static final String MESSAGE_CLEARED_KEY = "message.cobblestonexxcompressed.configuration_card.cleared";
@@ -83,7 +85,7 @@ public class ConfigurationCardItem extends Item {
 
         if (!level.isClientSide) {
             CompoundTag automationData = cardData.getCompound(DATA_TAG);
-            baseBlockEntity.applyAutomationCopyData(automationData);
+            baseBlockEntity.applyAutomationCopyData(automationData, player);
             player.displayClientMessage(
                 Component.translatable(MESSAGE_PASTED_KEY, blockEntity.getBlockState().getBlock().getName()).withStyle(ChatFormatting.GREEN),
                 true
@@ -122,6 +124,17 @@ public class ConfigurationCardItem extends Item {
             Component.translatable(TOOLTIP_STORED_KEY, Component.translatable(cardData.getString(BLOCK_NAME_TAG)))
                 .withStyle(ChatFormatting.GRAY)
         );
+
+        HolderLookup.Provider registries = context.registries();
+        if (registries == null || !cardData.contains(DATA_TAG)) {
+            return;
+        }
+
+        for (ItemStack upgradeStack : BaseBlockEntity.readStoredUpgradeItems(cardData.getCompound(DATA_TAG), registries)) {
+            tooltipComponents.add(
+                Component.translatable(TOOLTIP_UPGRADE_KEY, upgradeStack.getHoverName()).withStyle(ChatFormatting.DARK_GRAY)
+            );
+        }
     }
 
     private void storeConfiguration(ItemStack stack, BaseBlockEntity blockEntity) {

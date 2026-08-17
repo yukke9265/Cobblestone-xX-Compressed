@@ -34,10 +34,27 @@ public abstract class BaseMachineUpgradeItem extends Item {
             return super.useOn(context);
         }
 
-        if (!level.isClientSide && baseBlockEntity.installUpgradeItem(stack, false) && !player.getAbilities().instabuild) {
-            stack.shrink(1);
+        if (!level.isClientSide) {
+            ItemStack replacedStack = baseBlockEntity.installUpgradeItem(stack, false);
+            if (replacedStack != null) {
+                if (!player.getAbilities().instabuild) {
+                    stack.shrink(1);
+                }
+                this.giveItemToPlayerOrDrop(player, replacedStack);
+            }
         }
 
         return InteractionResult.sidedSuccess(level.isClientSide);
+    }
+
+    // インベントリに入らなければ足元へドロップします。
+    private void giveItemToPlayerOrDrop(Player player, ItemStack stack) {
+        if (stack.isEmpty()) {
+            return;
+        }
+
+        if (!player.getInventory().add(stack)) {
+            player.drop(stack, false);
+        }
     }
 }

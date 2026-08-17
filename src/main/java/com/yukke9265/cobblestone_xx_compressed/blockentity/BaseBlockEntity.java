@@ -1,11 +1,18 @@
 package com.yukke9265.cobblestone_xx_compressed.blockentity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.Containers;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -22,6 +29,9 @@ import net.neoforged.neoforge.items.wrapper.EmptyItemHandler;
 @SuppressWarnings("null")
 public class BaseBlockEntity extends BlockEntity {
     public static final int AUTOMATION_FACE_COUNT = AutomationSide.values().length;
+    private static final String ACCELERATION_UPGRADE_COPY_TAG = "UpgradeAcceleration";
+    private static final String ENERGIZED_CUBE_UPGRADE_COPY_TAG = "UpgradeEnergizedCube";
+    private static final String PARALLEL_UPGRADE_COPY_TAG = "UpgradeParallel";
 
     private final AutomationMode[] automationModes = new AutomationMode[] {
         AutomationMode.DISABLED,
@@ -237,12 +247,148 @@ public class BaseBlockEntity extends BlockEntity {
     public CompoundTag createAutomationCopyData() {
         CompoundTag tag = new CompoundTag();
         this.saveAutomationModes(tag);
+        this.saveUpgradeCopyData(tag);
         return tag;
     }
 
-    public void applyAutomationCopyData(CompoundTag tag) {
+    public void applyAutomationCopyData(CompoundTag tag, Player player) {
         this.loadAutomationModes(tag);
+        this.applyUpgradeCopyData(tag, player);
         this.setChanged();
+    }
+
+    public static List<ItemStack> readStoredUpgradeItems(CompoundTag tag, HolderLookup.Provider registries) {
+        List<ItemStack> upgradeStacks = new ArrayList<>();
+        addStoredUpgradeItem(upgradeStacks, tag, registries, ACCELERATION_UPGRADE_COPY_TAG);
+        addStoredUpgradeItem(upgradeStacks, tag, registries, ENERGIZED_CUBE_UPGRADE_COPY_TAG);
+        addStoredUpgradeItem(upgradeStacks, tag, registries, PARALLEL_UPGRADE_COPY_TAG);
+        return upgradeStacks;
+    }
+
+    private static void addStoredUpgradeItem(
+        List<ItemStack> upgradeStacks,
+        CompoundTag tag,
+        HolderLookup.Provider registries,
+        String key
+    ) {
+        if (!tag.contains(key, Tag.TAG_COMPOUND)) {
+            return;
+        }
+
+        ItemStack storedStack = ItemStack.parseOptional(registries, tag.getCompound(key));
+        if (!storedStack.isEmpty()) {
+            upgradeStacks.add(storedStack);
+        }
+    }
+
+    private void saveUpgradeCopyData(CompoundTag tag) {
+        Level currentLevel = this.level;
+        ItemStackHandler itemStackHandler = this.getItemStackHandler();
+        if (currentLevel == null || itemStackHandler == null) {
+            return;
+        }
+
+        HolderLookup.Provider registries = currentLevel.registryAccess();
+        this.saveUpgradeSlotCopy(tag, itemStackHandler, registries, this.getAccelerationUpgradeSlotIndex(), ACCELERATION_UPGRADE_COPY_TAG);
+        this.saveUpgradeSlotCopy(tag, itemStackHandler, registries, this.getEnergizedCubeUpgradeSlotIndex(), ENERGIZED_CUBE_UPGRADE_COPY_TAG);
+        this.saveUpgradeSlotCopy(tag, itemStackHandler, registries, this.getParallelUpgradeSlotIndex(), PARALLEL_UPGRADE_COPY_TAG);
+    }
+
+    private void saveUpgradeSlotCopy(
+        CompoundTag tag,
+        ItemStackHandler itemStackHandler,
+        HolderLookup.Provider registries,
+        int slot,
+        String key
+    ) {
+        if (slot < 0 || slot >= itemStackHandler.getSlots()) {
+            return;
+        }
+
+        ItemStack existingStack = itemStackHandler.getStackInSlot(slot);
+        if (existingStack.isEmpty()) {
+            return;
+        }
+
+        tag.put(key, existingStack.save(registries));
+    }
+
+    private void applyUpgradeCopyData(CompoundTag tag, Player player) {
+        Level currentLevel = this.level;
+        if (currentLevel == null) {
+            return;
+        }
+
+        HolderLookup.Provider registries = currentLevel.registryAccess();
+        this.installStoredUpgradeFromPlayer(tag, registries, player, ACCELERATION_UPGRADE_COPY_TAG);
+        this.installStoredUpgradeFromPlayer(tag, registries, player, ENERGIZED_CUBE_UPGRADE_COPY_TAG);
+        this.installStoredUpgradeFromPlayer(tag, registries, player, PARALLEL_UPGRADE_COPY_TAG);
+    }
+
+    private void installStoredUpgradeFromPlayer(
+        CompoundTag tag,
+        HolderLookup.Provider registries,
+        Player player,
+        String key
+    ) {
+        if (!tag.contains(key, Tag.TAG_COMPOUND)) {
+            return;
+        }
+
+        ItemStack storedStack = ItemStack.parseOptional(registries, tag.getCompound(key));
+        if (storedStack.isEmpty()) {
+            return;
+        }
+
+        this.installUpgradeItemFromPlayer(player, storedStack);
+    }
+
+    // インベントリにあれば 1 個消費して入れます。既にあれば入れ替え、入らなければドロップします。
+    private void installUpgradeItemFromPlayer(Player player, ItemStack desiredStack) {
+        if (!this.canInstallUpgradeItem(desiredStack)) {
+            return;
+        }
+
+        boolean creative = player.getAbilities().instabuild;
+        ItemStack inventoryStack = ItemStack.EMPTY;
+        if (!creative) {
+            inventoryStack = this.findMatchingUpgradeInPlayerInventory(player, desiredStack);
+            if (inventoryStack.isEmpty()) {
+                return;
+            }
+        }
+
+        ItemStack replacedStack = this.installUpgradeItem(desiredStack, false);
+        if (replacedStack == null) {
+            return;
+        }
+
+        if (!creative) {
+            inventoryStack.shrink(1);
+        }
+        this.giveItemToPlayerOrDrop(player, replacedStack);
+    }
+
+    private ItemStack findMatchingUpgradeInPlayerInventory(Player player, ItemStack targetStack) {
+        Inventory inventory = player.getInventory();
+        for (int slot = 0; slot < inventory.getContainerSize(); slot++) {
+            ItemStack slotStack = inventory.getItem(slot);
+            if (!slotStack.isEmpty() && ItemStack.isSameItemSameComponents(slotStack, targetStack)) {
+                return slotStack;
+            }
+        }
+
+        return ItemStack.EMPTY;
+    }
+
+    private void giveItemToPlayerOrDrop(Player player, ItemStack stack) {
+        if (stack.isEmpty()) {
+            return;
+        }
+
+        if (!player.getInventory().add(stack)) {
+            player.drop(stack, false);
+        }
     }
 
     public ItemStackHandler getItemStackHandler() {
@@ -283,28 +429,35 @@ public class BaseBlockEntity extends BlockEntity {
             return false;
         }
 
-        if (!itemStackHandler.getStackInSlot(slot).isEmpty()) {
+        if (itemStackHandler.getSlotLimit(slot) <= 0) {
             return false;
         }
 
-        return itemStackHandler.getSlotLimit(slot) > 0;
+        ItemStack existingStack = itemStackHandler.getStackInSlot(slot);
+        if (existingStack.isEmpty()) {
+            return true;
+        }
+
+        // 同じアップグレードが既にある場合は入れ替えません。
+        return !ItemStack.isSameItemSameComponents(existingStack, stack);
     }
 
-    private boolean tryInstallUpgradeItemInSlot(ItemStackHandler itemStackHandler, ItemStack stack, int slot, boolean simulate) {
+    // 成功したら外したアイテムを返します。空なら新規挿入、null なら失敗です。
+    @Nullable
+    private ItemStack tryInstallUpgradeItemInSlot(ItemStackHandler itemStackHandler, ItemStack stack, int slot, boolean simulate) {
         if (!this.canInstallUpgradeItemInSlot(itemStackHandler, stack, slot)) {
-            return false;
+            return null;
         }
 
-        ItemStack singleStack = stack.copyWithCount(1);
-        ItemStack remainingStack = itemStackHandler.insertItem(slot, singleStack, simulate);
-        if (!remainingStack.isEmpty()) {
-            return false;
+        ItemStack replacedStack = itemStackHandler.getStackInSlot(slot).copy();
+        if (simulate) {
+            return replacedStack;
         }
 
-        if (!simulate) {
-            this.setChanged();
-        }
-        return true;
+        // 既存があっても 1 個だけ入れ替えるため、insert ではなく上書きします。
+        itemStackHandler.setStackInSlot(slot, stack.copyWithCount(1));
+        this.setChanged();
+        return replacedStack;
     }
 
     public boolean canInstallUpgradeItem(ItemStack stack) {
@@ -341,32 +494,55 @@ public class BaseBlockEntity extends BlockEntity {
         return false;
     }
 
-    public boolean installUpgradeItem(ItemStack stack, boolean simulate) {
+    // 成功したら外したアイテムを返します。空なら新規挿入、null なら失敗です。
+    @Nullable
+    public ItemStack installUpgradeItem(ItemStack stack, boolean simulate) {
         if (!this.canInstallUpgradeItem(stack)) {
-            return false;
+            return null;
         }
 
         ItemStackHandler itemStackHandler = this.getItemStackHandler();
         if (itemStackHandler == null) {
-            return false;
+            return null;
         }
 
-        if (MachineUpgradeHelper.isAccelerationChip(stack)
-            && this.tryInstallUpgradeItemInSlot(itemStackHandler, stack, this.getAccelerationUpgradeSlotIndex(), simulate)) {
-            return true;
+        if (MachineUpgradeHelper.isAccelerationChip(stack)) {
+            ItemStack replacedStack = this.tryInstallUpgradeItemInSlot(
+                itemStackHandler,
+                stack,
+                this.getAccelerationUpgradeSlotIndex(),
+                simulate
+            );
+            if (replacedStack != null) {
+                return replacedStack;
+            }
         }
 
-        if (MachineUpgradeHelper.isEnergizedCube(stack)
-            && this.tryInstallUpgradeItemInSlot(itemStackHandler, stack, this.getEnergizedCubeUpgradeSlotIndex(), simulate)) {
-            return true;
+        if (MachineUpgradeHelper.isEnergizedCube(stack)) {
+            ItemStack replacedStack = this.tryInstallUpgradeItemInSlot(
+                itemStackHandler,
+                stack,
+                this.getEnergizedCubeUpgradeSlotIndex(),
+                simulate
+            );
+            if (replacedStack != null) {
+                return replacedStack;
+            }
         }
 
-        if (MachineUpgradeHelper.isParallelChip(stack)
-            && this.tryInstallUpgradeItemInSlot(itemStackHandler, stack, this.getParallelUpgradeSlotIndex(), simulate)) {
-            return true;
+        if (MachineUpgradeHelper.isParallelChip(stack)) {
+            ItemStack replacedStack = this.tryInstallUpgradeItemInSlot(
+                itemStackHandler,
+                stack,
+                this.getParallelUpgradeSlotIndex(),
+                simulate
+            );
+            if (replacedStack != null) {
+                return replacedStack;
+            }
         }
 
-        return false;
+        return null;
     }
 
     protected ItemStack pushItemStackToConfiguredSides(ItemStack stack, AutomationMode... targetModes) {

@@ -65,6 +65,13 @@ public class ModJapaneseLanguageProvider extends LanguageProvider {
         add("tooltip.cobblestonexxcompressed.cobblestone_energized_cube.capacity", "x%s CP容量");
         add("tooltip.cobblestonexxcompressed.cobblestone_acceleration_chip.rate", "x%s CP/t");
         add("tooltip.cobblestonexxcompressed.cobblestone_parallel_chip.extra", "追加処理 +%s");
+        add("tooltip.cobblestonexxcompressed.configuration_card.empty", "設定は保存されていません");
+        add("tooltip.cobblestonexxcompressed.configuration_card.stored", "保存先: %s");
+        add("tooltip.cobblestonexxcompressed.configuration_card.upgrade", "アップグレード: %s");
+        add("message.cobblestonexxcompressed.configuration_card.copied", "%s の設定をコピーしました");
+        add("message.cobblestonexxcompressed.configuration_card.pasted", "%s に設定を貼り付けました");
+        add("message.cobblestonexxcompressed.configuration_card.cleared", "保存した設定を消去しました");
+        add("message.cobblestonexxcompressed.configuration_card.incompatible", "同じ機械にだけ貼り付けできます");
 
         TooltipTranslationEntries.addJapanese(this);
     }
