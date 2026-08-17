@@ -5,13 +5,13 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.Containers;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.FluidUtil;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.items.IItemHandler;
@@ -540,7 +540,7 @@ public class BaseBlockEntity extends BlockEntity {
                 continue;
             }
 
-            FluidUtil.tryFluidTransfer(ownHandler, neighborHandler, Integer.MAX_VALUE, true);
+            this.transferFluidFromNeighbor(neighborHandler, ownHandler);
         }
     }
 
@@ -551,28 +551,148 @@ public class BaseBlockEntity extends BlockEntity {
                 continue;
             }
 
-            ItemStack simulatedRemaining = ItemHandlerHelper.insertItem(destinationHandler, simulatedExtract, true);
+            ItemStack simulatedRemaining = this.insertIntoOwnHandler(destinationHandler, simulatedExtract, true);
             int insertableCount = simulatedExtract.getCount() - simulatedRemaining.getCount();
             if (insertableCount <= 0) {
                 continue;
             }
 
-            ItemStack extractedStack = sourceHandler.extractItem(slot, insertableCount, false);
+            // 他機械が同じ tick で先に吸っている場合は、ここで量を減らして取りすぎない。
+            ItemStack stillAvailable = sourceHandler.extractItem(slot, insertableCount, true);
+            int extractCount = Math.min(insertableCount, stillAvailable.getCount());
+            if (extractCount <= 0) {
+                continue;
+            }
+
+            ItemStack recheckRemaining = this.insertIntoOwnHandler(
+                destinationHandler,
+                stillAvailable.copyWithCount(extractCount),
+                true
+            );
+            extractCount = extractCount - recheckRemaining.getCount();
+            if (extractCount <= 0) {
+                continue;
+            }
+
+            ItemStack extractedStack = sourceHandler.extractItem(slot, extractCount, false);
             if (extractedStack.isEmpty()) {
                 continue;
             }
 
-            ItemStack leftoverStack = ItemHandlerHelper.insertItem(destinationHandler, extractedStack, false);
+            ItemStack leftoverStack = this.insertIntoOwnHandler(destinationHandler, extractedStack, false);
             if (leftoverStack.isEmpty()) {
                 continue;
             }
 
-            // ごく稀に simulate と実行の間で隣が変わった場合は、できるだけ元へ戻します。
-            ItemStack putBackStack = sourceHandler.insertItem(slot, leftoverStack, false);
-            if (!putBackStack.isEmpty()) {
-                ItemHandlerHelper.insertItem(sourceHandler, putBackStack, false);
+            leftoverStack = this.putItemBackToSource(sourceHandler, slot, leftoverStack);
+            if (!leftoverStack.isEmpty()) {
+                this.dropLeftoverItem(leftoverStack);
             }
         }
+    }
+
+    /**
+     * 自分の入力 handler へ入れます。
+     *
+     * Mixer などの sequential handler は、どの slot へ insert しても全入力枠を順に埋めます。
+     * ItemHandlerHelper で全 slot を回すと、空き容量を二重に見積もって取りすぎます。
+     * そのため、1 回の投入で全体を埋める handler は slot 0 だけを使います。
+     */
+    private ItemStack insertIntoOwnHandler(IItemHandler destinationHandler, ItemStack stack, boolean simulate) {
+        if (stack.isEmpty() || destinationHandler.getSlots() <= 0) {
+            return stack;
+        }
+
+        ItemStack remainingAfterFirstSlot = destinationHandler.insertItem(0, stack, simulate);
+        if (remainingAfterFirstSlot.isEmpty() || destinationHandler.getSlots() == 1) {
+            return remainingAfterFirstSlot;
+        }
+
+        ItemStack remainingIfSecondSlot = destinationHandler.insertItem(1, stack, simulate);
+        boolean firstSlotFillsAllInputs = remainingAfterFirstSlot.getCount() == remainingIfSecondSlot.getCount()
+            && ItemStack.isSameItemSameComponents(remainingAfterFirstSlot, remainingIfSecondSlot);
+        if (firstSlotFillsAllInputs) {
+            return remainingAfterFirstSlot;
+        }
+
+        ItemStack remainingStack = remainingAfterFirstSlot;
+        for (int slot = 1; slot < destinationHandler.getSlots(); slot++) {
+            if (remainingStack.isEmpty()) {
+                break;
+            }
+
+            remainingStack = destinationHandler.insertItem(slot, remainingStack, simulate);
+        }
+
+        return remainingStack;
+    }
+
+    private ItemStack putItemBackToSource(IItemHandler sourceHandler, int originalSlot, ItemStack leftoverStack) {
+        ItemStack remainingStack = sourceHandler.insertItem(originalSlot, leftoverStack, false);
+        if (remainingStack.isEmpty()) {
+            return ItemStack.EMPTY;
+        }
+
+        return ItemHandlerHelper.insertItem(sourceHandler, remainingStack, false);
+    }
+
+    private void dropLeftoverItem(ItemStack leftoverStack) {
+        Level currentLevel = this.level;
+        if (currentLevel == null || leftoverStack.isEmpty()) {
+            return;
+        }
+
+        Containers.dropItemStack(
+            currentLevel,
+            this.worldPosition.getX() + 0.5D,
+            this.worldPosition.getY() + 0.5D,
+            this.worldPosition.getZ() + 0.5D,
+            leftoverStack
+        );
+    }
+
+    private void transferFluidFromNeighbor(IFluidHandler sourceHandler, IFluidHandler destinationHandler) {
+        FluidStack simulatedDrain = sourceHandler.drain(Integer.MAX_VALUE, IFluidHandler.FluidAction.SIMULATE);
+        if (simulatedDrain.isEmpty()) {
+            return;
+        }
+
+        int simulatedFillAmount = destinationHandler.fill(simulatedDrain, IFluidHandler.FluidAction.SIMULATE);
+        if (simulatedFillAmount <= 0) {
+            return;
+        }
+
+        FluidStack stillAvailable = sourceHandler.drain(simulatedFillAmount, IFluidHandler.FluidAction.SIMULATE);
+        int drainAmount = Math.min(simulatedFillAmount, stillAvailable.getAmount());
+        if (drainAmount <= 0) {
+            return;
+        }
+
+        drainAmount = destinationHandler.fill(stillAvailable.copyWithAmount(drainAmount), IFluidHandler.FluidAction.SIMULATE);
+        if (drainAmount <= 0) {
+            return;
+        }
+
+        FluidStack drainedFluid = sourceHandler.drain(drainAmount, IFluidHandler.FluidAction.EXECUTE);
+        if (drainedFluid.isEmpty()) {
+            return;
+        }
+
+        int filledAmount = destinationHandler.fill(drainedFluid, IFluidHandler.FluidAction.EXECUTE);
+        int leftoverAmount = drainedFluid.getAmount() - filledAmount;
+        if (leftoverAmount <= 0) {
+            return;
+        }
+
+        FluidStack leftoverFluid = drainedFluid.copyWithAmount(leftoverAmount);
+        int restoredAmount = sourceHandler.fill(leftoverFluid, IFluidHandler.FluidAction.EXECUTE);
+        leftoverFluid.shrink(restoredAmount);
+        if (leftoverFluid.isEmpty()) {
+            return;
+        }
+
+        int filledAgainAmount = destinationHandler.fill(leftoverFluid, IFluidHandler.FluidAction.EXECUTE);
+        leftoverFluid.shrink(filledAgainAmount);
     }
 
     private boolean matchesAnyAutomationMode(AutomationMode currentMode, AutomationMode[] targetModes) {
