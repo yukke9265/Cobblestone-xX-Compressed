@@ -61,8 +61,40 @@ public final class FluxNetworkCompat {
         return result instanceof Boolean value && value;
     }
 
+    public static boolean canExtract(@Nullable Object storage) {
+        Object result = invoke(storage, "canExtract");
+        return result instanceof Boolean value && value;
+    }
+
     public static long receiveEnergy(@Nullable Object storage, long amount, boolean simulate) {
         Object result = invoke(storage, "receiveEnergyL", amount, simulate);
+        if (result instanceof Number number) {
+            return number.longValue();
+        }
+
+        return 0L;
+    }
+
+    public static long extractEnergy(@Nullable Object storage, long amount, boolean simulate) {
+        Object result = invoke(storage, "extractEnergyL", amount, simulate);
+        if (result instanceof Number number) {
+            return number.longValue();
+        }
+
+        return 0L;
+    }
+
+    public static long getEnergyStored(@Nullable Object storage) {
+        Object result = invoke(storage, "getEnergyStoredL");
+        if (result instanceof Number number) {
+            return number.longValue();
+        }
+
+        return 0L;
+    }
+
+    public static long getMaxEnergyStored(@Nullable Object storage) {
+        Object result = invoke(storage, "getMaxEnergyStoredL");
         if (result instanceof Number number) {
             return number.longValue();
         }

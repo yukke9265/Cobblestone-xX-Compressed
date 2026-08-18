@@ -188,6 +188,9 @@ public class ModEnglishLanguageProvider extends LanguageProvider {
             addBlock(tier.getBlock(), tier.getEnglishDisplayName());
         }
 
+        addBlock(ModBlocks.STONE_NETWORK_POINT, "Stone Network Point");
+        addBlock(ModBlocks.STONE_NETWORK_RELAY, "Stone Network Relay");
+
         addBlock(ModBlocks.COBBLESTONE_FURNACE, "Cobblestone Furnace");
         addBlock(ModBlocks.COBBLESTONE_FE_GENERATOR, "Cobblestone FE Generator");
         addBlock(ModBlocks.COBBLESTONE_POWERED_FURNACE, "Cobblestone Powered Furnace");

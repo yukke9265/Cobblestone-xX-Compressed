@@ -58,6 +58,8 @@ public class ModBlockLootTableProvider implements DataProvider {
         futures.add(DataProvider.saveStable(cache, createSimpleSelfDropLoot("compressed_cobblestone"), rootPath.resolve("compressed_cobblestone.json")));
         futures.add(DataProvider.saveStable(cache, createSimpleSelfDropLoot("cobblestone_machine_casing"), rootPath.resolve("cobblestone_machine_casing.json")));
         futures.add(DataProvider.saveStable(cache, createSimpleSelfDropLoot("cobblestone_tank"), rootPath.resolve("cobblestone_tank.json")));
+        futures.add(DataProvider.saveStable(cache, createSimpleSelfDropLoot("stone_network_point"), rootPath.resolve("stone_network_point.json")));
+        futures.add(DataProvider.saveStable(cache, createSimpleSelfDropLoot("stone_network_relay"), rootPath.resolve("stone_network_relay.json")));
 
         for (ModBlocks.TierCobblestoneGenerator generatorVariant : ModBlocks.TierCobblestoneGenerator.values()) {
             String name = generatorVariant.getRegistryName();

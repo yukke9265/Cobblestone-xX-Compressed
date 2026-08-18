@@ -13,6 +13,7 @@ import com.yukke9265.cobblestone_xx_compressed.registry.ModItems;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModMenuType;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModRecipeSerializers;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModRecipeTypes;
+import com.yukke9265.cobblestone_xx_compressed.network.StoneNetworkTopology;
 import com.yukke9265.cobblestone_xx_compressed.util.FortuneEnchantedBookHelper;
 
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -20,6 +21,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -31,6 +33,7 @@ import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
+import net.neoforged.neoforge.event.tick.LevelTickEvent;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
@@ -73,6 +76,8 @@ public class CobblestonexXCompressed {
                 for (ModItems.TierCobblestoneTankItem tier : ModItems.TierCobblestoneTankItem.values()) {
                     output.accept(tier.getItem().get());
                 }
+                output.accept(ModItems.STONE_NETWORK_POINT_ITEM.get());
+                output.accept(ModItems.STONE_NETWORK_RELAY_ITEM.get());
                 output.accept(ModItems.COMPRESSED_COBBLESTONE_SINGULARITY_BIT.get());
                 for (ModItems.TierCompressedCobblestoneSingularityBit tier : ModItems.TierCompressedCobblestoneSingularityBit.values()) {
                     output.accept(tier.getItem().get());
@@ -465,6 +470,29 @@ public class CobblestonexXCompressed {
             ModBlockEntities.COBBLESTONE_GENERATOR_BLOCK_ENTITY.get(),
             (blockEntity, side) -> blockEntity.getAutomationItemHandler(side)
         );
+
+        // Stone Network Point は在庫を持たず、面ごとの転送窓口を公開します。
+        // 隣の handler を直接返さないのは、後で探索を伸ばしても外向けの窓口を変えなくてよくするためです。
+        event.registerBlockEntity(
+            Capabilities.ItemHandler.BLOCK,
+            ModBlockEntities.STONE_NETWORK_POINT_BLOCK_ENTITY.get(),
+            (blockEntity, side) -> blockEntity.getItemHandler(side)
+        );
+        event.registerBlockEntity(
+            Capabilities.FluidHandler.BLOCK,
+            ModBlockEntities.STONE_NETWORK_POINT_BLOCK_ENTITY.get(),
+            (blockEntity, side) -> blockEntity.getFluidHandler(side)
+        );
+        event.registerBlockEntity(
+            Capabilities.EnergyStorage.BLOCK,
+            ModBlockEntities.STONE_NETWORK_POINT_BLOCK_ENTITY.get(),
+            (blockEntity, side) -> blockEntity.getEnergyStorage(side)
+        );
+        FluxNetworkCompat.registerBlockEntity(
+            event,
+            ModBlockEntities.STONE_NETWORK_POINT_BLOCK_ENTITY.get(),
+            (blockEntity, side) -> blockEntity.getFluxEnergyCapability(side)
+        );
     }
 
     // SubscribeEvent を使うと、Event Bus に呼び出すメソッドを自動検出させられます
@@ -472,5 +500,23 @@ public class CobblestonexXCompressed {
     public void onServerStarting(ServerStartingEvent event) {
         // サーバー起動時の処理
         LOGGER.info("HELLO from server starting");
+    }
+
+    @SubscribeEvent
+    public void onLevelTickPre(LevelTickEvent.Pre event) {
+        this.flushStoneNetworkWork(event.getLevel());
+    }
+
+    @SubscribeEvent
+    public void onLevelTickPost(LevelTickEvent.Post event) {
+        this.flushStoneNetworkWork(event.getLevel());
+    }
+
+    private void flushStoneNetworkWork(Level level) {
+        if (level.isClientSide) {
+            return;
+        }
+
+        StoneNetworkTopology.flushPendingWork(level);
     }
 }

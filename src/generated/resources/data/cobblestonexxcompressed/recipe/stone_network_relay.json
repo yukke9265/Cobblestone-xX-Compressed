@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "S": {
+      "item": "cobblestonexxcompressed:compressed_stone"
+    },
+    "W": {
+      "item": "cobblestonexxcompressed:cobblestone_wire"
+    }
+  },
+  "pattern": [
+    "SWS",
+    "WWW",
+    "SWS"
+  ],
+  "result": {
+    "count": 1,
+    "id": "cobblestonexxcompressed:stone_network_relay"
+  }
+}

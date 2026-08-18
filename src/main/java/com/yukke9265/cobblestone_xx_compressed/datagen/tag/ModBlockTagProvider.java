@@ -26,6 +26,8 @@ public class ModBlockTagProvider extends BlockTagsProvider {
             .add(ModBlocks.COMPRESSED_STONE.get())
             .add(ModBlocks.COBBLESTONE_MACHINE_CASING.get())
             .add(ModBlocks.COBBLESTONE_TANK.get())
+            .add(ModBlocks.STONE_NETWORK_POINT.get())
+            .add(ModBlocks.STONE_NETWORK_RELAY.get())
             .add(ModBlocks.COBBLESTONE_FURNACE.get())
             .add(ModBlocks.COBBLESTONE_POWERED_FURNACE.get())
             .add(ModBlocks.COBBLESTONE_EXTREME_COMPRESSOR.get())

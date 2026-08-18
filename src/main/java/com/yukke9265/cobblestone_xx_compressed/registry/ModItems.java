@@ -1497,6 +1497,18 @@ public class ModItems {
     public static final DeferredItem<BlockItem> COBBLESTONE_TANK_ITEM =
         registerCompressedCobblestoneBlockItem("cobblestone_tank", ModBlocks.COBBLESTONE_TANK);
 
+    public static final DeferredItem<BlockItem> STONE_NETWORK_POINT_ITEM =
+        registerDescribedBlockItem(
+            "stone_network_point",
+            ModBlocks.STONE_NETWORK_POINT,
+            TooltipTranslationKeys.machineDescription("stone_network_point"));
+
+    public static final DeferredItem<BlockItem> STONE_NETWORK_RELAY_ITEM =
+        registerDescribedBlockItem(
+            "stone_network_relay",
+            ModBlocks.STONE_NETWORK_RELAY,
+            TooltipTranslationKeys.machineDescription("stone_network_relay"));
+
     public enum TierCompressedCobblestoneItem {
         COPPER(ModBlocks.TierCompressedCobblestone.COPPER),
         IRON(ModBlocks.TierCompressedCobblestone.IRON),

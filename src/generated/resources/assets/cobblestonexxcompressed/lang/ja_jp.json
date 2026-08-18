@@ -25,6 +25,8 @@
   "block.cobblestonexxcompressed.cobblestone_powered_furnace": "丸石動力かまど",
   "block.cobblestonexxcompressed.cobblestone_reaction_chamber": "丸石反応槽",
   "block.cobblestonexxcompressed.stone_break_simulator": "石破壊シミュレーター",
+  "block.cobblestonexxcompressed.stone_network_point": "石ネットワークポイント",
+  "block.cobblestonexxcompressed.stone_network_relay": "石ネットワークリレー",
   "gui.cobblestonexxcompressed.auto_export": "自動搬出",
   "gui.cobblestonexxcompressed.auto_insert": "自動搬入",
   "gui.cobblestonexxcompressed.automation.back": "後",
@@ -77,5 +79,7 @@
   "tooltip.cobblestonexxcompressed.configuration_card.empty": "設定は保存されていません",
   "tooltip.cobblestonexxcompressed.configuration_card.stored": "保存先: %s",
   "tooltip.cobblestonexxcompressed.configuration_card.upgrade": "アップグレード: %s",
-  "tooltip.cobblestonexxcompressed.stone_break_simulator.description": "圧縮石を疑似的に破壊して、エンチャントの効果付きでドロップを生成します。"
+  "tooltip.cobblestonexxcompressed.stone_break_simulator.description": "圧縮石を疑似的に破壊して、エンチャントの効果付きでドロップを生成します。",
+  "tooltip.cobblestonexxcompressed.stone_network_point.description": "隣の機械の搬入出面を他の面から使えるようにし、同じネットワークの他のポイントとも共有します。",
+  "tooltip.cobblestonexxcompressed.stone_network_relay.description": "ポイント同士をつなぐ導線です。機械の窓口にはなりません。"
 }

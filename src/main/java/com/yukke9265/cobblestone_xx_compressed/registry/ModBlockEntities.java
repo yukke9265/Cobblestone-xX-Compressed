@@ -22,6 +22,7 @@ import com.yukke9265.cobblestone_xx_compressed.blockentity.CobblestoneCrystalliz
 import com.yukke9265.cobblestone_xx_compressed.blockentity.CobblestonePoweredFurnaceBlockEntity;
 import com.yukke9265.cobblestone_xx_compressed.blockentity.CobblestoneTankBlockEntity;
 import com.yukke9265.cobblestone_xx_compressed.blockentity.StoneBreakSimulatorBlockEntity;
+import com.yukke9265.cobblestone_xx_compressed.blockentity.StoneNetworkPointBlockEntity;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.block.Block;
@@ -197,6 +198,15 @@ public class ModBlockEntities {
                     throw new IllegalStateException("Cobblestone Generator 以外の block state で生成しようとしました: " + state);
                 },
                 getCobblestoneGeneratorBlocks()
+            ).build(null)
+        );
+
+    public static final Supplier<BlockEntityType<StoneNetworkPointBlockEntity>> STONE_NETWORK_POINT_BLOCK_ENTITY =
+        BLOCK_ENTITY_TYPES.register(
+            "stone_network_point",
+            () -> BlockEntityType.Builder.of(
+                StoneNetworkPointBlockEntity::new,
+                ModBlocks.STONE_NETWORK_POINT.get()
             ).build(null)
         );
 

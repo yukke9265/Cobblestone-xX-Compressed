@@ -30,6 +30,8 @@ public class ModJapaneseLanguageProvider extends LanguageProvider {
         addBlock(ModBlocks.COBBLESTONE_CRYSTALLIZATION_CHAMBER, "丸石結晶化槽");
         addBlock(ModBlocks.COBBLESTONE_DISSOLUTION_CHAMBER, "丸石溶解槽");
         addBlock(ModBlocks.COBBLESTONE_FLUID_MIXER, "丸石流体ミキサー");
+        addBlock(ModBlocks.STONE_NETWORK_POINT, "石ネットワークポイント");
+        addBlock(ModBlocks.STONE_NETWORK_RELAY, "石ネットワークリレー");
 
         add("automation_mode.cobblestonexxcompressed.disabled", "OFF");
         add("automation_mode.cobblestonexxcompressed.input", "入力");

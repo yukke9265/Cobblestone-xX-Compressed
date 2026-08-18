@@ -949,6 +949,27 @@ public class ModRecipeProvider extends RecipeProvider {
             .define('P', Items.DIAMOND_PICKAXE)
             .unlockedBy("has_stone_break_simulator_material", has(Items.DIAMOND_PICKAXE))
             .save(output, modRecipeId("stone_break_simulator"));
+
+        // Stone Network Point は四つ角に圧縮石、十字にワイヤー、中心に銅インゴットを置きます。
+        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ModBlocks.STONE_NETWORK_POINT.get())
+            .pattern("SWS")
+            .pattern("WCW")
+            .pattern("SWS")
+            .define('S', ModBlocks.COMPRESSED_STONE.get())
+            .define('W', ModItems.COBBLESTONE_WIRE.get())
+            .define('C', Items.COPPER_INGOT)
+            .unlockedBy("has_stone_network_point_material", has(Items.COPPER_INGOT))
+            .save(output, modRecipeId("stone_network_point"));
+
+        // Stone Network Relay はポイントと同じ形で、中心だけワイヤーにします。
+        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ModBlocks.STONE_NETWORK_RELAY.get())
+            .pattern("SWS")
+            .pattern("WWW")
+            .pattern("SWS")
+            .define('S', ModBlocks.COMPRESSED_STONE.get())
+            .define('W', ModItems.COBBLESTONE_WIRE.get())
+            .unlockedBy("has_stone_network_relay_material", has(ModItems.COBBLESTONE_WIRE.get()))
+            .save(output, modRecipeId("stone_network_relay"));
     }
 
     private void buildConfigurationCardRecipe(RecipeOutput output) {
