@@ -25,10 +25,9 @@
   "block.cobblestonexxcompressed.cobblestone_powered_furnace": "丸石動力かまど",
   "block.cobblestonexxcompressed.cobblestone_reaction_chamber": "丸石反応槽",
   "block.cobblestonexxcompressed.stone_break_simulator": "石破壊シミュレーター",
-  "block.cobblestonexxcompressed.stone_network_point": "石ネットワークポイント",
-  "block.cobblestonexxcompressed.stone_network_relay": "石ネットワークリレー",
   "gui.cobblestonexxcompressed.auto_export": "自動搬出",
   "gui.cobblestonexxcompressed.auto_insert": "自動搬入",
+  "gui.cobblestonexxcompressed.mute_sound": "消音",
   "gui.cobblestonexxcompressed.automation.back": "後",
   "gui.cobblestonexxcompressed.automation.down": "下",
   "gui.cobblestonexxcompressed.automation.front": "前",
@@ -65,6 +64,7 @@
   "tooltip.cobblestonexxcompressed.cobblestone_fe_generator.description": "CP を FE に変換して、外部の機械へ電力を送ります。",
   "tooltip.cobblestonexxcompressed.cobblestone_fluid_mixer.description": "複数の液体や材料を混ぜて、新しい液体を作ります。",
   "tooltip.cobblestonexxcompressed.cobblestone_furnace.description": "CP を消費して、かまどレシピを処理します。",
+  "tooltip.cobblestonexxcompressed.cobblestone_generator.catalyst_rate": "機械の丸石スロットに置くと、消費せず %s CP/t を供給します。",
   "tooltip.cobblestonexxcompressed.cobblestone_generator.description": "対応する圧縮丸石を自動で生成します。",
   "tooltip.cobblestonexxcompressed.cobblestone_generator_l.description": "L サイズは 1 tick ごとに 64 個生成します。",
   "tooltip.cobblestonexxcompressed.cobblestone_generator_m.description": "M サイズは 1 tick ごとに 8 個生成します。",
@@ -79,7 +79,5 @@
   "tooltip.cobblestonexxcompressed.configuration_card.empty": "設定は保存されていません",
   "tooltip.cobblestonexxcompressed.configuration_card.stored": "保存先: %s",
   "tooltip.cobblestonexxcompressed.configuration_card.upgrade": "アップグレード: %s",
-  "tooltip.cobblestonexxcompressed.stone_break_simulator.description": "圧縮石を疑似的に破壊して、エンチャントの効果付きでドロップを生成します。",
-  "tooltip.cobblestonexxcompressed.stone_network_point.description": "隣の機械の搬入出面を他の面から使えるようにし、同じネットワークの他のポイントとも共有します。",
-  "tooltip.cobblestonexxcompressed.stone_network_relay.description": "ポイント同士をつなぐ導線です。機械の窓口にはなりません。"
+  "tooltip.cobblestonexxcompressed.stone_break_simulator.description": "圧縮石を疑似的に破壊して、エンチャントの効果付きでドロップを生成します。"
 }

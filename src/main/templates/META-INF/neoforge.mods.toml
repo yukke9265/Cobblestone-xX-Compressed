@@ -88,6 +88,13 @@ Cobblestone を中心に、圧縮ブロック、素材、機械、流体、加�
     ordering="NONE"
     side="BOTH"
 
+[[dependencies.${mod_id}]]
+    modId="stoneionetwork"
+    type="optional"
+    versionRange="[0,)"
+    ordering="NONE"
+    side="BOTH"
+
 # Features はゲーム実行環境の特定の性質で、必要条件として宣言したい場合に使います。この例では
 # mod が GL 3.2 以上を必要とすることを宣言しています。今後ほかの feature も追加されます。side を考慮するため、
 # これを宣言しても例えばサーバー側での mod 読み込みは妨げません。

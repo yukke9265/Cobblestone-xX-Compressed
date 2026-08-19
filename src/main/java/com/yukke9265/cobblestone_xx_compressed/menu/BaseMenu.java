@@ -22,6 +22,7 @@ public class BaseMenu extends AbstractContainerMenu {
     protected static final int AUTOMATION_BUTTON_ID_BASE = 100;
     protected static final int AUTO_EXPORT_BUTTON_ID = 200;
     protected static final int AUTO_INSERT_BUTTON_ID = 201;
+    protected static final int MUTE_SOUND_BUTTON_ID = 202;
     protected static final int FLUID_AUTOMATION_BUTTON_ID_BASE = 300;
     protected static final int FLUID_INDICATOR_BUTTON_ID = 400;
     protected static final int FLUID_INDICATOR_SHIFT_BUTTON_ID = 401;
@@ -173,6 +174,27 @@ public class BaseMenu extends AbstractContainerMenu {
 
         blockEntity.toggleAutoInsertEnabled();
         return true;
+    }
+
+    public final int getMuteSoundButtonId() {
+        return MUTE_SOUND_BUTTON_ID;
+    }
+
+    protected final boolean isMuteSoundButtonId(int buttonId) {
+        return buttonId == MUTE_SOUND_BUTTON_ID;
+    }
+
+    protected final boolean handleMuteSoundButtonClick(BaseBlockEntity blockEntity, int buttonId) {
+        if (!this.isMuteSoundButtonId(buttonId)) {
+            return false;
+        }
+
+        blockEntity.toggleSoundMuted();
+        return true;
+    }
+
+    public boolean isSoundMuted() {
+        return false;
     }
 
     protected final int getFluidIndicatorButtonId() {

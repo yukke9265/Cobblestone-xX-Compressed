@@ -37,6 +37,8 @@ public class CobblestoneFluidMixerScreen extends BaseScreen<CobblestoneFluidMixe
     private static final int AUTO_EXPORT_BUTTON_HEIGHT = 20;
     private static final int AUTO_INSERT_BUTTON_WIDTH = 94;
     private static final int AUTO_INSERT_BUTTON_HEIGHT = 20;
+    private static final int MUTE_SOUND_BUTTON_WIDTH = 94;
+    private static final int MUTE_SOUND_BUTTON_HEIGHT = 20;
     private static final int SIDE_BUTTON_WIDTH = 62;
     private static final int SIDE_BUTTON_HEIGHT = 20;
     private static final int SIDE_BUTTON_X_OFFSET = 4;
@@ -63,6 +65,7 @@ public class CobblestoneFluidMixerScreen extends BaseScreen<CobblestoneFluidMixe
     private final Button[] fluidAutomationButtons = new Button[AUTOMATION_SIDES.length];
     private Button autoExportButton;
     private Button autoInsertButton;
+    private Button muteSoundButton;
 
     public CobblestoneFluidMixerScreen(CobblestoneFluidMixerMenu menu, Inventory inventory, Component title) {
         super(menu, inventory, title);
@@ -112,6 +115,13 @@ public class CobblestoneFluidMixerScreen extends BaseScreen<CobblestoneFluidMixe
                 .build()
         );
 
+        this.muteSoundButton = this.addMuteSoundButton(
+            this.leftPos + this.imageWidth + SIDE_BUTTON_X_OFFSET,
+            this.topPos + this.imageHeight - SIDE_BUTTON_HEIGHT - AUTO_EXPORT_BUTTON_HEIGHT - AUTO_INSERT_BUTTON_HEIGHT - 4 - MUTE_SOUND_BUTTON_HEIGHT - 2,
+            MUTE_SOUND_BUTTON_WIDTH,
+            MUTE_SOUND_BUTTON_HEIGHT
+        );
+
         int itemPanelX = this.leftPos - AUTOMATION_PANEL_X_OFFSET - AUTOMATION_BUTTON_WIDTH;
         int fluidPanelX = itemPanelX - AUTOMATION_BUTTON_WIDTH - 4;
         for (AutomationSide side : AUTOMATION_SIDES) {
@@ -158,6 +168,8 @@ public class CobblestoneFluidMixerScreen extends BaseScreen<CobblestoneFluidMixe
         if (this.autoInsertButton != null) {
             this.autoInsertButton.setMessage(this.createCheckboxLabel(this.menu.isAutoInsertEnabled(), "gui.cobblestonexxcompressed.auto_insert"));
         }
+
+        this.refreshMuteSoundButton(this.muteSoundButton);
     }
 
     private Component createAutomationButtonLabel(AutomationSide side, AutomationMode mode) {

@@ -47,9 +47,6 @@ public class ModBlockStateProvider extends BlockStateProvider {
             registerCobblestoneTankBlock(tier.getBlock().get(), tier.getRegistryName(), tier.getRegistryName());
         }
 
-        registerCubeAllBlock(ModBlocks.STONE_NETWORK_POINT.get(), "network", "stone_network_point");
-        registerCubeAllBlock(ModBlocks.STONE_NETWORK_RELAY.get(), "network", "stone_network_relay");
-
         for (ModBlocks.TierCobblestoneGenerator generatorVariant : ModBlocks.TierCobblestoneGenerator.values()) {
             registerCobblestoneGeneratorBlock(generatorVariant);
         }

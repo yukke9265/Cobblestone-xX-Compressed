@@ -22,8 +22,6 @@ import com.yukke9265.cobblestone_xx_compressed.block.CobblestoneReactionChamberB
 import com.yukke9265.cobblestone_xx_compressed.block.CobblestoneCrystallizationChamberBlock;
 import com.yukke9265.cobblestone_xx_compressed.block.CobblestoneTankBlock;
 import com.yukke9265.cobblestone_xx_compressed.block.StoneBreakSimulatorBlock;
-import com.yukke9265.cobblestone_xx_compressed.block.StoneNetworkPointBlock;
-import com.yukke9265.cobblestone_xx_compressed.block.StoneNetworkRelayBlock;
 
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
@@ -446,18 +444,6 @@ public class ModBlocks {
 
     public static final DeferredBlock<Block> COBBLESTONE_TANK =
         registerCobblestoneTank("cobblestone_tank", BASE_COBBLESTONE_TANK_CAPACITY);
-
-    public static final DeferredBlock<Block> STONE_NETWORK_POINT =
-        BLOCKS.register(
-            "stone_network_point",
-            () -> new StoneNetworkPointBlock(createCobblestoneMachineProperties())
-        );
-
-    public static final DeferredBlock<Block> STONE_NETWORK_RELAY =
-        BLOCKS.register(
-            "stone_network_relay",
-            () -> new StoneNetworkRelayBlock(createCobblestoneMachineProperties())
-        );
 
     static {
         for (TierCompressedCobblestone tier : TierCompressedCobblestone.values()) {

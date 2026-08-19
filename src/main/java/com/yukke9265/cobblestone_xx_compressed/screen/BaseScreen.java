@@ -87,6 +87,20 @@ public class BaseScreen<T extends BaseMenu> extends AbstractContainerScreen<T> {
             .append(Component.translatable(translationKey));
     }
 
+    protected final Button addMuteSoundButton(int x, int y, int width, int height) {
+        return this.addRenderableWidget(
+            Button.builder(Component.empty(), button -> this.sendMenuButtonClick(this.menu.getMuteSoundButtonId()))
+                .bounds(x, y, width, height)
+                .build()
+        );
+    }
+
+    protected final void refreshMuteSoundButton(Button button) {
+        if (button != null) {
+            button.setMessage(this.createCheckboxLabel(this.menu.isSoundMuted(), "gui.cobblestonexxcompressed.mute_sound"));
+        }
+    }
+
     protected final void renderExternalSlotFrame(GuiGraphics guiGraphics, int left, int top) {
         guiGraphics.fill(left, top, left + EXTERNAL_SLOT_SIZE, top + EXTERNAL_SLOT_SIZE, EXTERNAL_SLOT_BORDER_COLOR);
         guiGraphics.fill(left + 1, top + 1, left + EXTERNAL_SLOT_SIZE - 1, top + EXTERNAL_SLOT_SIZE - 1, EXTERNAL_SLOT_BACKGROUND_COLOR);

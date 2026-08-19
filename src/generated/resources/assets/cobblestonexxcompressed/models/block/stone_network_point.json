@@ -1,6 +1,0 @@
-{
-  "parent": "minecraft:block/cube_all",
-  "textures": {
-    "all": "cobblestonexxcompressed:block/network/stone_network_point"
-  }
-}

@@ -20,4 +20,8 @@ public final class TooltipTranslationKeys {
     public static String cobblestoneGeneratorSizeDescription(ModBlocks.CobblestoneGeneratorSize size) {
         return TOOLTIP_PREFIX + "cobblestone_generator_" + size.getRegistrySuffix() + DESCRIPTION_SUFFIX;
     }
+
+    public static String cobblestoneGeneratorCatalystRate() {
+        return TOOLTIP_PREFIX + "cobblestone_generator.catalyst_rate";
+    }
 }

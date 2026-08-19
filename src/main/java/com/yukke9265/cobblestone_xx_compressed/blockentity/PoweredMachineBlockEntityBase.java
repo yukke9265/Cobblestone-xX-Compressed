@@ -3,7 +3,6 @@ package com.yukke9265.cobblestone_xx_compressed.blockentity;
 import java.util.Optional;
 
 import com.yukke9265.cobblestone_xx_compressed.block.OnOffBlock;
-import com.yukke9265.cobblestone_xx_compressed.registry.ModBlocks;
 import com.yukke9265.cobblestone_xx_compressed.util.LongDataHelper;
 
 import net.minecraft.core.BlockPos;
@@ -12,7 +11,6 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -457,51 +455,25 @@ public abstract class PoweredMachineBlockEntityBase<R> extends BaseBlockEntity {
         }
 
         ItemStack powerStack = itemStackHandler.getStackInSlot(this.getPowerSlotIndex());
-        long convertedPower = getCobblestonePowerValueForAutomation(powerStack);
-        if (convertedPower <= 0) {
+        long updatedPower = CobblestonePowerHelper.absorbPowerFromSlot(
+            powerStack,
+            this.storedCobblestonePower,
+            this.getMaxCobblestonePower()
+        );
+        if (updatedPower == this.storedCobblestonePower) {
             return;
         }
 
-        if (this.storedCobblestonePower + convertedPower > this.getMaxCobblestonePower()) {
-            return;
-        }
-
-        powerStack.shrink(1);
-        this.storedCobblestonePower += convertedPower;
+        this.storedCobblestonePower = updatedPower;
         this.setChanged();
     }
 
     public static boolean isCobblestonePowerItem(ItemStack stack) {
-        return getCobblestonePowerValue(stack) > 0;
+        return CobblestonePowerHelper.isCobblestonePowerItem(stack);
     }
 
     public static long getCobblestonePowerValueForAutomation(ItemStack stack) {
-        return getCobblestonePowerValue(stack);
-    }
-
-    private static long getCobblestonePowerValue(ItemStack stack) {
-        if (stack.isEmpty()) {
-            return 0;
-        }
-
-        if (stack.is(Items.COBBLESTONE)) {
-            return 1;
-        }
-
-        if (stack.is(ModBlocks.COMPRESSED_COBBLESTONE.get().asItem())) {
-            return 4;
-        }
-
-        long currentPower = 32L;
-        for (ModBlocks.TierCompressedCobblestone tier : ModBlocks.TierCompressedCobblestone.values()) {
-            if (stack.is(tier.getBlock().get().asItem())) {
-                return currentPower;
-            }
-
-            currentPower *= 8;
-        }
-
-        return 0;
+        return CobblestonePowerHelper.getFuelValue(stack);
     }
 
     @Override
@@ -566,18 +538,22 @@ public abstract class PoweredMachineBlockEntityBase<R> extends BaseBlockEntity {
         return this.getAutoExportDataIndex(machineSpecificDataCount) + 1;
     }
 
-    protected final int getPoweredMachineDataCount(int machineSpecificDataCount) {
+    protected final int getSoundMutedDataIndex(int machineSpecificDataCount) {
         return this.getAutoInsertDataIndex(machineSpecificDataCount) + 1;
+    }
+
+    protected final int getPoweredMachineDataCount(int machineSpecificDataCount) {
+        return this.getSoundMutedDataIndex(machineSpecificDataCount) + 1;
     }
 
     /**
      * item と fluid の両方で automation 設定を持つ powered machine 用の同期数です。
      *
-     * 機械固有データ、item automation、fluid automation、CP/t、auto export、auto insert の順で
+     * 機械固有データ、item automation、fluid automation、CP/t、auto export、auto insert、消音 の順で
      * ContainerData を並べます。通常の item 専用機械は既存の overload を使用します。
      */
     protected final int getPoweredMachineDataCount(int machineSpecificDataCount, boolean includesFluidAutomation) {
-        return this.getAutoInsertDataIndex(machineSpecificDataCount, includesFluidAutomation) + 1;
+        return this.getSoundMutedDataIndex(machineSpecificDataCount, includesFluidAutomation) + 1;
     }
 
     protected final int getPoweredMachineCommonData(int index, int machineSpecificDataCount) {
@@ -640,6 +616,10 @@ public abstract class PoweredMachineBlockEntityBase<R> extends BaseBlockEntity {
             return this.getAutoInsertEnabledId();
         }
 
+        if (index == this.getSoundMutedDataIndex(machineSpecificDataCount, includesFluidAutomation)) {
+            return this.getSoundMutedId();
+        }
+
         return 0;
     }
 
@@ -700,6 +680,11 @@ public abstract class PoweredMachineBlockEntityBase<R> extends BaseBlockEntity {
             return true;
         }
 
+        if (index == this.getSoundMutedDataIndex(machineSpecificDataCount, includesFluidAutomation)) {
+            this.setSoundMuted(value != 0);
+            return true;
+        }
+
         return false;
     }
 
@@ -729,5 +714,9 @@ public abstract class PoweredMachineBlockEntityBase<R> extends BaseBlockEntity {
 
     private int getAutoInsertDataIndex(int machineSpecificDataCount, boolean includesFluidAutomation) {
         return this.getAutoExportDataIndex(machineSpecificDataCount, includesFluidAutomation) + 1;
+    }
+
+    private int getSoundMutedDataIndex(int machineSpecificDataCount, boolean includesFluidAutomation) {
+        return this.getAutoInsertDataIndex(machineSpecificDataCount, includesFluidAutomation) + 1;
     }
 }

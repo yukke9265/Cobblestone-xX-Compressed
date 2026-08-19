@@ -837,14 +837,50 @@ public class ModRecipeProvider extends RecipeProvider {
             ModBlocks.TierCobblestoneGenerator previousVariant = ModBlocks.TierCobblestoneGenerator.from(generatorVariant.getTier(), previousSize);
             ItemLike previousGenerator = ModItems.TierCobblestoneGeneratorItem.from(previousVariant).getItem().get();
 
+            // M は 1 段上、L は 2 段上の singularity bit を中央へ置きます。
+            // 上の tier が無い obsidian などは、今までどおり中央を空けたままにします。
+            int centerBitTierOffset = generatorVariant.getSize() == ModBlocks.CobblestoneGeneratorSize.M ? 1 : 2;
+            ItemLike centerSingularityBit = findHigherTierSingularityBit(generatorVariant.getTier(), centerBitTierOffset);
+
+            if (centerSingularityBit == null) {
+                ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, result)
+                    .pattern("GGG")
+                    .pattern("G G")
+                    .pattern("GGG")
+                    .define('G', previousGenerator)
+                    .unlockedBy("has_" + previousVariant.getRegistryName(), has(previousGenerator))
+                    .save(output, modRecipeId(generatorVariant.getRegistryName()));
+                continue;
+            }
+
             ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, result)
                 .pattern("GGG")
-                .pattern("G G")
+                .pattern("GBG")
                 .pattern("GGG")
                 .define('G', previousGenerator)
+                .define('B', centerSingularityBit)
                 .unlockedBy("has_" + previousVariant.getRegistryName(), has(previousGenerator))
                 .save(output, modRecipeId(generatorVariant.getRegistryName()));
         }
+    }
+
+    /**
+     * 無印圧縮丸石を copper の一段下として数え、offset 段上の singularity bit を返します。
+     * 上の tier が無ければ null です。
+     */
+    private ItemLike findHigherTierSingularityBit(ModBlocks.TierCompressedCobblestone currentTier, int tierOffset) {
+        ModBlocks.TierCompressedCobblestone[] tiers = ModBlocks.TierCompressedCobblestone.values();
+        int currentIndex = -1;
+        if (currentTier != null) {
+            currentIndex = currentTier.ordinal();
+        }
+
+        int targetIndex = currentIndex + tierOffset;
+        if (targetIndex < 0 || targetIndex >= tiers.length) {
+            return null;
+        }
+
+        return ModItems.TierCompressedCobblestoneSingularityBit.valueOf(tiers[targetIndex].name()).getItem().get();
     }
 
     private void buildCobblestoneMachineCasingRecipes(RecipeOutput output) {
@@ -949,27 +985,6 @@ public class ModRecipeProvider extends RecipeProvider {
             .define('P', Items.DIAMOND_PICKAXE)
             .unlockedBy("has_stone_break_simulator_material", has(Items.DIAMOND_PICKAXE))
             .save(output, modRecipeId("stone_break_simulator"));
-
-        // Stone Network Point は四つ角に圧縮石、十字にワイヤー、中心に銅インゴットを置きます。
-        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ModBlocks.STONE_NETWORK_POINT.get())
-            .pattern("SWS")
-            .pattern("WCW")
-            .pattern("SWS")
-            .define('S', ModBlocks.COMPRESSED_STONE.get())
-            .define('W', ModItems.COBBLESTONE_WIRE.get())
-            .define('C', Items.COPPER_INGOT)
-            .unlockedBy("has_stone_network_point_material", has(Items.COPPER_INGOT))
-            .save(output, modRecipeId("stone_network_point"));
-
-        // Stone Network Relay はポイントと同じ形で、中心だけワイヤーにします。
-        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ModBlocks.STONE_NETWORK_RELAY.get())
-            .pattern("SWS")
-            .pattern("WWW")
-            .pattern("SWS")
-            .define('S', ModBlocks.COMPRESSED_STONE.get())
-            .define('W', ModItems.COBBLESTONE_WIRE.get())
-            .unlockedBy("has_stone_network_relay_material", has(ModItems.COBBLESTONE_WIRE.get()))
-            .save(output, modRecipeId("stone_network_relay"));
     }
 
     private void buildConfigurationCardRecipe(RecipeOutput output) {

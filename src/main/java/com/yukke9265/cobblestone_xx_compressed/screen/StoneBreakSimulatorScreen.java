@@ -51,6 +51,8 @@ public class StoneBreakSimulatorScreen extends BaseScreen<StoneBreakSimulatorMen
     private static final int AUTO_EXPORT_BUTTON_HEIGHT = 20;
     private static final int AUTO_INSERT_BUTTON_WIDTH = 94;
     private static final int AUTO_INSERT_BUTTON_HEIGHT = 20;
+    private static final int MUTE_SOUND_BUTTON_WIDTH = 94;
+    private static final int MUTE_SOUND_BUTTON_HEIGHT = 20;
     private static final Component ACCELERATION_TOOLTIP = Component.literal("acceleration_chip");
     private static final Component ENERGIZED_CUBE_TOOLTIP = Component.literal("energized_cube");
     private static final Component PARALLEL_TOOLTIP = Component.literal("parallel_chip");
@@ -64,6 +66,7 @@ public class StoneBreakSimulatorScreen extends BaseScreen<StoneBreakSimulatorMen
     private final Button[] automationButtons = new Button[AUTOMATION_SIDES.length];
     private Button autoExportButton;
     private Button autoInsertButton;
+    private Button muteSoundButton;
 
     public StoneBreakSimulatorScreen(StoneBreakSimulatorMenu menu, Inventory inventory, Component title) {
         super(menu, inventory, title);
@@ -98,6 +101,13 @@ public class StoneBreakSimulatorScreen extends BaseScreen<StoneBreakSimulatorMen
                 .build()
         );
 
+        this.muteSoundButton = this.addMuteSoundButton(
+            this.leftPos + this.imageWidth + START_BUTTON_X_OFFSET,
+            this.topPos + this.imageHeight - START_BUTTON_HEIGHT - AUTO_EXPORT_BUTTON_HEIGHT - AUTO_INSERT_BUTTON_HEIGHT - 4 - MUTE_SOUND_BUTTON_HEIGHT - 2,
+            MUTE_SOUND_BUTTON_WIDTH,
+            MUTE_SOUND_BUTTON_HEIGHT
+        );
+
         int automationPanelX = this.leftPos - AUTOMATION_PANEL_X_OFFSET - AUTOMATION_BUTTON_WIDTH;
         for (int index = 0; index < AUTOMATION_SIDES.length; index++) {
             AutomationSide side = AUTOMATION_SIDES[index];
@@ -108,6 +118,7 @@ public class StoneBreakSimulatorScreen extends BaseScreen<StoneBreakSimulatorMen
         this.refreshAutomationButtons();
         this.refreshAutoExportButton();
         this.refreshAutoInsertButton();
+        this.refreshMuteSoundButton(this.muteSoundButton);
     }
 
     private void addAutomationButton(AutomationSide side, int x, int y) {
@@ -155,6 +166,8 @@ public class StoneBreakSimulatorScreen extends BaseScreen<StoneBreakSimulatorMen
         if (this.autoInsertButton != null) {
             this.autoInsertButton.setMessage(this.createCheckboxLabel(this.menu.isAutoInsertEnabled(), "gui.cobblestonexxcompressed.auto_insert"));
         }
+
+        this.refreshMuteSoundButton(this.muteSoundButton);
     }
 
     private Component createAutomationButtonLabel(AutomationSide side, AutomationMode mode) {
@@ -184,6 +197,7 @@ public class StoneBreakSimulatorScreen extends BaseScreen<StoneBreakSimulatorMen
         this.refreshAutomationButtons();
         this.refreshAutoExportButton();
         this.refreshAutoInsertButton();
+        this.refreshMuteSoundButton(this.muteSoundButton);
     }
 
     @Override

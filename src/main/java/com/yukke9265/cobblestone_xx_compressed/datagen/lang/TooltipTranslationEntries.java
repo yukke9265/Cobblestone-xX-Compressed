@@ -32,8 +32,6 @@ public final class TooltipTranslationEntries {
         new TooltipEntry(TooltipTranslationKeys.machineDescription("cobblestone_fluid_mixer"), "複数の液体や材料を混ぜて、新しい液体を作ります。", "Mixes fluids and ingredients into new fluids."),
         new TooltipEntry(TooltipTranslationKeys.machineDescription("cobblestone_centrifuge"), "材料を遠心分離して、複数の生成物に分けます。", "Separates materials into multiple outputs with centrifuging."),
         new TooltipEntry(TooltipTranslationKeys.machineDescription("cobblestone_laser_drill"), "CP を使って採掘系の素材を自動で取り出します。", "Uses Cobblestone Power to extract mining-related resources automatically."),
-        new TooltipEntry(TooltipTranslationKeys.machineDescription("stone_network_point"), "隣の機械の搬入出面を他の面から使えるようにし、同じネットワークの他のポイントとも共有します。", "Exposes an adjacent machine's transfer face to the other sides, and shares it with other points in the same network."),
-        new TooltipEntry(TooltipTranslationKeys.machineDescription("stone_network_relay"), "ポイント同士をつなぐ導線です。機械の窓口にはなりません。", "A conductor that links network points. It does not expose machine transfer faces.")
     };
 
     // 丸石製造機は全 tier で役割が共通なので、共通文とサイズ差分に分けて管理します。

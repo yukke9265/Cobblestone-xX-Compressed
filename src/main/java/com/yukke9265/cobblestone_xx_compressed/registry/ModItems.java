@@ -1,6 +1,7 @@
 package com.yukke9265.cobblestone_xx_compressed.registry;
 
 import com.yukke9265.cobblestone_xx_compressed.CobblestonexXCompressed;
+import com.yukke9265.cobblestone_xx_compressed.blockitem.CobblestoneGeneratorBlockItem;
 import com.yukke9265.cobblestone_xx_compressed.blockitem.CompressedCobblestoneBlockItem;
 import com.yukke9265.cobblestone_xx_compressed.blockitem.DescribedBlockItem;
 import com.yukke9265.cobblestone_xx_compressed.item.ConfigurationCardItem;
@@ -457,6 +458,14 @@ public class ModItems {
 
     private static DeferredItem<BlockItem> registerDescribedBlockItem(String name, DeferredBlock<Block> block, String... tooltipTranslationKeys) {
         return ITEMS.register(name, () -> new DescribedBlockItem(block.get(), new Item.Properties(), tooltipTranslationKeys));
+    }
+
+    private static DeferredItem<BlockItem> registerCobblestoneGeneratorBlockItem(
+        String name,
+        DeferredBlock<Block> block,
+        String... tooltipTranslationKeys
+    ) {
+        return ITEMS.register(name, () -> new CobblestoneGeneratorBlockItem(block.get(), new Item.Properties(), tooltipTranslationKeys));
     }
 
     // 丸石パン系は、今の段階では通常版も tier 版も同じ食べ物設定を使います。
@@ -1497,18 +1506,6 @@ public class ModItems {
     public static final DeferredItem<BlockItem> COBBLESTONE_TANK_ITEM =
         registerCompressedCobblestoneBlockItem("cobblestone_tank", ModBlocks.COBBLESTONE_TANK);
 
-    public static final DeferredItem<BlockItem> STONE_NETWORK_POINT_ITEM =
-        registerDescribedBlockItem(
-            "stone_network_point",
-            ModBlocks.STONE_NETWORK_POINT,
-            TooltipTranslationKeys.machineDescription("stone_network_point"));
-
-    public static final DeferredItem<BlockItem> STONE_NETWORK_RELAY_ITEM =
-        registerDescribedBlockItem(
-            "stone_network_relay",
-            ModBlocks.STONE_NETWORK_RELAY,
-            TooltipTranslationKeys.machineDescription("stone_network_relay"));
-
     public enum TierCompressedCobblestoneItem {
         COPPER(ModBlocks.TierCompressedCobblestone.COPPER),
         IRON(ModBlocks.TierCompressedCobblestone.IRON),
@@ -1750,7 +1747,7 @@ public class ModItems {
 
     static {
         for (TierCobblestoneGeneratorItem generatorItem : TierCobblestoneGeneratorItem.values()) {
-            generatorItem.setItem(registerDescribedBlockItem(
+            generatorItem.setItem(registerCobblestoneGeneratorBlockItem(
                 generatorItem.getBlockVariant().getRegistryName(),
                 generatorItem.getBlockVariant().getBlock(),
                 TooltipTranslationKeys.cobblestoneGeneratorDescription(),

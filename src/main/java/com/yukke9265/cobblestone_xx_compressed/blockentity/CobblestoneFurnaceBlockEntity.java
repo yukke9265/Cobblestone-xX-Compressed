@@ -40,6 +40,7 @@ public class CobblestoneFurnaceBlockEntity extends BaseBlockEntity implements Me
     private static final int DATA_INDEX_AUTOMATION_START = 2;
     private static final int DATA_INDEX_AUTO_EXPORT = DATA_INDEX_AUTOMATION_START + AUTOMATION_FACE_COUNT;
     private static final int DATA_INDEX_AUTO_INSERT = DATA_INDEX_AUTO_EXPORT + 1;
+    private static final int DATA_INDEX_SOUND_MUTED = DATA_INDEX_AUTO_INSERT + 1;
 
     private int burnTime = 60; // 炉の燃焼時間を管理する変数。初期値は60にしています。
     private int maxBurnTime = 60; // 炉の最大燃焼時間を管理する変数。初期値は60にしています。
@@ -468,6 +469,10 @@ public class CobblestoneFurnaceBlockEntity extends BaseBlockEntity implements Me
                     return getAutoInsertEnabledId();
                 }
 
+                if (index == DATA_INDEX_SOUND_MUTED) {
+                    return getSoundMutedId();
+                }
+
                 return 0;
             }
 
@@ -493,11 +498,15 @@ public class CobblestoneFurnaceBlockEntity extends BaseBlockEntity implements Me
                 if (index == DATA_INDEX_AUTO_INSERT) {
                     setAutoInsertEnabled(value != 0);
                 }
+
+                if (index == DATA_INDEX_SOUND_MUTED) {
+                    setSoundMuted(value != 0);
+                }
             }
 
             @Override
             public int getCount() {
-                return DATA_INDEX_AUTO_INSERT + 1;
+                return DATA_INDEX_SOUND_MUTED + 1;
             }
         };
 

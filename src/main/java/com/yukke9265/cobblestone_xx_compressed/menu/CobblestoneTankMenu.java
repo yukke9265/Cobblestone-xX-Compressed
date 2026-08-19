@@ -34,7 +34,7 @@ public class CobblestoneTankMenu extends BaseMenu {
         AutomationMode.IN_OUT
     };
 
-    private static final int DATA_COUNT = 7 + BaseBlockEntity.AUTOMATION_FACE_COUNT * 2;
+    private static final int DATA_COUNT = 8 + BaseBlockEntity.AUTOMATION_FACE_COUNT * 2;
     private static final int DATA_INDEX_STORED_FLUID = 0;
     private static final int DATA_INDEX_MAX_FLUID = 2;
     private static final int DATA_INDEX_FLUID_ID = 4;
@@ -42,6 +42,7 @@ public class CobblestoneTankMenu extends BaseMenu {
     private static final int DATA_INDEX_FLUID_AUTOMATION_START = DATA_INDEX_ITEM_AUTOMATION_START + BaseBlockEntity.AUTOMATION_FACE_COUNT;
     private static final int DATA_INDEX_AUTO_EXPORT = DATA_INDEX_FLUID_AUTOMATION_START + BaseBlockEntity.AUTOMATION_FACE_COUNT;
     private static final int DATA_INDEX_AUTO_INSERT = DATA_INDEX_AUTO_EXPORT + 1;
+    private static final int DATA_INDEX_SOUND_MUTED = DATA_INDEX_AUTO_INSERT + 1;
 
     private static final int SLOT_SIZE = 18;
     private static final int INPUT_SLOT_X = 26;
@@ -111,6 +112,11 @@ public class CobblestoneTankMenu extends BaseMenu {
         return this.tankData.get(DATA_INDEX_AUTO_INSERT) != 0;
     }
 
+    @Override
+    public boolean isSoundMuted() {
+        return this.tankData.get(DATA_INDEX_SOUND_MUTED) != 0;
+    }
+
     public int getItemAutomationButtonId(AutomationSide automationSide) {
         return this.getAutomationButtonId(automationSide.getIndex());
     }
@@ -157,7 +163,11 @@ public class CobblestoneTankMenu extends BaseMenu {
             return true;
         }
 
-        return this.handleAutoInsertButtonClick(this.tankBlockEntity, id);
+        if (this.handleAutoInsertButtonClick(this.tankBlockEntity, id)) {
+            return true;
+        }
+
+        return this.handleMuteSoundButtonClick(this.tankBlockEntity, id);
     }
 
     @Override

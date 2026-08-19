@@ -48,6 +48,7 @@ public class CobblestoneTankBlockEntity extends BaseBlockEntity implements MenuP
     private static final int DATA_INDEX_FLUID_AUTOMATION_START = DATA_INDEX_ITEM_AUTOMATION_START + AUTOMATION_FACE_COUNT;
     private static final int DATA_INDEX_AUTO_EXPORT = DATA_INDEX_FLUID_AUTOMATION_START + AUTOMATION_FACE_COUNT;
     private static final int DATA_INDEX_AUTO_INSERT = DATA_INDEX_AUTO_EXPORT + 1;
+    private static final int DATA_INDEX_SOUND_MUTED = DATA_INDEX_AUTO_INSERT + 1;
 
     private final long maxFluidAmount;
     private long storedFluidAmount;
@@ -765,6 +766,10 @@ public class CobblestoneTankBlockEntity extends BaseBlockEntity implements MenuP
                     return CobblestoneTankBlockEntity.this.getAutoInsertEnabledId();
                 }
 
+                if (index == DATA_INDEX_SOUND_MUTED) {
+                    return CobblestoneTankBlockEntity.this.getSoundMutedId();
+                }
+
                 return 0;
             }
 
@@ -774,7 +779,7 @@ public class CobblestoneTankBlockEntity extends BaseBlockEntity implements MenuP
 
             @Override
             public int getCount() {
-                return DATA_INDEX_AUTO_INSERT + 1;
+                return DATA_INDEX_SOUND_MUTED + 1;
             }
         };
 

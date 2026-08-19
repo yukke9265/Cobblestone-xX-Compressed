@@ -2,13 +2,16 @@
   "type": "minecraft:crafting_shaped",
   "category": "building",
   "key": {
+    "B": {
+      "item": "cobblestonexxcompressed:tier_topaz_compressed_cobblestone_singularity_bit"
+    },
     "G": {
       "item": "cobblestonexxcompressed:tier_aquamarine_cobblestone_generator_s"
     }
   },
   "pattern": [
     "GGG",
-    "G G",
+    "GBG",
     "GGG"
   ],
   "result": {

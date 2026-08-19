@@ -73,6 +73,7 @@ public class StoneBreakSimulatorBlockEntity extends BaseBlockEntity implements M
     private static final int DATA_INDEX_CURRENT_POWER_RATE_UPPER = DATA_INDEX_CURRENT_POWER_RATE + 1;
     private static final int DATA_INDEX_AUTO_EXPORT = DATA_INDEX_CURRENT_POWER_RATE_UPPER + 1;
     private static final int DATA_INDEX_AUTO_INSERT = DATA_INDEX_AUTO_EXPORT + 1;
+    private static final int DATA_INDEX_SOUND_MUTED = DATA_INDEX_AUTO_INSERT + 1;
     private static final int[] ALL_OUTPUT_SLOTS = new int[] { 3, 4, 5, 6, 7, 8 };
     private static final int[] SUB_OUTPUT_SLOTS = new int[] { 4, 5, 6, 7, 8 };
 
@@ -337,17 +338,16 @@ public class StoneBreakSimulatorBlockEntity extends BaseBlockEntity implements M
 
     private void tryAbsorbCobblestonePower() {
         ItemStack powerStack = this.itemStackHandler.getStackInSlot(POWER_SLOT_INDEX);
-        long convertedPower = CobblestoneCrusherBlockEntity.getCobblestonePowerValueForAutomation(powerStack);
-        if (convertedPower <= 0) {
+        long updatedPower = CobblestonePowerHelper.absorbPowerFromSlot(
+            powerStack,
+            this.storedCobblestonePower,
+            this.getMaxCobblestonePower()
+        );
+        if (updatedPower == this.storedCobblestonePower) {
             return;
         }
 
-        if (this.storedCobblestonePower + convertedPower > this.getMaxCobblestonePower()) {
-            return;
-        }
-
-        powerStack.shrink(1);
-        this.storedCobblestonePower += convertedPower;
+        this.storedCobblestonePower = updatedPower;
         this.setChanged();
     }
 
@@ -750,7 +750,7 @@ public class StoneBreakSimulatorBlockEntity extends BaseBlockEntity implements M
 
     private void playBreakSound(Level currentLevel) {
         // 実際に石を壊したような完了感が出るように、レシピ完了時に破壊音を鳴らします。
-        currentLevel.playSound(null, this.worldPosition, SoundEvents.STONE_BREAK, SoundSource.BLOCKS, 0.5F, 1.0F);
+        this.playMachineSound(SoundEvents.STONE_BREAK, SoundSource.BLOCKS, 0.5F, 1.0F);
     }
 
     private int getCraftBlockCount(ItemStack toolStack) {
@@ -1105,6 +1105,10 @@ public class StoneBreakSimulatorBlockEntity extends BaseBlockEntity implements M
                     return getAutoInsertEnabledId();
                 }
 
+                if (index == DATA_INDEX_SOUND_MUTED) {
+                    return getSoundMutedId();
+                }
+
                 return 0;
             }
 
@@ -1114,7 +1118,7 @@ public class StoneBreakSimulatorBlockEntity extends BaseBlockEntity implements M
 
             @Override
             public int getCount() {
-                return DATA_INDEX_AUTO_INSERT + 1;
+                return DATA_INDEX_SOUND_MUTED + 1;
             }
         };
 

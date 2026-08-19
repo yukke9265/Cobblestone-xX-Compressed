@@ -1,18 +1,27 @@
 {
 	"folders": [
 		{
+			"name": "cobblestonexxcompressed-1_21_1",
 			"path": "."
 		},
 		{
+			"name": "stoneionetwork-1.21.1",
+			"path": "../stoneionetwork-1.21.1"
+		},
+		{
+			"name": "1.21.1",
 			"path": "../1.21.1"
 		},
 		{
+			"name": "Mekanism",
 			"path": "../Mekanism"
 		},
 		{
+			"name": "Mekanism-Extras",
 			"path": "../Mekanism-Extras"
 		},
 		{
+			"name": "Flux-Networks",
 			"path": "../Flux-Networks"
 		}
 	],
@@ -23,6 +32,31 @@
 			"node_modules",
 			".git",
 			".cache"
+		]
+	},
+	"tasks": {
+		"version": "2.0.0",
+		"tasks": [
+			{
+				"label": "Build stoneionetwork",
+				"type": "shell",
+				"command": "gradlew.bat -g \"%USERPROFILE%\\.gradle\" build",
+				"options": {
+					"cwd": "${workspaceFolder:stoneionetwork-1.21.1}",
+					"env": {},
+					"shell": {
+						"executable": "cmd.exe",
+						"args": ["/d", "/c"]
+					}
+				},
+				"group": "build",
+				"presentation": {
+					"reveal": "always",
+					"panel": "shared",
+					"showReuseMessage": false
+				},
+				"problemMatcher": []
+			}
 		]
 	}
 }

@@ -42,7 +42,7 @@ public class CobblestoneExtremeCompressorMenu extends PoweredMachineMenuBase<Cob
         AutomationMode.COBBLESTONE_INPUT
     };
 
-    private static final int DATA_COUNT = 13 + BaseBlockEntity.AUTOMATION_FACE_COUNT;
+    private static final int DATA_COUNT = 14 + BaseBlockEntity.AUTOMATION_FACE_COUNT;
     private static final int DATA_INDEX_PROGRESS = 0;
     private static final int DATA_INDEX_MAX_PROGRESS = 1;
     private static final int DATA_INDEX_STORED_POWER = 2;
@@ -53,6 +53,7 @@ public class CobblestoneExtremeCompressorMenu extends PoweredMachineMenuBase<Cob
     private static final int DATA_INDEX_CURRENT_POWER_RATE_UPPER = DATA_INDEX_CURRENT_POWER_RATE + 1;
     private static final int DATA_INDEX_AUTO_EXPORT = DATA_INDEX_CURRENT_POWER_RATE_UPPER + 1;
     private static final int DATA_INDEX_AUTO_INSERT = DATA_INDEX_AUTO_EXPORT + 1;
+    private static final int DATA_INDEX_SOUND_MUTED = DATA_INDEX_AUTO_INSERT + 1;
     private static final int MACHINE_SLOT_COUNT = 6;
 
     private final CobblestoneExtremeCompressorBlockEntity extremeCompressorBlockEntity;
@@ -124,6 +125,11 @@ public class CobblestoneExtremeCompressorMenu extends PoweredMachineMenuBase<Cob
 
     public boolean isAutoInsertEnabled() {
         return this.extremeCompressorData.get(DATA_INDEX_AUTO_INSERT) != 0;
+    }
+
+    @Override
+    public boolean isSoundMuted() {
+        return this.extremeCompressorData.get(DATA_INDEX_SOUND_MUTED) != 0;
     }
 
     public int getAutomationButtonId(AutomationSide automationSide) {
@@ -236,6 +242,10 @@ public class CobblestoneExtremeCompressorMenu extends PoweredMachineMenuBase<Cob
         }
 
         if (this.handleAutoInsertButtonClick(this.extremeCompressorBlockEntity, id)) {
+            return true;
+        }
+
+        if (this.handleMuteSoundButtonClick(this.extremeCompressorBlockEntity, id)) {
             return true;
         }
 

@@ -2,13 +2,16 @@
   "type": "minecraft:crafting_shaped",
   "category": "building",
   "key": {
+    "B": {
+      "item": "cobblestonexxcompressed:tier_gold_compressed_cobblestone_singularity_bit"
+    },
     "G": {
       "item": "cobblestonexxcompressed:tier_copper_cobblestone_generator_m"
     }
   },
   "pattern": [
     "GGG",
-    "G G",
+    "GBG",
     "GGG"
   ],
   "result": {

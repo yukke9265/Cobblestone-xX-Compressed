@@ -35,10 +35,10 @@ import net.neoforged.neoforge.items.wrapper.EmptyItemHandler;
 public class CobblestoneFEGeneratorBlockEntity extends BaseBlockEntity implements MenuProvider {
     public static final int COBBLESTONE_SLOT_INDEX = 0;
 
-    // 既存の energized cube 最大倍率を固定上限として先に織り込んだ値です。
+    // 黒曜石 L ジェネレータの 1 tick 分（圧縮丸石 64 個相当）がバッファへ入るようにします。
     // GUI に upgrade slot を持たせなくても、内部 CP と FE を long 前提で扱えるようにしておきます。
-    public static final long MAX_COBBLESTONE_POWER = 274_877_906_944L;
-    public static final long MAX_FORGE_ENERGY = 274_877_906_944L;
+    public static final long MAX_COBBLESTONE_POWER = 17_592_186_044_416L;
+    public static final long MAX_FORGE_ENERGY = 17_592_186_044_416L;
 
     private static final int DATA_INDEX_STORED_POWER = 0;
     private static final int DATA_INDEX_STORED_POWER_UPPER = 1;
@@ -57,6 +57,7 @@ public class CobblestoneFEGeneratorBlockEntity extends BaseBlockEntity implement
     private static final int DATA_INDEX_CURRENT_POWER_RATE_UPPER = DATA_INDEX_CURRENT_POWER_RATE + 1;
     private static final int DATA_INDEX_AUTO_EXPORT = DATA_INDEX_CURRENT_POWER_RATE_UPPER + 1;
     private static final int DATA_INDEX_AUTO_INSERT = DATA_INDEX_AUTO_EXPORT + 1;
+    private static final int DATA_INDEX_SOUND_MUTED = DATA_INDEX_AUTO_INSERT + 1;
 
     private long storedCobblestonePower;
     private long storedForgeEnergy;
@@ -274,17 +275,16 @@ public class CobblestoneFEGeneratorBlockEntity extends BaseBlockEntity implement
 
     private void tryAbsorbCobblestonePower() {
         ItemStack cobblestoneStack = this.itemStackHandler.getStackInSlot(COBBLESTONE_SLOT_INDEX);
-        long convertedPower = CobblestonePoweredFurnaceBlockEntity.getCobblestonePowerValueForAutomation(cobblestoneStack);
-        if (convertedPower <= 0L) {
+        long updatedPower = CobblestonePowerHelper.absorbPowerFromSlot(
+            cobblestoneStack,
+            this.storedCobblestonePower,
+            this.getMaxCobblestonePower()
+        );
+        if (updatedPower == this.storedCobblestonePower) {
             return;
         }
 
-        if (this.storedCobblestonePower + convertedPower > this.getMaxCobblestonePower()) {
-            return;
-        }
-
-        cobblestoneStack.shrink(1);
-        this.storedCobblestonePower += convertedPower;
+        this.storedCobblestonePower = updatedPower;
         this.setChanged();
     }
 
@@ -501,6 +501,10 @@ public class CobblestoneFEGeneratorBlockEntity extends BaseBlockEntity implement
                     return getAutoInsertEnabledId();
                 }
 
+                if (index == DATA_INDEX_SOUND_MUTED) {
+                    return getSoundMutedId();
+                }
+
                 return 0;
             }
 
@@ -550,11 +554,15 @@ public class CobblestoneFEGeneratorBlockEntity extends BaseBlockEntity implement
                 if (index == DATA_INDEX_AUTO_INSERT) {
                     setAutoInsertEnabled(value != 0);
                 }
+
+                if (index == DATA_INDEX_SOUND_MUTED) {
+                    setSoundMuted(value != 0);
+                }
             }
 
             @Override
             public int getCount() {
-                return DATA_INDEX_AUTO_INSERT + 1;
+                return DATA_INDEX_SOUND_MUTED + 1;
             }
         };
 

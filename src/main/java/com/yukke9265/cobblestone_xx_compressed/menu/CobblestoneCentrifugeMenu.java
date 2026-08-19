@@ -37,7 +37,7 @@ public class CobblestoneCentrifugeMenu extends BaseMenu {
         AutomationMode.COBBLESTONE_INPUT
     };
 
-    private static final int DATA_COUNT = 10 + BaseBlockEntity.AUTOMATION_FACE_COUNT;
+    private static final int DATA_COUNT = 11 + BaseBlockEntity.AUTOMATION_FACE_COUNT;
     private static final int DATA_INDEX_PROGRESS = 0;
     private static final int DATA_INDEX_MAX_PROGRESS = 1;
     private static final int DATA_INDEX_STORED_POWER = 2;
@@ -48,6 +48,7 @@ public class CobblestoneCentrifugeMenu extends BaseMenu {
     private static final int DATA_INDEX_CURRENT_POWER_RATE_UPPER = DATA_INDEX_CURRENT_POWER_RATE + 1;
     private static final int DATA_INDEX_AUTO_EXPORT = DATA_INDEX_CURRENT_POWER_RATE_UPPER + 1;
     private static final int DATA_INDEX_AUTO_INSERT = DATA_INDEX_AUTO_EXPORT + 1;
+    private static final int DATA_INDEX_SOUND_MUTED = DATA_INDEX_AUTO_INSERT + 1;
     private static final int PLAYER_INVENTORY_COLUMNS = 9;
     private static final int PLAYER_INVENTORY_ROWS = 3;
     private static final int HOTBAR_SLOT_COUNT = 9;
@@ -120,6 +121,11 @@ public class CobblestoneCentrifugeMenu extends BaseMenu {
         return this.centrifugeData.get(DATA_INDEX_AUTO_INSERT) != 0;
     }
 
+    @Override
+    public boolean isSoundMuted() {
+        return this.centrifugeData.get(DATA_INDEX_SOUND_MUTED) != 0;
+    }
+
     public int getAutomationButtonId(AutomationSide automationSide) {
         return this.getAutomationButtonId(automationSide.getIndex());
     }
@@ -148,6 +154,10 @@ public class CobblestoneCentrifugeMenu extends BaseMenu {
         }
 
         if (this.handleAutoInsertButtonClick(this.centrifugeBlockEntity, id)) {
+            return true;
+        }
+
+        if (this.handleMuteSoundButtonClick(this.centrifugeBlockEntity, id)) {
             return true;
         }
 

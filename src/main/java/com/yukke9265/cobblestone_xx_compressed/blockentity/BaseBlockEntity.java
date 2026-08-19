@@ -10,6 +10,8 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Containers;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -51,6 +53,7 @@ public class BaseBlockEntity extends BlockEntity {
     };
     private boolean autoExportEnabled;
     private boolean autoInsertEnabled;
+    private boolean soundMuted;
 
     public BaseBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState state) {
         super(blockEntityType, pos, state);
@@ -88,6 +91,38 @@ public class BaseBlockEntity extends BlockEntity {
 
     public void toggleAutoInsertEnabled() {
         this.setAutoInsertEnabled(!this.autoInsertEnabled);
+    }
+
+    public boolean isSoundMuted() {
+        return this.soundMuted;
+    }
+
+    public int getSoundMutedId() {
+        return this.soundMuted ? 1 : 0;
+    }
+
+    public void setSoundMuted(boolean soundMuted) {
+        this.soundMuted = soundMuted;
+        this.setChanged();
+    }
+
+    public void toggleSoundMuted() {
+        this.setSoundMuted(!this.soundMuted);
+    }
+
+    // 機械固有の稼働音は、消音フラグを見てから鳴らす。
+    // 前提: サーバー側で呼び出す。結果: 消音中は音を出さない。
+    protected final void playMachineSound(SoundEvent sound, SoundSource source, float volume, float pitch) {
+        if (this.soundMuted) {
+            return;
+        }
+
+        Level currentLevel = this.level;
+        if (currentLevel == null) {
+            return;
+        }
+
+        currentLevel.playSound(null, this.worldPosition, sound, source, volume, pitch);
     }
 
     public AutomationMode getAutomationMode(int index) {
@@ -229,6 +264,7 @@ public class BaseBlockEntity extends BlockEntity {
 
         tag.putBoolean("autoExportEnabled", this.autoExportEnabled);
         tag.putBoolean("autoInsertEnabled", this.autoInsertEnabled);
+        tag.putBoolean("soundMuted", this.soundMuted);
     }
 
     protected void loadAutomationModes(CompoundTag tag) {
@@ -242,6 +278,7 @@ public class BaseBlockEntity extends BlockEntity {
 
         this.setAutoExportEnabled(tag.getBoolean("autoExportEnabled"));
         this.setAutoInsertEnabled(tag.getBoolean("autoInsertEnabled"));
+        this.setSoundMuted(tag.getBoolean("soundMuted"));
     }
 
     public CompoundTag createAutomationCopyData() {

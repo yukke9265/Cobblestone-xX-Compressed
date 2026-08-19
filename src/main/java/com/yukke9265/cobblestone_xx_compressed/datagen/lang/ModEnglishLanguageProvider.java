@@ -188,9 +188,6 @@ public class ModEnglishLanguageProvider extends LanguageProvider {
             addBlock(tier.getBlock(), tier.getEnglishDisplayName());
         }
 
-        addBlock(ModBlocks.STONE_NETWORK_POINT, "Stone Network Point");
-        addBlock(ModBlocks.STONE_NETWORK_RELAY, "Stone Network Relay");
-
         addBlock(ModBlocks.COBBLESTONE_FURNACE, "Cobblestone Furnace");
         addBlock(ModBlocks.COBBLESTONE_FE_GENERATOR, "Cobblestone FE Generator");
         addBlock(ModBlocks.COBBLESTONE_POWERED_FURNACE, "Cobblestone Powered Furnace");
@@ -240,10 +237,12 @@ public class ModEnglishLanguageProvider extends LanguageProvider {
         add("gui.cobblestonexxcompressed.empty", "Empty");
         add("gui.cobblestonexxcompressed.auto_export", "Auto Export");
         add("gui.cobblestonexxcompressed.auto_insert", "Auto Insert");
+        add("gui.cobblestonexxcompressed.mute_sound", "Mute");
         add("gui.cobblestonexxcompressed.start_stop", "Start/Stop");
         add("tooltip.cobblestonexxcompressed.compressed_cobblestone.compression", "x%s compressed");
         add("tooltip.cobblestonexxcompressed.cobblestone_energized_cube.capacity", "x%s CP capacity");
         add("tooltip.cobblestonexxcompressed.cobblestone_acceleration_chip.rate", "x%s CP/t");
+        add("tooltip.cobblestonexxcompressed.cobblestone_generator.catalyst_rate", "Place in a machine cobblestone slot to supply %s CP/t without being consumed.");
         add("tooltip.cobblestonexxcompressed.cobblestone_parallel_chip.extra", "+%s extra crafts");
         add("tooltip.cobblestonexxcompressed.configuration_card.empty", "No configuration stored");
         add("tooltip.cobblestonexxcompressed.configuration_card.stored", "Stored: %s");

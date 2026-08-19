@@ -50,7 +50,7 @@ public class CobblestoneChemicalReactorMenu extends BaseMenu {
         AutomationMode.IN_OUT
     };
 
-    private static final int DATA_COUNT = 30 + BaseBlockEntity.AUTOMATION_FACE_COUNT * 2;
+    private static final int DATA_COUNT = 31 + BaseBlockEntity.AUTOMATION_FACE_COUNT * 2;
     private static final int DATA_INDEX_PROGRESS = 0;
     private static final int DATA_INDEX_MAX_PROGRESS = 1;
     private static final int DATA_INDEX_STORED_POWER = 2;
@@ -73,6 +73,7 @@ public class CobblestoneChemicalReactorMenu extends BaseMenu {
     private static final int DATA_INDEX_CURRENT_POWER_RATE_UPPER = DATA_INDEX_CURRENT_POWER_RATE + 1;
     private static final int DATA_INDEX_AUTO_EXPORT = DATA_INDEX_CURRENT_POWER_RATE_UPPER + 1;
     private static final int DATA_INDEX_AUTO_INSERT = DATA_INDEX_AUTO_EXPORT + 1;
+    private static final int DATA_INDEX_SOUND_MUTED = DATA_INDEX_AUTO_INSERT + 1;
 
     private static final int INPUT_FLUID_2_BUTTON_ID = 402;
     private static final int INPUT_FLUID_2_SHIFT_BUTTON_ID = 403;
@@ -203,6 +204,11 @@ public class CobblestoneChemicalReactorMenu extends BaseMenu {
         return this.chemicalReactorData.get(DATA_INDEX_AUTO_INSERT) != 0;
     }
 
+    @Override
+    public boolean isSoundMuted() {
+        return this.chemicalReactorData.get(DATA_INDEX_SOUND_MUTED) != 0;
+    }
+
     public int getItemAutomationButtonId(AutomationSide automationSide) {
         return this.getAutomationButtonId(automationSide.getIndex());
     }
@@ -302,7 +308,11 @@ public class CobblestoneChemicalReactorMenu extends BaseMenu {
             return true;
         }
 
-        return this.handleAutoInsertButtonClick(this.chemicalReactorBlockEntity, id);
+        if (this.handleAutoInsertButtonClick(this.chemicalReactorBlockEntity, id)) {
+            return true;
+        }
+
+        return this.handleMuteSoundButtonClick(this.chemicalReactorBlockEntity, id);
     }
 
     @Override
