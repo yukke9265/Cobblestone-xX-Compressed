@@ -46,6 +46,24 @@ public class ModItemTagProvider extends ItemTagsProvider {
         this.addDustTags("ruby", ModItems.RUBY_DUST);
         this.addDustTags("sapphire", ModItems.SAPPHIRE_DUST);
         this.addDustTags("topaz", ModItems.TOPAZ_DUST);
+
+        // ピッケルはバニラのツール用タグへ入れておくと、
+        // エンチャント台やクラスター破壊など既存の仕組みがそのまま動きます。
+        this.addPickaxeTags(ModItems.COMPRESSED_COBBLESTONE_PICKAXE);
+        for (ModItems.TierCompressedCobblestonePickaxe tier : ModItems.TierCompressedCobblestonePickaxe.values()) {
+            this.addPickaxeTags(tier.getItem());
+        }
+    }
+
+    @SuppressWarnings("null")
+    private void addPickaxeTags(DeferredItem<Item> pickaxeItem) {
+        Item item = Objects.requireNonNull(pickaxeItem.get());
+
+        this.tag(ItemTags.PICKAXES).add(item);
+        this.tag(ItemTags.CLUSTER_MAX_HARVESTABLES).add(item);
+        this.tag(ItemTags.MINING_ENCHANTABLE).add(item);
+        this.tag(ItemTags.MINING_LOOT_ENCHANTABLE).add(item);
+        this.tag(ItemTags.DURABILITY_ENCHANTABLE).add(item);
     }
 
     @SuppressWarnings("null")

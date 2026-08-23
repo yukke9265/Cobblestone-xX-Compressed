@@ -8,6 +8,7 @@ import com.yukke9265.cobblestone_xx_compressed.item.ConfigurationCardItem;
 import com.yukke9265.cobblestone_xx_compressed.item.CobblestoneAccelerationChipItem;
 import com.yukke9265.cobblestone_xx_compressed.item.CobblestoneEnergizedCubeItem;
 import com.yukke9265.cobblestone_xx_compressed.item.CobblestoneParallelChipItem;
+import com.yukke9265.cobblestone_xx_compressed.item.CompressedCobblestonePickaxeItem;
 import com.yukke9265.cobblestone_xx_compressed.util.TooltipTranslationKeys;
 
 import net.minecraft.world.effect.MobEffectInstance;
@@ -15,6 +16,8 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.PickaxeItem;
+import net.minecraft.world.item.Tier;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredItem;
@@ -420,6 +423,18 @@ public class ModItems {
         return ITEMS.registerSimpleItem(name, createCobblestoneComponentProperties());
     }
 
+    // ピッケルは通常アイテムと違い、Tier（耐久・速度・採掘レベル）を持たせます。
+    // 性能本体は ModToolTiers 側に置き、ここは「登録名」と「どの素材を使うか」だけを担当します。
+    private static DeferredItem<Item> registerCobblestonePickaxe(String name, ModToolTiers.CobblestonePickaxeMaterial material) {
+        return ITEMS.register(
+            name,
+            () -> new CompressedCobblestonePickaxeItem(
+                material,
+                new Item.Properties().attributes(PickaxeItem.createAttributes(material.getTier(), 1.0f, -2.8f))
+            )
+        );
+    }
+
     private static DeferredItem<Item> registerTierCobblestoneMotor(String name) {
         return ITEMS.registerSimpleItem(name, createCobblestoneComponentProperties());
     }
@@ -598,6 +613,13 @@ public class ModItems {
     public static final DeferredItem<Item> COBBLESTONE_ROD =
         ITEMS.registerSimpleItem("cobblestone_rod", createCobblestoneComponentProperties());
 
+    // 通常の圧縮丸石ピッケル。性能は ModToolTiers.CobblestonePickaxeMaterial.BASE を参照します。
+    public static final DeferredItem<Item> COMPRESSED_COBBLESTONE_PICKAXE =
+        registerCobblestonePickaxe(
+            "compressed_cobblestone_pickaxe",
+            ModToolTiers.CobblestonePickaxeMaterial.BASE
+        );
+
     public static final DeferredItem<Item> COBBLESTONE_MOTOR =
         ITEMS.registerSimpleItem("cobblestone_motor", createCobblestoneComponentProperties());
 
@@ -692,6 +714,106 @@ public class ModItems {
 
         public String getEnglishDisplayName() {
             return this.englishDisplayName;
+        }
+
+        public DeferredItem<Item> getItem() {
+            return this.item;
+        }
+
+        private void setItem(DeferredItem<Item> item) {
+            this.item = item;
+        }
+    }
+
+    // 圧縮丸石ピッケルの tier 版です。
+    // 登録名・英語名・性能素材を 1 か所にまとめ、lang / model / recipe / creative tab から同じ順で使います。
+    public enum TierCompressedCobblestonePickaxe {
+        COPPER(
+            "tier_copper_compressed_cobblestone_pickaxe",
+            "Copper Compressed Cobblestone Pickaxe",
+            ModToolTiers.CobblestonePickaxeMaterial.COPPER
+        ),
+        IRON(
+            "tier_iron_compressed_cobblestone_pickaxe",
+            "Iron Compressed Cobblestone Pickaxe",
+            ModToolTiers.CobblestonePickaxeMaterial.IRON
+        ),
+        GOLD(
+            "tier_gold_compressed_cobblestone_pickaxe",
+            "Gold Compressed Cobblestone Pickaxe",
+            ModToolTiers.CobblestonePickaxeMaterial.GOLD
+        ),
+        AMETHYST(
+            "tier_amethyst_compressed_cobblestone_pickaxe",
+            "Amethyst Compressed Cobblestone Pickaxe",
+            ModToolTiers.CobblestonePickaxeMaterial.AMETHYST
+        ),
+        AQUAMARINE(
+            "tier_aquamarine_compressed_cobblestone_pickaxe",
+            "Aquamarine Compressed Cobblestone Pickaxe",
+            ModToolTiers.CobblestonePickaxeMaterial.AQUAMARINE
+        ),
+        TOPAZ(
+            "tier_topaz_compressed_cobblestone_pickaxe",
+            "Topaz Compressed Cobblestone Pickaxe",
+            ModToolTiers.CobblestonePickaxeMaterial.TOPAZ
+        ),
+        RUBY(
+            "tier_ruby_compressed_cobblestone_pickaxe",
+            "Ruby Compressed Cobblestone Pickaxe",
+            ModToolTiers.CobblestonePickaxeMaterial.RUBY
+        ),
+        SAPPHIRE(
+            "tier_sapphire_compressed_cobblestone_pickaxe",
+            "Sapphire Compressed Cobblestone Pickaxe",
+            ModToolTiers.CobblestonePickaxeMaterial.SAPPHIRE
+        ),
+        DIAMOND(
+            "tier_diamond_compressed_cobblestone_pickaxe",
+            "Diamond Compressed Cobblestone Pickaxe",
+            ModToolTiers.CobblestonePickaxeMaterial.DIAMOND
+        ),
+        EMERALD(
+            "tier_emerald_compressed_cobblestone_pickaxe",
+            "Emerald Compressed Cobblestone Pickaxe",
+            ModToolTiers.CobblestonePickaxeMaterial.EMERALD
+        ),
+        NETHERITE(
+            "tier_netherite_compressed_cobblestone_pickaxe",
+            "Netherite Compressed Cobblestone Pickaxe",
+            ModToolTiers.CobblestonePickaxeMaterial.NETHERITE
+        ),
+        OBSIDIAN(
+            "tier_obsidian_compressed_cobblestone_pickaxe",
+            "Obsidian Compressed Cobblestone Pickaxe",
+            ModToolTiers.CobblestonePickaxeMaterial.OBSIDIAN
+        );
+
+        private final String registryName;
+        private final String englishDisplayName;
+        private final ModToolTiers.CobblestonePickaxeMaterial material;
+        private DeferredItem<Item> item;
+
+        TierCompressedCobblestonePickaxe(
+            String registryName,
+            String englishDisplayName,
+            ModToolTiers.CobblestonePickaxeMaterial material
+        ) {
+            this.registryName = registryName;
+            this.englishDisplayName = englishDisplayName;
+            this.material = material;
+        }
+
+        public String getRegistryName() {
+            return this.registryName;
+        }
+
+        public String getEnglishDisplayName() {
+            return this.englishDisplayName;
+        }
+
+        public ModToolTiers.CobblestonePickaxeMaterial getMaterial() {
+            return this.material;
         }
 
         public DeferredItem<Item> getItem() {
@@ -1250,6 +1372,12 @@ public class ModItems {
     }
 
     static {
+        for (TierCompressedCobblestonePickaxe tier : TierCompressedCobblestonePickaxe.values()) {
+            tier.setItem(registerCobblestonePickaxe(tier.getRegistryName(), tier.getMaterial()));
+        }
+    }
+
+    static {
         for (TierCobblestoneMotor tier : TierCobblestoneMotor.values()) {
             tier.setItem(registerTierCobblestoneMotor(tier.getRegistryName()));
         }
@@ -1468,6 +1596,31 @@ public class ModItems {
         TierCobblestoneRod.NETHERITE.getItem();
     public static final DeferredItem<Item> TIER_OBSIDIAN_COBBLESTONE_ROD =
         TierCobblestoneRod.OBSIDIAN.getItem();
+
+    public static final DeferredItem<Item> TIER_COPPER_COMPRESSED_COBBLESTONE_PICKAXE =
+        TierCompressedCobblestonePickaxe.COPPER.getItem();
+    public static final DeferredItem<Item> TIER_IRON_COMPRESSED_COBBLESTONE_PICKAXE =
+        TierCompressedCobblestonePickaxe.IRON.getItem();
+    public static final DeferredItem<Item> TIER_GOLD_COMPRESSED_COBBLESTONE_PICKAXE =
+        TierCompressedCobblestonePickaxe.GOLD.getItem();
+    public static final DeferredItem<Item> TIER_AMETHYST_COMPRESSED_COBBLESTONE_PICKAXE =
+        TierCompressedCobblestonePickaxe.AMETHYST.getItem();
+    public static final DeferredItem<Item> TIER_AQUAMARINE_COMPRESSED_COBBLESTONE_PICKAXE =
+        TierCompressedCobblestonePickaxe.AQUAMARINE.getItem();
+    public static final DeferredItem<Item> TIER_TOPAZ_COMPRESSED_COBBLESTONE_PICKAXE =
+        TierCompressedCobblestonePickaxe.TOPAZ.getItem();
+    public static final DeferredItem<Item> TIER_RUBY_COMPRESSED_COBBLESTONE_PICKAXE =
+        TierCompressedCobblestonePickaxe.RUBY.getItem();
+    public static final DeferredItem<Item> TIER_SAPPHIRE_COMPRESSED_COBBLESTONE_PICKAXE =
+        TierCompressedCobblestonePickaxe.SAPPHIRE.getItem();
+    public static final DeferredItem<Item> TIER_DIAMOND_COMPRESSED_COBBLESTONE_PICKAXE =
+        TierCompressedCobblestonePickaxe.DIAMOND.getItem();
+    public static final DeferredItem<Item> TIER_EMERALD_COMPRESSED_COBBLESTONE_PICKAXE =
+        TierCompressedCobblestonePickaxe.EMERALD.getItem();
+    public static final DeferredItem<Item> TIER_NETHERITE_COMPRESSED_COBBLESTONE_PICKAXE =
+        TierCompressedCobblestonePickaxe.NETHERITE.getItem();
+    public static final DeferredItem<Item> TIER_OBSIDIAN_COMPRESSED_COBBLESTONE_PICKAXE =
+        TierCompressedCobblestonePickaxe.OBSIDIAN.getItem();
 
     public static final DeferredItem<Item> TIER_COPPER_COBBLESTONE_MOTOR =
         TierCobblestoneMotor.COPPER.getItem();
@@ -1848,6 +2001,12 @@ public class ModItems {
             "cobblestone_fluid_mixer",
             ModBlocks.COBBLESTONE_FLUID_MIXER,
             TooltipTranslationKeys.machineDescription("cobblestone_fluid_mixer"));
+
+    public static final DeferredItem<BlockItem> COBBLESTONE_WATER_GENERATOR_ITEM =
+        registerDescribedBlockItem(
+            "cobblestone_water_generator",
+            ModBlocks.COBBLESTONE_WATER_GENERATOR,
+            TooltipTranslationKeys.machineDescription("cobblestone_water_generator"));
 
     // cobblestone_centrifuge も設置できるように BlockItem を登録します。
     public static final DeferredItem<BlockItem> COBBLESTONE_CENTRIFUGE_ITEM =

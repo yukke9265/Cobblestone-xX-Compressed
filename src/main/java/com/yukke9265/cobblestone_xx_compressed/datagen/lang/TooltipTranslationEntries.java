@@ -32,6 +32,7 @@ public final class TooltipTranslationEntries {
         new TooltipEntry(TooltipTranslationKeys.machineDescription("cobblestone_fluid_mixer"), "複数の液体や材料を混ぜて、新しい液体を作ります。", "Mixes fluids and ingredients into new fluids."),
         new TooltipEntry(TooltipTranslationKeys.machineDescription("cobblestone_centrifuge"), "材料を遠心分離して、複数の生成物に分けます。", "Separates materials into multiple outputs with centrifuging."),
         new TooltipEntry(TooltipTranslationKeys.machineDescription("cobblestone_laser_drill"), "CP を使って採掘系の素材を自動で取り出します。", "Uses Cobblestone Power to extract mining-related resources automatically."),
+        new TooltipEntry(TooltipTranslationKeys.machineDescription("cobblestone_water_generator"), "CP を水へ変換し、タンクとバケツで取り出せます。", "Converts Cobblestone Power into water for tanks and buckets."),
     };
 
     // 丸石製造機は全 tier で役割が共通なので、共通文とサイズ差分に分けて管理します。

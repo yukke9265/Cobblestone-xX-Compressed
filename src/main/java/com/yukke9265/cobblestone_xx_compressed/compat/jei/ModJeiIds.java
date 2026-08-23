@@ -58,6 +58,9 @@ public final class ModJeiIds {
     public static final ResourceLocation COMPRESSED_STONE_LOOT =
         ResourceLocation.fromNamespaceAndPath(CobblestonexXCompressed.MODID, "compressed_stone_loot");
 
+    public static final ResourceLocation COBBLESTONE_WATER_GENERATOR_CONVERSION =
+        ResourceLocation.fromNamespaceAndPath(CobblestonexXCompressed.MODID, "cobblestone_water_generator_conversion");
+
     private ModJeiIds() {
     }
 }

@@ -21,6 +21,7 @@ import com.yukke9265.cobblestone_xx_compressed.blockentity.CobblestoneReactionCh
 import com.yukke9265.cobblestone_xx_compressed.blockentity.CobblestoneCrystallizationChamberBlockEntity;
 import com.yukke9265.cobblestone_xx_compressed.blockentity.CobblestonePoweredFurnaceBlockEntity;
 import com.yukke9265.cobblestone_xx_compressed.blockentity.CobblestoneTankBlockEntity;
+import com.yukke9265.cobblestone_xx_compressed.blockentity.CobblestoneWaterGeneratorBlockEntity;
 import com.yukke9265.cobblestone_xx_compressed.blockentity.StoneBreakSimulatorBlockEntity;
 
 import net.minecraft.core.registries.Registries;
@@ -182,6 +183,15 @@ public class ModBlockEntities {
             () -> BlockEntityType.Builder.of(
                 CobblestoneFluidMixerBlockEntity::new,
                 ModBlocks.COBBLESTONE_FLUID_MIXER.get()
+            ).build(null)
+        );
+
+    public static final Supplier<BlockEntityType<CobblestoneWaterGeneratorBlockEntity>> COBBLESTONE_WATER_GENERATOR_BLOCK_ENTITY =
+        BLOCK_ENTITY_TYPES.register(
+            "cobblestone_water_generator",
+            () -> BlockEntityType.Builder.of(
+                CobblestoneWaterGeneratorBlockEntity::new,
+                ModBlocks.COBBLESTONE_WATER_GENERATOR.get()
             ).build(null)
         );
 

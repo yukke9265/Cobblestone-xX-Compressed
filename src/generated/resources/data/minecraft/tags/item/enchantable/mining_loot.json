@@ -1,0 +1,17 @@
+{
+  "values": [
+    "cobblestonexxcompressed:compressed_cobblestone_pickaxe",
+    "cobblestonexxcompressed:tier_copper_compressed_cobblestone_pickaxe",
+    "cobblestonexxcompressed:tier_iron_compressed_cobblestone_pickaxe",
+    "cobblestonexxcompressed:tier_gold_compressed_cobblestone_pickaxe",
+    "cobblestonexxcompressed:tier_amethyst_compressed_cobblestone_pickaxe",
+    "cobblestonexxcompressed:tier_aquamarine_compressed_cobblestone_pickaxe",
+    "cobblestonexxcompressed:tier_topaz_compressed_cobblestone_pickaxe",
+    "cobblestonexxcompressed:tier_ruby_compressed_cobblestone_pickaxe",
+    "cobblestonexxcompressed:tier_sapphire_compressed_cobblestone_pickaxe",
+    "cobblestonexxcompressed:tier_diamond_compressed_cobblestone_pickaxe",
+    "cobblestonexxcompressed:tier_emerald_compressed_cobblestone_pickaxe",
+    "cobblestonexxcompressed:tier_netherite_compressed_cobblestone_pickaxe",
+    "cobblestonexxcompressed:tier_obsidian_compressed_cobblestone_pickaxe"
+  ]
+}

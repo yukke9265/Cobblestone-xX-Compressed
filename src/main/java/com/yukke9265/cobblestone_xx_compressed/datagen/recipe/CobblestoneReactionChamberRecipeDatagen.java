@@ -12,6 +12,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.fluids.FluidStack;
 
 @SuppressWarnings("null")
@@ -86,6 +87,15 @@ public final class CobblestoneReactionChamberRecipeDatagen {
             ingredientOf(ModItems.TIER_OBSIDIAN_COBBLESTONE_DIRTY_DUST.get()),
             ingredientOf(Items.REDSTONE),
             new ItemStack(ModItems.TIER_OBSIDIAN_COBBLESTONE_DUST.get()),
+            3276800,
+            1024
+        ),
+        new ReactionChamberRecipeDefinition(
+            "lava_amd_lapis_dust_and_redstone_to_obsidian",
+            new FluidStack(net.minecraft.world.level.material.Fluids.LAVA, 4000),
+            ingredientOf(ModItemTags.DUSTS_LAPIS),
+            ingredientOf(Items.REDSTONE),
+            new ItemStack(Items.OBSIDIAN,16),
             3276800,
             1024
         )

@@ -42,7 +42,8 @@ public class ModBlockTagProvider extends BlockTagsProvider {
             .add(ModBlocks.COBBLESTONE_REACTION_CHAMBER.get())
             .add(ModBlocks.COBBLESTONE_CRYSTALLIZATION_CHAMBER.get())
             .add(ModBlocks.COBBLESTONE_DISSOLUTION_CHAMBER.get())
-            .add(ModBlocks.COBBLESTONE_FE_GENERATOR.get());
+            .add(ModBlocks.COBBLESTONE_FE_GENERATOR.get())
+            .add(ModBlocks.COBBLESTONE_WATER_GENERATOR.get());
 
         for (ModBlocks.TierCobblestoneGenerator generatorVariant : ModBlocks.TierCobblestoneGenerator.values()) {
             this.tag(BlockTags.MINEABLE_WITH_PICKAXE).add(generatorVariant.getBlock().get());

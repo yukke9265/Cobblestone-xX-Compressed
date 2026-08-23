@@ -30,6 +30,7 @@ public class ModJapaneseLanguageProvider extends LanguageProvider {
         addBlock(ModBlocks.COBBLESTONE_CRYSTALLIZATION_CHAMBER, "丸石結晶化槽");
         addBlock(ModBlocks.COBBLESTONE_DISSOLUTION_CHAMBER, "丸石溶解槽");
         addBlock(ModBlocks.COBBLESTONE_FLUID_MIXER, "丸石流体ミキサー");
+        addBlock(ModBlocks.COBBLESTONE_WATER_GENERATOR, "丸石水生成機");
 
         add("automation_mode.cobblestonexxcompressed.disabled", "OFF");
         add("automation_mode.cobblestonexxcompressed.input", "入力");
@@ -57,7 +58,11 @@ public class ModJapaneseLanguageProvider extends LanguageProvider {
         add("gui.cobblestonexxcompressed.auto_export", "自動搬出");
         add("gui.cobblestonexxcompressed.auto_insert", "自動搬入");
         add("gui.cobblestonexxcompressed.mute_sound", "消音");
+        add("gui.cobblestonexxcompressed.water_generator.convert_rate", "水変換量: %s mB/t");
+        add("gui.cobblestonexxcompressed.water_generator.cp_rate", "CP 消費量: %s/t");
         add("jei.cobblestonexxcompressed.compressed_stone_loot", "圧縮石ドロップ");
+        add("jei.cobblestonexxcompressed.water_generator_conversion", "丸石水生成機");
+        add("jei.cobblestonexxcompressed.water_generator_conversion.rate", "1 CP = 1 mB");
         add("jei.cobblestonexxcompressed.silk_touch", "シルクタッチ");
         add("jei.cobblestonexxcompressed.no_silk_touch", "シルクタッチなし");
         add("jei.cobblestonexxcompressed.chance", "確率: %s");
@@ -67,6 +72,7 @@ public class ModJapaneseLanguageProvider extends LanguageProvider {
         add("tooltip.cobblestonexxcompressed.cobblestone_acceleration_chip.rate", "x%s CP/t");
         add("tooltip.cobblestonexxcompressed.cobblestone_generator.catalyst_rate", "機械の丸石スロットに置くと、消費せず %s CP/t を供給します。");
         add("tooltip.cobblestonexxcompressed.cobblestone_parallel_chip.extra", "追加処理 +%s");
+        add("tooltip.cobblestonexxcompressed.compressed_cobblestone_pickaxe.stone_break_simulator_bonus", "石破壊シミュレーター: 耐久相当 +%s");
         add("tooltip.cobblestonexxcompressed.configuration_card.empty", "設定は保存されていません");
         add("tooltip.cobblestonexxcompressed.configuration_card.stored", "保存先: %s");
         add("tooltip.cobblestonexxcompressed.configuration_card.upgrade", "アップグレード: %s");

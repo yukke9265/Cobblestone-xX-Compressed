@@ -280,6 +280,7 @@ public class ModRecipeProvider extends RecipeProvider {
         buildFortuneEnchantedBookRecipes(output);
         // buildGemRecipes(output); //gemはドロップによる獲得に変更するため、レシピを削除します。
         buildCobblestoneRodRecipes(output);
+        buildCobblestonePickaxeRecipes(output);
         buildCobblestoneWireRecipes(output);
         buildCobblestoneCircuitRecipes(output);
         buildCobblestoneCircuitPackageRecipes(output);
@@ -582,6 +583,33 @@ public class ModRecipeProvider extends RecipeProvider {
                 .pattern("C")
                 .define('C', compressedCobblestone)
                 .unlockedBy("has_" + tier.getRegistryName(), has(compressedCobblestone))
+                .save(output, modRecipeId(tier.getRegistryName()));
+        }
+    }
+
+    private void buildCobblestonePickaxeRecipes(RecipeOutput output) {
+        // バニラ石ピッケルと同じ形です。
+        // 頭 3 個 = その tier の圧縮丸石、持ち手 2 本 = その tier の丸石ロッド。
+        ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, ModItems.COMPRESSED_COBBLESTONE_PICKAXE.get())
+            .pattern("CCC")
+            .pattern(" R ")
+            .pattern(" R ")
+            .define('C', ModItems.COMPRESSED_COBBLESTONE_ITEM.get())
+            .define('R', ModItems.COBBLESTONE_ROD.get())
+            .unlockedBy("has_compressed_cobblestone", has(ModItems.COMPRESSED_COBBLESTONE_ITEM.get()))
+            .save(output, modRecipeId("compressed_cobblestone_pickaxe"));
+
+        for (ModItems.TierCompressedCobblestonePickaxe tier : ModItems.TierCompressedCobblestonePickaxe.values()) {
+            ItemLike compressedCobblestone = ModItems.TierCompressedCobblestoneItem.valueOf(tier.name()).getItem().get();
+            ItemLike rod = ModItems.TierCobblestoneRod.valueOf(tier.name()).getItem().get();
+
+            ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, tier.getItem().get())
+                .pattern("CCC")
+                .pattern(" R ")
+                .pattern(" R ")
+                .define('C', compressedCobblestone)
+                .define('R', rod)
+                .unlockedBy("has_" + tier.getRegistryName() + "_head", has(compressedCobblestone))
                 .save(output, modRecipeId(tier.getRegistryName()));
         }
     }
@@ -985,6 +1013,16 @@ public class ModRecipeProvider extends RecipeProvider {
             .define('P', Items.DIAMOND_PICKAXE)
             .unlockedBy("has_stone_break_simulator_material", has(Items.DIAMOND_PICKAXE))
             .save(output, modRecipeId("stone_break_simulator"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ModBlocks.COBBLESTONE_WATER_GENERATOR.get())
+            .pattern("ACA")
+            .pattern("CBC")
+            .pattern("ACA")
+            .define('A', ModBlocks.TierCompressedCobblestone.AMETHYST.getBlock().get())
+            .define('C', ModBlocks.TierCobblestoneMachineCasing.GOLD.getBlock().get())
+            .define('B', Items.WATER_BUCKET)
+            .unlockedBy("has_cobblestone_water_generator_material", has(Items.WATER_BUCKET))
+            .save(output, modRecipeId("cobblestone_water_generator"));
     }
 
     private void buildConfigurationCardRecipe(RecipeOutput output) {

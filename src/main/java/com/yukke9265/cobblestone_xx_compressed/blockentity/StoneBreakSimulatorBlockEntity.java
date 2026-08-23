@@ -15,6 +15,7 @@ import com.yukke9265.cobblestone_xx_compressed.menu.StoneBreakSimulatorMenu;
 import com.yukke9265.cobblestone_xx_compressed.recipe.StoneBreakSimulatorRecipe;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModBlockEntities;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModRecipeTypes;
+import com.yukke9265.cobblestone_xx_compressed.util.CompressedCobblestonePickaxeHelper;
 import com.yukke9265.cobblestone_xx_compressed.util.LongDataHelper;
 
 import net.minecraft.core.BlockPos;
@@ -765,7 +766,9 @@ public class StoneBreakSimulatorBlockEntity extends BaseBlockEntity implements M
     }
 
     private long getAdjustedTotalCobblestonePower(StoneBreakSimulatorRecipe recipe, ItemStack toolStack) {
-        long divisor = 1L << Math.min(30, Math.max(0, this.getEnchantmentLevel(toolStack, "unbreaking")));
+        int unbreakingLevel = this.getEnchantmentLevel(toolStack, "unbreaking");
+        int pickaxeBonus = CompressedCobblestonePickaxeHelper.getStoneBreakSimulatorUnbreakingBonus(toolStack);
+        long divisor = 1L << Math.min(30, Math.max(0, unbreakingLevel + pickaxeBonus));
         long adjustedTotal = recipe.getTotalCobblestonePower() / Math.max(1L, divisor);
         return Math.max(1L, adjustedTotal);
     }

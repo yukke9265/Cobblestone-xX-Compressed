@@ -137,6 +137,10 @@ public class CobblestonexXCompressed {
                 for (ModItems.TierCobblestoneRod tier : ModItems.TierCobblestoneRod.values()) {
                     output.accept(tier.getItem().get());
                 }
+                output.accept(ModItems.COMPRESSED_COBBLESTONE_PICKAXE.get());
+                for (ModItems.TierCompressedCobblestonePickaxe tier : ModItems.TierCompressedCobblestonePickaxe.values()) {
+                    output.accept(tier.getItem().get());
+                }
                 output.accept(ModItems.COBBLESTONE_MOTOR.get());
                 for (ModItems.TierCobblestoneMotor tier : ModItems.TierCobblestoneMotor.values()) {
                     output.accept(tier.getItem().get());
@@ -186,6 +190,7 @@ public class CobblestonexXCompressed {
                 output.accept(ModItems.COBBLESTONE_CRYSTALLIZATION_CHAMBER_ITEM.get());
                 output.accept(ModItems.COBBLESTONE_DISSOLUTION_CHAMBER_ITEM.get());
                 output.accept(ModItems.COBBLESTONE_FLUID_MIXER_ITEM.get());
+                output.accept(ModItems.COBBLESTONE_WATER_GENERATOR_ITEM.get());
                 output.accept(ModFluids.MOLTEN_COMPRESSED_COBBLESTONE.getBucketItem().get());
                 for (ModFluids.TierMoltenCompressedCobblestone tier : ModFluids.TierMoltenCompressedCobblestone.values()) {
                     output.accept(tier.getFluidEntry().getBucketItem().get());
@@ -454,6 +459,18 @@ public class CobblestonexXCompressed {
         event.registerBlockEntity(
             Capabilities.FluidHandler.BLOCK,
             ModBlockEntities.COBBLESTONE_TANK_BLOCK_ENTITY.get(),
+            (blockEntity, side) -> blockEntity.getFluidHandler(side)
+        );
+
+        event.registerBlockEntity(
+            Capabilities.ItemHandler.BLOCK,
+            ModBlockEntities.COBBLESTONE_WATER_GENERATOR_BLOCK_ENTITY.get(),
+            (blockEntity, side) -> blockEntity.getAutomationItemHandler(side)
+        );
+
+        event.registerBlockEntity(
+            Capabilities.FluidHandler.BLOCK,
+            ModBlockEntities.COBBLESTONE_WATER_GENERATOR_BLOCK_ENTITY.get(),
             (blockEntity, side) -> blockEntity.getFluidHandler(side)
         );
 

@@ -25,6 +25,8 @@ import com.yukke9265.cobblestone_xx_compressed.jei.category.CobblestonePoweredFu
 import com.yukke9265.cobblestone_xx_compressed.jei.category.CobblestoneReactionChamberRecipeCategory;
 import com.yukke9265.cobblestone_xx_compressed.jei.category.CobblestoneCrystallizationChamberRecipeCategory;
 import com.yukke9265.cobblestone_xx_compressed.jei.category.StoneBreakSimulatorRecipeCategory;
+import com.yukke9265.cobblestone_xx_compressed.jei.category.WaterGeneratorConversionRecipeCategory;
+import com.yukke9265.cobblestone_xx_compressed.jei.WaterGeneratorConversionJeiRecipe;
 import com.yukke9265.cobblestone_xx_compressed.menu.BaseMenu;
 import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneAssemblyMachineMenu;
 import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneChemicalReactorMenu;
@@ -223,6 +225,13 @@ public class ModJeiPlugin implements IModPlugin {
             CompressedStoneLootJeiRecipe.class
         );
 
+    public static final RecipeType<WaterGeneratorConversionJeiRecipe> WATER_GENERATOR_CONVERSION_RECIPE_TYPE =
+        RecipeType.create(
+            ModJeiIds.COBBLESTONE_WATER_GENERATOR_CONVERSION.getNamespace(),
+            ModJeiIds.COBBLESTONE_WATER_GENERATOR_CONVERSION.getPath(),
+            WaterGeneratorConversionJeiRecipe.class
+        );
+
     private static final MachineJeiDefinition<CobblestoneFurnaceRecipe, CobblestoneFurnaceMenu> COBBLESTONE_FURNACE_DEFINITION =
         new MachineJeiDefinition<>(
             ModJeiIds.COBBLESTONE_FURNACE,
@@ -410,6 +419,7 @@ public class ModJeiPlugin implements IModPlugin {
     @Override
     public void registerCategories(IRecipeCategoryRegistration registration) {
         registration.addRecipeCategories(new CompressedStoneLootRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
+        registration.addRecipeCategories(new WaterGeneratorConversionRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
 
         for (MachineJeiDefinition<?, ?> definition : MACHINE_DEFINITIONS) {
             registration.addRecipeCategories(definition.createCategory(registration));
@@ -424,6 +434,7 @@ public class ModJeiPlugin implements IModPlugin {
         }
 
         registration.addRecipes(COMPRESSED_STONE_LOOT_RECIPE_TYPE, CompressedStoneLootJeiRecipe.createRecipes());
+        registration.addRecipes(WATER_GENERATOR_CONVERSION_RECIPE_TYPE, WaterGeneratorConversionJeiRecipe.createRecipes());
 
         // レシピの登録本体は機械ごとに違いますが、plugin 側の呼び出し手順は共通化します。
         List<CobblestoneFurnaceRecipe> recipes = minecraft.level.getRecipeManager()
@@ -539,6 +550,8 @@ public class ModJeiPlugin implements IModPlugin {
 
     @Override
     public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
+        registration.addRecipeCatalyst(new ItemStack(ModBlocks.COBBLESTONE_WATER_GENERATOR.get()), WATER_GENERATOR_CONVERSION_RECIPE_TYPE);
+
         for (MachineJeiDefinition<?, ?> definition : MACHINE_DEFINITIONS) {
             registration.addRecipeCatalyst(definition.createCatalyst(), definition.recipeType());
         }

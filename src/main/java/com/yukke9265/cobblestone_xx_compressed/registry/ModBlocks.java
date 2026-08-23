@@ -21,6 +21,7 @@ import com.yukke9265.cobblestone_xx_compressed.block.CobblestonePoweredFurnaceBl
 import com.yukke9265.cobblestone_xx_compressed.block.CobblestoneReactionChamberBlock;
 import com.yukke9265.cobblestone_xx_compressed.block.CobblestoneCrystallizationChamberBlock;
 import com.yukke9265.cobblestone_xx_compressed.block.CobblestoneTankBlock;
+import com.yukke9265.cobblestone_xx_compressed.block.CobblestoneWaterGeneratorBlock;
 import com.yukke9265.cobblestone_xx_compressed.block.StoneBreakSimulatorBlock;
 
 import net.minecraft.world.level.block.Block;
@@ -607,6 +608,14 @@ public class ModBlocks {
         BLOCKS.register(
             "cobblestone_fluid_mixer",
             () -> new CobblestoneFluidMixerBlock(
+                createCobblestoneMachineProperties()
+            )
+        );
+
+    public static final DeferredBlock<Block> COBBLESTONE_WATER_GENERATOR =
+        BLOCKS.register(
+            "cobblestone_water_generator",
+            () -> new CobblestoneWaterGeneratorBlock(
                 createCobblestoneMachineProperties()
             )
         );

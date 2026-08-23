@@ -70,6 +70,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
         registerStandardOnOffMachineBlock(ModBlocks.COBBLESTONE_CRYSTALLIZATION_CHAMBER.get(), "cobblestone_crystallization_chamber");
         registerCobblestoneDissolutionChamberBlock(ModBlocks.COBBLESTONE_DISSOLUTION_CHAMBER.get(), "cobblestone_dissolution_chamber");
         registerStandardOnOffMachineBlock(ModBlocks.COBBLESTONE_FLUID_MIXER.get(), "cobblestone_fluid_mixer");
+        registerStandardOnOffMachineBlock(ModBlocks.COBBLESTONE_WATER_GENERATOR.get(), "cobblestone_water_generator");
 
         // LiquidBlock は level ごとに状態を持ちますが、見た目は fluid renderer が担当します。
         // そのため blockstate 側では、粒子テクスチャだけ持つ最小の model を全状態で共有すれば十分です。

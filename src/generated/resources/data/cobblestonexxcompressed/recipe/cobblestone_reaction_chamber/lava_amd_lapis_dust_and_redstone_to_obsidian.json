@@ -1,0 +1,19 @@
+{
+  "type": "cobblestonexxcompressed:cobblestone_reaction_chamber",
+  "cobblestone_power_per_tick": 1024,
+  "fluid_input": {
+    "amount": 4000,
+    "id": "minecraft:lava"
+  },
+  "ingredient_1": {
+    "tag": "c:dusts/lapis"
+  },
+  "ingredient_2": {
+    "item": "minecraft:redstone"
+  },
+  "result": {
+    "count": 16,
+    "id": "minecraft:obsidian"
+  },
+  "total_cobblestone_power": 3276800
+}

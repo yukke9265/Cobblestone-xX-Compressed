@@ -1,0 +1,379 @@
+package com.yukke9265.cobblestone_xx_compressed.screen;
+
+import com.yukke9265.cobblestone_xx_compressed.CobblestonexXCompressed;
+import com.yukke9265.cobblestone_xx_compressed.blockentity.AutomationMode;
+import com.yukke9265.cobblestone_xx_compressed.blockentity.AutomationSide;
+import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneWaterGeneratorMenu;
+
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Inventory;
+import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
+import net.neoforged.neoforge.fluids.FluidStack;
+
+public class CobblestoneWaterGeneratorScreen extends BaseScreen<CobblestoneWaterGeneratorMenu> {
+    private static final AutomationSide[] AUTOMATION_SIDES = new AutomationSide[] {
+        AutomationSide.UP,
+        AutomationSide.DOWN,
+        AutomationSide.FRONT,
+        AutomationSide.BACK,
+        AutomationSide.LEFT,
+        AutomationSide.RIGHT
+    };
+
+    private static final int AUTOMATION_PANEL_X_OFFSET = 4;
+    private static final int AUTOMATION_BUTTON_WIDTH = 56;
+    private static final int AUTOMATION_BUTTON_HEIGHT = 16;
+    private static final int AUTOMATION_BUTTON_SPACING = 18;
+    private static final int AUTOMATION_PANEL_Y = 20;
+    private static final int START_BUTTON_WIDTH = 62;
+    private static final int START_BUTTON_HEIGHT = 20;
+    private static final int START_BUTTON_X_OFFSET = 4;
+    private static final int AUTO_EXPORT_BUTTON_WIDTH = 94;
+    private static final int AUTO_EXPORT_BUTTON_HEIGHT = 20;
+    private static final int AUTO_INSERT_BUTTON_WIDTH = 94;
+    private static final int AUTO_INSERT_BUTTON_HEIGHT = 20;
+    private static final int MUTE_SOUND_BUTTON_WIDTH = 94;
+    private static final int MUTE_SOUND_BUTTON_HEIGHT = 20;
+
+    private static final int POWER_SLOT_X = 26;
+    private static final int BUCKET_SLOT_X = 132;
+    private static final int MACHINE_SLOT_Y = 17;
+    private static final int FLUID_INDICATOR_X = POWER_SLOT_X + 22;
+    private static final int FLUID_INDICATOR_Y = MACHINE_SLOT_Y + 3;
+    private static final int FLUID_INDICATOR_WIDTH = BUCKET_SLOT_X - POWER_SLOT_X - 26;
+    private static final int FLUID_INDICATOR_HEIGHT = 12;
+    private static final int FLUID_INDICATOR_HOVER_X = POWER_SLOT_X + 18;
+    private static final int FLUID_INDICATOR_HOVER_Y = MACHINE_SLOT_Y - 2;
+    private static final int FLUID_INDICATOR_HOVER_WIDTH = BUCKET_SLOT_X - POWER_SLOT_X - 18;
+    private static final int FLUID_INDICATOR_HOVER_HEIGHT = 20;
+    private static final int FLUID_INDICATOR_BORDER_COLOR = 0xFF404040;
+    private static final int FLUID_INDICATOR_BACKGROUND_COLOR = 0xFF101010;
+    private static final int FLUID_LABEL_X = POWER_SLOT_X;
+    private static final int FLUID_LABEL_Y = 38;
+    private static final int FLUID_LABEL_LINE_HEIGHT = 8;
+    private static final int RATE_LABEL_X = 4;
+    private static final int CONVERT_RATE_LABEL_Y = FLUID_LABEL_Y + FLUID_LABEL_LINE_HEIGHT * 2;
+    private static final int CP_RATE_LABEL_Y = FLUID_LABEL_Y + FLUID_LABEL_LINE_HEIGHT * 3;
+
+    private static final ResourceLocation BACKGROUND_TEXTURE =
+        ResourceLocation.fromNamespaceAndPath(CobblestonexXCompressed.MODID, "textures/gui/cobblestone_tank.png");
+
+    private final Button[] itemAutomationButtons = new Button[AUTOMATION_SIDES.length];
+    private final Button[] fluidAutomationButtons = new Button[AUTOMATION_SIDES.length];
+    private Button autoExportButton;
+    private Button autoInsertButton;
+    private Button muteSoundButton;
+
+    private final int imageWidth = 176;
+    private final int imageHeight = 166;
+    private final int titleLabelX = 8;
+    private final int titleLabelY = 6;
+    private final int inventoryLabelX = 8;
+    private final int inventoryLabelY = 72;
+
+    public CobblestoneWaterGeneratorScreen(CobblestoneWaterGeneratorMenu menu, Inventory inventory, Component title) {
+        super(menu, inventory, title);
+    }
+
+    @Override
+    protected void init() {
+        super.init();
+
+        this.addRenderableWidget(
+            Button.builder(Component.translatable("gui.cobblestonexxcompressed.start_stop"), button -> this.sendMenuButtonClick(0))
+                .bounds(
+                    this.leftPos + this.imageWidth + START_BUTTON_X_OFFSET,
+                    this.topPos + this.imageHeight - START_BUTTON_HEIGHT,
+                    START_BUTTON_WIDTH,
+                    START_BUTTON_HEIGHT
+                )
+                .build()
+        );
+
+        this.autoExportButton = this.addRenderableWidget(
+            Button.builder(Component.empty(), button -> this.sendMenuButtonClick(this.menu.getAutoExportButtonId()))
+                .bounds(
+                    this.leftPos + this.imageWidth + START_BUTTON_X_OFFSET,
+                    this.topPos + this.imageHeight - START_BUTTON_HEIGHT - AUTO_EXPORT_BUTTON_HEIGHT - 2,
+                    AUTO_EXPORT_BUTTON_WIDTH,
+                    AUTO_EXPORT_BUTTON_HEIGHT
+                )
+                .build()
+        );
+
+        this.autoInsertButton = this.addRenderableWidget(
+            Button.builder(Component.empty(), button -> this.sendMenuButtonClick(this.menu.getAutoInsertButtonId()))
+                .bounds(
+                    this.leftPos + this.imageWidth + START_BUTTON_X_OFFSET,
+                    this.topPos + this.imageHeight - START_BUTTON_HEIGHT - AUTO_EXPORT_BUTTON_HEIGHT - AUTO_INSERT_BUTTON_HEIGHT - 4,
+                    AUTO_INSERT_BUTTON_WIDTH,
+                    AUTO_INSERT_BUTTON_HEIGHT
+                )
+                .build()
+        );
+
+        this.muteSoundButton = this.addMuteSoundButton(
+            this.leftPos + this.imageWidth + START_BUTTON_X_OFFSET,
+            this.topPos + this.imageHeight - START_BUTTON_HEIGHT - AUTO_EXPORT_BUTTON_HEIGHT - AUTO_INSERT_BUTTON_HEIGHT - 4 - MUTE_SOUND_BUTTON_HEIGHT - 2,
+            MUTE_SOUND_BUTTON_WIDTH,
+            MUTE_SOUND_BUTTON_HEIGHT
+        );
+
+        int itemPanelX = this.leftPos - AUTOMATION_PANEL_X_OFFSET - AUTOMATION_BUTTON_WIDTH;
+        int fluidPanelX = itemPanelX - AUTOMATION_BUTTON_WIDTH - 4;
+        for (int index = 0; index < AUTOMATION_SIDES.length; index++) {
+            AutomationSide side = AUTOMATION_SIDES[index];
+            int y = this.topPos + AUTOMATION_PANEL_Y + index * AUTOMATION_BUTTON_SPACING;
+            this.addItemAutomationButton(side, itemPanelX, y);
+            this.addFluidAutomationButton(side, fluidPanelX, y);
+        }
+
+        this.refreshButtons();
+    }
+
+    private void addItemAutomationButton(AutomationSide side, int x, int y) {
+        this.itemAutomationButtons[side.getIndex()] = this.addRenderableWidget(
+            Button.builder(Component.empty(), button -> this.sendMenuButtonClick(this.menu.getItemAutomationButtonId(side)))
+                .bounds(x, y, AUTOMATION_BUTTON_WIDTH, AUTOMATION_BUTTON_HEIGHT)
+                .build()
+        );
+    }
+
+    private void addFluidAutomationButton(AutomationSide side, int x, int y) {
+        this.fluidAutomationButtons[side.getIndex()] = this.addRenderableWidget(
+            Button.builder(Component.empty(), button -> this.sendMenuButtonClick(this.menu.getFluidAutomationButtonId(side)))
+                .bounds(x, y, AUTOMATION_BUTTON_WIDTH, AUTOMATION_BUTTON_HEIGHT)
+                .build()
+        );
+    }
+
+    @Override
+    protected void containerTick() {
+        super.containerTick();
+        this.refreshButtons();
+    }
+
+    private void refreshButtons() {
+        for (AutomationSide side : AUTOMATION_SIDES) {
+            int index = side.getIndex();
+
+            Button itemButton = this.itemAutomationButtons[index];
+            if (itemButton != null) {
+                itemButton.setMessage(this.createAutomationButtonLabel(side, this.menu.getItemAutomationMode(side)));
+            }
+
+            Button fluidButton = this.fluidAutomationButtons[index];
+            if (fluidButton != null) {
+                fluidButton.setMessage(this.createAutomationButtonLabel(side, this.menu.getFluidAutomationMode(side)));
+            }
+        }
+
+        if (this.autoExportButton != null) {
+            this.autoExportButton.setMessage(this.createCheckboxLabel(this.menu.isAutoExportEnabled(), "gui.cobblestonexxcompressed.auto_export"));
+        }
+
+        if (this.autoInsertButton != null) {
+            this.autoInsertButton.setMessage(this.createCheckboxLabel(this.menu.isAutoInsertEnabled(), "gui.cobblestonexxcompressed.auto_insert"));
+        }
+
+        this.refreshMuteSoundButton(this.muteSoundButton);
+    }
+
+    private Component createAutomationButtonLabel(AutomationSide side, AutomationMode mode) {
+        return Component.translatable(this.getAutomationSideTranslationKey(side))
+            .withStyle(mode.createLabelComponent().getStyle());
+    }
+
+    private Component createAutomationHoverLabel(Component categoryLabel, AutomationSide side, AutomationMode mode) {
+        return categoryLabel.copy()
+            .append(Component.literal(" / "))
+            .append(Component.translatable(this.getAutomationSideTranslationKey(side)))
+            .append(Component.literal(": "))
+            .append(mode.createLabelComponent());
+    }
+
+    private String getAutomationSideTranslationKey(AutomationSide side) {
+        return switch (side) {
+            case DOWN -> "gui.cobblestonexxcompressed.automation.down";
+            case UP -> "gui.cobblestonexxcompressed.automation.up";
+            case FRONT -> "gui.cobblestonexxcompressed.automation.front";
+            case BACK -> "gui.cobblestonexxcompressed.automation.back";
+            case LEFT -> "gui.cobblestonexxcompressed.automation.right";
+            case RIGHT -> "gui.cobblestonexxcompressed.automation.left";
+        };
+    }
+
+    @Override
+    protected void renderBg(GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
+        int x = this.leftPos;
+        int y = this.topPos;
+
+        this.renderBackgroundTexture(guiGraphics, BACKGROUND_TEXTURE, x, y, this.imageWidth, this.imageHeight);
+        this.renderCobblestoneSlotPart(guiGraphics, x + POWER_SLOT_X, y + MACHINE_SLOT_Y);
+        this.renderNormalSlotPart(guiGraphics, x + BUCKET_SLOT_X, y + MACHINE_SLOT_Y);
+        guiGraphics.fill(
+            x + FLUID_INDICATOR_X - 1,
+            y + FLUID_INDICATOR_Y - 1,
+            x + FLUID_INDICATOR_X + FLUID_INDICATOR_WIDTH + 1,
+            y + FLUID_INDICATOR_Y + FLUID_INDICATOR_HEIGHT + 1,
+            FLUID_INDICATOR_BORDER_COLOR
+        );
+        guiGraphics.fill(
+            x + FLUID_INDICATOR_X,
+            y + FLUID_INDICATOR_Y,
+            x + FLUID_INDICATOR_X + FLUID_INDICATOR_WIDTH,
+            y + FLUID_INDICATOR_Y + FLUID_INDICATOR_HEIGHT,
+            FLUID_INDICATOR_BACKGROUND_COLOR
+        );
+
+        long storedFluidAmount = this.menu.getStoredFluidAmount();
+        long maxFluidAmount = this.menu.getMaxFluidAmount();
+        if (maxFluidAmount > 0L && storedFluidAmount > 0L) {
+            int fluidIndicatorFillColor = this.getFluidIndicatorFillColor();
+            int filledWidth = (int) Math.max(1L, Math.round(storedFluidAmount / (double) maxFluidAmount * FLUID_INDICATOR_WIDTH));
+            guiGraphics.fill(
+                x + FLUID_INDICATOR_X,
+                y + FLUID_INDICATOR_Y,
+                x + FLUID_INDICATOR_X + filledWidth,
+                y + FLUID_INDICATOR_Y + FLUID_INDICATOR_HEIGHT,
+                fluidIndicatorFillColor
+            );
+        }
+    }
+
+    @Override
+    protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        guiGraphics.drawString(this.font, this.title, this.titleLabelX, this.titleLabelY, 0x404040, false);
+        guiGraphics.drawString(this.font, this.playerInventoryTitle, this.inventoryLabelX, this.inventoryLabelY, 0x404040, false);
+
+        Component fluidAmountLabel = Component.translatable("gui.cobblestonexxcompressed.fluid_amount");
+        guiGraphics.drawString(this.font, fluidAmountLabel, FLUID_LABEL_X, FLUID_LABEL_Y, 0x404040, false);
+
+        Component fluidStatusLabel = Component.literal(String.valueOf(this.menu.getStoredFluidAmount()))
+            .append(" / ")
+            .append(String.valueOf(this.menu.getMaxFluidAmount()))
+            .append(" mB");
+        guiGraphics.drawString(this.font, fluidStatusLabel, FLUID_LABEL_X, FLUID_LABEL_Y + FLUID_LABEL_LINE_HEIGHT, 0x404040, false);
+
+        Component convertRateLabel = Component.translatable(
+            "gui.cobblestonexxcompressed.water_generator.convert_rate",
+            this.menu.getLastConvertedFluidAmount()
+        );
+        guiGraphics.drawString(this.font, convertRateLabel, RATE_LABEL_X, CONVERT_RATE_LABEL_Y, 0x404040, false);
+
+        Component cpRateLabel = Component.translatable(
+            "gui.cobblestonexxcompressed.water_generator.cp_rate",
+            this.menu.getCurrentCobblestonePowerRate()
+        );
+        guiGraphics.drawString(this.font, cpRateLabel, RATE_LABEL_X, CP_RATE_LABEL_Y, 0x404040, false);
+
+        int itemPanelX = 0 - AUTOMATION_PANEL_X_OFFSET - AUTOMATION_BUTTON_WIDTH;
+        int fluidPanelX = itemPanelX - AUTOMATION_BUTTON_WIDTH - 4;
+        int headerY = AUTOMATION_PANEL_Y - 10;
+        guiGraphics.drawString(this.font, Component.translatable("gui.cobblestonexxcompressed.item"), itemPanelX + 18, headerY, 0x404040, false);
+        guiGraphics.drawString(this.font, Component.translatable("gui.cobblestonexxcompressed.fluid"), fluidPanelX + 16, headerY, 0x404040, false);
+    }
+
+    @Override
+    protected void renderHoverLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        for (AutomationSide side : AUTOMATION_SIDES) {
+            int index = side.getIndex();
+            this.renderButtonHoverLabel(
+                guiGraphics,
+                mouseX,
+                mouseY,
+                this.itemAutomationButtons[index],
+                this.createAutomationHoverLabel(Component.translatable("gui.cobblestonexxcompressed.item"), side, this.menu.getItemAutomationMode(side))
+            );
+            this.renderButtonHoverLabel(
+                guiGraphics,
+                mouseX,
+                mouseY,
+                this.fluidAutomationButtons[index],
+                this.createAutomationHoverLabel(Component.translatable("gui.cobblestonexxcompressed.fluid"), side, this.menu.getFluidAutomationMode(side))
+            );
+        }
+
+        if (this.isMouseOverFluidIndicator(mouseX, mouseY)) {
+            this.renderFluidHoverLabel(guiGraphics, mouseX, mouseY);
+        }
+
+        this.renderCobblestonePowerHoverLabel(
+            guiGraphics,
+            mouseX,
+            mouseY,
+            POWER_SLOT_X,
+            MACHINE_SLOT_Y,
+            18,
+            18
+        );
+    }
+
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        for (AutomationSide side : AUTOMATION_SIDES) {
+            int index = side.getIndex();
+            if (this.handleAutomationButtonRightClick(button, this.itemAutomationButtons[index], this.menu.getReverseAutomationButtonId(index))) {
+                return true;
+            }
+
+            if (this.handleAutomationButtonRightClick(button, this.fluidAutomationButtons[index], this.menu.getReverseFluidAutomationButtonId(index))) {
+                return true;
+            }
+        }
+
+        if (this.handleFluidIndicatorClick(
+            button,
+            this.isMouseOverFluidIndicator((int) mouseX, (int) mouseY),
+            this.menu.getFluidInteractionButtonId(),
+            this.menu.getFluidInteractionShiftButtonId()
+        )) {
+            return true;
+        }
+
+        return super.mouseClicked(mouseX, mouseY, button);
+    }
+
+    @Override
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        if (this.isMouseOverFluidIndicator(this.getLastMouseX(), this.getLastMouseY())
+            && this.handleJeiFluidLookupKeyPress(this.menu.getDisplayedFluid(), keyCode, scanCode)) {
+            return true;
+        }
+
+        return super.keyPressed(keyCode, scanCode, modifiers);
+    }
+
+    private boolean isMouseOverFluidIndicator(int mouseX, int mouseY) {
+        int hoverLeft = this.leftPos + FLUID_INDICATOR_HOVER_X;
+        int hoverTop = this.topPos + FLUID_INDICATOR_HOVER_Y;
+        return mouseX >= hoverLeft
+            && mouseX < hoverLeft + FLUID_INDICATOR_HOVER_WIDTH
+            && mouseY >= hoverTop
+            && mouseY < hoverTop + FLUID_INDICATOR_HOVER_HEIGHT;
+    }
+
+    private void renderFluidHoverLabel(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        FluidStack displayedFluid = this.menu.getDisplayedFluid();
+        if (displayedFluid.isEmpty()) {
+            return;
+        }
+
+        Component fluidName = displayedFluid.getHoverName();
+        Component amountLabel = Component.literal(String.valueOf(this.menu.getStoredFluidAmount())).append(" mB");
+        guiGraphics.renderComponentTooltip(this.font, java.util.List.of(fluidName, amountLabel), mouseX, mouseY);
+    }
+
+    private int getFluidIndicatorFillColor() {
+        FluidStack displayedFluid = this.menu.getDisplayedFluid();
+        if (displayedFluid.isEmpty()) {
+            return 0xFF3B8BFF;
+        }
+
+        IClientFluidTypeExtensions extensions = IClientFluidTypeExtensions.of(displayedFluid.getFluid());
+        return extensions.getTintColor(displayedFluid);
+    }
+}

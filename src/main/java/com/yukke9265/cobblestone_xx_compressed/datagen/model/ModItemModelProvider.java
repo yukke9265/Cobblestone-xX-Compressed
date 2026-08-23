@@ -117,6 +117,12 @@ public class ModItemModelProvider extends ItemModelProvider {
             registerCobblestoneRodItemModel(tier.getItem());
         }
 
+        registerCompressedCobblestonePickaxeItemModel(ModItems.COMPRESSED_COBBLESTONE_PICKAXE);
+
+        for (ModItems.TierCompressedCobblestonePickaxe tier : ModItems.TierCompressedCobblestonePickaxe.values()) {
+            registerCompressedCobblestonePickaxeItemModel(tier.getItem());
+        }
+
         registerCobblestoneMotorItemModel(ModItems.COBBLESTONE_MOTOR);
 
         for (ModItems.TierCobblestoneMotor tier : ModItems.TierCobblestoneMotor.values()) {
@@ -244,6 +250,11 @@ public class ModItemModelProvider extends ItemModelProvider {
         registerGeneratedItemModel(item, "cobblestone_rod");
     }
 
+    // ツールは generated ではなく handheld を親にすると、手持ち時の持ち方がピッケルらしくなります。
+    private void registerCompressedCobblestonePickaxeItemModel(DeferredItem<Item> item) {
+        registerHandheldItemModel(item, "compressed_cobblestone_pickaxe");
+    }
+
     private void registerCobblestoneMotorItemModel(DeferredItem<Item> item) {
         registerGeneratedItemModel(item, "cobblestone_motor");
     }
@@ -292,6 +303,19 @@ public class ModItemModelProvider extends ItemModelProvider {
         String itemName = item.getId().getPath();
 
         withExistingParent(itemName, mcLoc("item/generated"))
+            .texture(
+                "layer0",
+                ResourceLocation.fromNamespaceAndPath(
+                    CobblestonexXCompressed.MODID,
+                    "item/" + textureFolder + "/" + itemName
+                )
+            );
+    }
+
+    private void registerHandheldItemModel(DeferredItem<Item> item, String textureFolder) {
+        String itemName = item.getId().getPath();
+
+        withExistingParent(itemName, mcLoc("item/handheld"))
             .texture(
                 "layer0",
                 ResourceLocation.fromNamespaceAndPath(

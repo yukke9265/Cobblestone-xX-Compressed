@@ -108,6 +108,11 @@ public class ModEnglishLanguageProvider extends LanguageProvider {
             addItem(tier.getItem(), tier.getEnglishDisplayName());
         }
 
+        addItem(ModItems.COMPRESSED_COBBLESTONE_PICKAXE, "Compressed Cobblestone Pickaxe");
+        for (ModItems.TierCompressedCobblestonePickaxe tier : ModItems.TierCompressedCobblestonePickaxe.values()) {
+            addItem(tier.getItem(), tier.getEnglishDisplayName());
+        }
+
         addItem(ModItems.COBBLESTONE_MOTOR, "Cobblestone Motor");
         for (ModItems.TierCobblestoneMotor tier : ModItems.TierCobblestoneMotor.values()) {
             addItem(tier.getItem(), tier.getEnglishDisplayName());
@@ -207,6 +212,7 @@ public class ModEnglishLanguageProvider extends LanguageProvider {
         addBlock(ModBlocks.COBBLESTONE_CRYSTALLIZATION_CHAMBER, "Cobblestone Crystallization Chamber");
         addBlock(ModBlocks.COBBLESTONE_DISSOLUTION_CHAMBER, "Cobblestone Dissolution Chamber");
         addBlock(ModBlocks.COBBLESTONE_FLUID_MIXER, "Cobblestone Fluid Mixer");
+        addBlock(ModBlocks.COBBLESTONE_WATER_GENERATOR, "Cobblestone Water Generator");
 
         for (ModBlocks.TierCobblestoneGenerator generatorVariant : ModBlocks.TierCobblestoneGenerator.values()) {
             addBlock(generatorVariant.getBlock(), generatorVariant.getEnglishDisplayName());
@@ -244,6 +250,7 @@ public class ModEnglishLanguageProvider extends LanguageProvider {
         add("tooltip.cobblestonexxcompressed.cobblestone_acceleration_chip.rate", "x%s CP/t");
         add("tooltip.cobblestonexxcompressed.cobblestone_generator.catalyst_rate", "Place in a machine cobblestone slot to supply %s CP/t without being consumed.");
         add("tooltip.cobblestonexxcompressed.cobblestone_parallel_chip.extra", "+%s extra crafts");
+        add("tooltip.cobblestonexxcompressed.compressed_cobblestone_pickaxe.stone_break_simulator_bonus", "Stone Break Simulator: +%s Unbreaking");
         add("tooltip.cobblestonexxcompressed.configuration_card.empty", "No configuration stored");
         add("tooltip.cobblestonexxcompressed.configuration_card.stored", "Stored: %s");
         add("tooltip.cobblestonexxcompressed.configuration_card.upgrade", "Upgrade: %s");
@@ -252,7 +259,11 @@ public class ModEnglishLanguageProvider extends LanguageProvider {
         add("message.cobblestonexxcompressed.configuration_card.cleared", "Cleared stored configuration");
         add("message.cobblestonexxcompressed.configuration_card.incompatible", "Stored settings can only be pasted to the same machine type");
         TooltipTranslationEntries.addEnglish(this);
+        add("gui.cobblestonexxcompressed.water_generator.convert_rate", "Water converted: %s mB/t");
+        add("gui.cobblestonexxcompressed.water_generator.cp_rate", "CP consumed: %s/t");
         add("jei.cobblestonexxcompressed.compressed_stone_loot", "Compressed Stone Loot");
+        add("jei.cobblestonexxcompressed.water_generator_conversion", "Cobblestone Water Generator");
+        add("jei.cobblestonexxcompressed.water_generator_conversion.rate", "1 CP = 1 mB");
         add("jei.cobblestonexxcompressed.silk_touch", "Silk Touch");
         add("jei.cobblestonexxcompressed.no_silk_touch", "No Silk Touch");
         add("jei.cobblestonexxcompressed.chance", "Chance: %s");

@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/handheld",
+  "textures": {
+    "layer0": "cobblestonexxcompressed:item/compressed_cobblestone_pickaxe/tier_diamond_compressed_cobblestone_pickaxe"
+  }
+}

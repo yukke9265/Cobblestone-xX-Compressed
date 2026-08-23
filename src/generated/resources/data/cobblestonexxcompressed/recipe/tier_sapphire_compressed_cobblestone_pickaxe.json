@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "C": {
+      "item": "cobblestonexxcompressed:tier_sapphire_compressed_cobblestone"
+    },
+    "R": {
+      "item": "cobblestonexxcompressed:tier_sapphire_cobblestone_rod"
+    }
+  },
+  "pattern": [
+    "CCC",
+    " R ",
+    " R "
+  ],
+  "result": {
+    "count": 1,
+    "id": "cobblestonexxcompressed:tier_sapphire_compressed_cobblestone_pickaxe"
+  }
+}
