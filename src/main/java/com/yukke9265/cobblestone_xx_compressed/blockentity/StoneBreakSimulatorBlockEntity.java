@@ -60,7 +60,7 @@ public class StoneBreakSimulatorBlockEntity extends BaseBlockEntity implements M
     public static final int ACCELERATION_SLOT_INDEX = 9;
     public static final int ENERGIZED_CUBE_SLOT_INDEX = 10;
     public static final int PARALLEL_SLOT_INDEX = 11;
-    public static final long MAX_COBBLESTONE_POWER = 16000L;
+    public static final long MAX_COBBLESTONE_POWER = 64000L;
 
     private static final int OUTPUT_SLOT_COUNT = 6;
     private static final int DATA_INDEX_PROGRESS = 0;
