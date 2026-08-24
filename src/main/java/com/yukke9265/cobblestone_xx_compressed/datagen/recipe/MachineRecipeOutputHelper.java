@@ -69,9 +69,47 @@ final class MachineRecipeOutputHelper {
         long totalCobblestonePower,
         long cobblestonePowerPerTick
     ) {
-        CobblestoneCrusherRecipe recipe = new CobblestoneCrusherRecipe(
+        saveCobblestoneCrusherRecipe(
+            output,
+            recipeName,
             Ingredient.of(ingredient),
             result.copy(),
+            totalCobblestonePower,
+            cobblestonePowerPerTick
+        );
+    }
+
+    public static void saveCobblestoneCrusherRecipe(
+        RecipeOutput output,
+        String recipeName,
+        Ingredient ingredient,
+        ItemStack result,
+        long totalCobblestonePower,
+        long cobblestonePowerPerTick
+    ) {
+        CobblestoneCrusherRecipe recipe = new CobblestoneCrusherRecipe(
+            ingredient,
+            result.copy(),
+            totalCobblestonePower,
+            cobblestonePowerPerTick
+        );
+
+        output.accept(modRecipeId("cobblestone_crusher/" + recipeName), recipe, null);
+    }
+
+    public static void saveCobblestoneCrusherRecipe(
+        RecipeOutput output,
+        String recipeName,
+        Ingredient ingredient,
+        ResourceLocation resultItemId,
+        int resultCount,
+        long totalCobblestonePower,
+        long cobblestonePowerPerTick
+    ) {
+        CobblestoneCrusherRecipe recipe = new CobblestoneCrusherRecipe(
+            ingredient,
+            resultItemId,
+            resultCount,
             totalCobblestonePower,
             cobblestonePowerPerTick
         );
@@ -140,11 +178,61 @@ final class MachineRecipeOutputHelper {
         long totalCobblestonePower,
         long cobblestonePowerPerTick
     ) {
-        CobblestoneLaserDrillRecipe recipe = new CobblestoneLaserDrillRecipe(
+        saveCobblestoneLaserDrillRecipe(
+            output,
+            recipeName,
             Ingredient.of(ingredient),
             firstResult,
             firstResultChance,
             secondResult,
+            secondResultChance,
+            totalCobblestonePower,
+            cobblestonePowerPerTick
+        );
+    }
+
+    public static void saveCobblestoneLaserDrillRecipe(
+        RecipeOutput output,
+        String recipeName,
+        Ingredient ingredient,
+        ItemStack firstResult,
+        float firstResultChance,
+        ItemStack secondResult,
+        float secondResultChance,
+        long totalCobblestonePower,
+        long cobblestonePowerPerTick
+    ) {
+        CobblestoneLaserDrillRecipe recipe = new CobblestoneLaserDrillRecipe(
+            ingredient,
+            firstResult,
+            firstResultChance,
+            secondResult,
+            secondResultChance,
+            totalCobblestonePower,
+            cobblestonePowerPerTick
+        );
+
+        output.accept(modRecipeId("cobblestone_laser_drill/" + recipeName), recipe, null);
+    }
+
+    public static void saveCobblestoneLaserDrillRecipe(
+        RecipeOutput output,
+        String recipeName,
+        Ingredient ingredient,
+        ResourceLocation firstResultId,
+        float firstResultChance,
+        ResourceLocation secondResultId,
+        float secondResultChance,
+        long totalCobblestonePower,
+        long cobblestonePowerPerTick
+    ) {
+        CobblestoneLaserDrillRecipe recipe = new CobblestoneLaserDrillRecipe(
+            ingredient,
+            firstResultId,
+            1,
+            firstResultChance,
+            secondResultId,
+            1,
             secondResultChance,
             totalCobblestonePower,
             cobblestonePowerPerTick
@@ -251,11 +339,57 @@ final class MachineRecipeOutputHelper {
         long totalCobblestonePower,
         long cobblestonePowerPerTick
     ) {
+        saveCobblestoneReactionChamberRecipe(
+            output,
+            recipeName,
+            fluidInput,
+            new SizedIngredient(firstIngredient, 1),
+            new SizedIngredient(secondIngredient, 1),
+            result,
+            totalCobblestonePower,
+            cobblestonePowerPerTick
+        );
+    }
+
+    public static void saveCobblestoneReactionChamberRecipe(
+        RecipeOutput output,
+        String recipeName,
+        FluidStack fluidInput,
+        SizedIngredient firstIngredient,
+        SizedIngredient secondIngredient,
+        ItemStack result,
+        long totalCobblestonePower,
+        long cobblestonePowerPerTick
+    ) {
         CobblestoneReactionChamberRecipe recipe = new CobblestoneReactionChamberRecipe(
             fluidInput,
             firstIngredient,
             secondIngredient,
             result,
+            totalCobblestonePower,
+            cobblestonePowerPerTick
+        );
+
+        output.accept(modRecipeId("cobblestone_reaction_chamber/" + recipeName), recipe, null);
+    }
+
+    public static void saveCobblestoneReactionChamberRecipe(
+        RecipeOutput output,
+        String recipeName,
+        FluidStack fluidInput,
+        SizedIngredient firstIngredient,
+        SizedIngredient secondIngredient,
+        ResourceLocation resultItemId,
+        int resultCount,
+        long totalCobblestonePower,
+        long cobblestonePowerPerTick
+    ) {
+        CobblestoneReactionChamberRecipe recipe = new CobblestoneReactionChamberRecipe(
+            fluidInput,
+            firstIngredient,
+            secondIngredient,
+            resultItemId,
+            resultCount,
             totalCobblestonePower,
             cobblestonePowerPerTick
         );

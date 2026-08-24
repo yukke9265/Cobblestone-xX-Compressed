@@ -1,0 +1,27 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "ae2"
+    }
+  ],
+  "type": "cobblestonexxcompressed:cobblestone_reaction_chamber",
+  "cobblestone_power_per_tick": 1024,
+  "fluid_input": {
+    "amount": 1000,
+    "id": "cobblestonexxcompressed:red_ruby"
+  },
+  "ingredient_1": {
+    "count": 4,
+    "tag": "cobblestonexxcompressed:ae2_printed_calculation_processor"
+  },
+  "ingredient_2": {
+    "count": 4,
+    "tag": "cobblestonexxcompressed:ae2_printed_silicon"
+  },
+  "result": {
+    "count": 4,
+    "id": "ae2:calculation_processor"
+  },
+  "total_cobblestone_power": 3276800
+}

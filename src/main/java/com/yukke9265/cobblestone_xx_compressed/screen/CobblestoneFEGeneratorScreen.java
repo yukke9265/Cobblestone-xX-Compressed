@@ -5,6 +5,7 @@ import com.yukke9265.cobblestone_xx_compressed.blockentity.AutomationMode;
 import com.yukke9265.cobblestone_xx_compressed.blockentity.AutomationSide;
 import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneFEGeneratorMenu;
 import com.yukke9265.cobblestone_xx_compressed.util.MachineGuiLayouts;
+import com.yukke9265.cobblestone_xx_compressed.util.NumberDisplayHelper;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -39,21 +40,6 @@ public class CobblestoneFEGeneratorScreen extends BaseScreen<CobblestoneFEGenera
     private static final int MUTE_SOUND_BUTTON_WIDTH = 94;
     private static final int MUTE_SOUND_BUTTON_HEIGHT = 20;
 
-    
-
-    private static final int CP_INDICATOR_X = 56;
-    private static final int CP_INDICATOR_Y = MachineGuiLayouts.PoweredMachine.POWER_SLOT_Y;
-    private static final int CP_INDICATOR_WIDTH = 14;
-    private static final int CP_INDICATOR_HEIGHT = 14;
-    private static final int TRANSFER_INDICATOR_X = 76;
-    private static final int TRANSFER_INDICATOR_Y = CP_INDICATOR_Y;
-    private static final int TRANSFER_INDICATOR_WIDTH = 14;
-    private static final int TRANSFER_INDICATOR_HEIGHT = 14;
-    private static final int FE_INDICATOR_X = 98;
-    private static final int FE_INDICATOR_Y = CP_INDICATOR_Y - 2;
-    private static final int FE_INDICATOR_WIDTH = 22;
-    private static final int FE_INDICATOR_HEIGHT = 20;
-
     private static final int CP_labelX = 4;
     private static final int CP_labelY = 14;
     private static final int FE_labelX = CP_labelX;
@@ -66,7 +52,6 @@ public class CobblestoneFEGeneratorScreen extends BaseScreen<CobblestoneFEGenera
     private static final int INDICATOR_BACKGROUND_COLOR = 0xFF101010;
     private static final int CP_INDICATOR_FILL_COLOR = 0xFFD6D6D6;
     private static final int FE_INDICATOR_FILL_COLOR = 0xFF3BCB5A;
-    private static final int TRANSFER_INDICATOR_FILL_COLOR = 0xFF4F6CFF;
 
     private static final ResourceLocation BACKGROUND_TEXTURE =
         ResourceLocation.fromNamespaceAndPath(CobblestonexXCompressed.MODID, "textures/gui/cobblestone_fe_generator.png");
@@ -231,21 +216,36 @@ public class CobblestoneFEGeneratorScreen extends BaseScreen<CobblestoneFEGenera
         int y = this.topPos;
 
         this.renderBackgroundTexture(guiGraphics, BACKGROUND_TEXTURE, x, y, this.imageWidth, this.imageHeight);
-        this.renderCobblestoneSlotPart(guiGraphics, x + MachineGuiLayouts.PoweredMachine.POWER_SLOT_X, y + MachineGuiLayouts.PoweredMachine.POWER_SLOT_Y);
-        this.renderIndicator(guiGraphics, x + CP_INDICATOR_X, y + CP_INDICATOR_Y, CP_INDICATOR_WIDTH, CP_INDICATOR_HEIGHT,
-            this.menu.getStoredCobblestonePower(), this.menu.getMaxCobblestonePower(), CP_INDICATOR_FILL_COLOR);
-        this.renderIndicator(guiGraphics, x + FE_INDICATOR_X, y + FE_INDICATOR_Y, FE_INDICATOR_WIDTH, FE_INDICATOR_HEIGHT,
-            this.menu.getStoredForgeEnergy(), this.menu.getMaxForgeEnergy(), FE_INDICATOR_FILL_COLOR);
-
-        if (this.menu.getIsAvailable()) {
-            guiGraphics.fill(
-                x + TRANSFER_INDICATOR_X,
-                y + TRANSFER_INDICATOR_Y,
-                x + TRANSFER_INDICATOR_X + TRANSFER_INDICATOR_WIDTH,
-                y + TRANSFER_INDICATOR_Y + TRANSFER_INDICATOR_HEIGHT,
-                TRANSFER_INDICATOR_FILL_COLOR
-            );
-        }
+        this.renderCobblestoneSlotPart(
+            guiGraphics,
+            x + MachineGuiLayouts.FeGenerator.COBBLESTONE_SLOT_X,
+            y + MachineGuiLayouts.FeGenerator.COBBLESTONE_SLOT_Y
+        );
+        this.renderNormalSlotPart(
+            guiGraphics,
+            x + MachineGuiLayouts.FeGenerator.CHARGE_SLOT_X,
+            y + MachineGuiLayouts.FeGenerator.CHARGE_SLOT_Y
+        );
+        this.renderHorizontalBar(
+            guiGraphics,
+            x + MachineGuiLayouts.FeGenerator.BAR_X,
+            y + MachineGuiLayouts.FeGenerator.CP_BAR_Y,
+            MachineGuiLayouts.FeGenerator.BAR_WIDTH,
+            MachineGuiLayouts.FeGenerator.BAR_HEIGHT,
+            this.menu.getStoredCobblestonePower(),
+            this.menu.getMaxCobblestonePower(),
+            CP_INDICATOR_FILL_COLOR
+        );
+        this.renderHorizontalBar(
+            guiGraphics,
+            x + MachineGuiLayouts.FeGenerator.BAR_X,
+            y + MachineGuiLayouts.FeGenerator.FE_BAR_Y,
+            MachineGuiLayouts.FeGenerator.BAR_WIDTH,
+            MachineGuiLayouts.FeGenerator.BAR_HEIGHT,
+            this.menu.getStoredForgeEnergy(),
+            this.menu.getMaxForgeEnergy(),
+            FE_INDICATOR_FILL_COLOR
+        );
     }
 
     @Override
@@ -255,28 +255,22 @@ public class CobblestoneFEGeneratorScreen extends BaseScreen<CobblestoneFEGenera
 
         Component cpLabel = Component.literal("CP")
             .append(": ")
-            .append(String.valueOf(this.menu.getStoredCobblestonePower()))
-            .append(" / ")
-            .append(String.valueOf(this.menu.getMaxCobblestonePower()));
+            .append(NumberDisplayHelper.formatCpRange(this.menu.getStoredCobblestonePower(), this.menu.getMaxCobblestonePower()));
         guiGraphics.drawString(this.font, cpLabel, CP_labelX, CP_labelY, 0x404040, false);
 
         Component feLabel = Component.literal("FE")
             .append(": ")
-            .append(String.valueOf(this.menu.getStoredForgeEnergy()))
-            .append(" / ")
-            .append(String.valueOf(this.menu.getMaxForgeEnergy()));
+            .append(NumberDisplayHelper.formatFeRange(this.menu.getStoredForgeEnergy(), this.menu.getMaxForgeEnergy()));
         guiGraphics.drawString(this.font, feLabel, FE_labelX, FE_labelY, 0x404040, false);
 
         Component convertRateLabel = Component.translatable("gui.cobblestonexxcompressed.convert_fe_rate")
             .append(": ")
-            .append(String.valueOf(this.menu.getLastConvertedForgeEnergy()))
-            .append("/t");
+            .append(NumberDisplayHelper.formatFePerTick(this.menu.getLastConvertedForgeEnergy()));
         guiGraphics.drawString(this.font, convertRateLabel, RATE_LABEL_X, CONVERT_RATE_LABEL_Y, 0x404040, false);
 
         Component exportRateLabel = Component.translatable("gui.cobblestonexxcompressed.output_fe_rate")
             .append(": ")
-            .append(String.valueOf(this.menu.getLastExportedForgeEnergy()))
-            .append("/t");
+            .append(NumberDisplayHelper.formatFePerTick(this.menu.getLastExportedForgeEnergy()));
         guiGraphics.drawString(this.font, exportRateLabel, RATE_LABEL_X, EXPORT_RATE_LABEL_Y, 0x404040, false);
 
         int legendX = 0 - AUTOMATION_PANEL_X_OFFSET - AUTOMATION_BUTTON_WIDTH;
@@ -289,7 +283,26 @@ public class CobblestoneFEGeneratorScreen extends BaseScreen<CobblestoneFEGenera
 
     @Override
     protected void renderHoverLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        this.renderCobblestonePowerHoverLabel(guiGraphics, mouseX, mouseY, CP_INDICATOR_X, CP_INDICATOR_Y, CP_INDICATOR_WIDTH, CP_INDICATOR_HEIGHT);
+        this.renderCobblestonePowerHoverLabel(
+            guiGraphics,
+            mouseX,
+            mouseY,
+            MachineGuiLayouts.FeGenerator.BAR_X,
+            MachineGuiLayouts.FeGenerator.CP_BAR_Y,
+            MachineGuiLayouts.FeGenerator.BAR_WIDTH,
+            MachineGuiLayouts.FeGenerator.BAR_HEIGHT
+        );
+        this.renderHorizontalBarHoverLabel(
+            guiGraphics,
+            mouseX,
+            mouseY,
+            MachineGuiLayouts.FeGenerator.BAR_X,
+            MachineGuiLayouts.FeGenerator.FE_BAR_Y,
+            MachineGuiLayouts.FeGenerator.BAR_WIDTH,
+            MachineGuiLayouts.FeGenerator.BAR_HEIGHT,
+            Component.literal("FE: ")
+                .append(NumberDisplayHelper.formatFeRange(this.menu.getStoredForgeEnergy(), this.menu.getMaxForgeEnergy()))
+        );
         for (AutomationSide side : AUTOMATION_SIDES) {
             this.renderButtonHoverLabel(guiGraphics, mouseX, mouseY, this.automationButtons[side.getIndex()], this.createAutomationHoverLabel(side));
         }
@@ -307,7 +320,16 @@ public class CobblestoneFEGeneratorScreen extends BaseScreen<CobblestoneFEGenera
         return super.mouseClicked(mouseX, mouseY, button);
     }
 
-    private void renderIndicator(GuiGraphics guiGraphics, int x, int y, int width, int height, long stored, long max, int fillColor) {
+    private void renderHorizontalBar(
+        GuiGraphics guiGraphics,
+        int x,
+        int y,
+        int width,
+        int height,
+        long stored,
+        long max,
+        int fillColor
+    ) {
         guiGraphics.fill(x - 1, y - 1, x + width + 1, y + height + 1, INDICATOR_BORDER_COLOR);
         guiGraphics.fill(x, y, x + width, y + height, INDICATOR_BACKGROUND_COLOR);
 
@@ -315,7 +337,24 @@ public class CobblestoneFEGeneratorScreen extends BaseScreen<CobblestoneFEGenera
             return;
         }
 
-        int filledHeight = (int) Math.max(1L, Math.round(stored / (double) max * height));
-        guiGraphics.fill(x, y + height - filledHeight, x + width, y + height, fillColor);
+        int filledWidth = (int) Math.max(1L, Math.round(stored / (double) max * width));
+        guiGraphics.fill(x, y, x + filledWidth, y + height, fillColor);
+    }
+
+    private void renderHorizontalBarHoverLabel(
+        GuiGraphics guiGraphics,
+        int mouseX,
+        int mouseY,
+        int barX,
+        int barY,
+        int barWidth,
+        int barHeight,
+        Component tooltip
+    ) {
+        if (!this.isHovering(barX, barY, barWidth, barHeight, mouseX, mouseY)) {
+            return;
+        }
+
+        this.renderHoverLabel(guiGraphics, mouseX, mouseY, tooltip);
     }
 }

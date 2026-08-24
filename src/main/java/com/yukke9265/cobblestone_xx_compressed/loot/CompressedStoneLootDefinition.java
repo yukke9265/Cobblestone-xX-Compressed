@@ -20,6 +20,7 @@ import net.minecraft.world.level.block.Block;
 public class CompressedStoneLootDefinition {
     private static final String MEKANISM_MOD_ID = "mekanism";
     private static final String MEKANISM_EXTRAS_MOD_ID = "mekanism_extras";
+    private static final String AE2_MOD_ID = "ae2";
 
     // compressed stone のドロップ条件は datagen と JEI の両方で使うため、
     // このクラスに 1 か所だけ定義して、表示と実際の loot table がずれないようにします。
@@ -52,7 +53,9 @@ public class CompressedStoneLootDefinition {
             ModBlocks.TierCompressedCobblestone.GOLD.getBlock(),
             bonusDrop(ModItems.TierCobblestoneGem.GOLD.getItem(), 0.2d),
             bonusDrop(() -> Items.NETHER_QUARTZ_ORE, 0.10d),
-            optionalModBonusDrop(MEKANISM_MOD_ID, "fluorite_ore", 0.10d, 0.10d)
+            optionalModBonusDrop(MEKANISM_MOD_ID, "fluorite_ore", 0.10d, 0.10d),
+            // AE2 1.21 にケルタスクォーツ鉱石は無いので、相当する塊を落とします。
+            optionalModBonusDrop(AE2_MOD_ID, "quartz_cluster", 0.10d, 0.10d)
         ),
         new CompressedStoneLootDefinition(
             ModBlocks.TierCompressedStone.AMETHYST.getBlock(),

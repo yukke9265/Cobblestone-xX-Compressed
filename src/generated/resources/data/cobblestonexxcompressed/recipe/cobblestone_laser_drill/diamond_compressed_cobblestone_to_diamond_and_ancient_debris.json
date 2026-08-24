@@ -5,12 +5,10 @@
     "item": "cobblestonexxcompressed:tier_diamond_compressed_cobblestone"
   },
   "result_1": {
-    "count": 1,
     "id": "minecraft:diamond"
   },
   "result_1_chance": 0.5,
   "result_2": {
-    "count": 1,
     "id": "minecraft:ancient_debris"
   },
   "result_2_chance": 0.01,

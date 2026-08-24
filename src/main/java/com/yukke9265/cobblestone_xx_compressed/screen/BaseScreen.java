@@ -8,6 +8,7 @@ import com.yukke9265.cobblestone_xx_compressed.compat.jei.JeiClickableAreaDefini
 import com.yukke9265.cobblestone_xx_compressed.blockentity.AutomationMode;
 import com.yukke9265.cobblestone_xx_compressed.menu.BaseMenu;
 import com.yukke9265.cobblestone_xx_compressed.util.GuiPartRenderer;
+import com.yukke9265.cobblestone_xx_compressed.util.NumberDisplayHelper;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -181,12 +182,9 @@ public class BaseScreen<T extends BaseMenu> extends AbstractContainerScreen<T> {
         List<Component> tooltipLines = List.of(
             Component.translatable("gui.cobblestonexxcompressed.cobblestone_power")
                 .append(": ")
-                .append(String.valueOf(this.menu.getStoredCobblestonePower()))
-                .append(" / ")
-                .append(String.valueOf(this.menu.getMaxCobblestonePower()))
+                .append(NumberDisplayHelper.formatCpRange(this.menu.getStoredCobblestonePower(), this.menu.getMaxCobblestonePower()))
                 .withStyle(AutomationMode.COBBLESTONE_INPUT.createLabelComponent().getStyle()),
-            Component.literal("CP/t: ")
-                .append(String.valueOf(this.menu.getCurrentCobblestonePowerRate()))
+            Component.literal(NumberDisplayHelper.formatCpPerTick(this.menu.getCurrentCobblestonePowerRate()))
                 .withStyle(AutomationMode.COBBLESTONE_INPUT.createLabelComponent().getStyle())
         );
         this.renderHoverLabel(guiGraphics, mouseX, mouseY, tooltipLines);

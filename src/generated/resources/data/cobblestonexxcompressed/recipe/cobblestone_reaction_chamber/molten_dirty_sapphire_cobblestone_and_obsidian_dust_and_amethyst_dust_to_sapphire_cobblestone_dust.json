@@ -6,13 +6,14 @@
     "id": "cobblestonexxcompressed:molten_dirty_tier_sapphire_compressed_cobblestone"
   },
   "ingredient_1": {
+    "count": 1,
     "tag": "c:dusts/obsidian"
   },
   "ingredient_2": {
+    "count": 1,
     "tag": "c:dusts/amethyst"
   },
   "result": {
-    "count": 1,
     "id": "cobblestonexxcompressed:tier_sapphire_cobblestone_dust"
   },
   "total_cobblestone_power": 3276800

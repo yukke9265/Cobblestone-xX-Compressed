@@ -38,6 +38,23 @@ public final class MachineGuiLayouts {
         }
     }
 
+    public static final class FeGenerator {
+        // 左に CP スロット、右に充電スロット、その間に横長ゲージを置きます。
+        public static final int COBBLESTONE_SLOT_X = PoweredMachine.POWER_SLOT_X;
+        public static final int COBBLESTONE_SLOT_Y = PoweredMachine.POWER_SLOT_Y;
+        public static final int CHARGE_SLOT_X = 148;
+        public static final int CHARGE_SLOT_Y = PoweredMachine.POWER_SLOT_Y;
+        public static final int BAR_X = 36;
+        public static final int BAR_WIDTH = 100;
+        public static final int BAR_HEIGHT = 6;
+        private static final int POWER_SLOT_CENTER_Y = PoweredMachine.POWER_SLOT_Y + 8;
+        public static final int CP_BAR_Y = POWER_SLOT_CENTER_Y - BAR_HEIGHT - 1;
+        public static final int FE_BAR_Y = POWER_SLOT_CENTER_Y + 1;
+
+        private FeGenerator() {
+        }
+    }
+
     public static final class ExtremeCompressor {
         public static final int MACHINE_SLOT_Y = PoweredMachine.MACHINE_SLOT_Y + 3;//アイテム数表示と被らないように下げる
         public static final int INPUT_SLOT_X = PoweredMachine.INPUT_SLOT_X;

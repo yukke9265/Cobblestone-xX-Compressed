@@ -308,9 +308,8 @@ public class CobblestonexXCompressed {
             (blockEntity, side) -> blockEntity.getAutomationItemHandler(side)
         );
 
-        // Cobblestone FE Generator は丸石系アイテムを 1 スロット受け取り、
-        // 内部の CP バッファと FE バッファを使って発電します。
-        // item capability では入力専用スロットだけを公開します。
+        // Cobblestone FE Generator は丸石系アイテムと充電式ツール用の 2 スロットを持ちます。
+        // item capability では CP 用入力スロットだけを公開し、充電スロットは手動専用です。
         event.registerBlockEntity(
             Capabilities.ItemHandler.BLOCK,
             ModBlockEntities.COBBLESTONE_FE_GENERATOR_BLOCK_ENTITY.get(),

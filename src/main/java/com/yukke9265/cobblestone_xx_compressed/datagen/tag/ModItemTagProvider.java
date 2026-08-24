@@ -53,6 +53,19 @@ public class ModItemTagProvider extends ItemTagsProvider {
         for (ModItems.TierCompressedCobblestonePickaxe tier : ModItems.TierCompressedCobblestonePickaxe.values()) {
             this.addPickaxeTags(tier.getItem());
         }
+
+        // AE2 未導入でも datagen できるよう、AE2 アイテムは optional タグ経由で参照します。
+        this.addOptionalAe2ItemTag("ae2_sky_stone", "sky_stone_block");
+        this.addOptionalAe2ItemTag("ae2_sky_dust", "sky_dust");
+        this.addOptionalAe2ItemTag("ae2_printed_logic_processor", "printed_logic_processor");
+        this.addOptionalAe2ItemTag("ae2_printed_calculation_processor", "printed_calculation_processor");
+        this.addOptionalAe2ItemTag("ae2_printed_engineering_processor", "printed_engineering_processor");
+        this.addOptionalAe2ItemTag("ae2_printed_silicon", "printed_silicon");
+    }
+
+    private void addOptionalAe2ItemTag(String tagPath, String ae2ItemPath) {
+        this.tag(this.createItemTag(CobblestonexXCompressed.MODID, tagPath))
+            .addOptional(ResourceLocation.fromNamespaceAndPath("ae2", ae2ItemPath));
     }
 
     @SuppressWarnings("null")

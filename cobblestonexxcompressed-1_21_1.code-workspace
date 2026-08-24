@@ -23,6 +23,9 @@
 		{
 			"name": "Flux-Networks",
 			"path": "../Flux-Networks"
+		},
+		{
+			"path": "../Applied-Energistics-2"
 		}
 	],
 	"settings": {

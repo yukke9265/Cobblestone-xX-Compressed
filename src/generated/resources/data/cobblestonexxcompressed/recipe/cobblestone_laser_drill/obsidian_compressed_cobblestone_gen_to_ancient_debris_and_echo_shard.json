@@ -5,11 +5,9 @@
     "item": "cobblestonexxcompressed:tier_obsidian_cobblestone_generator_s"
   },
   "result_1": {
-    "count": 1,
     "id": "cobblestonexxcompressed:extreme_compressed_obsidian"
   },
   "result_2": {
-    "count": 1,
     "id": "minecraft:echo_shard"
   },
   "result_2_chance": 0.01,

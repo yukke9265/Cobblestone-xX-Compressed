@@ -259,8 +259,8 @@ public class ModEnglishLanguageProvider extends LanguageProvider {
         add("message.cobblestonexxcompressed.configuration_card.cleared", "Cleared stored configuration");
         add("message.cobblestonexxcompressed.configuration_card.incompatible", "Stored settings can only be pasted to the same machine type");
         TooltipTranslationEntries.addEnglish(this);
-        add("gui.cobblestonexxcompressed.water_generator.convert_rate", "Water converted: %s mB/t");
-        add("gui.cobblestonexxcompressed.water_generator.cp_rate", "CP consumed: %s/t");
+        add("gui.cobblestonexxcompressed.water_generator.convert_rate", "%s mB/t");
+        add("gui.cobblestonexxcompressed.water_generator.cp_rate", "%s CP/t");
         add("jei.cobblestonexxcompressed.compressed_stone_loot", "Compressed Stone Loot");
         add("jei.cobblestonexxcompressed.water_generator_conversion", "Cobblestone Water Generator");
         add("jei.cobblestonexxcompressed.water_generator_conversion.rate", "1 CP = 1 mB");

@@ -1,0 +1,17 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "ae2"
+    }
+  ],
+  "type": "cobblestonexxcompressed:cobblestone_crusher",
+  "cobblestone_power_per_tick": 4,
+  "ingredient": {
+    "tag": "c:gems/fluix"
+  },
+  "result": {
+    "id": "ae2:fluix_dust"
+  },
+  "total_cobblestone_power": 800
+}

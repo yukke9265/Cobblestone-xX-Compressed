@@ -9,6 +9,7 @@ import com.yukke9265.cobblestone_xx_compressed.compat.jei.JeiClickableAreaDefini
 import com.yukke9265.cobblestone_xx_compressed.compat.jei.ModJeiIds;
 import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneDissolutionChamberMenu;
 import com.yukke9265.cobblestone_xx_compressed.util.MachineGuiLayouts;
+import com.yukke9265.cobblestone_xx_compressed.util.NumberDisplayHelper;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -289,9 +290,7 @@ public class CobblestoneDissolutionChamberScreen extends BaseScreen<CobblestoneD
 
         Component powerLabel = Component.translatable("gui.cobblestonexxcompressed.cobblestone_power")
             .append(": ")
-            .append(String.valueOf(this.menu.getStoredCobblestonePower()))
-            .append(" / ")
-            .append(String.valueOf(this.menu.getMaxCobblestonePower()))
+            .append(NumberDisplayHelper.formatCpRange(this.menu.getStoredCobblestonePower(), this.menu.getMaxCobblestonePower()))
             .withStyle(AutomationMode.COBBLESTONE_INPUT.createLabelComponent().getStyle());
         guiGraphics.drawString(this.font, powerLabel, MachineGuiLayouts.DissolutionChamber.POWER_BAR_X, MachineGuiLayouts.DissolutionChamber.POWER_BAR_Y - 10, 0x404040, false);
 
@@ -448,7 +447,7 @@ public class CobblestoneDissolutionChamberScreen extends BaseScreen<CobblestoneD
         Component label = displayedFluid.isEmpty()
             ? Component.translatable("gui.cobblestonexxcompressed.empty")
             : displayedFluid.getHoverName();
-        Component amount = Component.literal(" (" + storedAmount + " / " + maxAmount + " mB)");
+        Component amount = Component.literal(" (" + NumberDisplayHelper.formatMillibucketsRange(storedAmount, maxAmount) + ")");
         this.renderHoverLabel(guiGraphics, mouseX, mouseY, prefix.copy().append(label).append(amount));
     }
 }

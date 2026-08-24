@@ -4,6 +4,7 @@ import com.yukke9265.cobblestone_xx_compressed.CobblestonexXCompressed;
 import com.yukke9265.cobblestone_xx_compressed.blockentity.AutomationMode;
 import com.yukke9265.cobblestone_xx_compressed.blockentity.AutomationSide;
 import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneWaterGeneratorMenu;
+import com.yukke9265.cobblestone_xx_compressed.util.NumberDisplayHelper;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -53,10 +54,10 @@ public class CobblestoneWaterGeneratorScreen extends BaseScreen<CobblestoneWater
     private static final int FLUID_INDICATOR_BACKGROUND_COLOR = 0xFF101010;
     private static final int FLUID_LABEL_X = POWER_SLOT_X;
     private static final int FLUID_LABEL_Y = 38;
-    private static final int FLUID_LABEL_LINE_HEIGHT = 8;
-    private static final int RATE_LABEL_X = 4;
-    private static final int CONVERT_RATE_LABEL_Y = FLUID_LABEL_Y + FLUID_LABEL_LINE_HEIGHT * 2;
-    private static final int CP_RATE_LABEL_Y = FLUID_LABEL_Y + FLUID_LABEL_LINE_HEIGHT * 3;
+    // ラベル同士が詰まらないよう、タンク画面より少し広めの行間にする。
+    private static final int FLUID_LABEL_LINE_HEIGHT = 12;
+    private static final int CONVERT_RATE_LABEL_X = FLUID_LABEL_X;
+    private static final int RATE_LABEL_Y = FLUID_LABEL_Y + FLUID_LABEL_LINE_HEIGHT * 2;
 
     private static final ResourceLocation BACKGROUND_TEXTURE =
         ResourceLocation.fromNamespaceAndPath(CobblestonexXCompressed.MODID, "textures/gui/cobblestone_tank.png");
@@ -252,23 +253,16 @@ public class CobblestoneWaterGeneratorScreen extends BaseScreen<CobblestoneWater
         Component fluidAmountLabel = Component.translatable("gui.cobblestonexxcompressed.fluid_amount");
         guiGraphics.drawString(this.font, fluidAmountLabel, FLUID_LABEL_X, FLUID_LABEL_Y, 0x404040, false);
 
-        Component fluidStatusLabel = Component.literal(String.valueOf(this.menu.getStoredFluidAmount()))
-            .append(" / ")
-            .append(String.valueOf(this.menu.getMaxFluidAmount()))
-            .append(" mB");
+        Component fluidStatusLabel = Component.literal(
+            NumberDisplayHelper.formatMillibucketsRange(this.menu.getStoredFluidAmount(), this.menu.getMaxFluidAmount())
+        );
         guiGraphics.drawString(this.font, fluidStatusLabel, FLUID_LABEL_X, FLUID_LABEL_Y + FLUID_LABEL_LINE_HEIGHT, 0x404040, false);
 
         Component convertRateLabel = Component.translatable(
             "gui.cobblestonexxcompressed.water_generator.convert_rate",
-            this.menu.getLastConvertedFluidAmount()
+            NumberDisplayHelper.format(this.menu.getLastConvertedFluidAmount())
         );
-        guiGraphics.drawString(this.font, convertRateLabel, RATE_LABEL_X, CONVERT_RATE_LABEL_Y, 0x404040, false);
-
-        Component cpRateLabel = Component.translatable(
-            "gui.cobblestonexxcompressed.water_generator.cp_rate",
-            this.menu.getCurrentCobblestonePowerRate()
-        );
-        guiGraphics.drawString(this.font, cpRateLabel, RATE_LABEL_X, CP_RATE_LABEL_Y, 0x404040, false);
+        guiGraphics.drawString(this.font, convertRateLabel, CONVERT_RATE_LABEL_X, RATE_LABEL_Y, 0x404040, false);
 
         int itemPanelX = 0 - AUTOMATION_PANEL_X_OFFSET - AUTOMATION_BUTTON_WIDTH;
         int fluidPanelX = itemPanelX - AUTOMATION_BUTTON_WIDTH - 4;
@@ -363,7 +357,7 @@ public class CobblestoneWaterGeneratorScreen extends BaseScreen<CobblestoneWater
         }
 
         Component fluidName = displayedFluid.getHoverName();
-        Component amountLabel = Component.literal(String.valueOf(this.menu.getStoredFluidAmount())).append(" mB");
+        Component amountLabel = Component.literal(NumberDisplayHelper.formatMillibuckets(this.menu.getStoredFluidAmount()));
         guiGraphics.renderComponentTooltip(this.font, java.util.List.of(fluidName, amountLabel), mouseX, mouseY);
     }
 

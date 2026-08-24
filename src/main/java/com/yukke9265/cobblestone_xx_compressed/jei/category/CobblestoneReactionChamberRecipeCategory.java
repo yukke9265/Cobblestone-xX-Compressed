@@ -1,5 +1,6 @@
 package com.yukke9265.cobblestone_xx_compressed.jei.category;
 
+import java.util.Arrays;
 import java.util.List;
 
 import com.yukke9265.cobblestone_xx_compressed.CobblestonexXCompressed;
@@ -23,7 +24,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
+import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import net.neoforged.neoforge.fluids.FluidType;
 
 public class CobblestoneReactionChamberRecipeCategory implements IRecipeCategory<CobblestoneReactionChamberRecipe> {
@@ -88,10 +89,10 @@ public class CobblestoneReactionChamberRecipeCategory implements IRecipeCategory
             .setFluidRenderer(Math.max(recipe.getFluidInput().getAmount(), FluidType.BUCKET_VOLUME), false, 16, 16);
 
         builder.addSlot(RecipeIngredientRole.INPUT, INPUT_SLOT_1_X, INPUT_SLOT_1_Y)
-            .addIngredients(recipe.getFirstIngredient());
+            .addItemStacks(getDisplayStacks(recipe.getFirstInput()));
 
         builder.addSlot(RecipeIngredientRole.INPUT, INPUT_SLOT_2_X, INPUT_SLOT_2_Y)
-            .addIngredients(recipe.getSecondIngredient());
+            .addItemStacks(getDisplayStacks(recipe.getSecondInput()));
 
         builder.addSlot(RecipeIngredientRole.OUTPUT, OUTPUT_SLOT_X, OUTPUT_SLOT_Y)
             .addItemStack(recipe.getResult().copy());
@@ -107,5 +108,11 @@ public class CobblestoneReactionChamberRecipeCategory implements IRecipeCategory
         GuiPartRenderer.renderProgressFrame(guiGraphics, PROGRESS_FRAME_X, PROGRESS_FRAME_Y);
         guiGraphics.drawString(Minecraft.getInstance().font, recipe.getCobblestonePowerPerTick() + " CP/t", CPPT_LABEL_X, CPPT_LABEL_Y, 0x404040, false);
         guiGraphics.drawString(Minecraft.getInstance().font, recipe.getTotalCobblestonePower() + " total CP", TOTAL_CP_LABEL_X, TOTAL_CP_LABEL_Y, 0x404040, false);
+    }
+
+    private static List<ItemStack> getDisplayStacks(SizedIngredient ingredient) {
+        return Arrays.stream(ingredient.getItems())
+            .map(stack -> stack.copyWithCount(ingredient.count()))
+            .toList();
     }
 }

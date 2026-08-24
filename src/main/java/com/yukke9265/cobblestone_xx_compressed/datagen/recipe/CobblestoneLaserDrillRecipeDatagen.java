@@ -1,12 +1,16 @@
 package com.yukke9265.cobblestone_xx_compressed.datagen.recipe;
 
 import com.yukke9265.cobblestone_xx_compressed.registry.ModBlocks;
+import com.yukke9265.cobblestone_xx_compressed.registry.ModItemTags;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModItems;
 
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
+import net.neoforged.neoforge.common.conditions.ModLoadedCondition;
 
 /*
 アメジスト丸石 → アメジスト + 副産物 ダイヤ
@@ -20,6 +24,10 @@ import net.minecraft.world.level.ItemLike;
 */
 
 public final class CobblestoneLaserDrillRecipeDatagen {
+    private static final String AE2_MOD_ID = "ae2";
+    private static final long AE2_LASER_DRILL_TOTAL_CP = 1024000L;
+    private static final long AE2_LASER_DRILL_CP_PER_TICK = 256L;
+    private static final float AE2_SKY_DUST_CHANCE = 0.05F;
     private static final LaserDrillRecipeDefinition[] RECIPES = new LaserDrillRecipeDefinition[] {
         new LaserDrillRecipeDefinition(
             "amethyst_compressed_cobblestone_to_amethyst_shard_and_diamond",
@@ -220,6 +228,24 @@ public final class CobblestoneLaserDrillRecipeDatagen {
                 recipe.cobblestonePowerPerTick
             );
         }
+
+        registerAe2Recipes(output);
+    }
+
+    private static void registerAe2Recipes(RecipeOutput output) {
+        // 主産物と副産物を同じ 5% にすると、空の第 2 結果を扱わずに済みます。
+        ResourceLocation skyDustId = ResourceLocation.fromNamespaceAndPath(AE2_MOD_ID, "sky_dust");
+        MachineRecipeOutputHelper.saveCobblestoneLaserDrillRecipe(
+            output.withConditions(new ModLoadedCondition(AE2_MOD_ID)),
+            "ae2_sky_stone_to_sky_dust",
+            Ingredient.of(ModItemTags.AE2_SKY_STONE),
+            skyDustId,
+            AE2_SKY_DUST_CHANCE,
+            skyDustId,
+            AE2_SKY_DUST_CHANCE,
+            AE2_LASER_DRILL_TOTAL_CP,
+            AE2_LASER_DRILL_CP_PER_TICK
+        );
     }
 
     private static class LaserDrillRecipeDefinition {

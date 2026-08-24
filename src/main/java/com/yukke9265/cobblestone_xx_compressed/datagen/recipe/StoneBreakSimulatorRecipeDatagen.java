@@ -17,6 +17,7 @@ import net.neoforged.neoforge.common.conditions.ModLoadedCondition;
 public final class StoneBreakSimulatorRecipeDatagen {
     private static final String MEKANISM_MOD_ID = "mekanism";
     private static final String MEKANISM_EXTRAS_MOD_ID = "mekanism_extras";
+    private static final String AE2_MOD_ID = "ae2";
 
     // 各段は合計CP×8、CP/t×4、処理tick×2。
     private static final RecipePower BASE_POWER = new RecipePower(100L, 1L);
@@ -89,6 +90,9 @@ public final class StoneBreakSimulatorRecipeDatagen {
         RecipeOutput extrasOutput = output.withConditions(new ModLoadedCondition(MEKANISM_EXTRAS_MOD_ID));
         saveOreTagRecipe(extrasOutput, "mekanism_extras_naquadah_ores", commonOreTag("naquadah"));
         saveOreTagRecipe(extrasOutput, "mekanism_extras_end_naquadah_ores", commonOreTag("end_naquadah"));
+
+        RecipeOutput ae2Output = output.withConditions(new ModLoadedCondition(AE2_MOD_ID));
+        saveOreTagRecipe(ae2Output, "ae2_quartz_clusters", ItemTags.create(ResourceLocation.fromNamespaceAndPath("c", "clusters")));
     }
 
     private static void saveOreItemRecipe(RecipeOutput output, String recipeName, Block oreBlock) {

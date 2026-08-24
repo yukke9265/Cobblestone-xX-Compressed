@@ -4,6 +4,7 @@ import com.yukke9265.cobblestone_xx_compressed.CobblestonexXCompressed;
 import com.yukke9265.cobblestone_xx_compressed.blockentity.AutomationMode;
 import com.yukke9265.cobblestone_xx_compressed.blockentity.AutomationSide;
 import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneTankMenu;
+import com.yukke9265.cobblestone_xx_compressed.util.NumberDisplayHelper;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -239,13 +240,11 @@ public class CobblestoneTankScreen extends BaseScreen<CobblestoneTankMenu> {
         guiGraphics.drawString(this.font, fluidAmountLabel, FLUID_LABEL_X, FLUID_LABEL_Y, 0x404040, false);
 
         Component amountLabel = Component.literal("Amount: ")
-            .append(String.valueOf(this.menu.getStoredFluidAmount()))
-            .append(" mB");
+            .append(NumberDisplayHelper.formatMillibuckets(this.menu.getStoredFluidAmount()));
         guiGraphics.drawString(this.font, amountLabel, FLUID_LABEL_X, FLUID_LABEL_Y + FLUID_LABEL_LINE_HEIGHT, 0x404040, false);
 
         Component maxAmountLabel = Component.literal("Max: ")
-            .append(String.valueOf(this.menu.getMaxFluidAmount()))
-            .append(" mB");
+            .append(NumberDisplayHelper.formatMillibuckets(this.menu.getMaxFluidAmount()));
         guiGraphics.drawString(this.font, maxAmountLabel, FLUID_LABEL_X, FLUID_LABEL_Y + FLUID_LABEL_LINE_HEIGHT * 2, 0x404040, false);
 
         int itemPanelX = 0 - AUTOMATION_PANEL_X_OFFSET - AUTOMATION_BUTTON_WIDTH;
@@ -339,7 +338,7 @@ public class CobblestoneTankScreen extends BaseScreen<CobblestoneTankMenu> {
             ? Component.translatable("gui.cobblestonexxcompressed.empty")
             : displayedFluid.getHoverName();
 
-        Component amount = Component.literal(" (" + this.menu.getStoredFluidAmount() + " / " + this.menu.getMaxFluidAmount() + " mB)");
+        Component amount = Component.literal(" (" + NumberDisplayHelper.formatMillibucketsRange(this.menu.getStoredFluidAmount(), this.menu.getMaxFluidAmount()) + ")");
         Component text = label.copy().append(amount);
 
         this.renderHoverLabel(guiGraphics, mouseX, mouseY, text);

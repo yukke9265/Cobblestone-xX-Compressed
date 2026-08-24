@@ -184,10 +184,10 @@ public final class ModToolTiers {
 
         /**
          * Stone Break Simulator で耐久エンチャント相当として加算するボーナスです。
-         * BASE から +1, +2, +3 ... と段階的に増えます。
+         * 2 ティアごとに +1 ずつ増えます（BASE/COPPER +1、IRON/GOLD +2、…）。
          */
         public int getStoneBreakSimulatorUnbreakingBonus() {
-            return this.ordinal() + 1;
+            return this.ordinal() / 2 + 1;
         }
     }
 }

@@ -58,8 +58,8 @@ public class ModJapaneseLanguageProvider extends LanguageProvider {
         add("gui.cobblestonexxcompressed.auto_export", "自動搬出");
         add("gui.cobblestonexxcompressed.auto_insert", "自動搬入");
         add("gui.cobblestonexxcompressed.mute_sound", "消音");
-        add("gui.cobblestonexxcompressed.water_generator.convert_rate", "水変換量: %s mB/t");
-        add("gui.cobblestonexxcompressed.water_generator.cp_rate", "CP 消費量: %s/t");
+        add("gui.cobblestonexxcompressed.water_generator.convert_rate", "%s mB/t");
+        add("gui.cobblestonexxcompressed.water_generator.cp_rate", "%s CP/t");
         add("jei.cobblestonexxcompressed.compressed_stone_loot", "圧縮石ドロップ");
         add("jei.cobblestonexxcompressed.water_generator_conversion", "丸石水生成機");
         add("jei.cobblestonexxcompressed.water_generator_conversion.rate", "1 CP = 1 mB");

@@ -6,13 +6,14 @@
     "id": "cobblestonexxcompressed:shiny_water"
   },
   "ingredient_1": {
+    "count": 1,
     "item": "cobblestonexxcompressed:tier_netherite_cobblestone_dirty_dust"
   },
   "ingredient_2": {
+    "count": 1,
     "item": "minecraft:redstone"
   },
   "result": {
-    "count": 1,
     "id": "cobblestonexxcompressed:tier_netherite_cobblestone_dust"
   },
   "total_cobblestone_power": 3276800

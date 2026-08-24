@@ -335,8 +335,19 @@ public class CobblestoneReactionChamberBlockEntity extends PoweredMachineBlockEn
             return;
         }
 
-        this.itemStackHandler.getStackInSlot(INPUT_SLOT_1_INDEX).shrink(1);
-        this.itemStackHandler.getStackInSlot(INPUT_SLOT_2_INDEX).shrink(1);
+        ItemStack firstInputStack = this.itemStackHandler.getStackInSlot(INPUT_SLOT_1_INDEX);
+        ItemStack secondInputStack = this.itemStackHandler.getStackInSlot(INPUT_SLOT_2_INDEX);
+        Optional<int[]> matchedSlots = recipe.findMatchingItemSlots(
+            new ReactionChamberRecipeInput(firstInputStack, secondInputStack, this.getDisplayedFluid())
+        );
+        if (matchedSlots.isEmpty()) {
+            return;
+        }
+
+        // 入力スロットの順番が逆でも、レシピ側の個数どおりに消費します。
+        int[] itemSlots = matchedSlots.get();
+        this.itemStackHandler.getStackInSlot(itemSlots[0]).shrink(recipe.getFirstInput().count());
+        this.itemStackHandler.getStackInSlot(itemSlots[1]).shrink(recipe.getSecondInput().count());
         this.drainInternal(recipe.getFluidInput().getAmount(), IFluidHandler.FluidAction.EXECUTE);
 
         ItemStack resultStack = recipe.getResultItem(currentLevel.registryAccess());

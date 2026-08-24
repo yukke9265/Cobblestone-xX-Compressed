@@ -9,6 +9,7 @@ import com.yukke9265.cobblestone_xx_compressed.compat.jei.JeiClickableAreaDefini
 import com.yukke9265.cobblestone_xx_compressed.compat.jei.ModJeiIds;
 import com.yukke9265.cobblestone_xx_compressed.menu.StoneBreakSimulatorMenu;
 import com.yukke9265.cobblestone_xx_compressed.util.MachineGuiLayouts;
+import com.yukke9265.cobblestone_xx_compressed.util.NumberDisplayHelper;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -256,9 +257,7 @@ public class StoneBreakSimulatorScreen extends BaseScreen<StoneBreakSimulatorMen
 
         Component powerLabel = Component.translatable("gui.cobblestonexxcompressed.cobblestone_power")
             .append(": ")
-            .append(String.valueOf(this.menu.getStoredCobblestonePower()))
-            .append(" / ")
-            .append(String.valueOf(this.menu.getMaxCobblestonePower()))
+            .append(NumberDisplayHelper.formatCpRange(this.menu.getStoredCobblestonePower(), this.menu.getMaxCobblestonePower()))
             .withStyle(AutomationMode.COBBLESTONE_INPUT.createLabelComponent().getStyle());
         guiGraphics.drawString(this.font, powerLabel, POWER_BAR_X, POWER_BAR_Y - 10, 0x404040, false);
 

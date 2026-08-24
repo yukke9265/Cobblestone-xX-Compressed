@@ -44,7 +44,7 @@ public class CobblestoneFEGeneratorMenu extends BaseMenu {
     private static final int DATA_INDEX_AUTO_INSERT = DATA_INDEX_AUTO_EXPORT + 1;
     private static final int DATA_INDEX_SOUND_MUTED = DATA_INDEX_AUTO_INSERT + 1;
 
-    private static final int MACHINE_SLOT_COUNT = 1;
+    private static final int MACHINE_SLOT_COUNT = 2;
     private static final int PLAYER_INVENTORY_COLUMNS = 9;
     private static final int PLAYER_INVENTORY_ROWS = 3;
     private static final int HOTBAR_SLOT_COUNT = 9;
@@ -73,8 +73,14 @@ public class CobblestoneFEGeneratorMenu extends BaseMenu {
         this.addSlot(new SlotItemHandler(
             itemStackHandler,
             CobblestoneFEGeneratorBlockEntity.COBBLESTONE_SLOT_INDEX,
-            MachineGuiLayouts.PoweredMachine.POWER_SLOT_X,
-            MachineGuiLayouts.PoweredMachine.POWER_SLOT_Y
+            MachineGuiLayouts.FeGenerator.COBBLESTONE_SLOT_X,
+            MachineGuiLayouts.FeGenerator.COBBLESTONE_SLOT_Y
+        ));
+        this.addSlot(new SlotItemHandler(
+            itemStackHandler,
+            CobblestoneFEGeneratorBlockEntity.CHARGE_SLOT_INDEX,
+            MachineGuiLayouts.FeGenerator.CHARGE_SLOT_X,
+            MachineGuiLayouts.FeGenerator.CHARGE_SLOT_Y
         ));
         this.addPlayerInventorySlots(playerInventory);
         this.addPlayerHotbarSlots(playerInventory);
@@ -213,8 +219,24 @@ public class CobblestoneFEGeneratorMenu extends BaseMenu {
 
             slot.onQuickCraft(sourceStack, copiedStack);
         } else {
-            boolean movedToMachine = CobblestonePoweredFurnaceBlockEntity.isCobblestonePowerItem(sourceStack)
-                && this.moveItemStackTo(sourceStack, 0, MACHINE_SLOT_COUNT, false);
+            boolean movedToMachine = false;
+            if (CobblestonePoweredFurnaceBlockEntity.isCobblestonePowerItem(sourceStack)) {
+                movedToMachine = this.moveItemStackTo(
+                    sourceStack,
+                    CobblestoneFEGeneratorBlockEntity.COBBLESTONE_SLOT_INDEX,
+                    CobblestoneFEGeneratorBlockEntity.COBBLESTONE_SLOT_INDEX + 1,
+                    false
+                );
+            }
+
+            if (!movedToMachine && CobblestoneFEGeneratorBlockEntity.isChargeableItem(sourceStack)) {
+                movedToMachine = this.moveItemStackTo(
+                    sourceStack,
+                    CobblestoneFEGeneratorBlockEntity.CHARGE_SLOT_INDEX,
+                    CobblestoneFEGeneratorBlockEntity.CHARGE_SLOT_INDEX + 1,
+                    false
+                );
+            }
 
             if (!movedToMachine) {
                 if (index < HOTBAR_START_INDEX) {

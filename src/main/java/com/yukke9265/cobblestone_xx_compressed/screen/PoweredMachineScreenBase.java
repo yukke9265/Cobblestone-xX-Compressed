@@ -5,6 +5,7 @@ import com.yukke9265.cobblestone_xx_compressed.blockentity.AutomationSide;
 import com.yukke9265.cobblestone_xx_compressed.compat.jei.JeiClickableAreaDefinition;
 import com.yukke9265.cobblestone_xx_compressed.menu.BaseMenu;
 import com.yukke9265.cobblestone_xx_compressed.util.MachineGuiLayouts;
+import com.yukke9265.cobblestone_xx_compressed.util.NumberDisplayHelper;
 
 import java.util.List;
 
@@ -352,9 +353,7 @@ public abstract class PoweredMachineScreenBase<T extends BaseMenu> extends BaseS
 
         Component powerLabel = Component.translatable("gui.cobblestonexxcompressed.cobblestone_power")
             .append(": ")
-            .append(String.valueOf(this.menu.getStoredCobblestonePower()))
-            .append(" / ")
-            .append(String.valueOf(this.menu.getMaxCobblestonePower()))
+            .append(NumberDisplayHelper.formatCpRange(this.menu.getStoredCobblestonePower(), this.menu.getMaxCobblestonePower()))
             .withStyle(AutomationMode.COBBLESTONE_INPUT.createLabelComponent().getStyle());
         guiGraphics.drawString(this.font, powerLabel, this.getPowerBarX(), this.getPowerBarY() - 10, 0x404040, false);
 

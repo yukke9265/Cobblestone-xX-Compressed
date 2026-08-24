@@ -6,13 +6,14 @@
     "id": "minecraft:water"
   },
   "ingredient_1": {
+    "count": 1,
     "item": "cobblestonexxcompressed:tier_aquamarine_compressed_cobblestone"
   },
   "ingredient_2": {
+    "count": 1,
     "item": "cobblestonexxcompressed:aquamarine_mixture"
   },
   "result": {
-    "count": 1,
     "id": "cobblestonexxcompressed:tier_aquamarine_cobblestone_dust"
   },
   "total_cobblestone_power": 3276800

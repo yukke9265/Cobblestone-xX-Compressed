@@ -10,7 +10,6 @@
   },
   "result_1_chance": 0.5,
   "result_2": {
-    "count": 1,
     "id": "minecraft:echo_shard"
   },
   "result_2_chance": 0.01,

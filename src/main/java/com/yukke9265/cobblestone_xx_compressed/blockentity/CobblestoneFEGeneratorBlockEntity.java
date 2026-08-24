@@ -34,6 +34,8 @@ import net.neoforged.neoforge.items.wrapper.EmptyItemHandler;
 
 public class CobblestoneFEGeneratorBlockEntity extends BaseBlockEntity implements MenuProvider {
     public static final int COBBLESTONE_SLOT_INDEX = 0;
+    public static final int CHARGE_SLOT_INDEX = 1;
+    private static final int INVENTORY_SLOT_COUNT = 2;
 
     // 黒曜石 L ジェネレータの 1 tick 分（圧縮丸石 64 個相当）がバッファへ入るようにします。
     // GUI に upgrade slot を持たせなくても、内部 CP と FE を long 前提で扱えるようにしておきます。
@@ -65,14 +67,27 @@ public class CobblestoneFEGeneratorBlockEntity extends BaseBlockEntity implement
     private long lastExportedForgeEnergy;
     private boolean isAvailable = true;
 
-    private final FixedSizeItemStackHandler itemStackHandler = new FixedSizeItemStackHandler(1) {
+    private final FixedSizeItemStackHandler itemStackHandler = new FixedSizeItemStackHandler(INVENTORY_SLOT_COUNT) {
         @Override
         public boolean isItemValid(int slot, @NotNull ItemStack stack) {
-            if (slot != COBBLESTONE_SLOT_INDEX) {
-                return false;
+            if (slot == COBBLESTONE_SLOT_INDEX) {
+                return CobblestonePoweredFurnaceBlockEntity.isCobblestonePowerItem(stack);
             }
 
-            return CobblestonePoweredFurnaceBlockEntity.isCobblestonePowerItem(stack);
+            if (slot == CHARGE_SLOT_INDEX) {
+                return CobblestoneFEGeneratorBlockEntity.isChargeableItem(stack);
+            }
+
+            return false;
+        }
+
+        @Override
+        public int getSlotLimit(int slot) {
+            if (slot == CHARGE_SLOT_INDEX) {
+                return 1;
+            }
+
+            return super.getSlotLimit(slot);
         }
 
         @Override
@@ -182,8 +197,10 @@ public class CobblestoneFEGeneratorBlockEntity extends BaseBlockEntity implement
     }
 
     public IItemHandler getAutomationItemHandler(@Nullable Direction side) {
+        // null 面は破壊時ドロップ用に全体在庫を返します。
+        // 充電スロットは手動専用なので、方向付き面には公開しません。
         if (side == null) {
-            return this.inputAutomationHandler;
+            return this.itemStackHandler;
         }
 
         BlockState currentState = this.getBlockState();
@@ -196,6 +213,20 @@ public class CobblestoneFEGeneratorBlockEntity extends BaseBlockEntity implement
         }
 
         return EmptyItemHandler.INSTANCE;
+    }
+
+    /**
+     * FE を受け取れるアイテムかどうかを判定します。
+     * 前提: NeoForge の EnergyStorage.ITEM capability を持つこと。
+     * 結果: 充電スロットへ入れられる対象だけ true になります。
+     */
+    public static boolean isChargeableItem(ItemStack stack) {
+        if (stack.isEmpty()) {
+            return false;
+        }
+
+        IEnergyStorage itemEnergyStorage = stack.getCapability(Capabilities.EnergyStorage.ITEM);
+        return itemEnergyStorage != null && itemEnergyStorage.canReceive();
     }
 
     @Nullable
@@ -270,7 +301,35 @@ public class CobblestoneFEGeneratorBlockEntity extends BaseBlockEntity implement
             currentLevel.setBlock(this.worldPosition, updatedState, 3);
         }
 
+        // 充電スロットへは、保有 FE をアイテム側が受け取れるだけ流します。
+        this.lastExportedForgeEnergy += this.chargeItemInSlot();
         this.lastExportedForgeEnergy += this.pushForgeEnergyToConfiguredSides();
+    }
+
+    private long chargeItemInSlot() {
+        if (this.storedForgeEnergy <= 0L) {
+            return 0L;
+        }
+
+        ItemStack chargeStack = this.itemStackHandler.getStackInSlot(CHARGE_SLOT_INDEX);
+        if (chargeStack.isEmpty()) {
+            return 0L;
+        }
+
+        IEnergyStorage itemEnergyStorage = chargeStack.getCapability(Capabilities.EnergyStorage.ITEM);
+        if (itemEnergyStorage == null || !itemEnergyStorage.canReceive()) {
+            return 0L;
+        }
+
+        int toSend = (int) Math.min(this.storedForgeEnergy, Integer.MAX_VALUE);
+        int accepted = itemEnergyStorage.receiveEnergy(toSend, false);
+        if (accepted <= 0) {
+            return 0L;
+        }
+
+        this.storedForgeEnergy -= accepted;
+        this.setChanged();
+        return accepted;
     }
 
     private void tryAbsorbCobblestonePower() {

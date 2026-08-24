@@ -6,9 +6,11 @@
     "id": "minecraft:lava"
   },
   "ingredient_1": {
+    "count": 1,
     "tag": "c:dusts/lapis"
   },
   "ingredient_2": {
+    "count": 1,
     "item": "minecraft:redstone"
   },
   "result": {

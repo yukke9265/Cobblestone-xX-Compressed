@@ -13,6 +13,7 @@ public class OreBreakDefinition {
     private static final String MINECRAFT_MOD_ID = "minecraft";
     private static final String MEKANISM_MOD_ID = "mekanism";
     private static final String MEKANISM_EXTRAS_MOD_ID = "mekanism_extras";
+    private static final String AE2_MOD_ID = "ae2";
 
     // JEI の代表ドロップと入力判定用。実際の破壊結果は loot table を使う。
     private static final List<OreBreakDefinition> DEFINITIONS = List.of(
@@ -46,7 +47,8 @@ public class OreBreakDefinition {
         optionalMod(MEKANISM_MOD_ID, "fluorite_ore", "fluorite_gem"),
         optionalMod(MEKANISM_MOD_ID, "deepslate_fluorite_ore", "fluorite_gem"),
         optionalMod(MEKANISM_EXTRAS_MOD_ID, "naquadah_ore", "raw_naquadah"),
-        optionalMod(MEKANISM_EXTRAS_MOD_ID, "end_naquadah_ore", "raw_naquadah")
+        optionalMod(MEKANISM_EXTRAS_MOD_ID, "end_naquadah_ore", "raw_naquadah"),
+        optionalMod(AE2_MOD_ID, "quartz_cluster", "certus_quartz_crystal")
     );
 
     private final ResourceLocation inputItemId;

@@ -5,12 +5,10 @@
     "item": "cobblestonexxcompressed:tier_ruby_compressed_cobblestone"
   },
   "result_1": {
-    "count": 1,
     "id": "cobblestonexxcompressed:ruby_shard"
   },
   "result_1_chance": 0.5,
   "result_2": {
-    "count": 1,
     "id": "minecraft:diamond"
   },
   "result_2_chance": 0.01,
