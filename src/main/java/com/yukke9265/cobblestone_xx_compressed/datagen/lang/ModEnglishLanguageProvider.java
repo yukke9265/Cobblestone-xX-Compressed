@@ -213,6 +213,24 @@ public class ModEnglishLanguageProvider extends LanguageProvider {
         addBlock(ModBlocks.COBBLESTONE_DISSOLUTION_CHAMBER, "Cobblestone Dissolution Chamber");
         addBlock(ModBlocks.COBBLESTONE_FLUID_MIXER, "Cobblestone Fluid Mixer");
         addBlock(ModBlocks.COBBLESTONE_WATER_GENERATOR, "Cobblestone Water Generator");
+        addBlock(ModBlocks.COBBLESTONE_MULTIBLOCK_CRUSHER, "Cobblestone Multiblock Crusher");
+        addBlock(ModBlocks.MULTIBLOCK_ITEM_INPUT_PORT, "Multiblock Item Input Port");
+        addBlock(ModBlocks.MULTIBLOCK_ITEM_OUTPUT_PORT, "Multiblock Item Output Port");
+        addBlock(ModBlocks.MULTIBLOCK_FLUID_INPUT_PORT, "Multiblock Fluid Input Port");
+        addBlock(ModBlocks.MULTIBLOCK_FLUID_OUTPUT_PORT, "Multiblock Fluid Output Port");
+        addBlock(ModBlocks.MULTIBLOCK_COBBLE_INPUT_PORT, "Multiblock Cobble Input Port");
+        addBlock(ModBlocks.MULTIBLOCK_ACCELERATION_UPGRADE, "Multiblock Acceleration Upgrade");
+        addBlock(ModBlocks.MULTIBLOCK_ENERGIZED_UPGRADE, "Multiblock Energized Upgrade");
+        addBlock(ModBlocks.MULTIBLOCK_PARALLEL_UPGRADE, "Multiblock Parallel Upgrade");
+        for (ModBlocks.TierMultiblockAccelerationUpgrade tier : ModBlocks.TierMultiblockAccelerationUpgrade.values()) {
+            addBlock(tier.getBlock(), tier.getEnglishDisplayName());
+        }
+        for (ModBlocks.TierMultiblockEnergizedUpgrade tier : ModBlocks.TierMultiblockEnergizedUpgrade.values()) {
+            addBlock(tier.getBlock(), tier.getEnglishDisplayName());
+        }
+        for (ModBlocks.TierMultiblockParallelUpgrade tier : ModBlocks.TierMultiblockParallelUpgrade.values()) {
+            addBlock(tier.getBlock(), tier.getEnglishDisplayName());
+        }
 
         for (ModBlocks.TierCobblestoneGenerator generatorVariant : ModBlocks.TierCobblestoneGenerator.values()) {
             addBlock(generatorVariant.getBlock(), generatorVariant.getEnglishDisplayName());

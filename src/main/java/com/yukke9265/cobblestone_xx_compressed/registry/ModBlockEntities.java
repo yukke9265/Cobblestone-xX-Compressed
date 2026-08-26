@@ -22,6 +22,7 @@ import com.yukke9265.cobblestone_xx_compressed.blockentity.CobblestoneCrystalliz
 import com.yukke9265.cobblestone_xx_compressed.blockentity.CobblestonePoweredFurnaceBlockEntity;
 import com.yukke9265.cobblestone_xx_compressed.blockentity.CobblestoneTankBlockEntity;
 import com.yukke9265.cobblestone_xx_compressed.blockentity.CobblestoneWaterGeneratorBlockEntity;
+import com.yukke9265.cobblestone_xx_compressed.blockentity.CobblestoneMultiblockCrusherBlockEntity;
 import com.yukke9265.cobblestone_xx_compressed.blockentity.StoneBreakSimulatorBlockEntity;
 
 import net.minecraft.core.registries.Registries;
@@ -216,6 +217,15 @@ public class ModBlockEntities {
             () -> BlockEntityType.Builder.of(
                 (pos, state) -> new CobblestoneTankBlockEntity(pos, state),
                 getCobblestoneTankBlocks()
+            ).build(null)
+        );
+
+    public static final Supplier<BlockEntityType<CobblestoneMultiblockCrusherBlockEntity>> COBBLESTONE_MULTIBLOCK_CRUSHER_BLOCK_ENTITY =
+        BLOCK_ENTITY_TYPES.register(
+            "cobblestone_multiblock_crusher",
+            () -> BlockEntityType.Builder.of(
+                CobblestoneMultiblockCrusherBlockEntity::new,
+                ModBlocks.COBBLESTONE_MULTIBLOCK_CRUSHER.get()
             ).build(null)
         );
 

@@ -71,6 +71,30 @@ public class ModBlockStateProvider extends BlockStateProvider {
         registerCobblestoneDissolutionChamberBlock(ModBlocks.COBBLESTONE_DISSOLUTION_CHAMBER.get(), "cobblestone_dissolution_chamber");
         registerStandardOnOffMachineBlock(ModBlocks.COBBLESTONE_FLUID_MIXER.get(), "cobblestone_fluid_mixer");
         registerStandardOnOffMachineBlock(ModBlocks.COBBLESTONE_WATER_GENERATOR.get(), "cobblestone_water_generator");
+        registerStandardOnOffMachineBlockWithSharedTextures(
+            ModBlocks.COBBLESTONE_MULTIBLOCK_CRUSHER.get(),
+            "cobblestone_multiblock_crusher",
+            "cobblestone_crusher"
+        );
+
+        registerCubeAllBlock(ModBlocks.MULTIBLOCK_ITEM_INPUT_PORT.get(), "cobblestone_machine_casing", "multiblock_item_input_port", "cobblestone_machine_casing");
+        registerCubeAllBlock(ModBlocks.MULTIBLOCK_ITEM_OUTPUT_PORT.get(), "cobblestone_machine_casing", "multiblock_item_output_port", "cobblestone_machine_casing");
+        registerCubeAllBlock(ModBlocks.MULTIBLOCK_FLUID_INPUT_PORT.get(), "cobblestone_machine_casing", "multiblock_fluid_input_port", "cobblestone_machine_casing");
+        registerCubeAllBlock(ModBlocks.MULTIBLOCK_FLUID_OUTPUT_PORT.get(), "cobblestone_machine_casing", "multiblock_fluid_output_port", "cobblestone_machine_casing");
+        registerCubeAllBlock(ModBlocks.MULTIBLOCK_COBBLE_INPUT_PORT.get(), "cobblestone_machine_casing", "multiblock_cobble_input_port", "cobblestone_machine_casing");
+        registerCubeAllBlock(ModBlocks.MULTIBLOCK_ACCELERATION_UPGRADE.get(), "cobblestone_machine_casing", "multiblock_acceleration_upgrade", "cobblestone_machine_casing");
+        registerCubeAllBlock(ModBlocks.MULTIBLOCK_ENERGIZED_UPGRADE.get(), "cobblestone_machine_casing", "multiblock_energized_upgrade", "cobblestone_machine_casing");
+        registerCubeAllBlock(ModBlocks.MULTIBLOCK_PARALLEL_UPGRADE.get(), "cobblestone_machine_casing", "multiblock_parallel_upgrade", "cobblestone_machine_casing");
+
+        for (ModBlocks.TierMultiblockAccelerationUpgrade tier : ModBlocks.TierMultiblockAccelerationUpgrade.values()) {
+            registerCubeAllBlock(tier.getBlock().get(), "cobblestone_machine_casing", tier.getRegistryName(), "cobblestone_machine_casing");
+        }
+        for (ModBlocks.TierMultiblockEnergizedUpgrade tier : ModBlocks.TierMultiblockEnergizedUpgrade.values()) {
+            registerCubeAllBlock(tier.getBlock().get(), "cobblestone_machine_casing", tier.getRegistryName(), "cobblestone_machine_casing");
+        }
+        for (ModBlocks.TierMultiblockParallelUpgrade tier : ModBlocks.TierMultiblockParallelUpgrade.values()) {
+            registerCubeAllBlock(tier.getBlock().get(), "cobblestone_machine_casing", tier.getRegistryName(), "cobblestone_machine_casing");
+        }
 
         // LiquidBlock は level ごとに状態を持ちますが、見た目は fluid renderer が担当します。
         // そのため blockstate 側では、粒子テクスチャだけ持つ最小の model を全状態で共有すれば十分です。
@@ -138,25 +162,30 @@ public class ModBlockStateProvider extends BlockStateProvider {
 
     @SuppressWarnings("null")
     private void registerStandardOnOffMachineBlock(Block block, String blockName) {
+        this.registerStandardOnOffMachineBlockWithSharedTextures(block, blockName, blockName);
+    }
+
+    @SuppressWarnings("null")
+    private void registerStandardOnOffMachineBlockWithSharedTextures(Block block, String blockName, String textureBlockName) {
         ModelFile offModel = this.models()
             .withExistingParent(blockName + "_off", this.mcLoc("block/cube"))
-            .texture("particle", this.modLoc("block/" + blockName + "/" + blockName + "_top"))
-            .texture("down", this.modLoc("block/" + blockName + "/" + blockName + "_top"))
-            .texture("up", this.modLoc("block/" + blockName + "/" + blockName + "_top"))
-            .texture("north", this.modLoc("block/" + blockName + "/" + blockName + "_front"))
-            .texture("south", this.modLoc("block/" + blockName + "/" + blockName + "_side"))
-            .texture("west", this.modLoc("block/" + blockName + "/" + blockName + "_side"))
-            .texture("east", this.modLoc("block/" + blockName + "/" + blockName + "_side"));
+            .texture("particle", this.modLoc("block/" + textureBlockName + "/" + textureBlockName + "_top"))
+            .texture("down", this.modLoc("block/" + textureBlockName + "/" + textureBlockName + "_top"))
+            .texture("up", this.modLoc("block/" + textureBlockName + "/" + textureBlockName + "_top"))
+            .texture("north", this.modLoc("block/" + textureBlockName + "/" + textureBlockName + "_front"))
+            .texture("south", this.modLoc("block/" + textureBlockName + "/" + textureBlockName + "_side"))
+            .texture("west", this.modLoc("block/" + textureBlockName + "/" + textureBlockName + "_side"))
+            .texture("east", this.modLoc("block/" + textureBlockName + "/" + textureBlockName + "_side"));
 
         ModelFile onModel = this.models()
             .withExistingParent(blockName + "_on", this.mcLoc("block/cube"))
-            .texture("particle", this.modLoc("block/" + blockName + "/" + blockName + "_top"))
-            .texture("down", this.modLoc("block/" + blockName + "/" + blockName + "_top"))
-            .texture("up", this.modLoc("block/" + blockName + "/" + blockName + "_top"))
-            .texture("north", this.modLoc("block/" + blockName + "/" + blockName + "_front_on"))
-            .texture("south", this.modLoc("block/" + blockName + "/" + blockName + "_side"))
-            .texture("west", this.modLoc("block/" + blockName + "/" + blockName + "_side"))
-            .texture("east", this.modLoc("block/" + blockName + "/" + blockName + "_side"));
+            .texture("particle", this.modLoc("block/" + textureBlockName + "/" + textureBlockName + "_top"))
+            .texture("down", this.modLoc("block/" + textureBlockName + "/" + textureBlockName + "_top"))
+            .texture("up", this.modLoc("block/" + textureBlockName + "/" + textureBlockName + "_top"))
+            .texture("north", this.modLoc("block/" + textureBlockName + "/" + textureBlockName + "_front_on"))
+            .texture("south", this.modLoc("block/" + textureBlockName + "/" + textureBlockName + "_side"))
+            .texture("west", this.modLoc("block/" + textureBlockName + "/" + textureBlockName + "_side"))
+            .texture("east", this.modLoc("block/" + textureBlockName + "/" + textureBlockName + "_side"));
 
         this.getVariantBuilder(block).forAllStates(state -> {
             Direction facing = state.getValue(OnOffBlock.FACING);

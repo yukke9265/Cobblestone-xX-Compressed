@@ -31,6 +31,24 @@ public class ModJapaneseLanguageProvider extends LanguageProvider {
         addBlock(ModBlocks.COBBLESTONE_DISSOLUTION_CHAMBER, "丸石溶解槽");
         addBlock(ModBlocks.COBBLESTONE_FLUID_MIXER, "丸石流体ミキサー");
         addBlock(ModBlocks.COBBLESTONE_WATER_GENERATOR, "丸石水生成機");
+        addBlock(ModBlocks.COBBLESTONE_MULTIBLOCK_CRUSHER, "丸石マルチブロッククラッシャー");
+        addBlock(ModBlocks.MULTIBLOCK_ITEM_INPUT_PORT, "マルチブロックアイテム入力ポート");
+        addBlock(ModBlocks.MULTIBLOCK_ITEM_OUTPUT_PORT, "マルチブロックアイテム出力ポート");
+        addBlock(ModBlocks.MULTIBLOCK_FLUID_INPUT_PORT, "マルチブロック流体入力ポート");
+        addBlock(ModBlocks.MULTIBLOCK_FLUID_OUTPUT_PORT, "マルチブロック流体出力ポート");
+        addBlock(ModBlocks.MULTIBLOCK_COBBLE_INPUT_PORT, "マルチブロック丸石入力ポート");
+        addBlock(ModBlocks.MULTIBLOCK_ACCELERATION_UPGRADE, "マルチブロック加速アップグレード");
+        addBlock(ModBlocks.MULTIBLOCK_ENERGIZED_UPGRADE, "マルチブロック蓄電アップグレード");
+        addBlock(ModBlocks.MULTIBLOCK_PARALLEL_UPGRADE, "マルチブロック並列アップグレード");
+        for (ModBlocks.TierMultiblockAccelerationUpgrade tier : ModBlocks.TierMultiblockAccelerationUpgrade.values()) {
+            addBlock(tier.getBlock(), tier.getEnglishDisplayName().replace("Multiblock Acceleration Upgrade", "マルチブロック加速アップグレード").replace("Copper ", "銅").replace("Iron ", "鉄").replace("Gold ", "金").replace("Amethyst ", "アメジスト").replace("Aquamarine ", "アクアマリン").replace("Topaz ", "トパーズ").replace("Ruby ", "ルビー").replace("Sapphire ", "サファイア").replace("Diamond ", "ダイヤモンド").replace("Emerald ", "エメラルド").replace("Netherite ", "ネザライト").replace("Obsidian ", "黒曜石"));
+        }
+        for (ModBlocks.TierMultiblockEnergizedUpgrade tier : ModBlocks.TierMultiblockEnergizedUpgrade.values()) {
+            addBlock(tier.getBlock(), tier.getEnglishDisplayName().replace("Multiblock Energized Upgrade", "マルチブロック蓄電アップグレード").replace("Copper ", "銅").replace("Iron ", "鉄").replace("Gold ", "金").replace("Amethyst ", "アメジスト").replace("Aquamarine ", "アクアマリン").replace("Topaz ", "トパーズ").replace("Ruby ", "ルビー").replace("Sapphire ", "サファイア").replace("Diamond ", "ダイヤモンド").replace("Emerald ", "エメラルド").replace("Netherite ", "ネザライト").replace("Obsidian ", "黒曜石"));
+        }
+        for (ModBlocks.TierMultiblockParallelUpgrade tier : ModBlocks.TierMultiblockParallelUpgrade.values()) {
+            addBlock(tier.getBlock(), tier.getEnglishDisplayName().replace("Multiblock Parallel Upgrade", "マルチブロック並列アップグレード").replace("Copper ", "銅").replace("Iron ", "鉄").replace("Gold ", "金").replace("Amethyst ", "アメジスト").replace("Aquamarine ", "アクアマリン").replace("Topaz ", "トパーズ").replace("Ruby ", "ルビー").replace("Sapphire ", "サファイア").replace("Diamond ", "ダイヤモンド").replace("Emerald ", "エメラルド").replace("Netherite ", "ネザライト").replace("Obsidian ", "黒曜石"));
+        }
 
         add("automation_mode.cobblestonexxcompressed.disabled", "OFF");
         add("automation_mode.cobblestonexxcompressed.input", "入力");

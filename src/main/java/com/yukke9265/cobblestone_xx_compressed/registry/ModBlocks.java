@@ -22,6 +22,8 @@ import com.yukke9265.cobblestone_xx_compressed.block.CobblestoneReactionChamberB
 import com.yukke9265.cobblestone_xx_compressed.block.CobblestoneCrystallizationChamberBlock;
 import com.yukke9265.cobblestone_xx_compressed.block.CobblestoneTankBlock;
 import com.yukke9265.cobblestone_xx_compressed.block.CobblestoneWaterGeneratorBlock;
+import com.yukke9265.cobblestone_xx_compressed.block.CobblestoneMultiblockCrusherBlock;
+import com.yukke9265.cobblestone_xx_compressed.block.MultiblockMemberBlock;
 import com.yukke9265.cobblestone_xx_compressed.block.StoneBreakSimulatorBlock;
 
 import net.minecraft.world.level.block.Block;
@@ -618,5 +620,165 @@ public class ModBlocks {
             () -> new CobblestoneWaterGeneratorBlock(
                 createCobblestoneMachineProperties()
             )
+        );
+
+    private static DeferredBlock<Block> registerMultiblockMember(String name) {
+        return BLOCKS.register(name, () -> new MultiblockMemberBlock(createCobblestoneMachineProperties()));
+    }
+
+    public static final DeferredBlock<Block> MULTIBLOCK_ITEM_INPUT_PORT =
+        registerMultiblockMember("multiblock_item_input_port");
+    public static final DeferredBlock<Block> MULTIBLOCK_ITEM_OUTPUT_PORT =
+        registerMultiblockMember("multiblock_item_output_port");
+    public static final DeferredBlock<Block> MULTIBLOCK_FLUID_INPUT_PORT =
+        registerMultiblockMember("multiblock_fluid_input_port");
+    public static final DeferredBlock<Block> MULTIBLOCK_FLUID_OUTPUT_PORT =
+        registerMultiblockMember("multiblock_fluid_output_port");
+    public static final DeferredBlock<Block> MULTIBLOCK_COBBLE_INPUT_PORT =
+        registerMultiblockMember("multiblock_cobble_input_port");
+
+    public static final DeferredBlock<Block> MULTIBLOCK_ACCELERATION_UPGRADE =
+        registerMultiblockMember("multiblock_acceleration_upgrade");
+    public static final DeferredBlock<Block> MULTIBLOCK_ENERGIZED_UPGRADE =
+        registerMultiblockMember("multiblock_energized_upgrade");
+    public static final DeferredBlock<Block> MULTIBLOCK_PARALLEL_UPGRADE =
+        registerMultiblockMember("multiblock_parallel_upgrade");
+
+    public enum TierMultiblockAccelerationUpgrade {
+        COPPER("tier_copper_multiblock_acceleration_upgrade", "Copper Multiblock Acceleration Upgrade"),
+        IRON("tier_iron_multiblock_acceleration_upgrade", "Iron Multiblock Acceleration Upgrade"),
+        GOLD("tier_gold_multiblock_acceleration_upgrade", "Gold Multiblock Acceleration Upgrade"),
+        AMETHYST("tier_amethyst_multiblock_acceleration_upgrade", "Amethyst Multiblock Acceleration Upgrade"),
+        AQUAMARINE("tier_aquamarine_multiblock_acceleration_upgrade", "Aquamarine Multiblock Acceleration Upgrade"),
+        TOPAZ("tier_topaz_multiblock_acceleration_upgrade", "Topaz Multiblock Acceleration Upgrade"),
+        RUBY("tier_ruby_multiblock_acceleration_upgrade", "Ruby Multiblock Acceleration Upgrade"),
+        SAPPHIRE("tier_sapphire_multiblock_acceleration_upgrade", "Sapphire Multiblock Acceleration Upgrade"),
+        DIAMOND("tier_diamond_multiblock_acceleration_upgrade", "Diamond Multiblock Acceleration Upgrade"),
+        EMERALD("tier_emerald_multiblock_acceleration_upgrade", "Emerald Multiblock Acceleration Upgrade"),
+        NETHERITE("tier_netherite_multiblock_acceleration_upgrade", "Netherite Multiblock Acceleration Upgrade"),
+        OBSIDIAN("tier_obsidian_multiblock_acceleration_upgrade", "Obsidian Multiblock Acceleration Upgrade");
+
+        private final String registryName;
+        private final String englishDisplayName;
+        private DeferredBlock<Block> block;
+
+        TierMultiblockAccelerationUpgrade(String registryName, String englishDisplayName) {
+            this.registryName = registryName;
+            this.englishDisplayName = englishDisplayName;
+        }
+
+        public String getRegistryName() {
+            return this.registryName;
+        }
+
+        public String getEnglishDisplayName() {
+            return this.englishDisplayName;
+        }
+
+        public DeferredBlock<Block> getBlock() {
+            return this.block;
+        }
+
+        private void setBlock(DeferredBlock<Block> block) {
+            this.block = block;
+        }
+    }
+
+    public enum TierMultiblockEnergizedUpgrade {
+        COPPER("tier_copper_multiblock_energized_upgrade", "Copper Multiblock Energized Upgrade"),
+        IRON("tier_iron_multiblock_energized_upgrade", "Iron Multiblock Energized Upgrade"),
+        GOLD("tier_gold_multiblock_energized_upgrade", "Gold Multiblock Energized Upgrade"),
+        AMETHYST("tier_amethyst_multiblock_energized_upgrade", "Amethyst Multiblock Energized Upgrade"),
+        AQUAMARINE("tier_aquamarine_multiblock_energized_upgrade", "Aquamarine Multiblock Energized Upgrade"),
+        TOPAZ("tier_topaz_multiblock_energized_upgrade", "Topaz Multiblock Energized Upgrade"),
+        RUBY("tier_ruby_multiblock_energized_upgrade", "Ruby Multiblock Energized Upgrade"),
+        SAPPHIRE("tier_sapphire_multiblock_energized_upgrade", "Sapphire Multiblock Energized Upgrade"),
+        DIAMOND("tier_diamond_multiblock_energized_upgrade", "Diamond Multiblock Energized Upgrade"),
+        EMERALD("tier_emerald_multiblock_energized_upgrade", "Emerald Multiblock Energized Upgrade"),
+        NETHERITE("tier_netherite_multiblock_energized_upgrade", "Netherite Multiblock Energized Upgrade"),
+        OBSIDIAN("tier_obsidian_multiblock_energized_upgrade", "Obsidian Multiblock Energized Upgrade");
+
+        private final String registryName;
+        private final String englishDisplayName;
+        private DeferredBlock<Block> block;
+
+        TierMultiblockEnergizedUpgrade(String registryName, String englishDisplayName) {
+            this.registryName = registryName;
+            this.englishDisplayName = englishDisplayName;
+        }
+
+        public String getRegistryName() {
+            return this.registryName;
+        }
+
+        public String getEnglishDisplayName() {
+            return this.englishDisplayName;
+        }
+
+        public DeferredBlock<Block> getBlock() {
+            return this.block;
+        }
+
+        private void setBlock(DeferredBlock<Block> block) {
+            this.block = block;
+        }
+    }
+
+    public enum TierMultiblockParallelUpgrade {
+        COPPER("tier_copper_multiblock_parallel_upgrade", "Copper Multiblock Parallel Upgrade"),
+        IRON("tier_iron_multiblock_parallel_upgrade", "Iron Multiblock Parallel Upgrade"),
+        GOLD("tier_gold_multiblock_parallel_upgrade", "Gold Multiblock Parallel Upgrade"),
+        AMETHYST("tier_amethyst_multiblock_parallel_upgrade", "Amethyst Multiblock Parallel Upgrade"),
+        AQUAMARINE("tier_aquamarine_multiblock_parallel_upgrade", "Aquamarine Multiblock Parallel Upgrade"),
+        TOPAZ("tier_topaz_multiblock_parallel_upgrade", "Topaz Multiblock Parallel Upgrade"),
+        RUBY("tier_ruby_multiblock_parallel_upgrade", "Ruby Multiblock Parallel Upgrade"),
+        SAPPHIRE("tier_sapphire_multiblock_parallel_upgrade", "Sapphire Multiblock Parallel Upgrade"),
+        DIAMOND("tier_diamond_multiblock_parallel_upgrade", "Diamond Multiblock Parallel Upgrade"),
+        EMERALD("tier_emerald_multiblock_parallel_upgrade", "Emerald Multiblock Parallel Upgrade"),
+        NETHERITE("tier_netherite_multiblock_parallel_upgrade", "Netherite Multiblock Parallel Upgrade"),
+        OBSIDIAN("tier_obsidian_multiblock_parallel_upgrade", "Obsidian Multiblock Parallel Upgrade");
+
+        private final String registryName;
+        private final String englishDisplayName;
+        private DeferredBlock<Block> block;
+
+        TierMultiblockParallelUpgrade(String registryName, String englishDisplayName) {
+            this.registryName = registryName;
+            this.englishDisplayName = englishDisplayName;
+        }
+
+        public String getRegistryName() {
+            return this.registryName;
+        }
+
+        public String getEnglishDisplayName() {
+            return this.englishDisplayName;
+        }
+
+        public DeferredBlock<Block> getBlock() {
+            return this.block;
+        }
+
+        private void setBlock(DeferredBlock<Block> block) {
+            this.block = block;
+        }
+    }
+
+    static {
+        for (TierMultiblockAccelerationUpgrade tier : TierMultiblockAccelerationUpgrade.values()) {
+            tier.setBlock(registerMultiblockMember(tier.getRegistryName()));
+        }
+        for (TierMultiblockEnergizedUpgrade tier : TierMultiblockEnergizedUpgrade.values()) {
+            tier.setBlock(registerMultiblockMember(tier.getRegistryName()));
+        }
+        for (TierMultiblockParallelUpgrade tier : TierMultiblockParallelUpgrade.values()) {
+            tier.setBlock(registerMultiblockMember(tier.getRegistryName()));
+        }
+    }
+
+    public static final DeferredBlock<Block> COBBLESTONE_MULTIBLOCK_CRUSHER =
+        BLOCKS.register(
+            "cobblestone_multiblock_crusher",
+            () -> new CobblestoneMultiblockCrusherBlock(createCobblestoneMachineProperties())
         );
 }

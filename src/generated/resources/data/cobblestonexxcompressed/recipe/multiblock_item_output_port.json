@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "cobblestonexxcompressed:cobblestone_machine_casing"
+    },
+    {
+      "item": "minecraft:dropper"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "cobblestonexxcompressed:multiblock_item_output_port"
+  }
+}

@@ -19,6 +19,7 @@ import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneCrystallizationCh
 import com.yukke9265.cobblestone_xx_compressed.menu.CobblestonePoweredFurnaceMenu;
 import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneTankMenu;
 import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneWaterGeneratorMenu;
+import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneMultiblockCrusherMenu;
 import com.yukke9265.cobblestone_xx_compressed.menu.StoneBreakSimulatorMenu;
 
 import net.minecraft.core.registries.Registries;
@@ -143,5 +144,11 @@ public class ModMenuType {
         MENU_TYPES.register(
             "cobblestone_water_generator_menu",
             () -> IMenuTypeExtension.create(CobblestoneWaterGeneratorMenu::new)
+        );
+
+    public static final Supplier<MenuType<CobblestoneMultiblockCrusherMenu>> COBBLESTONE_MULTIBLOCK_CRUSHER_MENU =
+        MENU_TYPES.register(
+            "cobblestone_multiblock_crusher_menu",
+            () -> IMenuTypeExtension.create(CobblestoneMultiblockCrusherMenu::new)
         );
 }

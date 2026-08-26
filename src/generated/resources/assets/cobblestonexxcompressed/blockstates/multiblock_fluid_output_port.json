@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "cobblestonexxcompressed:block/multiblock_fluid_output_port"
+    }
+  }
+}

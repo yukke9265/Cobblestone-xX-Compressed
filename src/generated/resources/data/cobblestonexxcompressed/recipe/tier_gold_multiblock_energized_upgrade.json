@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "cobblestonexxcompressed:cobblestone_machine_casing"
+    },
+    {
+      "item": "cobblestonexxcompressed:tier_gold_cobblestone_energized_cube"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "cobblestonexxcompressed:tier_gold_multiblock_energized_upgrade"
+  }
+}

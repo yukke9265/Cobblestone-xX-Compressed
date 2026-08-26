@@ -2020,4 +2020,40 @@ public class ModItems {
             "cobblestone_laser_drill",
             ModBlocks.COBBLESTONE_LASER_DRILL,
             TooltipTranslationKeys.machineDescription("cobblestone_laser_drill"));
+
+    public static final DeferredItem<BlockItem> MULTIBLOCK_ITEM_INPUT_PORT_ITEM =
+        registerCompressedCobblestoneBlockItem("multiblock_item_input_port", ModBlocks.MULTIBLOCK_ITEM_INPUT_PORT);
+    public static final DeferredItem<BlockItem> MULTIBLOCK_ITEM_OUTPUT_PORT_ITEM =
+        registerCompressedCobblestoneBlockItem("multiblock_item_output_port", ModBlocks.MULTIBLOCK_ITEM_OUTPUT_PORT);
+    public static final DeferredItem<BlockItem> MULTIBLOCK_FLUID_INPUT_PORT_ITEM =
+        registerCompressedCobblestoneBlockItem("multiblock_fluid_input_port", ModBlocks.MULTIBLOCK_FLUID_INPUT_PORT);
+    public static final DeferredItem<BlockItem> MULTIBLOCK_FLUID_OUTPUT_PORT_ITEM =
+        registerCompressedCobblestoneBlockItem("multiblock_fluid_output_port", ModBlocks.MULTIBLOCK_FLUID_OUTPUT_PORT);
+    public static final DeferredItem<BlockItem> MULTIBLOCK_COBBLE_INPUT_PORT_ITEM =
+        registerCompressedCobblestoneBlockItem("multiblock_cobble_input_port", ModBlocks.MULTIBLOCK_COBBLE_INPUT_PORT);
+
+    public static final DeferredItem<BlockItem> MULTIBLOCK_ACCELERATION_UPGRADE_ITEM =
+        registerCompressedCobblestoneBlockItem("multiblock_acceleration_upgrade", ModBlocks.MULTIBLOCK_ACCELERATION_UPGRADE);
+    public static final DeferredItem<BlockItem> MULTIBLOCK_ENERGIZED_UPGRADE_ITEM =
+        registerCompressedCobblestoneBlockItem("multiblock_energized_upgrade", ModBlocks.MULTIBLOCK_ENERGIZED_UPGRADE);
+    public static final DeferredItem<BlockItem> MULTIBLOCK_PARALLEL_UPGRADE_ITEM =
+        registerCompressedCobblestoneBlockItem("multiblock_parallel_upgrade", ModBlocks.MULTIBLOCK_PARALLEL_UPGRADE);
+
+    static {
+        for (ModBlocks.TierMultiblockAccelerationUpgrade tier : ModBlocks.TierMultiblockAccelerationUpgrade.values()) {
+            registerCompressedCobblestoneBlockItem(tier.getRegistryName(), tier.getBlock());
+        }
+        for (ModBlocks.TierMultiblockEnergizedUpgrade tier : ModBlocks.TierMultiblockEnergizedUpgrade.values()) {
+            registerCompressedCobblestoneBlockItem(tier.getRegistryName(), tier.getBlock());
+        }
+        for (ModBlocks.TierMultiblockParallelUpgrade tier : ModBlocks.TierMultiblockParallelUpgrade.values()) {
+            registerCompressedCobblestoneBlockItem(tier.getRegistryName(), tier.getBlock());
+        }
+    }
+
+    public static final DeferredItem<BlockItem> COBBLESTONE_MULTIBLOCK_CRUSHER_ITEM =
+        registerDescribedBlockItem(
+            "cobblestone_multiblock_crusher",
+            ModBlocks.COBBLESTONE_MULTIBLOCK_CRUSHER,
+            TooltipTranslationKeys.machineDescription("cobblestone_multiblock_crusher"));
 }

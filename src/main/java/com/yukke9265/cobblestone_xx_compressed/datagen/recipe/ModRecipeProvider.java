@@ -258,6 +258,14 @@ public class ModRecipeProvider extends RecipeProvider {
             ModBlocks.TierCobblestoneMachineCasing.OBSIDIAN.getBlock().get(),
             ModItems.TierCobblestoneProcessor.OBSIDIAN.getItem().get(),
             ModBlocks.COBBLESTONE_EXTREME_COMPRESSOR.get()
+        ),
+        new MachineBlockRecipeDefinition(
+            "cobblestone_multiblock_crusher",
+            ModBlocks.TierCompressedCobblestone.IRON.getBlock().get(),
+            ModItems.TIER_IRON_COBBLESTONE_MOTOR.get(),
+            ModBlocks.TierCobblestoneMachineCasing.IRON.getBlock().get(),
+            ModItems.COBBLESTONE_CRUSHER_ITEM.get(),
+            ModBlocks.COBBLESTONE_MULTIBLOCK_CRUSHER.get()
         )
     };
 
@@ -292,6 +300,7 @@ public class ModRecipeProvider extends RecipeProvider {
         buildCobblestoneMachineBlockRecipes(output);
         buildCustomMachineRecipes(output);
         buildConfigurationCardRecipe(output);
+        buildMultiblockPortAndUpgradeRecipes(output);
 
         // ここから下は独自 RecipeType / RecipeSerializer を使う機械レシピです。
         // JSON の出力先は data/<modid>/recipe/<machine_name>/... になります。
@@ -960,6 +969,86 @@ public class ModRecipeProvider extends RecipeProvider {
             .define('F', ModBlocks.COBBLESTONE_FURNACE.get())
             .unlockedBy("has_cobblestone_fe_generator_material", has(ModBlocks.COBBLESTONE_FURNACE.get()))
             .save(output, modRecipeId("cobblestone_fe_generator"));
+    }
+
+    private void buildMultiblockPortAndUpgradeRecipes(RecipeOutput output) {
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModBlocks.MULTIBLOCK_ITEM_INPUT_PORT.get())
+            .requires(ModBlocks.COBBLESTONE_MACHINE_CASING.get())
+            .requires(Items.HOPPER)
+            .unlockedBy("has_cobblestone_machine_casing", has(ModBlocks.COBBLESTONE_MACHINE_CASING.get()))
+            .save(output, modRecipeId("multiblock_item_input_port"));
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModBlocks.MULTIBLOCK_ITEM_OUTPUT_PORT.get())
+            .requires(ModBlocks.COBBLESTONE_MACHINE_CASING.get())
+            .requires(Items.DROPPER)
+            .unlockedBy("has_cobblestone_machine_casing", has(ModBlocks.COBBLESTONE_MACHINE_CASING.get()))
+            .save(output, modRecipeId("multiblock_item_output_port"));
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModBlocks.MULTIBLOCK_FLUID_INPUT_PORT.get())
+            .requires(ModBlocks.COBBLESTONE_MACHINE_CASING.get())
+            .requires(Items.BUCKET)
+            .unlockedBy("has_cobblestone_machine_casing", has(ModBlocks.COBBLESTONE_MACHINE_CASING.get()))
+            .save(output, modRecipeId("multiblock_fluid_input_port"));
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModBlocks.MULTIBLOCK_FLUID_OUTPUT_PORT.get())
+            .requires(ModBlocks.COBBLESTONE_MACHINE_CASING.get())
+            .requires(Items.GLASS_BOTTLE)
+            .unlockedBy("has_cobblestone_machine_casing", has(ModBlocks.COBBLESTONE_MACHINE_CASING.get()))
+            .save(output, modRecipeId("multiblock_fluid_output_port"));
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModBlocks.MULTIBLOCK_COBBLE_INPUT_PORT.get())
+            .requires(ModBlocks.COBBLESTONE_MACHINE_CASING.get())
+            .requires(Items.COBBLESTONE)
+            .unlockedBy("has_cobblestone_machine_casing", has(ModBlocks.COBBLESTONE_MACHINE_CASING.get()))
+            .save(output, modRecipeId("multiblock_cobble_input_port"));
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModBlocks.MULTIBLOCK_ACCELERATION_UPGRADE.get())
+            .requires(ModBlocks.COBBLESTONE_MACHINE_CASING.get())
+            .requires(ModItems.COBBLESTONE_ACCELERATION_CHIP.get())
+            .unlockedBy("has_cobblestone_acceleration_chip", has(ModItems.COBBLESTONE_ACCELERATION_CHIP.get()))
+            .save(output, modRecipeId("multiblock_acceleration_upgrade"));
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModBlocks.MULTIBLOCK_ENERGIZED_UPGRADE.get())
+            .requires(ModBlocks.COBBLESTONE_MACHINE_CASING.get())
+            .requires(ModItems.COBBLESTONE_ENERGIZED_CUBE.get())
+            .unlockedBy("has_cobblestone_energized_cube", has(ModItems.COBBLESTONE_ENERGIZED_CUBE.get()))
+            .save(output, modRecipeId("multiblock_energized_upgrade"));
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModBlocks.MULTIBLOCK_PARALLEL_UPGRADE.get())
+            .requires(ModBlocks.COBBLESTONE_MACHINE_CASING.get())
+            .requires(ModItems.COBBLESTONE_PARALLEL_CHIP.get())
+            .unlockedBy("has_cobblestone_parallel_chip", has(ModItems.COBBLESTONE_PARALLEL_CHIP.get()))
+            .save(output, modRecipeId("multiblock_parallel_upgrade"));
+
+        for (ModBlocks.TierMultiblockAccelerationUpgrade tier : ModBlocks.TierMultiblockAccelerationUpgrade.values()) {
+            ModItems.TierCobblestoneAccelerationChip chipTier =
+                ModItems.TierCobblestoneAccelerationChip.valueOf(tier.name());
+            ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, tier.getBlock().get())
+                .requires(ModBlocks.COBBLESTONE_MACHINE_CASING.get())
+                .requires(chipTier.getItem().get())
+                .unlockedBy("has_" + chipTier.getRegistryName(), has(chipTier.getItem().get()))
+                .save(output, modRecipeId(tier.getRegistryName()));
+        }
+
+        for (ModBlocks.TierMultiblockEnergizedUpgrade tier : ModBlocks.TierMultiblockEnergizedUpgrade.values()) {
+            ModItems.TierCobblestoneEnergizedCube cubeTier =
+                ModItems.TierCobblestoneEnergizedCube.valueOf(tier.name());
+            ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, tier.getBlock().get())
+                .requires(ModBlocks.COBBLESTONE_MACHINE_CASING.get())
+                .requires(cubeTier.getItem().get())
+                .unlockedBy("has_" + cubeTier.getRegistryName(), has(cubeTier.getItem().get()))
+                .save(output, modRecipeId(tier.getRegistryName()));
+        }
+
+        for (ModBlocks.TierMultiblockParallelUpgrade tier : ModBlocks.TierMultiblockParallelUpgrade.values()) {
+            ModItems.TierCobblestoneParallelChip chipTier =
+                ModItems.TierCobblestoneParallelChip.valueOf(tier.name());
+            ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, tier.getBlock().get())
+                .requires(ModBlocks.COBBLESTONE_MACHINE_CASING.get())
+                .requires(chipTier.getItem().get())
+                .unlockedBy("has_" + chipTier.getRegistryName(), has(chipTier.getItem().get()))
+                .save(output, modRecipeId(tier.getRegistryName()));
+        }
     }
 
     private void buildCobblestoneTankRecipes(RecipeOutput output) {

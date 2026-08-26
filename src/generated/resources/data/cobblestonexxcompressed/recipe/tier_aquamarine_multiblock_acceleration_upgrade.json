@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "cobblestonexxcompressed:cobblestone_machine_casing"
+    },
+    {
+      "item": "cobblestonexxcompressed:tier_aquamarine_cobblestone_acceleration_chip"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "cobblestonexxcompressed:tier_aquamarine_multiblock_acceleration_upgrade"
+  }
+}

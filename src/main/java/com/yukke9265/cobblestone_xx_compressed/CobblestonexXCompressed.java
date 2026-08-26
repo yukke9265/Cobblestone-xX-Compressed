@@ -5,6 +5,8 @@ import org.slf4j.Logger;
 import com.mojang.logging.LogUtils;
 import com.yukke9265.cobblestone_xx_compressed.compat.flux.FluxNetworkCompat;
 import com.yukke9265.cobblestone_xx_compressed.datagen.ModDatagen;
+import com.yukke9265.cobblestone_xx_compressed.multiblock.MultiblockCellType;
+import com.yukke9265.cobblestone_xx_compressed.multiblock.MultiblockFormIndex;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModBlockEntities;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModBlocks;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModFluidTypes;
@@ -191,6 +193,24 @@ public class CobblestonexXCompressed {
                 output.accept(ModItems.COBBLESTONE_DISSOLUTION_CHAMBER_ITEM.get());
                 output.accept(ModItems.COBBLESTONE_FLUID_MIXER_ITEM.get());
                 output.accept(ModItems.COBBLESTONE_WATER_GENERATOR_ITEM.get());
+                output.accept(ModItems.COBBLESTONE_MULTIBLOCK_CRUSHER_ITEM.get());
+                output.accept(ModItems.MULTIBLOCK_ITEM_INPUT_PORT_ITEM.get());
+                output.accept(ModItems.MULTIBLOCK_ITEM_OUTPUT_PORT_ITEM.get());
+                output.accept(ModItems.MULTIBLOCK_FLUID_INPUT_PORT_ITEM.get());
+                output.accept(ModItems.MULTIBLOCK_FLUID_OUTPUT_PORT_ITEM.get());
+                output.accept(ModItems.MULTIBLOCK_COBBLE_INPUT_PORT_ITEM.get());
+                output.accept(ModItems.MULTIBLOCK_ACCELERATION_UPGRADE_ITEM.get());
+                output.accept(ModItems.MULTIBLOCK_ENERGIZED_UPGRADE_ITEM.get());
+                output.accept(ModItems.MULTIBLOCK_PARALLEL_UPGRADE_ITEM.get());
+                for (ModBlocks.TierMultiblockAccelerationUpgrade tier : ModBlocks.TierMultiblockAccelerationUpgrade.values()) {
+                    output.accept(tier.getBlock().get().asItem());
+                }
+                for (ModBlocks.TierMultiblockEnergizedUpgrade tier : ModBlocks.TierMultiblockEnergizedUpgrade.values()) {
+                    output.accept(tier.getBlock().get().asItem());
+                }
+                for (ModBlocks.TierMultiblockParallelUpgrade tier : ModBlocks.TierMultiblockParallelUpgrade.values()) {
+                    output.accept(tier.getBlock().get().asItem());
+                }
                 output.accept(ModFluids.MOLTEN_COMPRESSED_COBBLESTONE.getBucketItem().get());
                 for (ModFluids.TierMoltenCompressedCobblestone tier : ModFluids.TierMoltenCompressedCobblestone.values()) {
                     output.accept(tier.getFluidEntry().getBucketItem().get());
@@ -480,6 +500,32 @@ public class CobblestonexXCompressed {
             Capabilities.ItemHandler.BLOCK,
             ModBlockEntities.COBBLESTONE_GENERATOR_BLOCK_ENTITY.get(),
             (blockEntity, side) -> blockEntity.getAutomationItemHandler(side)
+        );
+
+        // マルチブロックポートは BE を持たず、形成インデックス経由でコアへ委譲します。
+        event.registerBlock(
+            Capabilities.ItemHandler.BLOCK,
+            (level, pos, state, blockEntity, side) -> {
+                var core = MultiblockFormIndex.findCore(level, pos);
+                if (core == null || !core.isFormed()) {
+                    return null;
+                }
+
+                if (state.is(ModBlocks.MULTIBLOCK_ITEM_INPUT_PORT.get())) {
+                    return core.getPortItemHandler(MultiblockCellType.ITEM_IN);
+                }
+                if (state.is(ModBlocks.MULTIBLOCK_ITEM_OUTPUT_PORT.get())) {
+                    return core.getPortItemHandler(MultiblockCellType.ITEM_OUT);
+                }
+                if (state.is(ModBlocks.MULTIBLOCK_COBBLE_INPUT_PORT.get())) {
+                    return core.getPortItemHandler(MultiblockCellType.COBBLE_IN);
+                }
+
+                return null;
+            },
+            ModBlocks.MULTIBLOCK_ITEM_INPUT_PORT.get(),
+            ModBlocks.MULTIBLOCK_ITEM_OUTPUT_PORT.get(),
+            ModBlocks.MULTIBLOCK_COBBLE_INPUT_PORT.get()
         );
     }
 
