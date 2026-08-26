@@ -1,20 +1,15 @@
 package com.yukke9265.cobblestone_xx_compressed.datagen.recipe;
 
 import com.yukke9265.cobblestone_xx_compressed.registry.ModBlocks;
-import com.yukke9265.cobblestone_xx_compressed.registry.ModItemTags;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModItems;
 
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Blocks;
-import net.neoforged.neoforge.common.conditions.ModLoadedCondition;
 
 public final class CobblestoneCrusherRecipeDatagen {
-    private static final String AE2_MOD_ID = "ae2";
     private static final long CRUSHER_TOTAL_CP = 800L;
     private static final long CRUSHER_CP_PER_TICK = 4L;
 
@@ -83,40 +78,7 @@ public final class CobblestoneCrusherRecipeDatagen {
             );
         }
 
-        registerAe2Recipes(output);
-    }
-
-    private static void registerAe2Recipes(RecipeOutput output) {
-        // AE2 の刻印機レシピと同じく、入力 1 → ダスト 1 です。
-        RecipeOutput ae2Output = output.withConditions(new ModLoadedCondition(AE2_MOD_ID));
-
-        MachineRecipeOutputHelper.saveCobblestoneCrusherRecipe(
-            ae2Output,
-            "ae2_certus_quartz_to_certus_quartz_dust",
-            Ingredient.of(ModItemTags.GEMS_CERTUS_QUARTZ),
-            ResourceLocation.fromNamespaceAndPath(AE2_MOD_ID, "certus_quartz_dust"),
-            1,
-            CRUSHER_TOTAL_CP,
-            CRUSHER_CP_PER_TICK
-        );
-        MachineRecipeOutputHelper.saveCobblestoneCrusherRecipe(
-            ae2Output,
-            "ae2_fluix_crystal_to_fluix_dust",
-            Ingredient.of(ModItemTags.GEMS_FLUIX),
-            ResourceLocation.fromNamespaceAndPath(AE2_MOD_ID, "fluix_dust"),
-            1,
-            CRUSHER_TOTAL_CP,
-            CRUSHER_CP_PER_TICK
-        );
-        MachineRecipeOutputHelper.saveCobblestoneCrusherRecipe(
-            ae2Output,
-            "ae2_sky_stone_to_sky_dust",
-            Ingredient.of(ModItemTags.AE2_SKY_STONE),
-            ResourceLocation.fromNamespaceAndPath(AE2_MOD_ID, "sky_dust"),
-            1,
-            CRUSHER_TOTAL_CP,
-            CRUSHER_CP_PER_TICK
-        );
+        // AE2 の刻印機粉砕レシピは実行時に自動検出します（Ae2InscriberCrushCompat）。
     }
 
     private static class CrusherRecipeDefinition {

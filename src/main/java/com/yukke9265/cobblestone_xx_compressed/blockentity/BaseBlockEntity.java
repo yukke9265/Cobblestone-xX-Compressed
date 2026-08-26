@@ -5,6 +5,10 @@ import java.util.List;
 
 import org.jetbrains.annotations.Nullable;
 
+import com.yukke9265.cobblestone_xx_compressed.machine.filter.FilterTarget;
+import com.yukke9265.cobblestone_xx_compressed.machine.filter.ISlotFilterHost;
+import com.yukke9265.cobblestone_xx_compressed.machine.filter.MachineSlotFilters;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -29,11 +33,13 @@ import net.neoforged.neoforge.items.ItemStackHandler;
 import net.neoforged.neoforge.items.wrapper.EmptyItemHandler;
 
 @SuppressWarnings("null")
-public class BaseBlockEntity extends BlockEntity {
+public class BaseBlockEntity extends BlockEntity implements ISlotFilterHost {
     public static final int AUTOMATION_FACE_COUNT = AutomationSide.values().length;
     private static final String ACCELERATION_UPGRADE_COPY_TAG = "UpgradeAcceleration";
     private static final String ENERGIZED_CUBE_UPGRADE_COPY_TAG = "UpgradeEnergizedCube";
     private static final String PARALLEL_UPGRADE_COPY_TAG = "UpgradeParallel";
+    private static final String POWER_SLOT_COPY_TAG = "PowerSlot";
+    private static final String SLOT_FILTERS_COPY_TAG = "SlotFiltersData";
 
     private final AutomationMode[] automationModes = new AutomationMode[] {
         AutomationMode.DISABLED,
@@ -51,12 +57,35 @@ public class BaseBlockEntity extends BlockEntity {
         AutomationMode.DISABLED,
         AutomationMode.DISABLED
     };
+    private final MachineSlotFilters slotFilters = new MachineSlotFilters();
     private boolean autoExportEnabled;
     private boolean autoInsertEnabled;
     private boolean soundMuted;
 
     public BaseBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState state) {
         super(blockEntityType, pos, state);
+    }
+
+    @Override
+    public MachineSlotFilters getSlotFilters() {
+        return this.slotFilters;
+    }
+
+    @Override
+    public List<FilterTarget> getFilterTargets() {
+        return List.of();
+    }
+
+    @Override
+    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        super.saveAdditional(tag, registries);
+        this.slotFilters.save(tag, registries);
+    }
+
+    @Override
+    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        super.loadAdditional(tag, registries);
+        this.slotFilters.load(tag, registries);
     }
 
     public boolean isAutoExportEnabled() {
@@ -285,12 +314,22 @@ public class BaseBlockEntity extends BlockEntity {
         CompoundTag tag = new CompoundTag();
         this.saveAutomationModes(tag);
         this.saveUpgradeCopyData(tag);
+        Level currentLevel = this.level;
+        if (currentLevel != null) {
+            CompoundTag slotFiltersTag = new CompoundTag();
+            this.slotFilters.save(slotFiltersTag, currentLevel.registryAccess());
+            tag.put(SLOT_FILTERS_COPY_TAG, slotFiltersTag);
+        }
         return tag;
     }
 
     public void applyAutomationCopyData(CompoundTag tag, Player player) {
         this.loadAutomationModes(tag);
         this.applyUpgradeCopyData(tag, player);
+        Level currentLevel = this.level;
+        if (currentLevel != null && tag.contains(SLOT_FILTERS_COPY_TAG, Tag.TAG_COMPOUND)) {
+            this.slotFilters.load(tag.getCompound(SLOT_FILTERS_COPY_TAG), currentLevel.registryAccess());
+        }
         this.setChanged();
     }
 
@@ -300,6 +339,14 @@ public class BaseBlockEntity extends BlockEntity {
         addStoredUpgradeItem(upgradeStacks, tag, registries, ENERGIZED_CUBE_UPGRADE_COPY_TAG);
         addStoredUpgradeItem(upgradeStacks, tag, registries, PARALLEL_UPGRADE_COPY_TAG);
         return upgradeStacks;
+    }
+
+    public static ItemStack readStoredPowerItem(CompoundTag tag, HolderLookup.Provider registries) {
+        if (!tag.contains(POWER_SLOT_COPY_TAG, Tag.TAG_COMPOUND)) {
+            return ItemStack.EMPTY;
+        }
+
+        return ItemStack.parseOptional(registries, tag.getCompound(POWER_SLOT_COPY_TAG));
     }
 
     private static void addStoredUpgradeItem(
@@ -329,6 +376,8 @@ public class BaseBlockEntity extends BlockEntity {
         this.saveUpgradeSlotCopy(tag, itemStackHandler, registries, this.getAccelerationUpgradeSlotIndex(), ACCELERATION_UPGRADE_COPY_TAG);
         this.saveUpgradeSlotCopy(tag, itemStackHandler, registries, this.getEnergizedCubeUpgradeSlotIndex(), ENERGIZED_CUBE_UPGRADE_COPY_TAG);
         this.saveUpgradeSlotCopy(tag, itemStackHandler, registries, this.getParallelUpgradeSlotIndex(), PARALLEL_UPGRADE_COPY_TAG);
+        // CP 入力スロットも同じカードへ保存し、貼り付け時に所持していれば入れ替えます。
+        this.saveUpgradeSlotCopy(tag, itemStackHandler, registries, this.getPowerCopySlotIndex(), POWER_SLOT_COPY_TAG);
     }
 
     private void saveUpgradeSlotCopy(
@@ -360,6 +409,7 @@ public class BaseBlockEntity extends BlockEntity {
         this.installStoredUpgradeFromPlayer(tag, registries, player, ACCELERATION_UPGRADE_COPY_TAG);
         this.installStoredUpgradeFromPlayer(tag, registries, player, ENERGIZED_CUBE_UPGRADE_COPY_TAG);
         this.installStoredUpgradeFromPlayer(tag, registries, player, PARALLEL_UPGRADE_COPY_TAG);
+        this.installStoredPowerItemFromPlayer(tag, registries, player);
     }
 
     private void installStoredUpgradeFromPlayer(
@@ -380,6 +430,23 @@ public class BaseBlockEntity extends BlockEntity {
         this.installUpgradeItemFromPlayer(player, storedStack);
     }
 
+    private void installStoredPowerItemFromPlayer(
+        CompoundTag tag,
+        HolderLookup.Provider registries,
+        Player player
+    ) {
+        if (!tag.contains(POWER_SLOT_COPY_TAG, Tag.TAG_COMPOUND)) {
+            return;
+        }
+
+        ItemStack storedStack = ItemStack.parseOptional(registries, tag.getCompound(POWER_SLOT_COPY_TAG));
+        if (storedStack.isEmpty()) {
+            return;
+        }
+
+        this.installPowerItemFromPlayer(player, storedStack);
+    }
+
     // インベントリにあれば 1 個消費して入れます。既にあれば入れ替え、入らなければドロップします。
     private void installUpgradeItemFromPlayer(Player player, ItemStack desiredStack) {
         if (!this.canInstallUpgradeItem(desiredStack)) {
@@ -396,6 +463,34 @@ public class BaseBlockEntity extends BlockEntity {
         }
 
         ItemStack replacedStack = this.installUpgradeItem(desiredStack, false);
+        if (replacedStack == null) {
+            return;
+        }
+
+        if (!creative) {
+            inventoryStack.shrink(1);
+        }
+        this.giveItemToPlayerOrDrop(player, replacedStack);
+    }
+
+    // CP 入力もアップグレードと同じく、所持していれば 1 個入れて入れ替えます。
+    private void installPowerItemFromPlayer(Player player, ItemStack desiredStack) {
+        ItemStackHandler itemStackHandler = this.getItemStackHandler();
+        int powerSlot = this.getPowerCopySlotIndex();
+        if (itemStackHandler == null || !this.canInstallUpgradeItemInSlot(itemStackHandler, desiredStack, powerSlot)) {
+            return;
+        }
+
+        boolean creative = player.getAbilities().instabuild;
+        ItemStack inventoryStack = ItemStack.EMPTY;
+        if (!creative) {
+            inventoryStack = this.findMatchingUpgradeInPlayerInventory(player, desiredStack);
+            if (inventoryStack.isEmpty()) {
+                return;
+            }
+        }
+
+        ItemStack replacedStack = this.tryInstallUpgradeItemInSlot(itemStackHandler, desiredStack, powerSlot, false);
         if (replacedStack == null) {
             return;
         }
@@ -442,6 +537,16 @@ public class BaseBlockEntity extends BlockEntity {
 
     protected int getParallelUpgradeSlotIndex() {
         return this.getUpgradeSlotIndexByFieldName("PARALLEL_SLOT_INDEX");
+    }
+
+    protected int getPowerCopySlotIndex() {
+        int powerSlotIndex = this.getUpgradeSlotIndexByFieldName("POWER_SLOT_INDEX");
+        if (powerSlotIndex >= 0) {
+            return powerSlotIndex;
+        }
+
+        // FE Generator など、別名で CP 入力を持つ機械向けです。
+        return this.getUpgradeSlotIndexByFieldName("COBBLESTONE_SLOT_INDEX");
     }
 
     private int getUpgradeSlotIndexByFieldName(String fieldName) {

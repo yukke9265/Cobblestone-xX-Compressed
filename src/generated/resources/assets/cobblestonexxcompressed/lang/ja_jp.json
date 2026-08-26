@@ -83,6 +83,10 @@
   "gui.cobblestonexxcompressed.convert_fe_rate": "FE 変換量",
   "gui.cobblestonexxcompressed.empty": "空",
   "gui.cobblestonexxcompressed.fe_energy": "FE エネルギー",
+  "gui.cobblestonexxcompressed.filter.blacklist": "BL",
+  "gui.cobblestonexxcompressed.filter.close": "閉じる",
+  "gui.cobblestonexxcompressed.filter.open": "フィルタ",
+  "gui.cobblestonexxcompressed.filter.whitelist": "WL",
   "gui.cobblestonexxcompressed.fluid": "液体",
   "gui.cobblestonexxcompressed.fluid_amount": "液体量",
   "gui.cobblestonexxcompressed.item": "アイテム",
@@ -130,6 +134,7 @@
   "tooltip.cobblestonexxcompressed.compressed_cobblestone.compression": "x%s 圧縮",
   "tooltip.cobblestonexxcompressed.compressed_cobblestone_pickaxe.stone_break_simulator_bonus": "石破壊シミュレーター: 耐久相当 +%s",
   "tooltip.cobblestonexxcompressed.configuration_card.empty": "設定は保存されていません",
+  "tooltip.cobblestonexxcompressed.configuration_card.power": "CP入力: %s",
   "tooltip.cobblestonexxcompressed.configuration_card.stored": "保存先: %s",
   "tooltip.cobblestonexxcompressed.configuration_card.upgrade": "アップグレード: %s",
   "tooltip.cobblestonexxcompressed.stone_break_simulator.description": "圧縮石を疑似的に破壊して、エンチャントの効果付きでドロップを生成します。"

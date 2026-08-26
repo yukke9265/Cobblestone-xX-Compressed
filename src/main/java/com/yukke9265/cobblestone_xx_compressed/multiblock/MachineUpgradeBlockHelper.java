@@ -31,6 +31,16 @@ public final class MachineUpgradeBlockHelper {
         return getParallelExtraCraftCount(state) > 0;
     }
 
+    /**
+     * 加速・蓄電・並列のいずれかのアップグレードブロックか判定します。
+     * 前提: 空気や筐体は含めない。
+     */
+    public static boolean isAnyUpgradeBlock(BlockState state) {
+        return isAccelerationUpgradeBlock(state)
+            || isEnergizedUpgradeBlock(state)
+            || isParallelUpgradeBlock(state);
+    }
+
     public static int getAccelerationMultiplier(BlockState state) {
         if (state.is(ModBlocks.MULTIBLOCK_ACCELERATION_UPGRADE.get())) {
             return NORMAL_ACCELERATION_MULTIPLIER;

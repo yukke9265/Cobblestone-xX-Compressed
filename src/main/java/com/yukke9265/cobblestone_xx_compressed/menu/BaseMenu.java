@@ -2,15 +2,22 @@ package com.yukke9265.cobblestone_xx_compressed.menu;
 
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 import com.yukke9265.cobblestone_xx_compressed.blockentity.AutomationMode;
 import com.yukke9265.cobblestone_xx_compressed.blockentity.BaseBlockEntity;
 import com.yukke9265.cobblestone_xx_compressed.compat.jei.JeiRecipeTransferDefinition;
+import com.yukke9265.cobblestone_xx_compressed.machine.filter.FilterTarget;
+import com.yukke9265.cobblestone_xx_compressed.machine.filter.ISlotFilterHost;
+import com.yukke9265.cobblestone_xx_compressed.machine.filter.SlotFilterMode;
 import com.yukke9265.cobblestone_xx_compressed.util.LongDataHelper;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.material.Fluid;
@@ -29,9 +36,75 @@ public class BaseMenu extends AbstractContainerMenu {
     protected static final int REVERSE_AUTOMATION_BUTTON_ID_BASE = 500;
     protected static final int REVERSE_FLUID_AUTOMATION_BUTTON_ID_BASE = 600;
 
+    @Nullable
+    private SlotFilterMenuSupport slotFilterSupport;
+
     // 共通の基底メニュークラスです。全てのメニューはこれを継承します。
     public BaseMenu(MenuType<?> menuType, int containerId) {
         super(menuType, containerId);
+    }
+
+    protected final void initSlotFilterSupport(ISlotFilterHost filterHost) {
+        if (filterHost.getFilterTargets().isEmpty()) {
+            return;
+        }
+        this.slotFilterSupport = new SlotFilterMenuSupport(this, filterHost);
+    }
+
+    final void addSlotFilterDataSlots(ContainerData filterData) {
+        this.addDataSlots(filterData);
+    }
+
+    final void addSlotFilterSlot(Slot slot) {
+        this.addSlot(slot);
+    }
+
+    @Nullable
+    public final SlotFilterMenuSupport getSlotFilterSupport() {
+        return this.slotFilterSupport;
+    }
+
+    public final boolean hasSlotFilterUi() {
+        return this.slotFilterSupport != null && this.slotFilterSupport.hasFilterTargets();
+    }
+
+    public final boolean isSlotFilterPanelOpen() {
+        return this.slotFilterSupport != null && this.slotFilterSupport.isPanelOpen();
+    }
+
+    public final int getSelectedFilterIndex() {
+        return this.slotFilterSupport == null ? 0 : this.slotFilterSupport.getSelectedFilterIndex();
+    }
+
+    @Nullable
+    public final FilterTarget getSelectedFilterTarget() {
+        return this.slotFilterSupport == null ? null : this.slotFilterSupport.getSelectedFilterTarget();
+    }
+
+    public final SlotFilterMode getSelectedFilterMode() {
+        return this.slotFilterSupport == null
+            ? SlotFilterMode.WHITELIST
+            : this.slotFilterSupport.getSelectedFilterMode();
+    }
+
+    protected final boolean handleSlotFilterButtonClick(int buttonId) {
+        return this.slotFilterSupport != null && this.slotFilterSupport.handleButtonClick(buttonId);
+    }
+
+    public final boolean applySlotFilterGhostItem(int ghostIndex, ItemStack stack) {
+        return this.slotFilterSupport != null && this.slotFilterSupport.applyGhostItem(ghostIndex, stack);
+    }
+
+    public final boolean applySlotFilterGhostFluid(int ghostIndex, FluidStack fluidStack) {
+        return this.slotFilterSupport != null && this.slotFilterSupport.applyGhostFluid(ghostIndex, fluidStack);
+    }
+
+    @Override
+    public void clicked(int slotId, int button, ClickType clickType, Player player) {
+        if (this.slotFilterSupport != null && this.slotFilterSupport.handleGhostClick(slotId, button, clickType, player)) {
+            return;
+        }
+        super.clicked(slotId, button, clickType, player);
     }
 
     protected final int getAutomationButtonId(int automationIndex) {

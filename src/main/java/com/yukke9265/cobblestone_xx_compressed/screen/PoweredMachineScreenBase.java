@@ -57,6 +57,7 @@ public abstract class PoweredMachineScreenBase<T extends BaseMenu> extends BaseS
     private Button autoExportButton;
     private Button autoInsertButton;
     private Button muteSoundButton;
+    private SlotFilterScreenHelper slotFilterScreenHelper;
 
     protected PoweredMachineScreenBase(T menu, Inventory inventory, Component title) {
         super(menu, inventory, title);
@@ -219,6 +220,8 @@ public abstract class PoweredMachineScreenBase<T extends BaseMenu> extends BaseS
         this.refreshAutoExportButton();
         this.refreshAutoInsertButton();
         this.refreshMuteSoundButton(this.muteSoundButton);
+        this.slotFilterScreenHelper = new SlotFilterScreenHelper(this);
+        this.slotFilterScreenHelper.initWidgets();
     }
 
     private void addAutomationButton(AutomationSide side, int x, int y) {
@@ -300,6 +303,9 @@ public abstract class PoweredMachineScreenBase<T extends BaseMenu> extends BaseS
         this.refreshAutoExportButton();
         this.refreshAutoInsertButton();
         this.refreshMuteSoundButton(this.muteSoundButton);
+        if (this.slotFilterScreenHelper != null) {
+            this.slotFilterScreenHelper.tick();
+        }
     }
 
     @Override
@@ -307,6 +313,9 @@ public abstract class PoweredMachineScreenBase<T extends BaseMenu> extends BaseS
         int x = this.leftPos;
         int y = this.topPos;
 
+        if (this.slotFilterScreenHelper != null) {
+            this.slotFilterScreenHelper.renderPanel(guiGraphics);
+        }
         this.renderBackgroundTexture(guiGraphics, this.getBackgroundTexture(), x, y, this.imageWidth, this.imageHeight);
         this.renderCobblestoneSlotPart(guiGraphics, x + this.getPowerSlotX(), y + this.getPowerSlotY());
         this.renderNormalSlotPart(guiGraphics, x + this.getMachineInputSlotX(), y + this.getMachineInputSlotY());
@@ -343,6 +352,10 @@ public abstract class PoweredMachineScreenBase<T extends BaseMenu> extends BaseS
         if (maxStoredPower > 0L) {
             int filledWidth = (int) (storedPower / (double) maxStoredPower * this.getPowerBarWidth());
             guiGraphics.fill(powerBarLeft, powerBarTop, powerBarLeft + filledWidth, powerBarTop + this.getPowerBarHeight(), POWER_BAR_FILL_COLOR);
+        }
+
+        if (this.slotFilterScreenHelper != null) {
+            this.slotFilterScreenHelper.renderSelectedHighlight(guiGraphics);
         }
     }
 

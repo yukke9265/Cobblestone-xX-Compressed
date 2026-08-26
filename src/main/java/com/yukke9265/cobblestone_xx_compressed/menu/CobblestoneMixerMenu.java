@@ -72,6 +72,7 @@ public class CobblestoneMixerMenu extends BaseMenu {
         this.addMixerSlots();
         this.addPlayerInventorySlots(playerInventory);
         this.addPlayerHotbarSlots(playerInventory);
+        this.initSlotFilterSupport(this.mixerBlockEntity);
     }
 
     public CobblestoneMixerMenu(int containerId, Inventory playerInventory, RegistryFriendlyByteBuf buf) {
@@ -153,6 +154,10 @@ public class CobblestoneMixerMenu extends BaseMenu {
         }
 
         if (this.handleMuteSoundButtonClick(this.mixerBlockEntity, id)) {
+            return true;
+        }
+
+        if (this.handleSlotFilterButtonClick(id)) {
             return true;
         }
 

@@ -20,6 +20,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
  * PoweredMachineMenuBase は、電力を使う機械メニューで毎回ほぼ同じになる流れだけをまとめます。
  * ここでは stillValid、プレイヤーインベントリ追加、Shift+クリック移動の共通骨格を持ち、
  * 機械ごとに異なる「どのブロックを対象にするか」「どのスロットへ優先投入するか」だけを継承先へ残します。
+ * スロット別フィルタがある機械は、スロット追加後に initSlotFilterSupport を呼びます。
  */
 public abstract class PoweredMachineMenuBase<T extends BaseBlockEntity> extends BaseMenu {
     protected static final int PLAYER_INVENTORY_COLUMNS = 9;
@@ -37,6 +38,10 @@ public abstract class PoweredMachineMenuBase<T extends BaseBlockEntity> extends 
     protected abstract int getMachineSlotCount();
 
     protected abstract boolean moveStackToMachine(ItemStack stack);
+
+    protected final void initSlotFilterSupport() {
+        this.initSlotFilterSupport(this.getMachineBlockEntity());
+    }
 
     protected final int getPlayerInventoryStartIndex() {
         return this.getMachineSlotCount();
@@ -94,7 +99,7 @@ public abstract class PoweredMachineMenuBase<T extends BaseBlockEntity> extends 
             }
 
             slot.onQuickCraft(sourceStack, copiedStack);
-        } else {
+        } else if (index < this.getHotbarEndIndex()) {
             boolean movedToMachine = this.moveStackToMachine(sourceStack);
 
             if (!movedToMachine) {

@@ -1,7 +1,10 @@
 {
   "variants": {
-    "": {
+    "formed=false": {
       "model": "cobblestonexxcompressed:block/multiblock_item_input_port"
+    },
+    "formed=true": {
+      "model": "cobblestonexxcompressed:block/multiblock_item_input_port_formed"
     }
   }
 }

@@ -1,7 +1,10 @@
 {
   "variants": {
-    "": {
+    "formed=false": {
       "model": "cobblestonexxcompressed:block/tier_netherite_multiblock_energized_upgrade"
+    },
+    "formed=true": {
+      "model": "cobblestonexxcompressed:block/tier_netherite_multiblock_energized_upgrade_formed"
     }
   }
 }

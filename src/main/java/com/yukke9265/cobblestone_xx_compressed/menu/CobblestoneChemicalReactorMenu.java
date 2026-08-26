@@ -109,6 +109,7 @@ public class CobblestoneChemicalReactorMenu extends BaseMenu {
         this.addChemicalReactorSlots();
         this.addPlayerInventorySlots(playerInventory);
         this.addPlayerHotbarSlots(playerInventory);
+        this.initSlotFilterSupport(this.chemicalReactorBlockEntity);
     }
 
     public CobblestoneChemicalReactorMenu(int containerId, Inventory playerInventory, RegistryFriendlyByteBuf buf) {
@@ -312,7 +313,11 @@ public class CobblestoneChemicalReactorMenu extends BaseMenu {
             return true;
         }
 
-        return this.handleMuteSoundButtonClick(this.chemicalReactorBlockEntity, id);
+        if (this.handleMuteSoundButtonClick(this.chemicalReactorBlockEntity, id)) {
+            return true;
+        }
+
+        return this.handleSlotFilterButtonClick(id);
     }
 
     @Override

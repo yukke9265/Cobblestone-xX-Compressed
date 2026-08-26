@@ -544,7 +544,7 @@ public class StoneBreakSimulatorBlockEntity extends BaseBlockEntity implements M
             serverLevel,
             this.worldPosition
         );
-        if (!this.canInsertIntoOutputSlots(ALL_OUTPUT_SLOTS, oreDrops)) {
+        if (oreDrops.isEmpty() || !this.canInsertIntoOutputSlots(ALL_OUTPUT_SLOTS, oreDrops)) {
             return;
         }
 
@@ -608,6 +608,10 @@ public class StoneBreakSimulatorBlockEntity extends BaseBlockEntity implements M
             serverLevel,
             this.worldPosition
         );
+        if (oreDrops.isEmpty()) {
+            return false;
+        }
+
         return this.canInsertIntoOutputSlots(ALL_OUTPUT_SLOTS, oreDrops);
     }
 

@@ -71,6 +71,11 @@ public class BaseScreen<T extends BaseMenu> extends AbstractContainerScreen<T> {
         }
     }
 
+    // SlotFilterScreenHelper から protected の addRenderableWidget を呼ぶための窓口です。
+    final <W extends net.minecraft.client.gui.components.events.GuiEventListener & net.minecraft.client.gui.components.Renderable & net.minecraft.client.gui.narration.NarratableEntry> W addSlotFilterWidget(W widget) {
+        return this.addRenderableWidget(widget);
+    }
+
     protected final boolean sendMenuButtonClickWithSound(int buttonId) {
         if (this.minecraft == null || this.minecraft.gameMode == null) {
             return false;

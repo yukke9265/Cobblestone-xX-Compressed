@@ -7,8 +7,8 @@ import com.yukke9265.cobblestone_xx_compressed.multiblock.MultiblockPattern;
 import com.yukke9265.cobblestone_xx_compressed.multiblock.MultiblockPoweredMachineBlockEntityBase;
 import com.yukke9265.cobblestone_xx_compressed.multiblock.VirtualItemBuffer;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneCrusherRecipe;
+import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneCrusherRecipeHelper;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModBlockEntities;
-import com.yukke9265.cobblestone_xx_compressed.registry.ModRecipeTypes;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -18,8 +18,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -110,13 +108,7 @@ public class CobblestoneMultiblockCrusherBlockEntity
         }
 
         ItemStack probe = this.inputBuffer.getTemplateStack().copyWithCount(1);
-        SingleRecipeInput input = new SingleRecipeInput(probe);
-        Optional<RecipeHolder<CobblestoneCrusherRecipe>> recipeHolder = currentLevel.getRecipeManager().getRecipeFor(
-            ModRecipeTypes.COBBLESTONE_CRUSHER.get(),
-            input,
-            currentLevel
-        );
-        return recipeHolder.map(RecipeHolder::value);
+        return CobblestoneCrusherRecipeHelper.findMatchingRecipe(currentLevel, probe);
     }
 
     @Override

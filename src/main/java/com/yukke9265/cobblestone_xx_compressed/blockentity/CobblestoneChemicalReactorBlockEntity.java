@@ -1,5 +1,6 @@
 package com.yukke9265.cobblestone_xx_compressed.blockentity;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
@@ -7,12 +8,14 @@ import javax.annotation.Nonnull;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import com.yukke9265.cobblestone_xx_compressed.machine.filter.FilterTarget;
 import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneChemicalReactorMenu;
 import com.yukke9265.cobblestone_xx_compressed.recipe.ChemicalReactorRecipeInput;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneChemicalReactorRecipe;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModBlockEntities;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModRecipeTypes;
 import com.yukke9265.cobblestone_xx_compressed.util.LongDataHelper;
+import com.yukke9265.cobblestone_xx_compressed.util.MachineGuiLayouts;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -107,6 +110,14 @@ public class CobblestoneChemicalReactorBlockEntity extends PoweredMachineBlockEn
                 return MachineUpgradeHelper.isParallelChip(stack);
             }
 
+            if (slot == INPUT_SLOT_1_INDEX) {
+                return CobblestoneChemicalReactorBlockEntity.this.getSlotFilters().allowsItem("item:input1", stack);
+            }
+
+            if (slot == INPUT_SLOT_2_INDEX) {
+                return CobblestoneChemicalReactorBlockEntity.this.getSlotFilters().allowsItem("item:input2", stack);
+            }
+
             return true;
         }
 
@@ -175,6 +186,32 @@ public class CobblestoneChemicalReactorBlockEntity extends PoweredMachineBlockEn
         for (int index = 0; index < AUTOMATION_FACE_COUNT; index++) {
             this.setFluidAutomationMode(index, AutomationMode.DISABLED);
         }
+    }
+
+    @Override
+    public List<FilterTarget> getFilterTargets() {
+        return List.of(
+            FilterTarget.item(
+                "item:input1",
+                MachineGuiLayouts.ChemicalReactor.INPUT_ITEM_1_SLOT_X,
+                MachineGuiLayouts.ChemicalReactor.INPUT_ITEM_1_SLOT_Y
+            ),
+            FilterTarget.item(
+                "item:input2",
+                MachineGuiLayouts.ChemicalReactor.INPUT_ITEM_2_SLOT_X,
+                MachineGuiLayouts.ChemicalReactor.INPUT_ITEM_2_SLOT_Y
+            ),
+            FilterTarget.fluid(
+                "fluid:input1",
+                MachineGuiLayouts.ChemicalReactor.INPUT_FLUID_1_SLOT_X,
+                MachineGuiLayouts.ChemicalReactor.INPUT_FLUID_1_SLOT_Y
+            ),
+            FilterTarget.fluid(
+                "fluid:input2",
+                MachineGuiLayouts.ChemicalReactor.INPUT_FLUID_2_SLOT_X,
+                MachineGuiLayouts.ChemicalReactor.INPUT_FLUID_2_SLOT_Y
+            )
+        );
     }
 
     public long getStoredInputFluid1Amount() {
@@ -839,6 +876,13 @@ public class CobblestoneChemicalReactorBlockEntity extends PoweredMachineBlockEn
 
     private int fillTankInternal(int tankIndex, FluidStack resource, IFluidHandler.FluidAction action) {
         if (resource.isEmpty()) {
+            return 0;
+        }
+
+        if (tankIndex == 0 && !this.getSlotFilters().allowsFluid("fluid:input1", resource)) {
+            return 0;
+        }
+        if (tankIndex == 1 && !this.getSlotFilters().allowsFluid("fluid:input2", resource)) {
             return 0;
         }
 

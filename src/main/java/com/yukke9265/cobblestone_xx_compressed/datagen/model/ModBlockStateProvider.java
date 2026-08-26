@@ -1,6 +1,7 @@
 package com.yukke9265.cobblestone_xx_compressed.datagen.model;
 
 import com.yukke9265.cobblestone_xx_compressed.CobblestonexXCompressed;
+import com.yukke9265.cobblestone_xx_compressed.block.MultiblockMemberBlock;
 import com.yukke9265.cobblestone_xx_compressed.block.OnOffBlock;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModFluidTypes;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModFluids;
@@ -77,23 +78,78 @@ public class ModBlockStateProvider extends BlockStateProvider {
             "cobblestone_crusher"
         );
 
-        registerCubeAllBlock(ModBlocks.MULTIBLOCK_ITEM_INPUT_PORT.get(), "cobblestone_machine_casing", "multiblock_item_input_port", "cobblestone_machine_casing");
-        registerCubeAllBlock(ModBlocks.MULTIBLOCK_ITEM_OUTPUT_PORT.get(), "cobblestone_machine_casing", "multiblock_item_output_port", "cobblestone_machine_casing");
-        registerCubeAllBlock(ModBlocks.MULTIBLOCK_FLUID_INPUT_PORT.get(), "cobblestone_machine_casing", "multiblock_fluid_input_port", "cobblestone_machine_casing");
-        registerCubeAllBlock(ModBlocks.MULTIBLOCK_FLUID_OUTPUT_PORT.get(), "cobblestone_machine_casing", "multiblock_fluid_output_port", "cobblestone_machine_casing");
-        registerCubeAllBlock(ModBlocks.MULTIBLOCK_COBBLE_INPUT_PORT.get(), "cobblestone_machine_casing", "multiblock_cobble_input_port", "cobblestone_machine_casing");
-        registerCubeAllBlock(ModBlocks.MULTIBLOCK_ACCELERATION_UPGRADE.get(), "cobblestone_machine_casing", "multiblock_acceleration_upgrade", "cobblestone_machine_casing");
-        registerCubeAllBlock(ModBlocks.MULTIBLOCK_ENERGIZED_UPGRADE.get(), "cobblestone_machine_casing", "multiblock_energized_upgrade", "cobblestone_machine_casing");
-        registerCubeAllBlock(ModBlocks.MULTIBLOCK_PARALLEL_UPGRADE.get(), "cobblestone_machine_casing", "multiblock_parallel_upgrade", "cobblestone_machine_casing");
+        registerFormedMemberBlock(
+            ModBlocks.MULTIBLOCK_ITEM_INPUT_PORT.get(),
+            "multiblock_item_input_port",
+            "cobblestone_machine_casing/unformed/cobblestone_machine_casing",
+            "cobblestone_machine_casing/formed/port/multiblock_item_input_port"
+        );
+        registerFormedMemberBlock(
+            ModBlocks.MULTIBLOCK_ITEM_OUTPUT_PORT.get(),
+            "multiblock_item_output_port",
+            "cobblestone_machine_casing/unformed/cobblestone_machine_casing",
+            "cobblestone_machine_casing/formed/port/multiblock_item_output_port"
+        );
+        registerFormedMemberBlock(
+            ModBlocks.MULTIBLOCK_FLUID_INPUT_PORT.get(),
+            "multiblock_fluid_input_port",
+            "cobblestone_machine_casing/unformed/cobblestone_machine_casing",
+            "cobblestone_machine_casing/formed/port/multiblock_fluid_input_port"
+        );
+        registerFormedMemberBlock(
+            ModBlocks.MULTIBLOCK_FLUID_OUTPUT_PORT.get(),
+            "multiblock_fluid_output_port",
+            "cobblestone_machine_casing/unformed/cobblestone_machine_casing",
+            "cobblestone_machine_casing/formed/port/multiblock_fluid_output_port"
+        );
+        registerFormedMemberBlock(
+            ModBlocks.MULTIBLOCK_COBBLE_INPUT_PORT.get(),
+            "multiblock_cobble_input_port",
+            "cobblestone_machine_casing/unformed/cobblestone_machine_casing",
+            "cobblestone_machine_casing/formed/port/multiblock_cobble_input_port"
+        );
+        registerFormedMemberBlock(
+            ModBlocks.MULTIBLOCK_ACCELERATION_UPGRADE.get(),
+            "multiblock_acceleration_upgrade",
+            "cobblestone_machine_casing/unformed/cobblestone_machine_casing",
+            "cobblestone_machine_casing/formed/upgrade/multiblock_acceleration_upgrade"
+        );
+        registerFormedMemberBlock(
+            ModBlocks.MULTIBLOCK_ENERGIZED_UPGRADE.get(),
+            "multiblock_energized_upgrade",
+            "cobblestone_machine_casing/unformed/cobblestone_machine_casing",
+            "cobblestone_machine_casing/formed/upgrade/multiblock_energized_upgrade"
+        );
+        registerFormedMemberBlock(
+            ModBlocks.MULTIBLOCK_PARALLEL_UPGRADE.get(),
+            "multiblock_parallel_upgrade",
+            "cobblestone_machine_casing/unformed/cobblestone_machine_casing",
+            "cobblestone_machine_casing/formed/upgrade/multiblock_parallel_upgrade"
+        );
 
         for (ModBlocks.TierMultiblockAccelerationUpgrade tier : ModBlocks.TierMultiblockAccelerationUpgrade.values()) {
-            registerCubeAllBlock(tier.getBlock().get(), "cobblestone_machine_casing", tier.getRegistryName(), "cobblestone_machine_casing");
+            registerFormedMemberBlock(
+                tier.getBlock().get(),
+                tier.getRegistryName(),
+                "cobblestone_machine_casing/unformed/cobblestone_machine_casing",
+                "cobblestone_machine_casing/formed/upgrade/" + tier.getRegistryName()
+            );
         }
         for (ModBlocks.TierMultiblockEnergizedUpgrade tier : ModBlocks.TierMultiblockEnergizedUpgrade.values()) {
-            registerCubeAllBlock(tier.getBlock().get(), "cobblestone_machine_casing", tier.getRegistryName(), "cobblestone_machine_casing");
+            registerFormedMemberBlock(
+                tier.getBlock().get(),
+                tier.getRegistryName(),
+                "cobblestone_machine_casing/unformed/cobblestone_machine_casing",
+                "cobblestone_machine_casing/formed/upgrade/" + tier.getRegistryName()
+            );
         }
         for (ModBlocks.TierMultiblockParallelUpgrade tier : ModBlocks.TierMultiblockParallelUpgrade.values()) {
-            registerCubeAllBlock(tier.getBlock().get(), "cobblestone_machine_casing", tier.getRegistryName(), "cobblestone_machine_casing");
+            registerFormedMemberBlock(
+                tier.getBlock().get(),
+                tier.getRegistryName(),
+                "cobblestone_machine_casing/unformed/cobblestone_machine_casing",
+                "cobblestone_machine_casing/formed/upgrade/" + tier.getRegistryName()
+            );
         }
 
         // LiquidBlock は level ごとに状態を持ちますが、見た目は fluid renderer が担当します。
@@ -140,7 +196,13 @@ public class ModBlockStateProvider extends BlockStateProvider {
         String modelName,
         String textureName
     ) {
-        registerCubeAllBlock(block, "cobblestone_machine_casing", modelName, textureName);
+        // unformed / formed/casing にフォルダ分けした筐体テクスチャを使う。
+        registerFormedMemberBlock(
+            block,
+            modelName,
+            "cobblestone_machine_casing/unformed/" + textureName,
+            "cobblestone_machine_casing/formed/casing/" + textureName
+        );
     }
 
     private void registerCobblestoneTankBlock(
@@ -484,5 +546,31 @@ public class ModBlockStateProvider extends BlockStateProvider {
             block,
             this.models().cubeAll(modelName, this.modLoc("block/" + textureFolder + "/" + textureName))
         );
+    }
+
+    /**
+     * マルチブロックメンバ用。formed=false/true でモデルを分け、
+     * テクスチャパスは呼び出し側でフォルダ構成に合わせて渡す。
+     */
+    @SuppressWarnings("null")
+    private void registerFormedMemberBlock(
+        Block block,
+        String modelName,
+        String unformedTexturePath,
+        String formedTexturePath
+    ) {
+        ModelFile unformedModel = this.models()
+            .cubeAll(modelName, this.modLoc("block/" + unformedTexturePath));
+        ModelFile formedModel = this.models()
+            .cubeAll(modelName + "_formed", this.modLoc("block/" + formedTexturePath));
+
+        this.getVariantBuilder(block).forAllStates(state -> {
+            boolean formed = state.getValue(MultiblockMemberBlock.FORMED);
+            return ConfiguredModel.builder()
+                .modelFile(formed ? formedModel : unformedModel)
+                .build();
+        });
+
+        this.simpleBlockItem(block, unformedModel);
     }
 }

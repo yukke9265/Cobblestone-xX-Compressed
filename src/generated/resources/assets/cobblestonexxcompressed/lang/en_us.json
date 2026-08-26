@@ -258,6 +258,10 @@
   "gui.cobblestonexxcompressed.convert_fe_rate": "Convert FE",
   "gui.cobblestonexxcompressed.empty": "Empty",
   "gui.cobblestonexxcompressed.fe_energy": "FE Energy",
+  "gui.cobblestonexxcompressed.filter.blacklist": "BL",
+  "gui.cobblestonexxcompressed.filter.close": "Close",
+  "gui.cobblestonexxcompressed.filter.open": "Filter",
+  "gui.cobblestonexxcompressed.filter.whitelist": "WL",
   "gui.cobblestonexxcompressed.fluid": "Fluid",
   "gui.cobblestonexxcompressed.fluid_amount": "Fluid Amount",
   "gui.cobblestonexxcompressed.item": "Item",
@@ -624,6 +628,7 @@
   "tooltip.cobblestonexxcompressed.compressed_cobblestone.compression": "x%s compressed",
   "tooltip.cobblestonexxcompressed.compressed_cobblestone_pickaxe.stone_break_simulator_bonus": "Stone Break Simulator: +%s Unbreaking",
   "tooltip.cobblestonexxcompressed.configuration_card.empty": "No configuration stored",
+  "tooltip.cobblestonexxcompressed.configuration_card.power": "CP Input: %s",
   "tooltip.cobblestonexxcompressed.configuration_card.stored": "Stored: %s",
   "tooltip.cobblestonexxcompressed.configuration_card.upgrade": "Upgrade: %s",
   "tooltip.cobblestonexxcompressed.stone_break_simulator.description": "Simulates breaking compressed stone and generates drops with the inserted pickaxe enchants."

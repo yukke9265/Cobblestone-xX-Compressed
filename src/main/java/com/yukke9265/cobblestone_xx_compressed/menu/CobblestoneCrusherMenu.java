@@ -66,6 +66,7 @@ public class CobblestoneCrusherMenu extends PoweredMachineMenuBase<CobblestoneCr
         this.addCrusherSlots();
         this.addPlayerInventorySlots(playerInventory, MachineGuiLayouts.PLAYER_INVENTORY_START_X, MachineGuiLayouts.PLAYER_INVENTORY_START_Y, MachineGuiLayouts.SLOT_SIZE);
         this.addPlayerHotbarSlots(playerInventory, MachineGuiLayouts.PLAYER_INVENTORY_START_X, MachineGuiLayouts.HOTBAR_START_Y, MachineGuiLayouts.SLOT_SIZE);
+        this.initSlotFilterSupport();
     }
 
     public CobblestoneCrusherMenu(int containerId, Inventory playerInventory, RegistryFriendlyByteBuf buf) {
@@ -207,6 +208,10 @@ public class CobblestoneCrusherMenu extends PoweredMachineMenuBase<CobblestoneCr
         }
 
         if (this.handleMuteSoundButtonClick(this.crusherBlockEntity, id)) {
+            return true;
+        }
+
+        if (this.handleSlotFilterButtonClick(id)) {
             return true;
         }
 

@@ -1,7 +1,10 @@
 {
   "variants": {
-    "": {
+    "formed=false": {
       "model": "cobblestonexxcompressed:block/tier_aquamarine_multiblock_parallel_upgrade"
+    },
+    "formed=true": {
+      "model": "cobblestonexxcompressed:block/tier_aquamarine_multiblock_parallel_upgrade_formed"
     }
   }
 }

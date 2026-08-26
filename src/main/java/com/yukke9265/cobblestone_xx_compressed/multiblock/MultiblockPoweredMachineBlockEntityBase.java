@@ -232,6 +232,8 @@ public abstract class MultiblockPoweredMachineBlockEntityBase<R> extends BlockEn
         }
 
         MultiblockFormIndex index = MultiblockFormIndex.get(level);
+        // 旧メンバの完成見た目を先に戻してからインデックスを外す。
+        MultiblockFormedHelper.setFormed(level, this.memberPositions, false);
         index.unregisterMembers(this.memberPositions);
 
         // GUI 用に、完成可否とは別にセルごとの一致状況を必ず更新する。
@@ -264,6 +266,7 @@ public abstract class MultiblockPoweredMachineBlockEntityBase<R> extends BlockEn
         this.energizedMultiplier = result.energizedMultiplier();
         this.parallelExtraCraftCount = result.parallelExtraCraftCount();
         index.registerMembers(this.worldPosition, this.memberPositions);
+        MultiblockFormedHelper.setFormed(level, this.memberPositions, true);
         this.setChanged();
     }
 

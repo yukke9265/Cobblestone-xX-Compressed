@@ -1,17 +1,29 @@
 package com.yukke9265.cobblestone_xx_compressed.loot;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
+
+import com.mojang.authlib.GameProfile;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.common.util.FakePlayerFactory;
 
 public final class StoneBreakSimulatorLootHelper {
+    // 破壊シミュレート時に loot へ渡す仮プレイヤー。AE2 のクラスターなど THIS_ENTITY 必須のブロック向け。
+    private static final GameProfile STONE_BREAK_FAKE_PLAYER_PROFILE = new GameProfile(
+        UUID.nameUUIDFromBytes("cobblestonexxcompressed:stone_break_simulator".getBytes(StandardCharsets.UTF_8)),
+        "[CobbleXX]"
+    );
+
     private StoneBreakSimulatorLootHelper() {
     }
 
@@ -66,16 +78,23 @@ public final class StoneBreakSimulatorLootHelper {
         int safeBrokenBlockCount = Math.max(0, brokenBlockCount);
         BlockState blockState = block.defaultBlockState();
         ItemStack toolForLoot = toolStack.copy();
+        Player fakePlayer = getHarvestFakePlayer(serverLevel, machinePos);
         // ツルハシをそのまま渡すので、幸運とシルクタッチはバニラの loot table どおりに効きます。
 
         for (int index = 0; index < safeBrokenBlockCount; index++) {
-            List<ItemStack> drops = Block.getDrops(blockState, serverLevel, machinePos, null, null, toolForLoot);
+            List<ItemStack> drops = Block.getDrops(blockState, serverLevel, machinePos, null, fakePlayer, toolForLoot);
             for (ItemStack drop : drops) {
                 mergeStack(mergedDrops, drop);
             }
         }
 
         return mergedDrops;
+    }
+
+    private static Player getHarvestFakePlayer(ServerLevel serverLevel, BlockPos machinePos) {
+        Player fakePlayer = FakePlayerFactory.get(serverLevel, STONE_BREAK_FAKE_PLAYER_PROFILE);
+        fakePlayer.setPos(machinePos.getX() + 0.5D, machinePos.getY() + 0.5D, machinePos.getZ() + 0.5D);
+        return fakePlayer;
     }
 
     private static int applyOreDropsFortune(int baseCount, int fortuneLevel, RandomSource random) {

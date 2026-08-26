@@ -1,11 +1,14 @@
 package com.yukke9265.cobblestone_xx_compressed.blockentity;
 
+import java.util.List;
 import java.util.Optional;
 
+import com.yukke9265.cobblestone_xx_compressed.machine.filter.FilterTarget;
 import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneCrusherMenu;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneCrusherRecipe;
+import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneCrusherRecipeHelper;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModBlockEntities;
-import com.yukke9265.cobblestone_xx_compressed.registry.ModRecipeTypes;
+import com.yukke9265.cobblestone_xx_compressed.util.MachineGuiLayouts;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -18,8 +21,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.items.IItemHandler;
@@ -55,6 +56,10 @@ public class CobblestoneCrusherBlockEntity extends PoweredMachineBlockEntityBase
 
             if (slot == PARALLEL_SLOT_INDEX) {
                 return MachineUpgradeHelper.isParallelChip(stack);
+            }
+
+            if (slot == INPUT_SLOT_INDEX) {
+                return CobblestoneCrusherBlockEntity.this.getSlotFilters().allowsItem("item:input", stack);
             }
 
             return true;
@@ -100,6 +105,17 @@ public class CobblestoneCrusherBlockEntity extends PoweredMachineBlockEntityBase
     }
 
     @Override
+    public List<FilterTarget> getFilterTargets() {
+        return List.of(
+            FilterTarget.item(
+                "item:input",
+                MachineGuiLayouts.PoweredMachine.INPUT_SLOT_X,
+                MachineGuiLayouts.PoweredMachine.MACHINE_SLOT_Y
+            )
+        );
+    }
+
+    @Override
     public ItemStackHandler getItemStackHandler() {
         return this.itemStackHandler;
     }
@@ -121,22 +137,12 @@ public class CobblestoneCrusherBlockEntity extends PoweredMachineBlockEntityBase
 
     @SuppressWarnings("null")
     public boolean canQuickMoveToInput(ItemStack stack) {
-        if (stack.isEmpty()) {
-            return false;
-        }
-
         Level currentLevel = this.level;
         if (currentLevel == null) {
             return false;
         }
 
-        for (RecipeHolder<CobblestoneCrusherRecipe> recipeHolder : currentLevel.getRecipeManager().getAllRecipesFor(ModRecipeTypes.COBBLESTONE_CRUSHER.get())) {
-            if (recipeHolder.value().getIngredient().test(stack)) {
-                return true;
-            }
-        }
-
-        return false;
+        return CobblestoneCrusherRecipeHelper.isValidInput(currentLevel, stack);
     }
 
     @Override
@@ -157,17 +163,7 @@ public class CobblestoneCrusherBlockEntity extends PoweredMachineBlockEntityBase
         }
 
         ItemStack inputStack = this.itemStackHandler.getStackInSlot(INPUT_SLOT_INDEX);
-        if (inputStack.isEmpty()) {
-            return Optional.empty();
-        }
-
-        SingleRecipeInput input = new SingleRecipeInput(inputStack);
-        Optional<RecipeHolder<CobblestoneCrusherRecipe>> recipeHolder = currentLevel.getRecipeManager().getRecipeFor(
-            ModRecipeTypes.COBBLESTONE_CRUSHER.get(),
-            input,
-            currentLevel
-        );
-        return recipeHolder.map(RecipeHolder::value);
+        return CobblestoneCrusherRecipeHelper.findMatchingRecipe(currentLevel, inputStack);
     }
 
     @Override

@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "cobblestonexxcompressed:block/cobblestone_machine_casing/formed/port/multiblock_fluid_output_port"
+  }
+}

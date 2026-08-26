@@ -405,7 +405,8 @@ public class ModBlocks {
     }
 
     private static DeferredBlock<Block> registerCobblestoneMachineCasing(String name) {
-        return BLOCKS.register(name, () -> new Block(createCobblestoneMachineCasingProperties()));
+        // 筐体もメンバとして formed と再検証通知を持つ。
+        return BLOCKS.register(name, () -> new MultiblockMemberBlock(createCobblestoneMachineCasingProperties()));
     }
 
     private static long calculateCobblestoneTankCapacity(int tierLevel) {

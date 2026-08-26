@@ -21,7 +21,7 @@ import net.minecraft.world.entity.player.Inventory;
 
 /**
  * マルチブロッククラッシャー GUI です。
- * 左側に 3x3x3 の筐体状況パネルを置き、不足セルを色で示します。
+ * 左側の構造パネルは一層ずつ切り替え表示します。
  */
 public class CobblestoneMultiblockCrusherScreen extends BaseScreen<CobblestoneMultiblockCrusherMenu> {
     private static final ResourceLocation BACKGROUND_TEXTURE =
@@ -33,16 +33,15 @@ public class CobblestoneMultiblockCrusherScreen extends BaseScreen<CobblestoneMu
     private static final int POWER_BAR_BACKGROUND_COLOR = 0xFF111111;
     private static final int POWER_BAR_FILL_COLOR = 0xFFD6D6D6;
 
-    private static final int STRUCTURE_PANEL_WIDTH = 84;
-    private static final int STRUCTURE_PANEL_HEIGHT = 148;
+    private static final int STRUCTURE_PANEL_WIDTH = 96;
     private static final int STRUCTURE_PANEL_GAP = 6;
-    private static final int STRUCTURE_CELL_SIZE = 14;
-    private static final int STRUCTURE_CELL_GAP = 2;
-    private static final int STRUCTURE_LAYER_GAP = 8;
+    private static final int STRUCTURE_CELL_SIZE = 18;
+    private static final int STRUCTURE_CELL_GAP = 3;
+    private static final int STRUCTURE_LAYER_BUTTON_WIDTH = 18;
+    private static final int STRUCTURE_LAYER_BUTTON_HEIGHT = 16;
 
     private static final int COLOR_PANEL_BG = 0xC0101010;
     private static final int COLOR_PANEL_BORDER = 0xFF8B8B8B;
-    private static final int COLOR_OK = 0xFF3DDC64;
     private static final int COLOR_NG = 0xFFDC3D3D;
     private static final int COLOR_CORE = 0xFF4C8DFF;
     private static final int COLOR_AIR = 0xFF2A2A2A;
@@ -50,7 +49,12 @@ public class CobblestoneMultiblockCrusherScreen extends BaseScreen<CobblestoneMu
     private static final int COLOR_PORT = 0xFFD4A017;
     private static final int COLOR_UPGRADE = 0xFF9B59B6;
 
-    private final MultiblockCellType[] expectedTypes = new MultiblockCellType[MultiblockStructureStatus.CELL_COUNT];
+    private final MultiblockPattern structurePattern = MultiblockPattern.createMultiblockCrusherPattern();
+    private final MultiblockPattern.GridBounds structureBounds = this.structurePattern.getGridBounds();
+    private final MultiblockCellType[] expectedTypes;
+    private int selectedLayer;
+    private Button previousLayerButton;
+    private Button nextLayerButton;
 
     public CobblestoneMultiblockCrusherScreen(CobblestoneMultiblockCrusherMenu menu, Inventory inventory, Component title) {
         super(menu, inventory, title);
@@ -60,13 +64,14 @@ public class CobblestoneMultiblockCrusherScreen extends BaseScreen<CobblestoneMu
         this.titleLabelY = MachineGuiLayouts.STANDARD_TITLE_LABEL_Y;
         this.inventoryLabelX = MachineGuiLayouts.STANDARD_INVENTORY_LABEL_X;
         this.inventoryLabelY = MachineGuiLayouts.STANDARD_INVENTORY_LABEL_Y;
+        this.expectedTypes = new MultiblockCellType[this.structureBounds.cellCount()];
+        this.selectedLayer = 0;
         this.buildExpectedTypes();
     }
 
     private void buildExpectedTypes() {
-        MultiblockPattern pattern = MultiblockPattern.createMultiblockCrusherPattern();
-        for (MultiblockPattern.Cell cell : pattern.getCells()) {
-            int index = MultiblockStructureStatus.toIndex(cell.relativeX(), cell.relativeY(), cell.relativeZ());
+        for (MultiblockPattern.Cell cell : this.structurePattern.getCells()) {
+            int index = this.structureBounds.toIndex(cell.relativeX(), cell.relativeY(), cell.relativeZ());
             if (index >= 0 && index < this.expectedTypes.length) {
                 this.expectedTypes[index] = cell.type();
             }
@@ -87,6 +92,47 @@ public class CobblestoneMultiblockCrusherScreen extends BaseScreen<CobblestoneMu
                 20
             ).build()
         );
+
+        int panelX = this.leftPos - STRUCTURE_PANEL_GAP - STRUCTURE_PANEL_WIDTH;
+        int panelY = this.topPos;
+        int buttonY = panelY + 42;
+        this.previousLayerButton = this.addRenderableWidget(
+            Button.builder(
+                Component.literal("<"),
+                button -> this.changeSelectedLayer(-1)
+            ).bounds(panelX + 6, buttonY, STRUCTURE_LAYER_BUTTON_WIDTH, STRUCTURE_LAYER_BUTTON_HEIGHT).build()
+        );
+        this.nextLayerButton = this.addRenderableWidget(
+            Button.builder(
+                Component.literal(">"),
+                button -> this.changeSelectedLayer(1)
+            ).bounds(
+                panelX + STRUCTURE_PANEL_WIDTH - 6 - STRUCTURE_LAYER_BUTTON_WIDTH,
+                buttonY,
+                STRUCTURE_LAYER_BUTTON_WIDTH,
+                STRUCTURE_LAYER_BUTTON_HEIGHT
+            ).build()
+        );
+        this.refreshLayerButtons();
+    }
+
+    private void changeSelectedLayer(int delta) {
+        int nextLayer = this.selectedLayer + delta;
+        if (nextLayer < 0 || nextLayer >= this.structureBounds.sizeY()) {
+            return;
+        }
+
+        this.selectedLayer = nextLayer;
+        this.refreshLayerButtons();
+    }
+
+    private void refreshLayerButtons() {
+        if (this.previousLayerButton != null) {
+            this.previousLayerButton.active = this.selectedLayer > 0;
+        }
+        if (this.nextLayerButton != null) {
+            this.nextLayerButton.active = this.selectedLayer < this.structureBounds.sizeY() - 1;
+        }
     }
 
     @Override
@@ -161,50 +207,62 @@ public class CobblestoneMultiblockCrusherScreen extends BaseScreen<CobblestoneMu
         int panelX = this.leftPos - STRUCTURE_PANEL_GAP - STRUCTURE_PANEL_WIDTH;
         int panelY = this.topPos;
 
-        guiGraphics.fill(panelX, panelY, panelX + STRUCTURE_PANEL_WIDTH, panelY + STRUCTURE_PANEL_HEIGHT, COLOR_PANEL_BG);
+        guiGraphics.fill(panelX, panelY, panelX + STRUCTURE_PANEL_WIDTH, panelY + this.imageHeight, COLOR_PANEL_BG);
         guiGraphics.fill(panelX, panelY, panelX + STRUCTURE_PANEL_WIDTH, panelY + 1, COLOR_PANEL_BORDER);
-        guiGraphics.fill(panelX, panelY + STRUCTURE_PANEL_HEIGHT - 1, panelX + STRUCTURE_PANEL_WIDTH, panelY + STRUCTURE_PANEL_HEIGHT, COLOR_PANEL_BORDER);
-        guiGraphics.fill(panelX, panelY, panelX + 1, panelY + STRUCTURE_PANEL_HEIGHT, COLOR_PANEL_BORDER);
-        guiGraphics.fill(panelX + STRUCTURE_PANEL_WIDTH - 1, panelY, panelX + STRUCTURE_PANEL_WIDTH, panelY + STRUCTURE_PANEL_HEIGHT, COLOR_PANEL_BORDER);
+        guiGraphics.fill(panelX, panelY + this.imageHeight - 1, panelX + STRUCTURE_PANEL_WIDTH, panelY + this.imageHeight, COLOR_PANEL_BORDER);
+        guiGraphics.fill(panelX, panelY, panelX + 1, panelY + this.imageHeight, COLOR_PANEL_BORDER);
+        guiGraphics.fill(panelX + STRUCTURE_PANEL_WIDTH - 1, panelY, panelX + STRUCTURE_PANEL_WIDTH, panelY + this.imageHeight, COLOR_PANEL_BORDER);
 
         guiGraphics.drawString(this.font, "Structure", panelX + 6, panelY + 6, 0xFFFFFF, false);
         String progressText = this.menu.getStructureMatchedCount() + "/" + this.menu.getStructureRequiredCount();
         guiGraphics.drawString(this.font, progressText, panelX + 6, panelY + 18, this.menu.isFormed() ? 0x55FF55 : 0xFFAA55, false);
-        guiGraphics.drawString(this.font, "上=正面", panelX + 6, panelY + 30, 0xAAAAAA, false);
+        guiGraphics.drawString(this.font, "下=正面", panelX + 6, panelY + 30, 0xAAAAAA, false);
 
-        int gridStartY = panelY + 44;
-        int gridSize = STRUCTURE_CELL_SIZE * MultiblockStructureStatus.SIZE
-            + STRUCTURE_CELL_GAP * (MultiblockStructureStatus.SIZE - 1);
-        int gridStartX = panelX + (STRUCTURE_PANEL_WIDTH - gridSize) / 2;
+        String layerText = "Y+" + this.selectedLayer;
+        int layerTextWidth = this.font.width(layerText);
+        guiGraphics.drawString(
+            this.font,
+            layerText,
+            panelX + (STRUCTURE_PANEL_WIDTH - layerTextWidth) / 2,
+            panelY + 46,
+            0xFFFFFF,
+            false
+        );
+
+        int gridWidth = STRUCTURE_CELL_SIZE * this.structureBounds.sizeX()
+            + STRUCTURE_CELL_GAP * Math.max(0, this.structureBounds.sizeX() - 1);
+        int gridStartX = panelX + (STRUCTURE_PANEL_WIDTH - gridWidth) / 2;
+        int gridStartY = panelY + 66;
 
         Optional<HoveredCell> hovered = Optional.empty();
-        for (int layer = MultiblockStructureStatus.LAYER_COUNT - 1; layer >= 0; layer--) {
-            int layerOffset = (MultiblockStructureStatus.LAYER_COUNT - 1 - layer)
-                * (gridSize + STRUCTURE_LAYER_GAP + 10);
-            int layerTop = gridStartY + layerOffset;
-            guiGraphics.drawString(this.font, "Y+" + layer, panelX + 6, layerTop - 10, 0xCCCCCC, false);
+        int sizeX = this.structureBounds.sizeX();
+        int sizeZ = this.structureBounds.sizeZ();
+        for (int row = 0; row < sizeZ; row++) {
+            for (int col = 0; col < sizeX; col++) {
+                // 文字列レイヤーと同じ: 下段=正面(相対z小)、左=相対x大。
+                int relativeX = this.structureBounds.minX() + (sizeX - 1 - col);
+                int relativeY = this.structureBounds.minY() + this.selectedLayer;
+                int relativeZ = this.structureBounds.minZ() + (sizeZ - 1 - row);
+                int index = this.structureBounds.toIndex(relativeX, relativeY, relativeZ);
+                if (index < 0 || index >= this.expectedTypes.length) {
+                    continue;
+                }
 
-            for (int row = 0; row < MultiblockStructureStatus.SIZE; row++) {
-                for (int col = 0; col < MultiblockStructureStatus.SIZE; col++) {
-                    int relativeX = col - 1;
-                    int relativeZ = row - 1;
-                    int index = MultiblockStructureStatus.toIndex(relativeX, layer, relativeZ);
-                    int cellX = gridStartX + col * (STRUCTURE_CELL_SIZE + STRUCTURE_CELL_GAP);
-                    int cellY = layerTop + row * (STRUCTURE_CELL_SIZE + STRUCTURE_CELL_GAP);
-                    boolean matched = this.menu.isStructureCellMatched(index);
-                    MultiblockCellType expected = this.expectedTypes[index];
-                    int color = this.resolveCellColor(expected, matched);
+                int cellX = gridStartX + col * (STRUCTURE_CELL_SIZE + STRUCTURE_CELL_GAP);
+                int cellY = gridStartY + row * (STRUCTURE_CELL_SIZE + STRUCTURE_CELL_GAP);
+                boolean matched = this.menu.isStructureCellMatched(index);
+                MultiblockCellType expected = this.expectedTypes[index];
+                int color = this.resolveCellColor(expected, matched);
 
-                    guiGraphics.fill(cellX, cellY, cellX + STRUCTURE_CELL_SIZE, cellY + STRUCTURE_CELL_SIZE, color);
-                    guiGraphics.fill(cellX, cellY, cellX + STRUCTURE_CELL_SIZE, cellY + 1, 0xFF000000);
-                    guiGraphics.fill(cellX, cellY + STRUCTURE_CELL_SIZE - 1, cellX + STRUCTURE_CELL_SIZE, cellY + STRUCTURE_CELL_SIZE, 0xFF000000);
-                    guiGraphics.fill(cellX, cellY, cellX + 1, cellY + STRUCTURE_CELL_SIZE, 0xFF000000);
-                    guiGraphics.fill(cellX + STRUCTURE_CELL_SIZE - 1, cellY, cellX + STRUCTURE_CELL_SIZE, cellY + STRUCTURE_CELL_SIZE, 0xFF000000);
+                guiGraphics.fill(cellX, cellY, cellX + STRUCTURE_CELL_SIZE, cellY + STRUCTURE_CELL_SIZE, color);
+                guiGraphics.fill(cellX, cellY, cellX + STRUCTURE_CELL_SIZE, cellY + 1, 0xFF000000);
+                guiGraphics.fill(cellX, cellY + STRUCTURE_CELL_SIZE - 1, cellX + STRUCTURE_CELL_SIZE, cellY + STRUCTURE_CELL_SIZE, 0xFF000000);
+                guiGraphics.fill(cellX, cellY, cellX + 1, cellY + STRUCTURE_CELL_SIZE, 0xFF000000);
+                guiGraphics.fill(cellX + STRUCTURE_CELL_SIZE - 1, cellY, cellX + STRUCTURE_CELL_SIZE, cellY + STRUCTURE_CELL_SIZE, 0xFF000000);
 
-                    if (mouseX >= cellX && mouseX < cellX + STRUCTURE_CELL_SIZE
-                        && mouseY >= cellY && mouseY < cellY + STRUCTURE_CELL_SIZE) {
-                        hovered = Optional.of(new HoveredCell(expected, matched, relativeX, layer, relativeZ));
-                    }
+                if (mouseX >= cellX && mouseX < cellX + STRUCTURE_CELL_SIZE
+                    && mouseY >= cellY && mouseY < cellY + STRUCTURE_CELL_SIZE) {
+                    hovered = Optional.of(new HoveredCell(expected, matched, relativeX, relativeY, relativeZ));
                 }
             }
         }
@@ -230,8 +288,8 @@ public class CobblestoneMultiblockCrusherScreen extends BaseScreen<CobblestoneMu
             case CORE -> COLOR_CORE;
             case AIR -> COLOR_AIR;
             case CASING -> COLOR_CASING;
-            case ITEM_IN, ITEM_OUT, FLUID_IN, FLUID_OUT, COBBLE_IN -> COLOR_PORT;
-            case UPGRADE_ACCEL, UPGRADE_ENERGY, UPGRADE_PARALLEL -> COLOR_UPGRADE;
+            case INOUT, ITEM_IN, ITEM_OUT, FLUID_IN, FLUID_OUT, COBBLE_IN -> COLOR_PORT;
+            case UPGRADE -> COLOR_UPGRADE;
         };
     }
 

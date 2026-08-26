@@ -7,6 +7,7 @@ import com.yukke9265.cobblestone_xx_compressed.compat.flux.FluxNetworkCompat;
 import com.yukke9265.cobblestone_xx_compressed.datagen.ModDatagen;
 import com.yukke9265.cobblestone_xx_compressed.multiblock.MultiblockCellType;
 import com.yukke9265.cobblestone_xx_compressed.multiblock.MultiblockFormIndex;
+import com.yukke9265.cobblestone_xx_compressed.network.SetFilterGhostPayload;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModBlockEntities;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModBlocks;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModFluidTypes;
@@ -33,6 +34,8 @@ import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
+import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
@@ -238,6 +241,9 @@ public class CobblestonexXCompressed {
         // これを入れないと、GUI で見えていても外部自動化からは炉の中身へ触れません。
         modEventBus.addListener(this::registerCapabilities);
 
+        // JEI ghost 投入など、クライアントからサーバへ送る独自パケットを登録します。
+        modEventBus.addListener(this::registerPayloadHandlers);
+
         // data generator 実行時に使う provider 群の登録入口です。
         // 実行時にだけ呼ばれ、通常のゲーム起動では JSON 生成処理は走りません。
         modEventBus.addListener(ModDatagen::gatherData);
@@ -291,6 +297,15 @@ public class CobblestonexXCompressed {
         LOGGER.info("{}{}", Config.MAGIC_NUMBER_INTRODUCTION.get(), Config.MAGIC_NUMBER.getAsInt());
 
         Config.ITEM_STRINGS.get().forEach((item) -> LOGGER.info("ITEM >> {}", item));
+    }
+
+    private void registerPayloadHandlers(RegisterPayloadHandlersEvent event) {
+        PayloadRegistrar registrar = event.registrar(MODID);
+        registrar.playToServer(
+            SetFilterGhostPayload.TYPE,
+            SetFilterGhostPayload.STREAM_CODEC,
+            SetFilterGhostPayload::handle
+        );
     }
 
     private void registerCapabilities(RegisterCapabilitiesEvent event) {

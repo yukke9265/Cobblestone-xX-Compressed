@@ -67,6 +67,7 @@ public class CobblestoneMixerScreen extends BaseScreen<CobblestoneMixerMenu> {
     private Button autoExportButton;
     private Button autoInsertButton;
     private Button muteSoundButton;
+    private SlotFilterScreenHelper slotFilterScreenHelper;
     private final int progressBarX = MachineGuiLayouts.Mixer.PROGRESS_BAR_X;
     private final int progressBarY = MachineGuiLayouts.Mixer.PROGRESS_BAR_Y;
     private final int progressBarWidth = MachineGuiLayouts.Mixer.PROGRESS_BAR_WIDTH;
@@ -138,6 +139,8 @@ public class CobblestoneMixerScreen extends BaseScreen<CobblestoneMixerMenu> {
         this.refreshAutoExportButton();
         this.refreshAutoInsertButton();
         this.refreshMuteSoundButton(this.muteSoundButton);
+        this.slotFilterScreenHelper = new SlotFilterScreenHelper(this);
+        this.slotFilterScreenHelper.initWidgets();
     }
 
     private void addAutomationButton(AutomationSide side, int x, int y) {
@@ -219,6 +222,9 @@ public class CobblestoneMixerScreen extends BaseScreen<CobblestoneMixerMenu> {
         this.refreshAutoExportButton();
         this.refreshAutoInsertButton();
         this.refreshMuteSoundButton(this.muteSoundButton);
+        if (this.slotFilterScreenHelper != null) {
+            this.slotFilterScreenHelper.tick();
+        }
     }
 
     @Override
@@ -226,6 +232,9 @@ public class CobblestoneMixerScreen extends BaseScreen<CobblestoneMixerMenu> {
         int x = this.leftPos;
         int y = this.topPos;
 
+        if (this.slotFilterScreenHelper != null) {
+            this.slotFilterScreenHelper.renderPanel(guiGraphics);
+        }
         this.renderBackgroundTexture(guiGraphics, BACKGROUND_TEXTURE, x, y, this.imageWidth, this.imageHeight);
         this.renderCobblestoneSlotPart(guiGraphics, x + MachineGuiLayouts.Mixer.POWER_SLOT_X, y + MachineGuiLayouts.Mixer.POWER_SLOT_Y);
         this.renderNormalSlotPart(guiGraphics, x + MachineGuiLayouts.Mixer.INPUT_SLOT_1_X, y + MachineGuiLayouts.Mixer.INPUT_SLOT_1_Y);
@@ -268,6 +277,10 @@ public class CobblestoneMixerScreen extends BaseScreen<CobblestoneMixerMenu> {
         if (maxStoredPower > 0) {
             int filledWidth = (int) (storedPower / (double) maxStoredPower * POWER_BAR_WIDTH);
             guiGraphics.fill(powerBarLeft, powerBarTop, powerBarLeft + filledWidth, powerBarTop + POWER_BAR_HEIGHT, POWER_BAR_FILL_COLOR);
+        }
+
+        if (this.slotFilterScreenHelper != null) {
+            this.slotFilterScreenHelper.renderSelectedHighlight(guiGraphics);
         }
     }
 

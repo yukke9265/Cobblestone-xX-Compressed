@@ -76,6 +76,10 @@ public class ModJapaneseLanguageProvider extends LanguageProvider {
         add("gui.cobblestonexxcompressed.auto_export", "自動搬出");
         add("gui.cobblestonexxcompressed.auto_insert", "自動搬入");
         add("gui.cobblestonexxcompressed.mute_sound", "消音");
+        add("gui.cobblestonexxcompressed.filter.whitelist", "WL");
+        add("gui.cobblestonexxcompressed.filter.blacklist", "BL");
+        add("gui.cobblestonexxcompressed.filter.open", "フィルタ");
+        add("gui.cobblestonexxcompressed.filter.close", "閉じる");
         add("gui.cobblestonexxcompressed.water_generator.convert_rate", "%s mB/t");
         add("gui.cobblestonexxcompressed.water_generator.cp_rate", "%s CP/t");
         add("jei.cobblestonexxcompressed.compressed_stone_loot", "圧縮石ドロップ");
@@ -94,6 +98,7 @@ public class ModJapaneseLanguageProvider extends LanguageProvider {
         add("tooltip.cobblestonexxcompressed.configuration_card.empty", "設定は保存されていません");
         add("tooltip.cobblestonexxcompressed.configuration_card.stored", "保存先: %s");
         add("tooltip.cobblestonexxcompressed.configuration_card.upgrade", "アップグレード: %s");
+        add("tooltip.cobblestonexxcompressed.configuration_card.power", "CP入力: %s");
         add("message.cobblestonexxcompressed.configuration_card.copied", "%s の設定をコピーしました");
         add("message.cobblestonexxcompressed.configuration_card.pasted", "%s に設定を貼り付けました");
         add("message.cobblestonexxcompressed.configuration_card.cleared", "保存した設定を消去しました");

@@ -45,6 +45,7 @@ import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneReactionChamberMe
 import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneCrystallizationChamberMenu;
 import com.yukke9265.cobblestone_xx_compressed.menu.StoneBreakSimulatorMenu;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneCrusherRecipe;
+import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneCrusherRecipeHelper;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneAssemblyMachineRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneChemicalReactorRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneCentrifugeRecipe;
@@ -456,11 +457,9 @@ public class ModJeiPlugin implements IModPlugin {
             .toList();
         registration.addRecipes(COBBLESTONE_EXTREME_COMPRESSOR_DEFINITION.recipeType(), extremeCompressorRecipes);
 
-        List<CobblestoneCrusherRecipe> crusherRecipes = minecraft.level.getRecipeManager()
-            .getAllRecipesFor(ModRecipeTypes.COBBLESTONE_CRUSHER.get())
-            .stream()
-            .map(RecipeHolder::value)
-            .toList();
+        // 独自レシピ + AE2 刻印機の粉砕相当を同じカテゴリへ出す。
+        List<CobblestoneCrusherRecipe> crusherRecipes =
+            CobblestoneCrusherRecipeHelper.collectAllDisplayRecipes(minecraft.level);
         registration.addRecipes(COBBLESTONE_CRUSHER_DEFINITION.recipeType(), crusherRecipes);
 
         List<CobblestoneCentrifugeRecipe> centrifugeRecipes = minecraft.level.getRecipeManager()
@@ -631,6 +630,7 @@ public class ModJeiPlugin implements IModPlugin {
                     .toList();
             }
         });
+        registration.addGhostIngredientHandler(screenClass, new SlotFilterGhostIngredientHandler<T>());
     }
 
     private static <R, C extends BaseMenu> void registerTransferHandler(

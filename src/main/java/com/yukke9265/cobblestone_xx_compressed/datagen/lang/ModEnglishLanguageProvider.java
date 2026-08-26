@@ -262,6 +262,10 @@ public class ModEnglishLanguageProvider extends LanguageProvider {
         add("gui.cobblestonexxcompressed.auto_export", "Auto Export");
         add("gui.cobblestonexxcompressed.auto_insert", "Auto Insert");
         add("gui.cobblestonexxcompressed.mute_sound", "Mute");
+        add("gui.cobblestonexxcompressed.filter.whitelist", "WL");
+        add("gui.cobblestonexxcompressed.filter.blacklist", "BL");
+        add("gui.cobblestonexxcompressed.filter.open", "Filter");
+        add("gui.cobblestonexxcompressed.filter.close", "Close");
         add("gui.cobblestonexxcompressed.start_stop", "Start/Stop");
         add("tooltip.cobblestonexxcompressed.compressed_cobblestone.compression", "x%s compressed");
         add("tooltip.cobblestonexxcompressed.cobblestone_energized_cube.capacity", "x%s CP capacity");
@@ -272,6 +276,7 @@ public class ModEnglishLanguageProvider extends LanguageProvider {
         add("tooltip.cobblestonexxcompressed.configuration_card.empty", "No configuration stored");
         add("tooltip.cobblestonexxcompressed.configuration_card.stored", "Stored: %s");
         add("tooltip.cobblestonexxcompressed.configuration_card.upgrade", "Upgrade: %s");
+        add("tooltip.cobblestonexxcompressed.configuration_card.power", "CP Input: %s");
         add("message.cobblestonexxcompressed.configuration_card.copied", "Copied configuration from %s");
         add("message.cobblestonexxcompressed.configuration_card.pasted", "Pasted configuration to %s");
         add("message.cobblestonexxcompressed.configuration_card.cleared", "Cleared stored configuration");

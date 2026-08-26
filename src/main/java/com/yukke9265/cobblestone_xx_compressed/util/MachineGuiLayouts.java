@@ -16,6 +16,34 @@ public final class MachineGuiLayouts {
     public static final int ENERGIZED_CUBE_SLOT_Y = ACCELERATION_SLOT_Y + SLOT_SIZE;
     public static final int PARALLEL_SLOT_Y = ENERGIZED_CUBE_SLOT_Y + SLOT_SIZE;
 
+    /*
+     * 既存 GUI 本体の上にオーバーハングするフィルタ行です。
+     * 本体の imageHeight / スロット座標は変えず、相対 Y を負にして配置します。
+     */
+    public static final class SlotFilter {
+        public static final int PANEL_HEIGHT = 28;
+        public static final int GHOST_START_X = PLAYER_INVENTORY_START_X;
+        public static final int GHOST_SLOT_Y = -PANEL_HEIGHT + 5;
+        public static final int PREV_BUTTON_WIDTH = 16;
+        public static final int NEXT_BUTTON_WIDTH = 16;
+        public static final int MODE_BUTTON_WIDTH = 40;
+        public static final int TOGGLE_BUTTON_WIDTH = 52;
+        public static final int BUTTON_HEIGHT = 16;
+        public static final int PREV_BUTTON_X = GHOST_START_X - PREV_BUTTON_WIDTH - 2;
+        public static final int NEXT_BUTTON_X = GHOST_START_X + SLOT_SIZE * 9 + 2;
+        public static final int MODE_BUTTON_X = NEXT_BUTTON_X + NEXT_BUTTON_WIDTH + 2;
+        public static final int BUTTON_Y = GHOST_SLOT_Y + 1;
+        // 開閉ボタンはフィルタ行の左側に置き、パネルや矢印と重ならないようにします。
+        public static final int TOGGLE_BUTTON_X = PREV_BUTTON_X - TOGGLE_BUTTON_WIDTH - 2;
+        public static final int TOGGLE_BUTTON_Y = BUTTON_Y;
+        public static final int HIGHLIGHT_COLOR = 0x80FFFF00;
+        public static final int PANEL_BACKGROUND_COLOR = 0xC0101010;
+        public static final int PANEL_BORDER_COLOR = 0xFF808080;
+
+        private SlotFilter() {
+        }
+    }
+
     private MachineGuiLayouts() {
     }
 

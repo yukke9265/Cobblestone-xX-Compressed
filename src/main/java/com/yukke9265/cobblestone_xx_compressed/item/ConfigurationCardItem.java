@@ -36,6 +36,7 @@ public class ConfigurationCardItem extends Item {
     private static final String TOOLTIP_EMPTY_KEY = "tooltip.cobblestonexxcompressed.configuration_card.empty";
     private static final String TOOLTIP_STORED_KEY = "tooltip.cobblestonexxcompressed.configuration_card.stored";
     private static final String TOOLTIP_UPGRADE_KEY = "tooltip.cobblestonexxcompressed.configuration_card.upgrade";
+    private static final String TOOLTIP_POWER_KEY = "tooltip.cobblestonexxcompressed.configuration_card.power";
     private static final String MESSAGE_COPIED_KEY = "message.cobblestonexxcompressed.configuration_card.copied";
     private static final String MESSAGE_PASTED_KEY = "message.cobblestonexxcompressed.configuration_card.pasted";
     private static final String MESSAGE_CLEARED_KEY = "message.cobblestonexxcompressed.configuration_card.cleared";
@@ -133,6 +134,13 @@ public class ConfigurationCardItem extends Item {
         for (ItemStack upgradeStack : BaseBlockEntity.readStoredUpgradeItems(cardData.getCompound(DATA_TAG), registries)) {
             tooltipComponents.add(
                 Component.translatable(TOOLTIP_UPGRADE_KEY, upgradeStack.getHoverName()).withStyle(ChatFormatting.DARK_GRAY)
+            );
+        }
+
+        ItemStack powerStack = BaseBlockEntity.readStoredPowerItem(cardData.getCompound(DATA_TAG), registries);
+        if (!powerStack.isEmpty()) {
+            tooltipComponents.add(
+                Component.translatable(TOOLTIP_POWER_KEY, powerStack.getHoverName()).withStyle(ChatFormatting.DARK_GRAY)
             );
         }
     }

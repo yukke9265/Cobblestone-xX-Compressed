@@ -1,12 +1,15 @@
 package com.yukke9265.cobblestone_xx_compressed.blockentity;
 
+import java.util.List;
 import java.util.Optional;
 
+import com.yukke9265.cobblestone_xx_compressed.machine.filter.FilterTarget;
 import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneMixerMenu;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneMixerRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.DoubleItemRecipeInput;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModBlockEntities;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModRecipeTypes;
+import com.yukke9265.cobblestone_xx_compressed.util.MachineGuiLayouts;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -65,6 +68,14 @@ public class CobblestoneMixerBlockEntity extends PoweredMachineBlockEntityBase<C
                 return MachineUpgradeHelper.isParallelChip(stack);
             }
 
+            if (slot == INPUT_SLOT_1_INDEX) {
+                return CobblestoneMixerBlockEntity.this.getSlotFilters().allowsItem("item:input1", stack);
+            }
+
+            if (slot == INPUT_SLOT_2_INDEX) {
+                return CobblestoneMixerBlockEntity.this.getSlotFilters().allowsItem("item:input2", stack);
+            }
+
             return true;
         }
 
@@ -113,6 +124,22 @@ public class CobblestoneMixerBlockEntity extends PoweredMachineBlockEntityBase<C
 
     public CobblestoneMixerBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.COBBLESTONE_MIXER_BLOCK_ENTITY.get(), pos, state);
+    }
+
+    @Override
+    public List<FilterTarget> getFilterTargets() {
+        return List.of(
+            FilterTarget.item(
+                "item:input1",
+                MachineGuiLayouts.Mixer.INPUT_SLOT_1_X,
+                MachineGuiLayouts.Mixer.INPUT_SLOT_1_Y
+            ),
+            FilterTarget.item(
+                "item:input2",
+                MachineGuiLayouts.Mixer.INPUT_SLOT_2_X,
+                MachineGuiLayouts.Mixer.INPUT_SLOT_2_Y
+            )
+        );
     }
 
     @Override
