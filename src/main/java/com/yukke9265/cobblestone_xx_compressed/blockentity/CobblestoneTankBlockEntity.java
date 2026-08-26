@@ -1,5 +1,6 @@
 package com.yukke9265.cobblestone_xx_compressed.blockentity;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
@@ -8,6 +9,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import com.yukke9265.cobblestone_xx_compressed.block.CobblestoneTankBlock;
+import com.yukke9265.cobblestone_xx_compressed.machine.filter.FilterTarget;
+import com.yukke9265.cobblestone_xx_compressed.machine.filter.FilterTargetIds;
 import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneTankMenu;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModBlockEntities;
 import com.yukke9265.cobblestone_xx_compressed.util.LongDataHelper;
@@ -38,6 +41,11 @@ import net.neoforged.neoforge.items.wrapper.EmptyItemHandler;
 public class CobblestoneTankBlockEntity extends BaseBlockEntity implements MenuProvider {
     public static final int INPUT_SLOT_INDEX = 0;
     public static final int OUTPUT_SLOT_INDEX = 1;
+    // CobblestoneTankScreen の流体ゲージ（横長バー）にハイライトを合わせます。
+    private static final int FILTER_FLUID_SLOT_X = 48;
+    private static final int FILTER_FLUID_SLOT_Y = 20;
+    private static final int FILTER_FLUID_HIGHLIGHT_WIDTH = 80;
+    private static final int FILTER_FLUID_HIGHLIGHT_HEIGHT = 12;
 
     private static final int DATA_INDEX_STORED_FLUID = 0;
     private static final int DATA_INDEX_STORED_FLUID_UPPER = 1;
@@ -218,6 +226,19 @@ public class CobblestoneTankBlockEntity extends BaseBlockEntity implements MenuP
             this.setAutomationMode(index, AutomationMode.DISABLED);
             this.setFluidAutomationMode(index, AutomationMode.DISABLED);
         }
+    }
+
+    @Override
+    public List<FilterTarget> getFilterTargets() {
+        return List.of(
+            FilterTarget.fluid(
+                FilterTargetIds.FLUID_INPUT,
+                FILTER_FLUID_SLOT_X,
+                FILTER_FLUID_SLOT_Y,
+                FILTER_FLUID_HIGHLIGHT_WIDTH,
+                FILTER_FLUID_HIGHLIGHT_HEIGHT
+            )
+        );
     }
 
     public static boolean isFluidContainerItem(ItemStack stack) {
@@ -652,6 +673,10 @@ public class CobblestoneTankBlockEntity extends BaseBlockEntity implements MenuP
 
     private int fillInternal(FluidStack resource, IFluidHandler.FluidAction action) {
         if (resource.isEmpty()) {
+            return 0;
+        }
+
+        if (!this.getSlotFilters().allowsFluid(FilterTargetIds.FLUID_INPUT, resource)) {
             return 0;
         }
 

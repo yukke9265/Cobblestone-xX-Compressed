@@ -1,11 +1,15 @@
 package com.yukke9265.cobblestone_xx_compressed.blockentity;
 
+import java.util.List;
 import java.util.Optional;
 
+import com.yukke9265.cobblestone_xx_compressed.machine.filter.FilterTarget;
+import com.yukke9265.cobblestone_xx_compressed.machine.filter.FilterTargetIds;
 import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneLaserDrillMenu;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneLaserDrillRecipe;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModBlockEntities;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModRecipeTypes;
+import com.yukke9265.cobblestone_xx_compressed.util.MachineGuiLayouts;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -65,6 +69,10 @@ public class CobblestoneLaserDrillBlockEntity extends PoweredMachineBlockEntityB
                 return MachineUpgradeHelper.isParallelChip(stack);
             }
 
+            if (slot == INPUT_SLOT_INDEX) {
+                return CobblestoneLaserDrillBlockEntity.this.getSlotFilters().allowsItem(FilterTargetIds.ITEM_INPUT, stack);
+            }
+
             return true;
         }
 
@@ -113,6 +121,17 @@ public class CobblestoneLaserDrillBlockEntity extends PoweredMachineBlockEntityB
 
     public CobblestoneLaserDrillBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.COBBLESTONE_LASER_DRILL_BLOCK_ENTITY.get(), pos, state);
+    }
+
+    @Override
+    public List<FilterTarget> getFilterTargets() {
+        return List.of(
+            FilterTarget.item(
+                FilterTargetIds.ITEM_INPUT,
+                MachineGuiLayouts.LaserDrill.INPUT_SLOT_X,
+                MachineGuiLayouts.LaserDrill.MACHINE_SLOT_Y
+            )
+        );
     }
 
     @Override

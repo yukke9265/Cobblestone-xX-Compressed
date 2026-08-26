@@ -90,6 +90,7 @@ public class CobblestoneDissolutionChamberMenu extends BaseMenu {
         this.addDissolutionChamberSlots();
         this.addPlayerInventorySlots(playerInventory);
         this.addPlayerHotbarSlots(playerInventory);
+        this.initSlotFilterSupport(this.dissolutionChamberBlockEntity);
     }
 
     public CobblestoneDissolutionChamberMenu(int containerId, Inventory playerInventory, RegistryFriendlyByteBuf buf) {
@@ -199,7 +200,7 @@ public class CobblestoneDissolutionChamberMenu extends BaseMenu {
     }
 
     @Override
-    public boolean clickMenuButton(Player player, int id) {
+    protected boolean handleMachineMenuButton(Player player, int id) {
         if (id == 0) {
             this.dissolutionChamberBlockEntity.reverseIsAvailable();
             return true;

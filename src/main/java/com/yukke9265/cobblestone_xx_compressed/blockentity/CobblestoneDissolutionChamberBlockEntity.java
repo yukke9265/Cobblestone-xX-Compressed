@@ -1,16 +1,20 @@
 package com.yukke9265.cobblestone_xx_compressed.blockentity;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import com.yukke9265.cobblestone_xx_compressed.machine.filter.FilterTarget;
+import com.yukke9265.cobblestone_xx_compressed.machine.filter.FilterTargetIds;
 import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneDissolutionChamberMenu;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneDissolutionChamberRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.DissolutionChamberRecipeInput;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModBlockEntities;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModRecipeTypes;
 import com.yukke9265.cobblestone_xx_compressed.util.LongDataHelper;
+import com.yukke9265.cobblestone_xx_compressed.util.MachineGuiLayouts;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -88,7 +92,8 @@ public class CobblestoneDissolutionChamberBlockEntity extends PoweredMachineBloc
                 return MachineUpgradeHelper.isParallelChip(stack);
             }
 
-            return slot == INPUT_SLOT_INDEX;
+            return slot == INPUT_SLOT_INDEX
+                && CobblestoneDissolutionChamberBlockEntity.this.getSlotFilters().allowsItem(FilterTargetIds.ITEM_INPUT, stack);
         }
 
         @Override
@@ -131,6 +136,22 @@ public class CobblestoneDissolutionChamberBlockEntity extends PoweredMachineBloc
             this.setAutomationMode(index, AutomationMode.DISABLED);
             this.setFluidAutomationMode(index, AutomationMode.DISABLED);
         }
+    }
+
+    @Override
+    public List<FilterTarget> getFilterTargets() {
+        return List.of(
+            FilterTarget.item(
+                FilterTargetIds.ITEM_INPUT,
+                MachineGuiLayouts.DissolutionChamber.INPUT_SLOT_X,
+                MachineGuiLayouts.DissolutionChamber.INPUT_SLOT_Y
+            ),
+            FilterTarget.fluid(
+                FilterTargetIds.FLUID_INPUT,
+                MachineGuiLayouts.DissolutionChamber.INPUT_FLUID_SLOT_X,
+                MachineGuiLayouts.DissolutionChamber.INPUT_FLUID_SLOT_Y
+            )
+        );
     }
 
     public long getStoredInputFluidAmount() {
@@ -438,6 +459,10 @@ public class CobblestoneDissolutionChamberBlockEntity extends PoweredMachineBloc
 
     private int fillInternal(FluidStack resource, IFluidHandler.FluidAction action, boolean inputTank) {
         if (resource.isEmpty()) {
+            return 0;
+        }
+
+        if (inputTank && !this.getSlotFilters().allowsFluid(FilterTargetIds.FLUID_INPUT, resource)) {
             return 0;
         }
 

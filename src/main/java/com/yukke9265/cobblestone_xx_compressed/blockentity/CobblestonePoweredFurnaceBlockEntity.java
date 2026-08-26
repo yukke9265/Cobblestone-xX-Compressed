@@ -1,11 +1,15 @@
 package com.yukke9265.cobblestone_xx_compressed.blockentity;
 
+import java.util.List;
 import java.util.Optional;
 
+import com.yukke9265.cobblestone_xx_compressed.machine.filter.FilterTarget;
+import com.yukke9265.cobblestone_xx_compressed.machine.filter.FilterTargetIds;
 import com.yukke9265.cobblestone_xx_compressed.menu.CobblestonePoweredFurnaceMenu;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestonePoweredFurnaceRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestonePoweredFurnaceRecipeHelper;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModBlockEntities;
+import com.yukke9265.cobblestone_xx_compressed.util.MachineGuiLayouts;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -55,6 +59,10 @@ public class CobblestonePoweredFurnaceBlockEntity extends PoweredMachineBlockEnt
                 return MachineUpgradeHelper.isParallelChip(stack);
             }
 
+            if (slot == INPUT_SLOT_INDEX) {
+                return CobblestonePoweredFurnaceBlockEntity.this.getSlotFilters().allowsItem(FilterTargetIds.ITEM_INPUT, stack);
+            }
+
             return true;
         }
 
@@ -95,6 +103,17 @@ public class CobblestonePoweredFurnaceBlockEntity extends PoweredMachineBlockEnt
 
     public CobblestonePoweredFurnaceBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.COBBLESTONE_POWERED_FURNACE_BLOCK_ENTITY.get(), pos, state);
+    }
+
+    @Override
+    public List<FilterTarget> getFilterTargets() {
+        return List.of(
+            FilterTarget.item(
+                FilterTargetIds.ITEM_INPUT,
+                MachineGuiLayouts.PoweredMachine.INPUT_SLOT_X,
+                MachineGuiLayouts.PoweredMachine.MACHINE_SLOT_Y
+            )
+        );
     }
 
     @Override

@@ -21,6 +21,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
  * ここでは stillValid、プレイヤーインベントリ追加、Shift+クリック移動の共通骨格を持ち、
  * 機械ごとに異なる「どのブロックを対象にするか」「どのスロットへ優先投入するか」だけを継承先へ残します。
  * スロット別フィルタがある機械は、スロット追加後に initSlotFilterSupport を呼びます。
+ * フィルタ用ボタンは BaseMenu.clickMenuButton が先に処理するため、継承先は handleMachineMenuButton だけ書けば足ります。
  */
 public abstract class PoweredMachineMenuBase<T extends BaseBlockEntity> extends BaseMenu {
     protected static final int PLAYER_INVENTORY_COLUMNS = 9;

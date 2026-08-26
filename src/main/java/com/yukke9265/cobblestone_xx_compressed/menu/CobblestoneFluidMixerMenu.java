@@ -96,6 +96,7 @@ public class CobblestoneFluidMixerMenu extends BaseMenu {
         this.addFluidMixerSlots();
         this.addPlayerInventorySlots(playerInventory);
         this.addPlayerHotbarSlots(playerInventory);
+        this.initSlotFilterSupport(this.fluidMixerBlockEntity);
     }
 
     public CobblestoneFluidMixerMenu(int containerId, Inventory playerInventory, RegistryFriendlyByteBuf buf) {
@@ -225,7 +226,7 @@ public class CobblestoneFluidMixerMenu extends BaseMenu {
     }
 
     @Override
-    public boolean clickMenuButton(Player player, int id) {
+    protected boolean handleMachineMenuButton(Player player, int id) {
         if (id == 0) {
             this.fluidMixerBlockEntity.reverseIsAvailable();
             return true;

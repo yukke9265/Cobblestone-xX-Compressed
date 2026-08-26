@@ -73,6 +73,7 @@ public class CobblestoneEnchanterMenu extends BaseMenu {
         this.addEnchanterSlots();
         this.addPlayerInventorySlots(playerInventory);
         this.addPlayerHotbarSlots(playerInventory);
+        this.initSlotFilterSupport(this.enchanterBlockEntity);
     }
 
     public CobblestoneEnchanterMenu(int containerId, Inventory playerInventory, RegistryFriendlyByteBuf buf) {
@@ -135,7 +136,7 @@ public class CobblestoneEnchanterMenu extends BaseMenu {
     }
 
     @Override
-    public boolean clickMenuButton(@Nonnull Player player, int id) {
+    protected boolean handleMachineMenuButton(@Nonnull Player player, int id) {
         if (id == 0) {
             this.enchanterBlockEntity.reverseIsAvailable();
             return true;

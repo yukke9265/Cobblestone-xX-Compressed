@@ -11,12 +11,15 @@ import com.yukke9265.cobblestone_xx_compressed.block.OnOffBlock;
 import com.yukke9265.cobblestone_xx_compressed.loot.CompressedStoneLootDefinition;
 import com.yukke9265.cobblestone_xx_compressed.loot.OreBreakDefinition;
 import com.yukke9265.cobblestone_xx_compressed.loot.StoneBreakSimulatorLootHelper;
+import com.yukke9265.cobblestone_xx_compressed.machine.filter.FilterTarget;
+import com.yukke9265.cobblestone_xx_compressed.machine.filter.FilterTargetIds;
 import com.yukke9265.cobblestone_xx_compressed.menu.StoneBreakSimulatorMenu;
 import com.yukke9265.cobblestone_xx_compressed.recipe.StoneBreakSimulatorRecipe;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModBlockEntities;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModRecipeTypes;
 import com.yukke9265.cobblestone_xx_compressed.util.CompressedCobblestonePickaxeHelper;
 import com.yukke9265.cobblestone_xx_compressed.util.LongDataHelper;
+import com.yukke9265.cobblestone_xx_compressed.util.MachineGuiLayouts;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -91,11 +94,13 @@ public class StoneBreakSimulatorBlockEntity extends BaseBlockEntity implements M
             }
 
             if (slot == INPUT_SLOT_1_INDEX) {
-                return StoneBreakSimulatorBlockEntity.this.isSupportedBreakInput(stack);
+                return StoneBreakSimulatorBlockEntity.this.isSupportedBreakInput(stack)
+                    && StoneBreakSimulatorBlockEntity.this.getSlotFilters().allowsItem(FilterTargetIds.ITEM_INPUT_1, stack);
             }
 
             if (slot == INPUT_SLOT_2_INDEX) {
-                return StoneBreakSimulatorBlockEntity.this.isPickaxe(stack);
+                return StoneBreakSimulatorBlockEntity.this.isPickaxe(stack)
+                    && StoneBreakSimulatorBlockEntity.this.getSlotFilters().allowsItem(FilterTargetIds.ITEM_INPUT_2, stack);
             }
 
             if (slot == POWER_SLOT_INDEX) {
@@ -143,6 +148,22 @@ public class StoneBreakSimulatorBlockEntity extends BaseBlockEntity implements M
 
     public StoneBreakSimulatorBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.STONE_BREAK_SIMULATOR_BLOCK_ENTITY.get(), pos, state);
+    }
+
+    @Override
+    public List<FilterTarget> getFilterTargets() {
+        return List.of(
+            FilterTarget.item(
+                FilterTargetIds.ITEM_INPUT_1,
+                MachineGuiLayouts.StoneBreakSimulator.INPUT_SLOT_1_X,
+                MachineGuiLayouts.StoneBreakSimulator.INPUT_SLOT_1_Y
+            ),
+            FilterTarget.item(
+                FilterTargetIds.ITEM_INPUT_2,
+                MachineGuiLayouts.StoneBreakSimulator.INPUT_SLOT_2_X,
+                MachineGuiLayouts.StoneBreakSimulator.INPUT_SLOT_2_Y
+            )
+        );
     }
 
     public int getProgress() {

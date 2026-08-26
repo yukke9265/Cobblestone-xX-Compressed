@@ -1,16 +1,20 @@
 package com.yukke9265.cobblestone_xx_compressed.blockentity;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import com.yukke9265.cobblestone_xx_compressed.machine.filter.FilterTarget;
+import com.yukke9265.cobblestone_xx_compressed.machine.filter.FilterTargetIds;
 import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneReactionChamberMenu;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneReactionChamberRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.ReactionChamberRecipeInput;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModBlockEntities;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModRecipeTypes;
 import com.yukke9265.cobblestone_xx_compressed.util.LongDataHelper;
+import com.yukke9265.cobblestone_xx_compressed.util.MachineGuiLayouts;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -85,6 +89,14 @@ public class CobblestoneReactionChamberBlockEntity extends PoweredMachineBlockEn
                 return MachineUpgradeHelper.isParallelChip(stack);
             }
 
+            if (slot == INPUT_SLOT_1_INDEX) {
+                return CobblestoneReactionChamberBlockEntity.this.getSlotFilters().allowsItem(FilterTargetIds.ITEM_INPUT_1, stack);
+            }
+
+            if (slot == INPUT_SLOT_2_INDEX) {
+                return CobblestoneReactionChamberBlockEntity.this.getSlotFilters().allowsItem(FilterTargetIds.ITEM_INPUT_2, stack);
+            }
+
             return true;
         }
 
@@ -139,6 +151,27 @@ public class CobblestoneReactionChamberBlockEntity extends PoweredMachineBlockEn
         for (int index = 0; index < AUTOMATION_FACE_COUNT; index++) {
             this.setFluidAutomationMode(index, AutomationMode.DISABLED);
         }
+    }
+
+    @Override
+    public List<FilterTarget> getFilterTargets() {
+        return List.of(
+            FilterTarget.item(
+                FilterTargetIds.ITEM_INPUT_1,
+                MachineGuiLayouts.ReactionChamber.INPUT_SLOT_1_X,
+                MachineGuiLayouts.ReactionChamber.INPUT_SLOT_1_Y
+            ),
+            FilterTarget.item(
+                FilterTargetIds.ITEM_INPUT_2,
+                MachineGuiLayouts.ReactionChamber.INPUT_SLOT_2_X,
+                MachineGuiLayouts.ReactionChamber.INPUT_SLOT_2_Y
+            ),
+            FilterTarget.fluid(
+                FilterTargetIds.FLUID_INPUT,
+                MachineGuiLayouts.ReactionChamber.FLUID_SLOT_X,
+                MachineGuiLayouts.ReactionChamber.FLUID_SLOT_Y
+            )
+        );
     }
 
     public long getStoredFluidAmount() {
@@ -477,6 +510,10 @@ public class CobblestoneReactionChamberBlockEntity extends PoweredMachineBlockEn
 
     private int fillInternal(FluidStack resource, IFluidHandler.FluidAction action) {
         if (resource.isEmpty()) {
+            return 0;
+        }
+
+        if (!this.getSlotFilters().allowsFluid(FilterTargetIds.FLUID_INPUT, resource)) {
             return 0;
         }
 

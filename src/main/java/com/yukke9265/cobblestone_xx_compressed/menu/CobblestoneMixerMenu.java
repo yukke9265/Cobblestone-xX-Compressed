@@ -135,7 +135,7 @@ public class CobblestoneMixerMenu extends BaseMenu {
     }
 
     @Override
-    public boolean clickMenuButton(Player player, int id) {
+    protected boolean handleMachineMenuButton(Player player, int id) {
         if (id == 0) {
             this.mixerBlockEntity.reverseIsAvailable();
             return true;
@@ -154,10 +154,6 @@ public class CobblestoneMixerMenu extends BaseMenu {
         }
 
         if (this.handleMuteSoundButtonClick(this.mixerBlockEntity, id)) {
-            return true;
-        }
-
-        if (this.handleSlotFilterButtonClick(id)) {
             return true;
         }
 

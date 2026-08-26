@@ -189,7 +189,7 @@ public class CobblestoneCrusherMenu extends PoweredMachineMenuBase<CobblestoneCr
     }
 
     @Override
-    public boolean clickMenuButton(Player player, int id) {
+    protected boolean handleMachineMenuButton(Player player, int id) {
         if (id == 0) {
             this.crusherBlockEntity.reverseIsAvailable();
             return true;
@@ -208,10 +208,6 @@ public class CobblestoneCrusherMenu extends PoweredMachineMenuBase<CobblestoneCr
         }
 
         if (this.handleMuteSoundButtonClick(this.crusherBlockEntity, id)) {
-            return true;
-        }
-
-        if (this.handleSlotFilterButtonClick(id)) {
             return true;
         }
 

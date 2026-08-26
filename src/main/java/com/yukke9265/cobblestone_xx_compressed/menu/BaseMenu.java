@@ -87,8 +87,18 @@ public class BaseMenu extends AbstractContainerMenu {
             : this.slotFilterSupport.getSelectedFilterMode();
     }
 
-    protected final boolean handleSlotFilterButtonClick(int buttonId) {
-        return this.slotFilterSupport != null && this.slotFilterSupport.handleButtonClick(buttonId);
+    // フィルタ操作は全メニュー共通で先に処理し、機械固有は handleMachineMenuButton に任せます。
+    @Override
+    public boolean clickMenuButton(Player player, int id) {
+        if (this.slotFilterSupport != null && this.slotFilterSupport.handleButtonClick(id)) {
+            return true;
+        }
+        return this.handleMachineMenuButton(player, id);
+    }
+
+    // 機械ごとの start/stop・自動化などのボタン処理です。フィルタ ID はここへ来ません。
+    protected boolean handleMachineMenuButton(Player player, int id) {
+        return false;
     }
 
     public final boolean applySlotFilterGhostItem(int ghostIndex, ItemStack stack) {

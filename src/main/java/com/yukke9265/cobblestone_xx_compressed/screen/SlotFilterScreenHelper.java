@@ -125,10 +125,13 @@ public final class SlotFilterScreenHelper {
 
         int slotLeft = this.screen.getGuiLeft() + target.slotX();
         int slotTop = this.screen.getGuiTop() + target.slotY();
-        guiGraphics.fill(slotLeft - 1, slotTop - 1, slotLeft + 18, slotTop, MachineGuiLayouts.SlotFilter.HIGHLIGHT_COLOR);
-        guiGraphics.fill(slotLeft - 1, slotTop + 17, slotLeft + 18, slotTop + 18, MachineGuiLayouts.SlotFilter.HIGHLIGHT_COLOR);
-        guiGraphics.fill(slotLeft - 1, slotTop, slotLeft, slotTop + 17, MachineGuiLayouts.SlotFilter.HIGHLIGHT_COLOR);
-        guiGraphics.fill(slotLeft + 17, slotTop, slotLeft + 18, slotTop + 17, MachineGuiLayouts.SlotFilter.HIGHLIGHT_COLOR);
+        int width = target.highlightWidth();
+        int height = target.highlightHeight();
+        int color = MachineGuiLayouts.SlotFilter.HIGHLIGHT_COLOR;
+        guiGraphics.fill(slotLeft - 1, slotTop - 1, slotLeft + width + 1, slotTop, color);
+        guiGraphics.fill(slotLeft - 1, slotTop + height, slotLeft + width + 1, slotTop + height + 1, color);
+        guiGraphics.fill(slotLeft - 1, slotTop, slotLeft, slotTop + height, color);
+        guiGraphics.fill(slotLeft + width, slotTop, slotLeft + width + 1, slotTop + height, color);
     }
 
     private void refreshWidgets() {

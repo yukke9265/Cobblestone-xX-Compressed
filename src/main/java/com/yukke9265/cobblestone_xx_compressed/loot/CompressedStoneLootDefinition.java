@@ -62,6 +62,7 @@ public class CompressedStoneLootDefinition {
             ModBlocks.TierCompressedCobblestone.AMETHYST.getBlock(),
             bonusDrop(ModItems.TierCobblestoneGem.AMETHYST.getItem(), 0.1d),
             bonusDrop(() -> Items.LAPIS_ORE, 0.10d),
+            bonusDrop(() -> Items.GOLD_NUGGET, 0.10d),
             optionalModBonusDrop(MEKANISM_MOD_ID, "raw_osmium", 0.10d, 0.10d)
         ),
         new CompressedStoneLootDefinition(

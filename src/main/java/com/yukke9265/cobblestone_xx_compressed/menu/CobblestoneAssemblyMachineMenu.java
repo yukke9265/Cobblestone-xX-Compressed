@@ -89,6 +89,7 @@ public class CobblestoneAssemblyMachineMenu extends BaseMenu {
         this.addAssemblyMachineSlots();
         this.addPlayerInventorySlots(playerInventory);
         this.addPlayerHotbarSlots(playerInventory);
+        this.initSlotFilterSupport(this.assemblyMachineBlockEntity);
     }
 
     public CobblestoneAssemblyMachineMenu(int containerId, Inventory playerInventory, RegistryFriendlyByteBuf buf) {
@@ -178,7 +179,7 @@ public class CobblestoneAssemblyMachineMenu extends BaseMenu {
     }
 
     @Override
-    public boolean clickMenuButton(@Nonnull Player player, int id) {
+    protected boolean handleMachineMenuButton(@Nonnull Player player, int id) {
         if (id == 0) {
             this.assemblyMachineBlockEntity.reverseIsAvailable();
             return true;

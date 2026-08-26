@@ -83,6 +83,7 @@ public class CobblestoneCrystallizationChamberMenu extends BaseMenu {
         this.addCrystallizationChamberSlots();
         this.addPlayerInventorySlots(playerInventory);
         this.addPlayerHotbarSlots(playerInventory);
+        this.initSlotFilterSupport(this.crystallizationChamberBlockEntity);
     }
 
     public CobblestoneCrystallizationChamberMenu(int containerId, Inventory playerInventory, RegistryFriendlyByteBuf buf) {
@@ -172,7 +173,7 @@ public class CobblestoneCrystallizationChamberMenu extends BaseMenu {
     }
 
     @Override
-    public boolean clickMenuButton(Player player, int id) {
+    protected boolean handleMachineMenuButton(Player player, int id) {
         if (id == 0) {
             this.crystallizationChamberBlockEntity.reverseIsAvailable();
             return true;

@@ -75,6 +75,7 @@ public class CobblestoneMelterMenu extends BaseMenu {
         this.addMelterSlots();
         this.addPlayerInventorySlots(playerInventory);
         this.addPlayerHotbarSlots(playerInventory);
+        this.initSlotFilterSupport(this.melterBlockEntity);
     }
 
     public CobblestoneMelterMenu(int containerId, Inventory playerInventory, RegistryFriendlyByteBuf buf) {
@@ -164,7 +165,7 @@ public class CobblestoneMelterMenu extends BaseMenu {
     }
 
     @Override
-    public boolean clickMenuButton(Player player, int id) {
+    protected boolean handleMachineMenuButton(Player player, int id) {
         if (id == 0) {
             this.melterBlockEntity.reverseIsAvailable();
             return true;

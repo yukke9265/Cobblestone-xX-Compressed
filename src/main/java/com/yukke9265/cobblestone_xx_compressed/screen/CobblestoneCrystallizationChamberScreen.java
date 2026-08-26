@@ -200,7 +200,7 @@ public class CobblestoneCrystallizationChamberScreen extends BaseScreen<Cobblest
     }
 
     @Override
-    protected void renderBg(GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
+    protected void renderMachineBackground(GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
         int x = this.leftPos;
         int y = this.topPos;
 

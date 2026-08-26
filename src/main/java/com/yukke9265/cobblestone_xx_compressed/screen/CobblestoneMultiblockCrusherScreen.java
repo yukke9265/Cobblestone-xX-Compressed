@@ -136,7 +136,7 @@ public class CobblestoneMultiblockCrusherScreen extends BaseScreen<CobblestoneMu
     }
 
     @Override
-    protected void renderBg(GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
+    protected void renderMachineBackground(GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
         int x = this.leftPos;
         int y = this.topPos;
         this.renderBackgroundTexture(guiGraphics, BACKGROUND_TEXTURE, x, y, this.imageWidth, this.imageHeight);

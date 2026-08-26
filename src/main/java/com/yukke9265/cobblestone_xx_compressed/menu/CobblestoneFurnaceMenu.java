@@ -71,6 +71,7 @@ public class CobblestoneFurnaceMenu extends BaseMenu {
         this.addFurnaceSlots();
         this.addPlayerInventorySlots(playerInventory);
         this.addPlayerHotbarSlots(playerInventory);
+        this.initSlotFilterSupport(this.furnaceBlockEntity);
     }
 
     //getBurnTime() と getMaxBurnTime() は、CobblestoneFurnaceBlockEntity から燃焼時間の情報を取得するためのメソッドです。
@@ -122,7 +123,7 @@ public class CobblestoneFurnaceMenu extends BaseMenu {
     }
 
     @Override
-    public boolean clickMenuButton(Player player, int id) {
+    protected boolean handleMachineMenuButton(Player player, int id) {
         // Screen から送られたボタン番号を、サーバー側 Menu で受け取ります。
         // 今回は Start ボタンを 0 番として扱います。
         if (id == 0) {

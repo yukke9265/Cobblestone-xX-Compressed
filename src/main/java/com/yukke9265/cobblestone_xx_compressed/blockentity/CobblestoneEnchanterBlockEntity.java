@@ -1,15 +1,19 @@
 package com.yukke9265.cobblestone_xx_compressed.blockentity;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
 
+import com.yukke9265.cobblestone_xx_compressed.machine.filter.FilterTarget;
+import com.yukke9265.cobblestone_xx_compressed.machine.filter.FilterTargetIds;
 import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneEnchanterMenu;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneEnchanterRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneEnchanterRecipeInput;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModBlockEntities;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModRecipeTypes;
 import com.yukke9265.cobblestone_xx_compressed.util.CobblestoneEnchanterHelper;
+import com.yukke9265.cobblestone_xx_compressed.util.MachineGuiLayouts;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -56,11 +60,13 @@ public class CobblestoneEnchanterBlockEntity extends PoweredMachineBlockEntityBa
             }
 
             if (slot == TOOL_INPUT_SLOT_INDEX) {
-                return isValidToolCandidate(stack);
+                return isValidToolCandidate(stack)
+                    && CobblestoneEnchanterBlockEntity.this.getSlotFilters().allowsItem(FilterTargetIds.ITEM_INPUT_1, stack);
             }
 
             if (slot == BOOK_INPUT_SLOT_INDEX) {
-                return stack.is(Items.ENCHANTED_BOOK);
+                return stack.is(Items.ENCHANTED_BOOK)
+                    && CobblestoneEnchanterBlockEntity.this.getSlotFilters().allowsItem(FilterTargetIds.ITEM_INPUT_2, stack);
             }
 
             if (slot == POWER_SLOT_INDEX) {
@@ -185,6 +191,22 @@ public class CobblestoneEnchanterBlockEntity extends PoweredMachineBlockEntityBa
 
     public CobblestoneEnchanterBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.COBBLESTONE_ENCHANTER_BLOCK_ENTITY.get(), pos, state);
+    }
+
+    @Override
+    public List<FilterTarget> getFilterTargets() {
+        return List.of(
+            FilterTarget.item(
+                FilterTargetIds.ITEM_INPUT_1,
+                MachineGuiLayouts.Enchanter.TOOL_SLOT_X,
+                MachineGuiLayouts.Enchanter.TOOL_SLOT_Y
+            ),
+            FilterTarget.item(
+                FilterTargetIds.ITEM_INPUT_2,
+                MachineGuiLayouts.Enchanter.BOOK_SLOT_X,
+                MachineGuiLayouts.Enchanter.BOOK_SLOT_Y
+            )
+        );
     }
 
     public static boolean isValidToolCandidate(ItemStack stack) {

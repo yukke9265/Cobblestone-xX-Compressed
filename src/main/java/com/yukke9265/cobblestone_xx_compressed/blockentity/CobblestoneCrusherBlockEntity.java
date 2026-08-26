@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.yukke9265.cobblestone_xx_compressed.machine.filter.FilterTarget;
+import com.yukke9265.cobblestone_xx_compressed.machine.filter.FilterTargetIds;
 import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneCrusherMenu;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneCrusherRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneCrusherRecipeHelper;
@@ -59,7 +60,7 @@ public class CobblestoneCrusherBlockEntity extends PoweredMachineBlockEntityBase
             }
 
             if (slot == INPUT_SLOT_INDEX) {
-                return CobblestoneCrusherBlockEntity.this.getSlotFilters().allowsItem("item:input", stack);
+                return CobblestoneCrusherBlockEntity.this.getSlotFilters().allowsItem(FilterTargetIds.ITEM_INPUT, stack);
             }
 
             return true;
@@ -108,7 +109,7 @@ public class CobblestoneCrusherBlockEntity extends PoweredMachineBlockEntityBase
     public List<FilterTarget> getFilterTargets() {
         return List.of(
             FilterTarget.item(
-                "item:input",
+                FilterTargetIds.ITEM_INPUT,
                 MachineGuiLayouts.PoweredMachine.INPUT_SLOT_X,
                 MachineGuiLayouts.PoweredMachine.MACHINE_SLOT_Y
             )

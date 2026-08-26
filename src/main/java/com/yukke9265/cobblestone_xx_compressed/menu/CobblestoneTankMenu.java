@@ -74,6 +74,7 @@ public class CobblestoneTankMenu extends BaseMenu {
         this.addTankSlots();
         this.addPlayerInventorySlots(playerInventory);
         this.addPlayerHotbarSlots(playerInventory);
+        this.initSlotFilterSupport(this.tankBlockEntity);
     }
 
     public CobblestoneTankMenu(int containerId, Inventory playerInventory, RegistryFriendlyByteBuf buf) {
@@ -142,7 +143,7 @@ public class CobblestoneTankMenu extends BaseMenu {
     }
 
     @Override
-    public boolean clickMenuButton(Player player, int id) {
+    protected boolean handleMachineMenuButton(Player player, int id) {
         if (this.handleAutomationButtonClick(this.tankBlockEntity, id, TANK_ITEM_AUTOMATION_MODES)) {
             return true;
         }

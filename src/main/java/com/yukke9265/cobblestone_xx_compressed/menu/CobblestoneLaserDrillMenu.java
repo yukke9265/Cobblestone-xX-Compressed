@@ -77,6 +77,7 @@ public class CobblestoneLaserDrillMenu extends BaseMenu {
         this.addLaserDrillSlots();
         this.addPlayerInventorySlots(playerInventory);
         this.addPlayerHotbarSlots(playerInventory);
+        this.initSlotFilterSupport(this.laserDrillBlockEntity);
     }
 
     public CobblestoneLaserDrillMenu(int containerId, Inventory playerInventory, RegistryFriendlyByteBuf buf) {
@@ -139,7 +140,7 @@ public class CobblestoneLaserDrillMenu extends BaseMenu {
     }
 
     @Override
-    public boolean clickMenuButton(Player player, int id) {
+    protected boolean handleMachineMenuButton(Player player, int id) {
         if (id == 0) {
             this.laserDrillBlockEntity.reverseIsAvailable();
             return true;

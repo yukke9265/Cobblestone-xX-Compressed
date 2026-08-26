@@ -73,6 +73,7 @@ public class StoneBreakSimulatorMenu extends BaseMenu {
         this.addStoneBreakSimulatorSlots();
         this.addPlayerInventorySlots(playerInventory);
         this.addPlayerHotbarSlots(playerInventory);
+        this.initSlotFilterSupport(this.stoneBreakSimulatorBlockEntity);
     }
 
     public StoneBreakSimulatorMenu(int containerId, Inventory playerInventory, RegistryFriendlyByteBuf buf) {
@@ -131,7 +132,7 @@ public class StoneBreakSimulatorMenu extends BaseMenu {
     }
 
     @Override
-    public boolean clickMenuButton(Player player, int id) {
+    protected boolean handleMachineMenuButton(Player player, int id) {
         if (id == 0) {
             this.stoneBreakSimulatorBlockEntity.reverseIsAvailable();
             return true;

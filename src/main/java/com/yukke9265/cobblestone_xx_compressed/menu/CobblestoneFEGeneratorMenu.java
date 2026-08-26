@@ -154,7 +154,7 @@ public class CobblestoneFEGeneratorMenu extends BaseMenu {
     }
 
     @Override
-    public boolean clickMenuButton(Player player, int id) {
+    protected boolean handleMachineMenuButton(Player player, int id) {
         if (id == 0) {
             this.generatorBlockEntity.reverseIsAvailable();
             return true;

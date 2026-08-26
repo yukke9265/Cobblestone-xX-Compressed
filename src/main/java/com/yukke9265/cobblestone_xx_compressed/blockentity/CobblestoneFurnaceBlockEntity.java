@@ -1,10 +1,13 @@
 package com.yukke9265.cobblestone_xx_compressed.blockentity;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
 
 import com.yukke9265.cobblestone_xx_compressed.block.OnOffBlock;
+import com.yukke9265.cobblestone_xx_compressed.machine.filter.FilterTarget;
+import com.yukke9265.cobblestone_xx_compressed.machine.filter.FilterTargetIds;
 import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneFurnaceMenu;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModBlockEntities;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModRecipeTypes;
@@ -35,6 +38,9 @@ import net.neoforged.neoforge.items.wrapper.EmptyItemHandler;
 public class CobblestoneFurnaceBlockEntity extends BaseBlockEntity implements MenuProvider {
     private static final int INPUT_SLOT_INDEX = 0;
     private static final int OUTPUT_SLOT_INDEX = 1;
+    // CobblestoneFurnaceMenu の入力スロット座標と揃えます。
+    private static final int FILTER_INPUT_SLOT_X = 56;
+    private static final int FILTER_INPUT_SLOT_Y = 35;
     private static final int DATA_INDEX_BURN_TIME = 0;
     private static final int DATA_INDEX_MAX_BURN_TIME = 1;
     private static final int DATA_INDEX_AUTOMATION_START = 2;
@@ -49,6 +55,19 @@ public class CobblestoneFurnaceBlockEntity extends BaseBlockEntity implements Me
     // アイテムを管理するための ItemStackHandler。スロット数は2にしています。
     //スロット0: 入力、スロット1: 出力
     private final ItemStackHandler itemStackHandler = new ItemStackHandler(2) {
+        @Override
+        public boolean isItemValid(int slot, @NotNull ItemStack stack) {
+            if (slot == OUTPUT_SLOT_INDEX) {
+                return false;
+            }
+
+            if (slot == INPUT_SLOT_INDEX) {
+                return CobblestoneFurnaceBlockEntity.this.getSlotFilters().allowsItem(FilterTargetIds.ITEM_INPUT, stack);
+            }
+
+            return false;
+        }
+
         @Override
         protected void onContentsChanged(int slot) {
             // スロットの中身が変わったら保存対象が変わるので、BlockEntity を更新済みとして扱います。
@@ -207,7 +226,18 @@ public class CobblestoneFurnaceBlockEntity extends BaseBlockEntity implements Me
     };
 
     public CobblestoneFurnaceBlockEntity(BlockPos pos, BlockState state) {
-           super(ModBlockEntities.COBBLESTONE_FURNACE_BLOCK_ENTITY.get(), pos, state);
+        super(ModBlockEntities.COBBLESTONE_FURNACE_BLOCK_ENTITY.get(), pos, state);
+    }
+
+    @Override
+    public List<FilterTarget> getFilterTargets() {
+        return List.of(
+            FilterTarget.item(
+                FilterTargetIds.ITEM_INPUT,
+                FILTER_INPUT_SLOT_X,
+                FILTER_INPUT_SLOT_Y
+            )
+        );
     }
 
     public int getBurnTime() {

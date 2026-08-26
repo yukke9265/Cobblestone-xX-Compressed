@@ -77,6 +77,7 @@ public class CobblestoneCentrifugeMenu extends BaseMenu {
         this.addCentrifugeSlots();
         this.addPlayerInventorySlots(playerInventory);
         this.addPlayerHotbarSlots(playerInventory);
+        this.initSlotFilterSupport(this.centrifugeBlockEntity);
     }
 
     public CobblestoneCentrifugeMenu(int containerId, Inventory playerInventory, RegistryFriendlyByteBuf buf) {
@@ -139,7 +140,7 @@ public class CobblestoneCentrifugeMenu extends BaseMenu {
     }
 
     @Override
-    public boolean clickMenuButton(Player player, int id) {
+    protected boolean handleMachineMenuButton(Player player, int id) {
         if (id == 0) {
             this.centrifugeBlockEntity.reverseIsAvailable();
             return true;

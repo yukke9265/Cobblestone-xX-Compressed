@@ -1,15 +1,19 @@
 package com.yukke9265.cobblestone_xx_compressed.blockentity;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import com.yukke9265.cobblestone_xx_compressed.machine.filter.FilterTarget;
+import com.yukke9265.cobblestone_xx_compressed.machine.filter.FilterTargetIds;
 import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneMelterMenu;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneMelterRecipe;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModBlockEntities;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModRecipeTypes;
 import com.yukke9265.cobblestone_xx_compressed.util.LongDataHelper;
+import com.yukke9265.cobblestone_xx_compressed.util.MachineGuiLayouts;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -81,7 +85,8 @@ public class CobblestoneMelterBlockEntity extends PoweredMachineBlockEntityBase<
                 return MachineUpgradeHelper.isParallelChip(stack);
             }
 
-            return slot == INPUT_SLOT_INDEX;
+            return slot == INPUT_SLOT_INDEX
+                && CobblestoneMelterBlockEntity.this.getSlotFilters().allowsItem(FilterTargetIds.ITEM_INPUT, stack);
         }
 
         @Override
@@ -123,6 +128,17 @@ public class CobblestoneMelterBlockEntity extends PoweredMachineBlockEntityBase<
             this.setAutomationMode(index, AutomationMode.DISABLED);
             this.setFluidAutomationMode(index, AutomationMode.DISABLED);
         }
+    }
+
+    @Override
+    public List<FilterTarget> getFilterTargets() {
+        return List.of(
+            FilterTarget.item(
+                FilterTargetIds.ITEM_INPUT,
+                MachineGuiLayouts.PoweredMachine.INPUT_SLOT_X,
+                MachineGuiLayouts.PoweredMachine.MACHINE_SLOT_Y
+            )
+        );
     }
 
     @Override

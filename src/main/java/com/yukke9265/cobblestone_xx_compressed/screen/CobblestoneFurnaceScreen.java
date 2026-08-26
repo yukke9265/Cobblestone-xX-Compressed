@@ -212,7 +212,7 @@ public class CobblestoneFurnaceScreen extends BaseScreen<CobblestoneFurnaceMenu>
     }
 
     @Override
-    protected void renderBg(GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
+    protected void renderMachineBackground(GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
         // ここでは、スクリーンの背景を描画するためのコードを記述します。
         // 例えば、特定のテクスチャを背景として描画したり、装飾的な要素を追加したりすることができます。
 

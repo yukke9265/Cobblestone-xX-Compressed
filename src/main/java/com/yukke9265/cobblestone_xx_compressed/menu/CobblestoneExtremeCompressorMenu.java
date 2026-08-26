@@ -75,6 +75,7 @@ public class CobblestoneExtremeCompressorMenu extends PoweredMachineMenuBase<Cob
         this.addExtremeCompressorSlots();
         this.addPlayerInventorySlots(playerInventory, MachineGuiLayouts.PLAYER_INVENTORY_START_X, MachineGuiLayouts.PLAYER_INVENTORY_START_Y, MachineGuiLayouts.SLOT_SIZE);
         this.addPlayerHotbarSlots(playerInventory, MachineGuiLayouts.PLAYER_INVENTORY_START_X, MachineGuiLayouts.HOTBAR_START_Y, MachineGuiLayouts.SLOT_SIZE);
+        this.initSlotFilterSupport();
     }
 
     public CobblestoneExtremeCompressorMenu(int containerId, Inventory playerInventory, RegistryFriendlyByteBuf buf) {
@@ -227,7 +228,7 @@ public class CobblestoneExtremeCompressorMenu extends PoweredMachineMenuBase<Cob
     }
 
     @Override
-    public boolean clickMenuButton(Player player, int id) {
+    protected boolean handleMachineMenuButton(Player player, int id) {
         if (id == 0) {
             this.extremeCompressorBlockEntity.reverseIsAvailable();
             return true;

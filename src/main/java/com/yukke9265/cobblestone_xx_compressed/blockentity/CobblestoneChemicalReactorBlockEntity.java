@@ -9,6 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import com.yukke9265.cobblestone_xx_compressed.machine.filter.FilterTarget;
+import com.yukke9265.cobblestone_xx_compressed.machine.filter.FilterTargetIds;
 import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneChemicalReactorMenu;
 import com.yukke9265.cobblestone_xx_compressed.recipe.ChemicalReactorRecipeInput;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneChemicalReactorRecipe;
@@ -111,11 +112,11 @@ public class CobblestoneChemicalReactorBlockEntity extends PoweredMachineBlockEn
             }
 
             if (slot == INPUT_SLOT_1_INDEX) {
-                return CobblestoneChemicalReactorBlockEntity.this.getSlotFilters().allowsItem("item:input1", stack);
+                return CobblestoneChemicalReactorBlockEntity.this.getSlotFilters().allowsItem(FilterTargetIds.ITEM_INPUT_1, stack);
             }
 
             if (slot == INPUT_SLOT_2_INDEX) {
-                return CobblestoneChemicalReactorBlockEntity.this.getSlotFilters().allowsItem("item:input2", stack);
+                return CobblestoneChemicalReactorBlockEntity.this.getSlotFilters().allowsItem(FilterTargetIds.ITEM_INPUT_2, stack);
             }
 
             return true;
@@ -192,22 +193,22 @@ public class CobblestoneChemicalReactorBlockEntity extends PoweredMachineBlockEn
     public List<FilterTarget> getFilterTargets() {
         return List.of(
             FilterTarget.item(
-                "item:input1",
+                FilterTargetIds.ITEM_INPUT_1,
                 MachineGuiLayouts.ChemicalReactor.INPUT_ITEM_1_SLOT_X,
                 MachineGuiLayouts.ChemicalReactor.INPUT_ITEM_1_SLOT_Y
             ),
             FilterTarget.item(
-                "item:input2",
+                FilterTargetIds.ITEM_INPUT_2,
                 MachineGuiLayouts.ChemicalReactor.INPUT_ITEM_2_SLOT_X,
                 MachineGuiLayouts.ChemicalReactor.INPUT_ITEM_2_SLOT_Y
             ),
             FilterTarget.fluid(
-                "fluid:input1",
+                FilterTargetIds.FLUID_INPUT_1,
                 MachineGuiLayouts.ChemicalReactor.INPUT_FLUID_1_SLOT_X,
                 MachineGuiLayouts.ChemicalReactor.INPUT_FLUID_1_SLOT_Y
             ),
             FilterTarget.fluid(
-                "fluid:input2",
+                FilterTargetIds.FLUID_INPUT_2,
                 MachineGuiLayouts.ChemicalReactor.INPUT_FLUID_2_SLOT_X,
                 MachineGuiLayouts.ChemicalReactor.INPUT_FLUID_2_SLOT_Y
             )
@@ -879,10 +880,10 @@ public class CobblestoneChemicalReactorBlockEntity extends PoweredMachineBlockEn
             return 0;
         }
 
-        if (tankIndex == 0 && !this.getSlotFilters().allowsFluid("fluid:input1", resource)) {
+        if (tankIndex == 0 && !this.getSlotFilters().allowsFluid(FilterTargetIds.FLUID_INPUT_1, resource)) {
             return 0;
         }
-        if (tankIndex == 1 && !this.getSlotFilters().allowsFluid("fluid:input2", resource)) {
+        if (tankIndex == 1 && !this.getSlotFilters().allowsFluid(FilterTargetIds.FLUID_INPUT_2, resource)) {
             return 0;
         }
 

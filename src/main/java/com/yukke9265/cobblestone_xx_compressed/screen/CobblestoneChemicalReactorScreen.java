@@ -67,7 +67,6 @@ public class CobblestoneChemicalReactorScreen extends BaseScreen<CobblestoneChem
     private Button autoExportButton;
     private Button autoInsertButton;
     private Button muteSoundButton;
-    private SlotFilterScreenHelper slotFilterScreenHelper;
 
     public CobblestoneChemicalReactorScreen(CobblestoneChemicalReactorMenu menu, Inventory inventory, Component title) {
         super(menu, inventory, title);
@@ -141,17 +140,12 @@ public class CobblestoneChemicalReactorScreen extends BaseScreen<CobblestoneChem
         }
 
         this.refreshButtons();
-        this.slotFilterScreenHelper = new SlotFilterScreenHelper(this);
-        this.slotFilterScreenHelper.initWidgets();
     }
 
     @Override
     protected void containerTick() {
         super.containerTick();
         this.refreshButtons();
-        if (this.slotFilterScreenHelper != null) {
-            this.slotFilterScreenHelper.tick();
-        }
     }
 
     private void refreshButtons() {
@@ -204,13 +198,9 @@ public class CobblestoneChemicalReactorScreen extends BaseScreen<CobblestoneChem
     }
 
     @Override
-    protected void renderBg(GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
+    protected void renderMachineBackground(GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
         int x = this.leftPos;
         int y = this.topPos;
-
-        if (this.slotFilterScreenHelper != null) {
-            this.slotFilterScreenHelper.renderPanel(guiGraphics);
-        }
         this.renderBackgroundTexture(guiGraphics, BACKGROUND_TEXTURE, x, y, this.imageWidth, this.imageHeight);
         this.renderNormalSlotPart(guiGraphics, x + MachineGuiLayouts.ChemicalReactor.INPUT_ITEM_1_SLOT_X, y + MachineGuiLayouts.ChemicalReactor.INPUT_ITEM_1_SLOT_Y);
         this.renderNormalSlotPart(guiGraphics, x + MachineGuiLayouts.ChemicalReactor.INPUT_ITEM_2_SLOT_X, y + MachineGuiLayouts.ChemicalReactor.INPUT_ITEM_2_SLOT_Y);
@@ -259,10 +249,6 @@ public class CobblestoneChemicalReactorScreen extends BaseScreen<CobblestoneChem
         this.renderFluidSlotFill(guiGraphics, x + MachineGuiLayouts.ChemicalReactor.INPUT_FLUID_2_SLOT_X, y + MachineGuiLayouts.ChemicalReactor.INPUT_FLUID_2_SLOT_Y, this.menu.getStoredInputFluid2Amount(), this.menu.getMaxInputFluid2Amount(), this.menu.getDisplayedInputFluid2());
         this.renderFluidSlotFill(guiGraphics, x + MachineGuiLayouts.ChemicalReactor.OUTPUT_FLUID_1_SLOT_X, y + MachineGuiLayouts.ChemicalReactor.OUTPUT_FLUID_1_SLOT_Y, this.menu.getStoredOutputFluid1Amount(), this.menu.getMaxOutputFluid1Amount(), this.menu.getDisplayedOutputFluid1());
         this.renderFluidSlotFill(guiGraphics, x + MachineGuiLayouts.ChemicalReactor.OUTPUT_FLUID_2_SLOT_X, y + MachineGuiLayouts.ChemicalReactor.OUTPUT_FLUID_2_SLOT_Y, this.menu.getStoredOutputFluid2Amount(), this.menu.getMaxOutputFluid2Amount(), this.menu.getDisplayedOutputFluid2());
-
-        if (this.slotFilterScreenHelper != null) {
-            this.slotFilterScreenHelper.renderSelectedHighlight(guiGraphics);
-        }
     }
 
     private void renderFluidSlotFill(GuiGraphics guiGraphics, int left, int top, long storedAmount, long maxAmount, FluidStack displayedFluid) {

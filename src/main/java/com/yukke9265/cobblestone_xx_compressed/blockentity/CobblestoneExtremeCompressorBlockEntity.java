@@ -1,11 +1,15 @@
 package com.yukke9265.cobblestone_xx_compressed.blockentity;
 
+import java.util.List;
 import java.util.Optional;
 
+import com.yukke9265.cobblestone_xx_compressed.machine.filter.FilterTarget;
+import com.yukke9265.cobblestone_xx_compressed.machine.filter.FilterTargetIds;
 import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneExtremeCompressorMenu;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneExtremeCompressorRecipe;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModBlockEntities;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModRecipeTypes;
+import com.yukke9265.cobblestone_xx_compressed.util.MachineGuiLayouts;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -70,6 +74,10 @@ public class CobblestoneExtremeCompressorBlockEntity extends PoweredMachineBlock
                 return MachineUpgradeHelper.isParallelChip(stack);
             }
 
+            if (slot == INPUT_SLOT_INDEX) {
+                return CobblestoneExtremeCompressorBlockEntity.this.getSlotFilters().allowsItem(FilterTargetIds.ITEM_INPUT, stack);
+            }
+
             return true;
         }
 
@@ -110,6 +118,17 @@ public class CobblestoneExtremeCompressorBlockEntity extends PoweredMachineBlock
 
     public CobblestoneExtremeCompressorBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.COBBLESTONE_EXTREME_COMPRESSOR_BLOCK_ENTITY.get(), pos, state);
+    }
+
+    @Override
+    public List<FilterTarget> getFilterTargets() {
+        return List.of(
+            FilterTarget.item(
+                FilterTargetIds.ITEM_INPUT,
+                MachineGuiLayouts.ExtremeCompressor.INPUT_SLOT_X,
+                MachineGuiLayouts.ExtremeCompressor.MACHINE_SLOT_Y
+            )
+        );
     }
 
     public int getStoredInputItemCount() {

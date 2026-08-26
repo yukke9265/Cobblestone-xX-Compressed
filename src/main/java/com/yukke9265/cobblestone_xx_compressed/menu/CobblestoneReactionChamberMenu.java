@@ -87,6 +87,7 @@ public class CobblestoneReactionChamberMenu extends BaseMenu {
         this.addReactionChamberSlots();
         this.addPlayerInventorySlots(playerInventory);
         this.addPlayerHotbarSlots(playerInventory);
+        this.initSlotFilterSupport(this.reactionChamberBlockEntity);
     }
 
     public CobblestoneReactionChamberMenu(int containerId, Inventory playerInventory, RegistryFriendlyByteBuf buf) {
@@ -176,7 +177,7 @@ public class CobblestoneReactionChamberMenu extends BaseMenu {
     }
 
     @Override
-    public boolean clickMenuButton(Player player, int id) {
+    protected boolean handleMachineMenuButton(Player player, int id) {
         if (id == 0) {
             this.reactionChamberBlockEntity.reverseIsAvailable();
             return true;

@@ -1,16 +1,20 @@
 package com.yukke9265.cobblestone_xx_compressed.blockentity;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import com.yukke9265.cobblestone_xx_compressed.machine.filter.FilterTarget;
+import com.yukke9265.cobblestone_xx_compressed.machine.filter.FilterTargetIds;
 import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneCrystallizationChamberMenu;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneCrystallizationChamberRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CrystallizationChamberRecipeInput;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModBlockEntities;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModRecipeTypes;
 import com.yukke9265.cobblestone_xx_compressed.util.LongDataHelper;
+import com.yukke9265.cobblestone_xx_compressed.util.MachineGuiLayouts;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -120,6 +124,17 @@ public class CobblestoneCrystallizationChamberBlockEntity extends PoweredMachine
             this.setAutomationMode(index, AutomationMode.DISABLED);
             this.setFluidAutomationMode(index, AutomationMode.DISABLED);
         }
+    }
+
+    @Override
+    public List<FilterTarget> getFilterTargets() {
+        return List.of(
+            FilterTarget.fluid(
+                FilterTargetIds.FLUID_INPUT,
+                MachineGuiLayouts.CrystallizationChamber.FLUID_SLOT_X,
+                MachineGuiLayouts.CrystallizationChamber.FLUID_SLOT_Y
+            )
+        );
     }
 
     public long getStoredFluidAmount() {
@@ -416,6 +431,9 @@ public class CobblestoneCrystallizationChamberBlockEntity extends PoweredMachine
 
     private int fillInternal(FluidStack resource, IFluidHandler.FluidAction action) {
         if (resource.isEmpty()) {
+            return 0;
+        }
+        if (!this.getSlotFilters().allowsFluid(FilterTargetIds.FLUID_INPUT, resource)) {
             return 0;
         }
         if (!this.storedFluid.isEmpty() && !FluidStack.isSameFluidSameComponents(this.storedFluid, resource)) {

@@ -28,6 +28,7 @@ public class BaseScreen<T extends BaseMenu> extends AbstractContainerScreen<T> {
     private static final int EXTERNAL_SLOT_BACKGROUND_COLOR = 0xFF373737;
     private int lastMouseX;
     private int lastMouseY;
+    private SlotFilterScreenHelper slotFilterScreenHelper;
 
     // 共通の基底スクリーンクラスです。全てのスクリーンはこれを継承します。
     public BaseScreen(T menu, Inventory inventory, Component title) {
@@ -46,10 +47,20 @@ public class BaseScreen<T extends BaseMenu> extends AbstractContainerScreen<T> {
         return List.of(new JeiClickableAreaDefinition(x, y, width, height, recipeCategoryId));
     }
 
-    // まだ特に共通の処理はありませんが、将来的に全スクリーンで共通のロジックをここにまとめることができます。
+    // フィルタ UI はメニューに対象があるときだけ Helper が有効になります。
     @Override
     protected void init() {
         super.init();
+        this.slotFilterScreenHelper = new SlotFilterScreenHelper(this);
+        this.slotFilterScreenHelper.initWidgets();
+    }
+
+    @Override
+    protected void containerTick() {
+        super.containerTick();
+        if (this.slotFilterScreenHelper != null) {
+            this.slotFilterScreenHelper.tick();
+        }
     }
 
     @Override
@@ -236,9 +247,19 @@ public class BaseScreen<T extends BaseMenu> extends AbstractContainerScreen<T> {
         return this.lastMouseY;
     }
 
-    // renderBg はスクリーンの背景を描画するためのメソッドですが、今回はまだ実装していないので、空のままにしています。
+    // フィルタパネル／ハイライトは全スクリーン共通。機械固有の背景は renderMachineBackground へ。
     @Override
-        protected void renderBg(GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
+    protected final void renderBg(GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
+        if (this.slotFilterScreenHelper != null) {
+            this.slotFilterScreenHelper.renderPanel(guiGraphics);
+        }
+        this.renderMachineBackground(guiGraphics, partialTick, mouseX, mouseY);
+        if (this.slotFilterScreenHelper != null) {
+            this.slotFilterScreenHelper.renderSelectedHighlight(guiGraphics);
+        }
+    }
+
+    protected void renderMachineBackground(GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
     }
 
     // JEI のレシピ一覧を開くクリック領域です。
