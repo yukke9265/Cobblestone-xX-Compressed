@@ -23,8 +23,9 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.RecipeHolder;
 
-public class CobblestoneCentrifugeRecipeCategory implements IRecipeCategory<CobblestoneCentrifugeRecipe> {
+public class CobblestoneCentrifugeRecipeCategory implements IRecipeCategory<RecipeHolder<CobblestoneCentrifugeRecipe>> {
     private static final ResourceLocation BACKGROUND_TEXTURE =
         ResourceLocation.fromNamespaceAndPath(CobblestonexXCompressed.MODID, "textures/gui/cobblestone_centrifuge.png");
 
@@ -59,7 +60,7 @@ public class CobblestoneCentrifugeRecipeCategory implements IRecipeCategory<Cobb
     }
 
     @Override
-    public RecipeType<CobblestoneCentrifugeRecipe> getRecipeType() {
+    public RecipeType<RecipeHolder<CobblestoneCentrifugeRecipe>> getRecipeType() {
         return ModJeiPlugin.COBBLESTONE_CENTRIFUGE_RECIPE_TYPE;
     }
 
@@ -79,7 +80,8 @@ public class CobblestoneCentrifugeRecipeCategory implements IRecipeCategory<Cobb
     }
 
     @Override
-    public void setRecipe(IRecipeLayoutBuilder builder, CobblestoneCentrifugeRecipe recipe, IFocusGroup focuses) {
+    public void setRecipe(IRecipeLayoutBuilder builder, RecipeHolder<CobblestoneCentrifugeRecipe> recipeHolder, IFocusGroup focuses) {
+        CobblestoneCentrifugeRecipe recipe = recipeHolder.value();
         JeiCobblestonePowerItems.addPowerSlot(builder, POWER_SLOT_X, POWER_SLOT_Y);
 
         builder.addSlot(RecipeIngredientRole.INPUT, INPUT_SLOT_X, INPUT_SLOT_Y)
@@ -93,7 +95,8 @@ public class CobblestoneCentrifugeRecipeCategory implements IRecipeCategory<Cobb
     }
 
     @Override
-    public void draw(CobblestoneCentrifugeRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
+    public void draw(RecipeHolder<CobblestoneCentrifugeRecipe> recipeHolder, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
+        CobblestoneCentrifugeRecipe recipe = recipeHolder.value();
         GuiPartRenderer.renderCobblestoneSlot(guiGraphics, POWER_SLOT_X, POWER_SLOT_Y);
         GuiPartRenderer.renderNormalSlot(guiGraphics, INPUT_SLOT_X, INPUT_SLOT_Y);
         GuiPartRenderer.renderNormalSlot(guiGraphics, OUTPUT_SLOT_1_X, OUTPUT_SLOT_1_Y);

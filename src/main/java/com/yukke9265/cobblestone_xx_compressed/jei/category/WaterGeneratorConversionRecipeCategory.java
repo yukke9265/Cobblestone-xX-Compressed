@@ -16,7 +16,9 @@ import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Items;
+import org.jetbrains.annotations.Nullable;
 
 @SuppressWarnings("null")
 public class WaterGeneratorConversionRecipeCategory implements IRecipeCategory<WaterGeneratorConversionJeiRecipe> {
@@ -55,6 +57,12 @@ public class WaterGeneratorConversionRecipeCategory implements IRecipeCategory<W
     @Override
     public IDrawable getIcon() {
         return this.icon;
+    }
+
+    @Nullable
+    @Override
+    public ResourceLocation getRegistryName(WaterGeneratorConversionJeiRecipe recipe) {
+        return recipe.getId();
     }
 
     @Override

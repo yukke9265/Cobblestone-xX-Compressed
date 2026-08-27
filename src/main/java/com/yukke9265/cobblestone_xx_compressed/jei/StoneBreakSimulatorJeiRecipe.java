@@ -3,16 +3,21 @@ package com.yukke9265.cobblestone_xx_compressed.jei;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.yukke9265.cobblestone_xx_compressed.CobblestonexXCompressed;
 import com.yukke9265.cobblestone_xx_compressed.loot.CompressedStoneLootDefinition;
 import com.yukke9265.cobblestone_xx_compressed.loot.OreBreakDefinition;
 import com.yukke9265.cobblestone_xx_compressed.recipe.StoneBreakSimulatorRecipe;
 
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeHolder;
 
 @SuppressWarnings("null")
 public class StoneBreakSimulatorJeiRecipe {
+    private final ResourceLocation id;
     private final ItemStack input;
     private final Ingredient pickaxeIngredient;
     private final ItemStack mainOutput;
@@ -21,6 +26,7 @@ public class StoneBreakSimulatorJeiRecipe {
     private final long cobblestonePowerPerTick;
 
     public StoneBreakSimulatorJeiRecipe(
+        ResourceLocation id,
         ItemStack input,
         Ingredient pickaxeIngredient,
         ItemStack mainOutput,
@@ -28,12 +34,17 @@ public class StoneBreakSimulatorJeiRecipe {
         long totalCobblestonePower,
         long cobblestonePowerPerTick
     ) {
+        this.id = id;
         this.input = input;
         this.pickaxeIngredient = pickaxeIngredient;
         this.mainOutput = mainOutput;
         this.subOutputs = subOutputs;
         this.totalCobblestonePower = totalCobblestonePower;
         this.cobblestonePowerPerTick = cobblestonePowerPerTick;
+    }
+
+    public ResourceLocation getId() {
+        return this.id;
     }
 
     public ItemStack getInput() {
@@ -60,11 +71,22 @@ public class StoneBreakSimulatorJeiRecipe {
         return this.cobblestonePowerPerTick;
     }
 
-    public static List<StoneBreakSimulatorJeiRecipe> createRecipes(List<StoneBreakSimulatorRecipe> recipes) {
+    /**
+     * 元レシピ Holder を入力スタック単位へ展開する。
+     * JEIu 用に「元 id / 入力アイテム path」の合成 id を付ける。
+     */
+    public static List<StoneBreakSimulatorJeiRecipe> createRecipes(List<RecipeHolder<StoneBreakSimulatorRecipe>> recipeHolders) {
         List<StoneBreakSimulatorJeiRecipe> jeiRecipes = new ArrayList<>();
 
-        for (StoneBreakSimulatorRecipe recipe : recipes) {
+        for (RecipeHolder<StoneBreakSimulatorRecipe> recipeHolder : recipeHolders) {
+            StoneBreakSimulatorRecipe recipe = recipeHolder.value();
             for (ItemStack inputStack : recipe.getIngredient().getItems()) {
+                ResourceLocation inputId = BuiltInRegistries.ITEM.getKey(inputStack.getItem());
+                ResourceLocation displayId = ResourceLocation.fromNamespaceAndPath(
+                    CobblestonexXCompressed.MODID,
+                    "stone_break_simulator/" + recipeHolder.id().getPath() + "/" + inputId.getNamespace() + "/" + inputId.getPath()
+                );
+
                 CompressedStoneLootDefinition definition = CompressedStoneLootDefinition.findByStoneInput(inputStack);
                 if (definition != null) {
                     List<BonusDrop> subOutputs = new ArrayList<>();
@@ -77,6 +99,7 @@ public class StoneBreakSimulatorJeiRecipe {
                     }
 
                     jeiRecipes.add(new StoneBreakSimulatorJeiRecipe(
+                        displayId,
                         inputStack.copy(),
                         Ingredient.of(ItemTags.PICKAXES),
                         new ItemStack(definition.getCobblestoneBlock().get()),
@@ -98,6 +121,7 @@ public class StoneBreakSimulatorJeiRecipe {
                 }
 
                 jeiRecipes.add(new StoneBreakSimulatorJeiRecipe(
+                    displayId,
                     inputStack.copy(),
                     Ingredient.of(ItemTags.PICKAXES),
                     oreDefinition.createJeiDropStack(),

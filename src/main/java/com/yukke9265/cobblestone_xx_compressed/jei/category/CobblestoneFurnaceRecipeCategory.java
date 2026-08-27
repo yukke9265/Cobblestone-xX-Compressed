@@ -18,8 +18,9 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 
-public class CobblestoneFurnaceRecipeCategory implements IRecipeCategory<CobblestoneFurnaceRecipe> {
+public class CobblestoneFurnaceRecipeCategory implements IRecipeCategory<RecipeHolder<CobblestoneFurnaceRecipe>> {
     private static final ResourceLocation BACKGROUND_TEXTURE =
         ResourceLocation.fromNamespaceAndPath(CobblestonexXCompressed.MODID, "textures/gui/cobblestone_furnace.png");
 
@@ -44,7 +45,7 @@ public class CobblestoneFurnaceRecipeCategory implements IRecipeCategory<Cobbles
     }
 
     @Override
-    public RecipeType<CobblestoneFurnaceRecipe> getRecipeType() {
+    public RecipeType<RecipeHolder<CobblestoneFurnaceRecipe>> getRecipeType() {
         return ModJeiPlugin.COBBLESTONE_FURNACE_RECIPE_TYPE;
     }
 
@@ -64,7 +65,8 @@ public class CobblestoneFurnaceRecipeCategory implements IRecipeCategory<Cobbles
     }
 
     @Override
-    public void setRecipe(IRecipeLayoutBuilder builder, CobblestoneFurnaceRecipe recipe, IFocusGroup focuses) {
+    public void setRecipe(IRecipeLayoutBuilder builder, RecipeHolder<CobblestoneFurnaceRecipe> recipeHolder, IFocusGroup focuses) {
+        CobblestoneFurnaceRecipe recipe = recipeHolder.value();
         builder.addSlot(RecipeIngredientRole.INPUT, INPUT_SLOT_X, INPUT_SLOT_Y)
             .addIngredients(recipe.getIngredient());
 
@@ -73,7 +75,7 @@ public class CobblestoneFurnaceRecipeCategory implements IRecipeCategory<Cobbles
     }
 
     @Override
-    public void draw(CobblestoneFurnaceRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
+    public void draw(RecipeHolder<CobblestoneFurnaceRecipe> recipeHolder, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
         GuiPartRenderer.renderNormalSlot(guiGraphics, INPUT_SLOT_X, INPUT_SLOT_Y);
         GuiPartRenderer.renderNormalSlot(guiGraphics, OUTPUT_SLOT_X, OUTPUT_SLOT_Y);
         GuiPartRenderer.renderProgressFrame(guiGraphics, PROGRESS_FRAME_X, PROGRESS_FRAME_Y);

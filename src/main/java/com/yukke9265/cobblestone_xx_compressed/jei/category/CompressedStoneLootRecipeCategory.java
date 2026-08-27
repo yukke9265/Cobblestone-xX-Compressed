@@ -17,7 +17,9 @@ import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 @SuppressWarnings("null")
 public class CompressedStoneLootRecipeCategory implements IRecipeCategory<CompressedStoneLootJeiRecipe> {
@@ -58,6 +60,12 @@ public class CompressedStoneLootRecipeCategory implements IRecipeCategory<Compre
     @Override
     public IDrawable getIcon() {
         return this.icon;
+    }
+
+    @Nullable
+    @Override
+    public ResourceLocation getRegistryName(CompressedStoneLootJeiRecipe recipe) {
+        return recipe.getId();
     }
 
     @Override

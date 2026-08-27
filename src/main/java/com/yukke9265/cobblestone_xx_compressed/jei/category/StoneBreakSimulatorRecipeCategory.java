@@ -20,6 +20,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 @SuppressWarnings("null")
 public class StoneBreakSimulatorRecipeCategory implements IRecipeCategory<StoneBreakSimulatorJeiRecipe> {
@@ -61,6 +62,12 @@ public class StoneBreakSimulatorRecipeCategory implements IRecipeCategory<StoneB
     @Override
     public IDrawable getIcon() {
         return this.icon;
+    }
+
+    @Nullable
+    @Override
+    public ResourceLocation getRegistryName(StoneBreakSimulatorJeiRecipe recipe) {
+        return recipe.getId();
     }
 
     @Override

@@ -24,9 +24,10 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.neoforged.neoforge.fluids.FluidType;
 
-public class CobblestoneFluidMixerRecipeCategory implements IRecipeCategory<CobblestoneFluidMixerRecipe> {
+public class CobblestoneFluidMixerRecipeCategory implements IRecipeCategory<RecipeHolder<CobblestoneFluidMixerRecipe>> {
     private static final ResourceLocation BACKGROUND_TEXTURE =
         ResourceLocation.fromNamespaceAndPath(CobblestonexXCompressed.MODID, "textures/gui/cobblestone_fluid_mixer.png");
 
@@ -58,7 +59,7 @@ public class CobblestoneFluidMixerRecipeCategory implements IRecipeCategory<Cobb
     }
 
     @Override
-    public RecipeType<CobblestoneFluidMixerRecipe> getRecipeType() {
+    public RecipeType<RecipeHolder<CobblestoneFluidMixerRecipe>> getRecipeType() {
         return ModJeiPlugin.COBBLESTONE_FLUID_MIXER_RECIPE_TYPE;
     }
 
@@ -78,7 +79,8 @@ public class CobblestoneFluidMixerRecipeCategory implements IRecipeCategory<Cobb
     }
 
     @Override
-    public void setRecipe(IRecipeLayoutBuilder builder, CobblestoneFluidMixerRecipe recipe, IFocusGroup focuses) {
+    public void setRecipe(IRecipeLayoutBuilder builder, RecipeHolder<CobblestoneFluidMixerRecipe> recipeHolder, IFocusGroup focuses) {
+        CobblestoneFluidMixerRecipe recipe = recipeHolder.value();
         JeiCobblestonePowerItems.addPowerSlot(builder, POWER_SLOT_X, POWER_SLOT_Y);
         builder.addSlot(RecipeIngredientRole.INPUT, INPUT_FLUID_1_SLOT_X, INPUT_FLUID_1_SLOT_Y)
             .addIngredients(NeoForgeTypes.FLUID_STACK, List.of(recipe.getFirstFluidInput()))
@@ -94,7 +96,8 @@ public class CobblestoneFluidMixerRecipeCategory implements IRecipeCategory<Cobb
     }
 
     @Override
-    public void draw(CobblestoneFluidMixerRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
+    public void draw(RecipeHolder<CobblestoneFluidMixerRecipe> recipeHolder, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
+        CobblestoneFluidMixerRecipe recipe = recipeHolder.value();
         GuiPartRenderer.renderNormalSlot(guiGraphics, INPUT_FLUID_1_SLOT_X, INPUT_FLUID_1_SLOT_Y);
         GuiPartRenderer.renderNormalSlot(guiGraphics, INPUT_FLUID_2_SLOT_X, INPUT_FLUID_2_SLOT_Y);
         GuiPartRenderer.renderNormalSlot(guiGraphics, OUTPUT_FLUID_SLOT_X, OUTPUT_FLUID_SLOT_Y);

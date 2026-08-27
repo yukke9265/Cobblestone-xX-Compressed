@@ -1,7 +1,5 @@
 package com.yukke9265.cobblestone_xx_compressed.jei.category;
 
-import java.util.List;
-
 import com.yukke9265.cobblestone_xx_compressed.CobblestonexXCompressed;
 import com.yukke9265.cobblestone_xx_compressed.jei.ModJeiPlugin;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneCrusherRecipe;
@@ -22,9 +20,9 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.RecipeHolder;
 
-public class CobblestoneCrusherRecipeCategory implements IRecipeCategory<CobblestoneCrusherRecipe> {
+public class CobblestoneCrusherRecipeCategory implements IRecipeCategory<RecipeHolder<CobblestoneCrusherRecipe>> {
     private static final ResourceLocation BACKGROUND_TEXTURE =
         ResourceLocation.fromNamespaceAndPath(CobblestonexXCompressed.MODID, "textures/gui/cobblestone_crusher.png");
 
@@ -56,7 +54,7 @@ public class CobblestoneCrusherRecipeCategory implements IRecipeCategory<Cobbles
     }
 
     @Override
-    public RecipeType<CobblestoneCrusherRecipe> getRecipeType() {
+    public RecipeType<RecipeHolder<CobblestoneCrusherRecipe>> getRecipeType() {
         return ModJeiPlugin.COBBLESTONE_CRUSHER_RECIPE_TYPE;
     }
 
@@ -76,7 +74,8 @@ public class CobblestoneCrusherRecipeCategory implements IRecipeCategory<Cobbles
     }
 
     @Override
-    public void setRecipe(IRecipeLayoutBuilder builder, CobblestoneCrusherRecipe recipe, IFocusGroup focuses) {
+    public void setRecipe(IRecipeLayoutBuilder builder, RecipeHolder<CobblestoneCrusherRecipe> recipeHolder, IFocusGroup focuses) {
+        CobblestoneCrusherRecipe recipe = recipeHolder.value();
         builder.addSlot(RecipeIngredientRole.INPUT, INPUT_SLOT_X, INPUT_SLOT_Y)
             .addIngredients(recipe.getIngredient());
 
@@ -87,7 +86,8 @@ public class CobblestoneCrusherRecipeCategory implements IRecipeCategory<Cobbles
     }
 
     @Override
-    public void draw(CobblestoneCrusherRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
+    public void draw(RecipeHolder<CobblestoneCrusherRecipe> recipeHolder, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
+        CobblestoneCrusherRecipe recipe = recipeHolder.value();
         GuiPartRenderer.renderCobblestoneSlot(guiGraphics, POWER_SLOT_X, POWER_SLOT_Y);
         GuiPartRenderer.renderNormalSlot(guiGraphics, INPUT_SLOT_X, INPUT_SLOT_Y);
         GuiPartRenderer.renderNormalSlot(guiGraphics, OUTPUT_SLOT_X, OUTPUT_SLOT_Y);

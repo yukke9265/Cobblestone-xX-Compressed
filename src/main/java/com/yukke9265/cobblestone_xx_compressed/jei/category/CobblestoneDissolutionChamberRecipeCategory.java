@@ -25,10 +25,11 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
 
-public class CobblestoneDissolutionChamberRecipeCategory implements IRecipeCategory<CobblestoneDissolutionChamberRecipe> {
+public class CobblestoneDissolutionChamberRecipeCategory implements IRecipeCategory<RecipeHolder<CobblestoneDissolutionChamberRecipe>> {
     private static final ResourceLocation BACKGROUND_TEXTURE =
         ResourceLocation.fromNamespaceAndPath(CobblestonexXCompressed.MODID, "textures/gui/cobblestone_dissolution_chamber.png");
 
@@ -60,7 +61,7 @@ public class CobblestoneDissolutionChamberRecipeCategory implements IRecipeCateg
     }
 
     @Override
-    public RecipeType<CobblestoneDissolutionChamberRecipe> getRecipeType() {
+    public RecipeType<RecipeHolder<CobblestoneDissolutionChamberRecipe>> getRecipeType() {
         return ModJeiPlugin.COBBLESTONE_DISSOLUTION_CHAMBER_RECIPE_TYPE;
     }
 
@@ -80,7 +81,8 @@ public class CobblestoneDissolutionChamberRecipeCategory implements IRecipeCateg
     }
 
     @Override
-    public void setRecipe(IRecipeLayoutBuilder builder, CobblestoneDissolutionChamberRecipe recipe, IFocusGroup focuses) {
+    public void setRecipe(IRecipeLayoutBuilder builder, RecipeHolder<CobblestoneDissolutionChamberRecipe> recipeHolder, IFocusGroup focuses) {
+        CobblestoneDissolutionChamberRecipe recipe = recipeHolder.value();
         builder.addSlot(RecipeIngredientRole.INPUT, INPUT_SLOT_X, INPUT_SLOT_Y)
             .addItemStacks(getDisplayStacks(recipe.getItemInput()));
 
@@ -96,7 +98,8 @@ public class CobblestoneDissolutionChamberRecipeCategory implements IRecipeCateg
     }
 
     @Override
-    public void draw(CobblestoneDissolutionChamberRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
+    public void draw(RecipeHolder<CobblestoneDissolutionChamberRecipe> recipeHolder, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
+        CobblestoneDissolutionChamberRecipe recipe = recipeHolder.value();
         GuiPartRenderer.renderNormalSlot(guiGraphics, INPUT_SLOT_X, INPUT_SLOT_Y);
         GuiPartRenderer.renderNormalSlot(guiGraphics, INPUT_FLUID_SLOT_X, INPUT_FLUID_SLOT_Y);
         GuiPartRenderer.renderNormalSlot(guiGraphics, OUTPUT_FLUID_SLOT_X, OUTPUT_FLUID_SLOT_Y);

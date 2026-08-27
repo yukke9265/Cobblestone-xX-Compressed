@@ -26,10 +26,11 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.neoforged.neoforge.fluids.FluidType;
 
 @SuppressWarnings("null")
-public class CobblestoneAssemblyMachineRecipeCategory implements IRecipeCategory<CobblestoneAssemblyMachineRecipe> {
+public class CobblestoneAssemblyMachineRecipeCategory implements IRecipeCategory<RecipeHolder<CobblestoneAssemblyMachineRecipe>> {
     private static final ResourceLocation BACKGROUND_TEXTURE =
         ResourceLocation.fromNamespaceAndPath(CobblestonexXCompressed.MODID, "textures/gui/cobblestone_assembly_machine.png");
 
@@ -51,7 +52,7 @@ public class CobblestoneAssemblyMachineRecipeCategory implements IRecipeCategory
     }
 
     @Override
-    public RecipeType<CobblestoneAssemblyMachineRecipe> getRecipeType() {
+    public RecipeType<RecipeHolder<CobblestoneAssemblyMachineRecipe>> getRecipeType() {
         return ModJeiPlugin.COBBLESTONE_ASSEMBLY_MACHINE_RECIPE_TYPE;
     }
 
@@ -71,7 +72,8 @@ public class CobblestoneAssemblyMachineRecipeCategory implements IRecipeCategory
     }
 
     @Override
-    public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, @Nonnull CobblestoneAssemblyMachineRecipe recipe, @Nonnull IFocusGroup focuses) {
+    public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, @Nonnull RecipeHolder<CobblestoneAssemblyMachineRecipe> recipeHolder, @Nonnull IFocusGroup focuses) {
+        CobblestoneAssemblyMachineRecipe recipe = recipeHolder.value();
         JeiCobblestonePowerItems.addPowerSlot(
             builder,
             MachineGuiLayouts.AssemblyMachine.POWER_SLOT_X - BACKGROUND_U,
@@ -96,7 +98,8 @@ public class CobblestoneAssemblyMachineRecipeCategory implements IRecipeCategory
     }
 
     @Override
-    public void draw(@Nonnull CobblestoneAssemblyMachineRecipe recipe, @Nonnull IRecipeSlotsView recipeSlotsView, @Nonnull GuiGraphics guiGraphics, double mouseX, double mouseY) {
+    public void draw(@Nonnull RecipeHolder<CobblestoneAssemblyMachineRecipe> recipeHolder, @Nonnull IRecipeSlotsView recipeSlotsView, @Nonnull GuiGraphics guiGraphics, double mouseX, double mouseY) {
+        CobblestoneAssemblyMachineRecipe recipe = recipeHolder.value();
         GuiPartRenderer.renderNormalSlot(guiGraphics, MachineGuiLayouts.AssemblyMachine.INPUT_ITEM_1_SLOT_X - BACKGROUND_U, MachineGuiLayouts.AssemblyMachine.INPUT_ITEM_1_SLOT_Y - BACKGROUND_V);
         GuiPartRenderer.renderNormalSlot(guiGraphics, MachineGuiLayouts.AssemblyMachine.INPUT_ITEM_2_SLOT_X - BACKGROUND_U, MachineGuiLayouts.AssemblyMachine.INPUT_ITEM_2_SLOT_Y - BACKGROUND_V);
         GuiPartRenderer.renderNormalSlot(guiGraphics, MachineGuiLayouts.AssemblyMachine.INPUT_ITEM_3_SLOT_X - BACKGROUND_U, MachineGuiLayouts.AssemblyMachine.INPUT_ITEM_3_SLOT_Y - BACKGROUND_V);

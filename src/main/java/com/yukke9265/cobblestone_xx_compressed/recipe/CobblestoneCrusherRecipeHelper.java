@@ -56,20 +56,21 @@ public final class CobblestoneCrusherRecipeHelper {
     /**
      * JEI 表示用。独自レシピのあとに、AE2 刻印機の粉砕相当を並べます。
      * すでに独自レシピがある入力は、AE2 側を重複表示しません。
+     * AE2 分は元 Inscriber id 付きの RecipeHolder にして JEIu ブックマーク可能にする。
      */
-    public static List<CobblestoneCrusherRecipe> collectAllDisplayRecipes(Level level) {
-        List<CobblestoneCrusherRecipe> recipes = new ArrayList<>();
+    public static List<RecipeHolder<CobblestoneCrusherRecipe>> collectAllDisplayRecipes(Level level) {
+        List<RecipeHolder<CobblestoneCrusherRecipe>> recipes = new ArrayList<>();
 
         for (RecipeHolder<CobblestoneCrusherRecipe> recipeHolder : level.getRecipeManager().getAllRecipesFor(ModRecipeTypes.COBBLESTONE_CRUSHER.get())) {
-            recipes.add(recipeHolder.value());
+            recipes.add(recipeHolder);
         }
 
-        for (CobblestoneCrusherRecipe ae2Recipe : Ae2InscriberCrushCompat.collectCrushDisplayRecipes(level)) {
-            if (isCoveredByCustomRecipe(level, ae2Recipe.getIngredient())) {
+        for (RecipeHolder<CobblestoneCrusherRecipe> ae2RecipeHolder : Ae2InscriberCrushCompat.collectCrushDisplayRecipes(level)) {
+            if (isCoveredByCustomRecipe(level, ae2RecipeHolder.value().getIngredient())) {
                 continue;
             }
 
-            recipes.add(ae2Recipe);
+            recipes.add(ae2RecipeHolder);
         }
 
         return recipes;

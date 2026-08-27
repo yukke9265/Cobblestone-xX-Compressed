@@ -4,24 +4,34 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import com.yukke9265.cobblestone_xx_compressed.CobblestonexXCompressed;
 import com.yukke9265.cobblestone_xx_compressed.loot.CompressedStoneLootDefinition;
 
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
 @SuppressWarnings("null")
 public class CompressedStoneLootJeiRecipe {
+    private final ResourceLocation id;
     private final ItemStack input;
     private final ItemStack normalDrop;
     private final List<BonusDrop> bonusDrops;
 
     public CompressedStoneLootJeiRecipe(
+        ResourceLocation id,
         ItemStack input,
         ItemStack normalDrop,
         List<BonusDrop> bonusDrops
     ) {
+        this.id = id;
         this.input = input;
         this.normalDrop = normalDrop;
         this.bonusDrops = List.copyOf(bonusDrops);
+    }
+
+    public ResourceLocation getId() {
+        return this.id;
     }
 
     public ItemStack getInput() {
@@ -55,8 +65,16 @@ public class CompressedStoneLootJeiRecipe {
                 ));
             }
 
+            ItemStack input = new ItemStack(definition.getStoneBlock().get());
+            ResourceLocation stoneId = BuiltInRegistries.ITEM.getKey(input.getItem());
+            ResourceLocation displayId = ResourceLocation.fromNamespaceAndPath(
+                CobblestonexXCompressed.MODID,
+                "compressed_stone_loot/" + stoneId.getPath()
+            );
+
             recipes.add(new CompressedStoneLootJeiRecipe(
-                new ItemStack(definition.getStoneBlock().get()),
+                displayId,
+                input,
                 new ItemStack(definition.getCobblestoneBlock().get()),
                 bonusDrops
             ));

@@ -24,9 +24,10 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.neoforged.neoforge.fluids.FluidType;
 
-public class CobblestoneCrystallizationChamberRecipeCategory implements IRecipeCategory<CobblestoneCrystallizationChamberRecipe> {
+public class CobblestoneCrystallizationChamberRecipeCategory implements IRecipeCategory<RecipeHolder<CobblestoneCrystallizationChamberRecipe>> {
     private static final ResourceLocation BACKGROUND_TEXTURE =
         ResourceLocation.fromNamespaceAndPath(CobblestonexXCompressed.MODID, "textures/gui/cobblestone_crystallization_chamber.png");
 
@@ -56,7 +57,7 @@ public class CobblestoneCrystallizationChamberRecipeCategory implements IRecipeC
     }
 
     @Override
-    public RecipeType<CobblestoneCrystallizationChamberRecipe> getRecipeType() {
+    public RecipeType<RecipeHolder<CobblestoneCrystallizationChamberRecipe>> getRecipeType() {
         return ModJeiPlugin.COBBLESTONE_CRYSTALLIZATION_CHAMBER_RECIPE_TYPE;
     }
 
@@ -76,7 +77,8 @@ public class CobblestoneCrystallizationChamberRecipeCategory implements IRecipeC
     }
 
     @Override
-    public void setRecipe(IRecipeLayoutBuilder builder, CobblestoneCrystallizationChamberRecipe recipe, IFocusGroup focuses) {
+    public void setRecipe(IRecipeLayoutBuilder builder, RecipeHolder<CobblestoneCrystallizationChamberRecipe> recipeHolder, IFocusGroup focuses) {
+        CobblestoneCrystallizationChamberRecipe recipe = recipeHolder.value();
         JeiCobblestonePowerItems.addPowerSlot(builder, POWER_SLOT_X, POWER_SLOT_Y);
 
         builder.addSlot(RecipeIngredientRole.INPUT, FLUID_SLOT_X, FLUID_SLOT_Y)
@@ -88,7 +90,8 @@ public class CobblestoneCrystallizationChamberRecipeCategory implements IRecipeC
     }
 
     @Override
-    public void draw(CobblestoneCrystallizationChamberRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
+    public void draw(RecipeHolder<CobblestoneCrystallizationChamberRecipe> recipeHolder, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
+        CobblestoneCrystallizationChamberRecipe recipe = recipeHolder.value();
         GuiPartRenderer.renderCobblestoneSlot(guiGraphics, POWER_SLOT_X, POWER_SLOT_Y);
         GuiPartRenderer.renderNormalSlot(guiGraphics, FLUID_SLOT_X, FLUID_SLOT_Y);
         GuiPartRenderer.renderNormalSlot(guiGraphics, OUTPUT_SLOT_X, OUTPUT_SLOT_Y);

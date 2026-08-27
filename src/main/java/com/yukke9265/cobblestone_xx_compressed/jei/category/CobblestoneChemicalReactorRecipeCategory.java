@@ -27,11 +27,12 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import net.neoforged.neoforge.fluids.FluidType;
 
 @SuppressWarnings("null")
-public class CobblestoneChemicalReactorRecipeCategory implements IRecipeCategory<CobblestoneChemicalReactorRecipe> {
+public class CobblestoneChemicalReactorRecipeCategory implements IRecipeCategory<RecipeHolder<CobblestoneChemicalReactorRecipe>> {
     private static final ResourceLocation BACKGROUND_TEXTURE =
         ResourceLocation.fromNamespaceAndPath(CobblestonexXCompressed.MODID, "textures/gui/cobblestone_chemical_reactor.png");
 
@@ -54,7 +55,7 @@ public class CobblestoneChemicalReactorRecipeCategory implements IRecipeCategory
     }
 
     @Override
-    public RecipeType<CobblestoneChemicalReactorRecipe> getRecipeType() {
+    public RecipeType<RecipeHolder<CobblestoneChemicalReactorRecipe>> getRecipeType() {
         return ModJeiPlugin.COBBLESTONE_CHEMICAL_REACTOR_RECIPE_TYPE;
     }
 
@@ -74,7 +75,8 @@ public class CobblestoneChemicalReactorRecipeCategory implements IRecipeCategory
     }
 
     @Override
-    public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, @Nonnull CobblestoneChemicalReactorRecipe recipe, @Nonnull IFocusGroup focuses) {
+    public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, @Nonnull RecipeHolder<CobblestoneChemicalReactorRecipe> recipeHolder, @Nonnull IFocusGroup focuses) {
+        CobblestoneChemicalReactorRecipe recipe = recipeHolder.value();
         JeiCobblestonePowerItems.addPowerSlot(
             builder,
             MachineGuiLayouts.ChemicalReactor.POWER_SLOT_X - BACKGROUND_U,
@@ -120,7 +122,8 @@ public class CobblestoneChemicalReactorRecipeCategory implements IRecipeCategory
     }
 
     @Override
-    public void draw(@Nonnull CobblestoneChemicalReactorRecipe recipe, @Nonnull IRecipeSlotsView recipeSlotsView, @Nonnull GuiGraphics guiGraphics, double mouseX, double mouseY) {
+    public void draw(@Nonnull RecipeHolder<CobblestoneChemicalReactorRecipe> recipeHolder, @Nonnull IRecipeSlotsView recipeSlotsView, @Nonnull GuiGraphics guiGraphics, double mouseX, double mouseY) {
+        CobblestoneChemicalReactorRecipe recipe = recipeHolder.value();
         GuiPartRenderer.renderNormalSlot(guiGraphics, MachineGuiLayouts.ChemicalReactor.INPUT_ITEM_1_SLOT_X - BACKGROUND_U, MachineGuiLayouts.ChemicalReactor.INPUT_ITEM_1_SLOT_Y - BACKGROUND_V);
         GuiPartRenderer.renderNormalSlot(guiGraphics, MachineGuiLayouts.ChemicalReactor.INPUT_ITEM_2_SLOT_X - BACKGROUND_U, MachineGuiLayouts.ChemicalReactor.INPUT_ITEM_2_SLOT_Y - BACKGROUND_V);
         GuiPartRenderer.renderNormalSlot(guiGraphics, MachineGuiLayouts.ChemicalReactor.INPUT_FLUID_1_SLOT_X - BACKGROUND_U, MachineGuiLayouts.ChemicalReactor.INPUT_FLUID_1_SLOT_Y - BACKGROUND_V);

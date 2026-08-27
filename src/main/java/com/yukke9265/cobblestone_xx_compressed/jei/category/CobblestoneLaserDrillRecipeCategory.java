@@ -23,8 +23,9 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.RecipeHolder;
 
-public class CobblestoneLaserDrillRecipeCategory implements IRecipeCategory<CobblestoneLaserDrillRecipe> {
+public class CobblestoneLaserDrillRecipeCategory implements IRecipeCategory<RecipeHolder<CobblestoneLaserDrillRecipe>> {
     private static final ResourceLocation BACKGROUND_TEXTURE =
         ResourceLocation.fromNamespaceAndPath(CobblestonexXCompressed.MODID, "textures/gui/cobblestone_centrifuge.png");
 
@@ -60,7 +61,7 @@ public class CobblestoneLaserDrillRecipeCategory implements IRecipeCategory<Cobb
     }
 
     @Override
-    public RecipeType<CobblestoneLaserDrillRecipe> getRecipeType() {
+    public RecipeType<RecipeHolder<CobblestoneLaserDrillRecipe>> getRecipeType() {
         return ModJeiPlugin.COBBLESTONE_LASER_DRILL_RECIPE_TYPE;
     }
 
@@ -80,7 +81,8 @@ public class CobblestoneLaserDrillRecipeCategory implements IRecipeCategory<Cobb
     }
 
     @Override
-    public void setRecipe(IRecipeLayoutBuilder builder, CobblestoneLaserDrillRecipe recipe, IFocusGroup focuses) {
+    public void setRecipe(IRecipeLayoutBuilder builder, RecipeHolder<CobblestoneLaserDrillRecipe> recipeHolder, IFocusGroup focuses) {
+        CobblestoneLaserDrillRecipe recipe = recipeHolder.value();
         JeiCobblestonePowerItems.addPowerSlot(builder, POWER_SLOT_X, POWER_SLOT_Y);
 
         builder.addSlot(RecipeIngredientRole.INPUT, INPUT_SLOT_X, INPUT_SLOT_Y)
@@ -94,7 +96,8 @@ public class CobblestoneLaserDrillRecipeCategory implements IRecipeCategory<Cobb
     }
 
     @Override
-    public void draw(CobblestoneLaserDrillRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
+    public void draw(RecipeHolder<CobblestoneLaserDrillRecipe> recipeHolder, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
+        CobblestoneLaserDrillRecipe recipe = recipeHolder.value();
         GuiPartRenderer.renderCobblestoneSlot(guiGraphics, POWER_SLOT_X, POWER_SLOT_Y);
         GuiPartRenderer.renderNormalSlot(guiGraphics, INPUT_SLOT_X, INPUT_SLOT_Y);
         GuiPartRenderer.renderNormalSlot(guiGraphics, OUTPUT_SLOT_1_X, OUTPUT_SLOT_1_Y);

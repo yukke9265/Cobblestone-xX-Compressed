@@ -80,20 +80,21 @@ public final class Ae2InscriberCrushCompat {
 
     /**
      * JEI 表示用。粉砕相当の刻印機レシピだけをクラッシャー形式へ並べます。
+     * 元 Inscriber の id を付けた RecipeHolder を返します。
      */
-    public static List<CobblestoneCrusherRecipe> collectCrushDisplayRecipes(Level level) {
-        List<CobblestoneCrusherRecipe> recipes = new ArrayList<>();
+    public static List<RecipeHolder<CobblestoneCrusherRecipe>> collectCrushDisplayRecipes(Level level) {
+        List<RecipeHolder<CobblestoneCrusherRecipe>> recipes = new ArrayList<>();
         if (!isAvailable()) {
             return recipes;
         }
 
         for (Object rawHolder : getInscriberRecipeHolders(level.getRecipeManager())) {
-            CobblestoneCrusherRecipe converted = tryConvertCrushRecipe(rawHolder);
+            RecipeHolder<CobblestoneCrusherRecipe> converted = tryConvertCrushRecipeHolder(rawHolder);
             if (converted == null) {
                 continue;
             }
 
-            if (converted.getIngredient().isEmpty() || converted.getResult().isEmpty()) {
+            if (converted.value().getIngredient().isEmpty() || converted.value().getResult().isEmpty()) {
                 continue;
             }
 
@@ -101,6 +102,21 @@ public final class Ae2InscriberCrushCompat {
         }
 
         return recipes;
+    }
+
+    @Nullable
+    private static RecipeHolder<CobblestoneCrusherRecipe> tryConvertCrushRecipeHolder(Object rawHolder) {
+        CobblestoneCrusherRecipe converted = tryConvertCrushRecipe(rawHolder);
+        if (converted == null) {
+            return null;
+        }
+
+        ResourceLocation id = unwrapRecipeId(rawHolder);
+        if (id == null) {
+            return null;
+        }
+
+        return new RecipeHolder<>(id, converted);
     }
 
     @Nullable
@@ -129,6 +145,15 @@ public final class Ae2InscriberCrushCompat {
             CRUSHER_TOTAL_CP,
             CRUSHER_CP_PER_TICK
         );
+    }
+
+    @Nullable
+    private static ResourceLocation unwrapRecipeId(Object rawHolder) {
+        if (rawHolder instanceof RecipeHolder<?> holder) {
+            return holder.id();
+        }
+
+        return null;
     }
 
     private static boolean isCrushLikeInscriber(Object recipe) {

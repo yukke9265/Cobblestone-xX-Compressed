@@ -61,7 +61,6 @@ import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestonePoweredFurnaceR
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestonePoweredFurnaceRecipeHelper;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneReactionChamberRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneCrystallizationChamberRecipe;
-import com.yukke9265.cobblestone_xx_compressed.recipe.StoneBreakSimulatorRecipe;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModBlocks;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModMenuType;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModRecipeTypes;
@@ -98,63 +97,37 @@ import mezz.jei.api.registration.IRecipeTransferRegistration;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import mezz.jei.api.runtime.IJeiRuntime;
 import java.util.function.Supplier;
 
-@SuppressWarnings("null")
+@SuppressWarnings({"null", "unchecked", "rawtypes"})
 @JeiPlugin
 public class ModJeiPlugin implements IModPlugin {
-    public static final RecipeType<CobblestoneFurnaceRecipe> COBBLESTONE_FURNACE_RECIPE_TYPE =
-        RecipeType.create(
-            ModJeiIds.COBBLESTONE_FURNACE.getNamespace(),
-            ModJeiIds.COBBLESTONE_FURNACE.getPath(),
-            CobblestoneFurnaceRecipe.class
-        );
+    // JEIu のお気に入り用に RecipeHolder ごと登録する（id を落とさない）。
+    public static final RecipeType<RecipeHolder<CobblestoneFurnaceRecipe>> COBBLESTONE_FURNACE_RECIPE_TYPE =
+        holderRecipeType(ModJeiIds.COBBLESTONE_FURNACE);
 
-    public static final RecipeType<CobblestoneCrusherRecipe> COBBLESTONE_CRUSHER_RECIPE_TYPE =
-        RecipeType.create(
-            ModJeiIds.COBBLESTONE_CRUSHER.getNamespace(),
-            ModJeiIds.COBBLESTONE_CRUSHER.getPath(),
-            CobblestoneCrusherRecipe.class
-        );
+    public static final RecipeType<RecipeHolder<CobblestoneCrusherRecipe>> COBBLESTONE_CRUSHER_RECIPE_TYPE =
+        holderRecipeType(ModJeiIds.COBBLESTONE_CRUSHER);
 
-    public static final RecipeType<CobblestonePoweredFurnaceRecipe> COBBLESTONE_POWERED_FURNACE_RECIPE_TYPE =
-        RecipeType.create(
-            ModJeiIds.COBBLESTONE_POWERED_FURNACE.getNamespace(),
-            ModJeiIds.COBBLESTONE_POWERED_FURNACE.getPath(),
-            CobblestonePoweredFurnaceRecipe.class
-        );
+    public static final RecipeType<RecipeHolder<CobblestonePoweredFurnaceRecipe>> COBBLESTONE_POWERED_FURNACE_RECIPE_TYPE =
+        holderRecipeType(ModJeiIds.COBBLESTONE_POWERED_FURNACE);
 
-    public static final RecipeType<CobblestoneExtremeCompressorRecipe> COBBLESTONE_EXTREME_COMPRESSOR_RECIPE_TYPE =
-        RecipeType.create(
-            ModJeiIds.COBBLESTONE_EXTREME_COMPRESSOR.getNamespace(),
-            ModJeiIds.COBBLESTONE_EXTREME_COMPRESSOR.getPath(),
-            CobblestoneExtremeCompressorRecipe.class
-        );
+    public static final RecipeType<RecipeHolder<CobblestoneExtremeCompressorRecipe>> COBBLESTONE_EXTREME_COMPRESSOR_RECIPE_TYPE =
+        holderRecipeType(ModJeiIds.COBBLESTONE_EXTREME_COMPRESSOR);
 
-    public static final RecipeType<CobblestoneCentrifugeRecipe> COBBLESTONE_CENTRIFUGE_RECIPE_TYPE =
-        RecipeType.create(
-            ModJeiIds.COBBLESTONE_CENTRIFUGE.getNamespace(),
-            ModJeiIds.COBBLESTONE_CENTRIFUGE.getPath(),
-            CobblestoneCentrifugeRecipe.class
-        );
+    public static final RecipeType<RecipeHolder<CobblestoneCentrifugeRecipe>> COBBLESTONE_CENTRIFUGE_RECIPE_TYPE =
+        holderRecipeType(ModJeiIds.COBBLESTONE_CENTRIFUGE);
 
-    public static final RecipeType<CobblestoneLaserDrillRecipe> COBBLESTONE_LASER_DRILL_RECIPE_TYPE =
-        RecipeType.create(
-            ModJeiIds.COBBLESTONE_LASER_DRILL.getNamespace(),
-            ModJeiIds.COBBLESTONE_LASER_DRILL.getPath(),
-            CobblestoneLaserDrillRecipe.class
-        );
+    public static final RecipeType<RecipeHolder<CobblestoneLaserDrillRecipe>> COBBLESTONE_LASER_DRILL_RECIPE_TYPE =
+        holderRecipeType(ModJeiIds.COBBLESTONE_LASER_DRILL);
 
-    public static final RecipeType<CobblestoneMixerRecipe> COBBLESTONE_MIXER_RECIPE_TYPE =
-        RecipeType.create(
-            ModJeiIds.COBBLESTONE_MIXER.getNamespace(),
-            ModJeiIds.COBBLESTONE_MIXER.getPath(),
-            CobblestoneMixerRecipe.class
-        );
+    public static final RecipeType<RecipeHolder<CobblestoneMixerRecipe>> COBBLESTONE_MIXER_RECIPE_TYPE =
+        holderRecipeType(ModJeiIds.COBBLESTONE_MIXER);
 
     public static final RecipeType<StoneBreakSimulatorJeiRecipe> STONE_BREAK_SIMULATOR_RECIPE_TYPE =
         RecipeType.create(
@@ -163,61 +136,29 @@ public class ModJeiPlugin implements IModPlugin {
             StoneBreakSimulatorJeiRecipe.class
         );
 
-    public static final RecipeType<CobblestoneMelterRecipe> COBBLESTONE_MELTER_RECIPE_TYPE =
-        RecipeType.create(
-            ModJeiIds.COBBLESTONE_MELTER.getNamespace(),
-            ModJeiIds.COBBLESTONE_MELTER.getPath(),
-            CobblestoneMelterRecipe.class
-        );
+    public static final RecipeType<RecipeHolder<CobblestoneMelterRecipe>> COBBLESTONE_MELTER_RECIPE_TYPE =
+        holderRecipeType(ModJeiIds.COBBLESTONE_MELTER);
 
-    public static final RecipeType<CobblestoneAssemblyMachineRecipe> COBBLESTONE_ASSEMBLY_MACHINE_RECIPE_TYPE =
-        RecipeType.create(
-            ModJeiIds.COBBLESTONE_ASSEMBLY_MACHINE.getNamespace(),
-            ModJeiIds.COBBLESTONE_ASSEMBLY_MACHINE.getPath(),
-            CobblestoneAssemblyMachineRecipe.class
-        );
+    public static final RecipeType<RecipeHolder<CobblestoneAssemblyMachineRecipe>> COBBLESTONE_ASSEMBLY_MACHINE_RECIPE_TYPE =
+        holderRecipeType(ModJeiIds.COBBLESTONE_ASSEMBLY_MACHINE);
 
-    public static final RecipeType<CobblestoneEnchanterRecipe> COBBLESTONE_ENCHANTER_RECIPE_TYPE =
-        RecipeType.create(
-            ModJeiIds.COBBLESTONE_ENCHANTER.getNamespace(),
-            ModJeiIds.COBBLESTONE_ENCHANTER.getPath(),
-            CobblestoneEnchanterRecipe.class
-        );
+    public static final RecipeType<RecipeHolder<CobblestoneEnchanterRecipe>> COBBLESTONE_ENCHANTER_RECIPE_TYPE =
+        holderRecipeType(ModJeiIds.COBBLESTONE_ENCHANTER);
 
-    public static final RecipeType<CobblestoneChemicalReactorRecipe> COBBLESTONE_CHEMICAL_REACTOR_RECIPE_TYPE =
-        RecipeType.create(
-            ModJeiIds.COBBLESTONE_CHEMICAL_REACTOR.getNamespace(),
-            ModJeiIds.COBBLESTONE_CHEMICAL_REACTOR.getPath(),
-            CobblestoneChemicalReactorRecipe.class
-        );
+    public static final RecipeType<RecipeHolder<CobblestoneChemicalReactorRecipe>> COBBLESTONE_CHEMICAL_REACTOR_RECIPE_TYPE =
+        holderRecipeType(ModJeiIds.COBBLESTONE_CHEMICAL_REACTOR);
 
-    public static final RecipeType<CobblestoneReactionChamberRecipe> COBBLESTONE_REACTION_CHAMBER_RECIPE_TYPE =
-        RecipeType.create(
-            ModJeiIds.COBBLESTONE_REACTION_CHAMBER.getNamespace(),
-            ModJeiIds.COBBLESTONE_REACTION_CHAMBER.getPath(),
-            CobblestoneReactionChamberRecipe.class
-        );
+    public static final RecipeType<RecipeHolder<CobblestoneReactionChamberRecipe>> COBBLESTONE_REACTION_CHAMBER_RECIPE_TYPE =
+        holderRecipeType(ModJeiIds.COBBLESTONE_REACTION_CHAMBER);
 
-    public static final RecipeType<CobblestoneCrystallizationChamberRecipe> COBBLESTONE_CRYSTALLIZATION_CHAMBER_RECIPE_TYPE =
-        RecipeType.create(
-            ModJeiIds.COBBLESTONE_CRYSTALLIZATION_CHAMBER.getNamespace(),
-            ModJeiIds.COBBLESTONE_CRYSTALLIZATION_CHAMBER.getPath(),
-            CobblestoneCrystallizationChamberRecipe.class
-        );
+    public static final RecipeType<RecipeHolder<CobblestoneCrystallizationChamberRecipe>> COBBLESTONE_CRYSTALLIZATION_CHAMBER_RECIPE_TYPE =
+        holderRecipeType(ModJeiIds.COBBLESTONE_CRYSTALLIZATION_CHAMBER);
 
-    public static final RecipeType<CobblestoneDissolutionChamberRecipe> COBBLESTONE_DISSOLUTION_CHAMBER_RECIPE_TYPE =
-        RecipeType.create(
-            ModJeiIds.COBBLESTONE_DISSOLUTION_CHAMBER.getNamespace(),
-            ModJeiIds.COBBLESTONE_DISSOLUTION_CHAMBER.getPath(),
-            CobblestoneDissolutionChamberRecipe.class
-        );
+    public static final RecipeType<RecipeHolder<CobblestoneDissolutionChamberRecipe>> COBBLESTONE_DISSOLUTION_CHAMBER_RECIPE_TYPE =
+        holderRecipeType(ModJeiIds.COBBLESTONE_DISSOLUTION_CHAMBER);
 
-    public static final RecipeType<CobblestoneFluidMixerRecipe> COBBLESTONE_FLUID_MIXER_RECIPE_TYPE =
-        RecipeType.create(
-            ModJeiIds.COBBLESTONE_FLUID_MIXER.getNamespace(),
-            ModJeiIds.COBBLESTONE_FLUID_MIXER.getPath(),
-            CobblestoneFluidMixerRecipe.class
-        );
+    public static final RecipeType<RecipeHolder<CobblestoneFluidMixerRecipe>> COBBLESTONE_FLUID_MIXER_RECIPE_TYPE =
+        holderRecipeType(ModJeiIds.COBBLESTONE_FLUID_MIXER);
 
     public static final RecipeType<CompressedStoneLootJeiRecipe> COMPRESSED_STONE_LOOT_RECIPE_TYPE =
         RecipeType.create(
@@ -233,7 +174,11 @@ public class ModJeiPlugin implements IModPlugin {
             WaterGeneratorConversionJeiRecipe.class
         );
 
-    private static final MachineJeiDefinition<CobblestoneFurnaceRecipe, CobblestoneFurnaceMenu> COBBLESTONE_FURNACE_DEFINITION =
+    private static <R extends Recipe<?>> RecipeType<RecipeHolder<R>> holderRecipeType(ResourceLocation id) {
+        return RecipeType.create(id.getNamespace(), id.getPath(), (Class) RecipeHolder.class);
+    }
+
+    private static final MachineJeiDefinition<RecipeHolder<CobblestoneFurnaceRecipe>, CobblestoneFurnaceMenu> COBBLESTONE_FURNACE_DEFINITION =
         new MachineJeiDefinition<>(
             ModJeiIds.COBBLESTONE_FURNACE,
             COBBLESTONE_FURNACE_RECIPE_TYPE,
@@ -243,7 +188,7 @@ public class ModJeiPlugin implements IModPlugin {
             ModMenuType.COBBLESTONE_FURNACE_MENU
         );
 
-    private static final MachineJeiDefinition<CobblestoneCrusherRecipe, CobblestoneCrusherMenu> COBBLESTONE_CRUSHER_DEFINITION =
+    private static final MachineJeiDefinition<RecipeHolder<CobblestoneCrusherRecipe>, CobblestoneCrusherMenu> COBBLESTONE_CRUSHER_DEFINITION =
         new MachineJeiDefinition<>(
             ModJeiIds.COBBLESTONE_CRUSHER,
             COBBLESTONE_CRUSHER_RECIPE_TYPE,
@@ -253,7 +198,7 @@ public class ModJeiPlugin implements IModPlugin {
             ModMenuType.COBBLESTONE_CRUSHER_MENU
         );
 
-    private static final MachineJeiDefinition<CobblestonePoweredFurnaceRecipe, CobblestonePoweredFurnaceMenu> COBBLESTONE_POWERED_FURNACE_DEFINITION =
+    private static final MachineJeiDefinition<RecipeHolder<CobblestonePoweredFurnaceRecipe>, CobblestonePoweredFurnaceMenu> COBBLESTONE_POWERED_FURNACE_DEFINITION =
         new MachineJeiDefinition<>(
             ModJeiIds.COBBLESTONE_POWERED_FURNACE,
             COBBLESTONE_POWERED_FURNACE_RECIPE_TYPE,
@@ -263,7 +208,7 @@ public class ModJeiPlugin implements IModPlugin {
             ModMenuType.COBBLESTONE_POWERED_FURNACE_MENU
         );
 
-    private static final MachineJeiDefinition<CobblestoneExtremeCompressorRecipe, CobblestoneExtremeCompressorMenu> COBBLESTONE_EXTREME_COMPRESSOR_DEFINITION =
+    private static final MachineJeiDefinition<RecipeHolder<CobblestoneExtremeCompressorRecipe>, CobblestoneExtremeCompressorMenu> COBBLESTONE_EXTREME_COMPRESSOR_DEFINITION =
         new MachineJeiDefinition<>(
             ModJeiIds.COBBLESTONE_EXTREME_COMPRESSOR,
             COBBLESTONE_EXTREME_COMPRESSOR_RECIPE_TYPE,
@@ -273,7 +218,7 @@ public class ModJeiPlugin implements IModPlugin {
             ModMenuType.COBBLESTONE_EXTREME_COMPRESSOR_MENU
         );
 
-    private static final MachineJeiDefinition<CobblestoneCentrifugeRecipe, CobblestoneCentrifugeMenu> COBBLESTONE_CENTRIFUGE_DEFINITION =
+    private static final MachineJeiDefinition<RecipeHolder<CobblestoneCentrifugeRecipe>, CobblestoneCentrifugeMenu> COBBLESTONE_CENTRIFUGE_DEFINITION =
         new MachineJeiDefinition<>(
             ModJeiIds.COBBLESTONE_CENTRIFUGE,
             COBBLESTONE_CENTRIFUGE_RECIPE_TYPE,
@@ -283,7 +228,7 @@ public class ModJeiPlugin implements IModPlugin {
             ModMenuType.COBBLESTONE_CENTRIFUGE_MENU
         );
 
-    private static final MachineJeiDefinition<CobblestoneLaserDrillRecipe, CobblestoneLaserDrillMenu> COBBLESTONE_LASER_DRILL_DEFINITION =
+    private static final MachineJeiDefinition<RecipeHolder<CobblestoneLaserDrillRecipe>, CobblestoneLaserDrillMenu> COBBLESTONE_LASER_DRILL_DEFINITION =
         new MachineJeiDefinition<>(
             ModJeiIds.COBBLESTONE_LASER_DRILL,
             COBBLESTONE_LASER_DRILL_RECIPE_TYPE,
@@ -293,7 +238,7 @@ public class ModJeiPlugin implements IModPlugin {
             ModMenuType.COBBLESTONE_LASER_DRILL_MENU
         );
 
-    private static final MachineJeiDefinition<CobblestoneMixerRecipe, CobblestoneMixerMenu> COBBLESTONE_MIXER_DEFINITION =
+    private static final MachineJeiDefinition<RecipeHolder<CobblestoneMixerRecipe>, CobblestoneMixerMenu> COBBLESTONE_MIXER_DEFINITION =
         new MachineJeiDefinition<>(
             ModJeiIds.COBBLESTONE_MIXER,
             COBBLESTONE_MIXER_RECIPE_TYPE,
@@ -313,7 +258,7 @@ public class ModJeiPlugin implements IModPlugin {
             ModMenuType.STONE_BREAK_SIMULATOR_MENU
         );
 
-    private static final MachineJeiDefinition<CobblestoneMelterRecipe, CobblestoneMelterMenu> COBBLESTONE_MELTER_DEFINITION =
+    private static final MachineJeiDefinition<RecipeHolder<CobblestoneMelterRecipe>, CobblestoneMelterMenu> COBBLESTONE_MELTER_DEFINITION =
         new MachineJeiDefinition<>(
             ModJeiIds.COBBLESTONE_MELTER,
             COBBLESTONE_MELTER_RECIPE_TYPE,
@@ -323,7 +268,7 @@ public class ModJeiPlugin implements IModPlugin {
             ModMenuType.COBBLESTONE_MELTER_MENU
         );
 
-    private static final MachineJeiDefinition<CobblestoneAssemblyMachineRecipe, CobblestoneAssemblyMachineMenu> COBBLESTONE_ASSEMBLY_MACHINE_DEFINITION =
+    private static final MachineJeiDefinition<RecipeHolder<CobblestoneAssemblyMachineRecipe>, CobblestoneAssemblyMachineMenu> COBBLESTONE_ASSEMBLY_MACHINE_DEFINITION =
         new MachineJeiDefinition<>(
             ModJeiIds.COBBLESTONE_ASSEMBLY_MACHINE,
             COBBLESTONE_ASSEMBLY_MACHINE_RECIPE_TYPE,
@@ -333,7 +278,7 @@ public class ModJeiPlugin implements IModPlugin {
             ModMenuType.COBBLESTONE_ASSEMBLY_MACHINE_MENU
         );
 
-    private static final MachineJeiDefinition<CobblestoneEnchanterRecipe, CobblestoneEnchanterMenu> COBBLESTONE_ENCHANTER_DEFINITION =
+    private static final MachineJeiDefinition<RecipeHolder<CobblestoneEnchanterRecipe>, CobblestoneEnchanterMenu> COBBLESTONE_ENCHANTER_DEFINITION =
         new MachineJeiDefinition<>(
             ModJeiIds.COBBLESTONE_ENCHANTER,
             COBBLESTONE_ENCHANTER_RECIPE_TYPE,
@@ -343,7 +288,7 @@ public class ModJeiPlugin implements IModPlugin {
             ModMenuType.COBBLESTONE_ENCHANTER_MENU
         );
 
-    private static final MachineJeiDefinition<CobblestoneChemicalReactorRecipe, CobblestoneChemicalReactorMenu> COBBLESTONE_CHEMICAL_REACTOR_DEFINITION =
+    private static final MachineJeiDefinition<RecipeHolder<CobblestoneChemicalReactorRecipe>, CobblestoneChemicalReactorMenu> COBBLESTONE_CHEMICAL_REACTOR_DEFINITION =
         new MachineJeiDefinition<>(
             ModJeiIds.COBBLESTONE_CHEMICAL_REACTOR,
             COBBLESTONE_CHEMICAL_REACTOR_RECIPE_TYPE,
@@ -353,7 +298,7 @@ public class ModJeiPlugin implements IModPlugin {
             ModMenuType.COBBLESTONE_CHEMICAL_REACTOR_MENU
         );
 
-    private static final MachineJeiDefinition<CobblestoneReactionChamberRecipe, CobblestoneReactionChamberMenu> COBBLESTONE_REACTION_CHAMBER_DEFINITION =
+    private static final MachineJeiDefinition<RecipeHolder<CobblestoneReactionChamberRecipe>, CobblestoneReactionChamberMenu> COBBLESTONE_REACTION_CHAMBER_DEFINITION =
         new MachineJeiDefinition<>(
             ModJeiIds.COBBLESTONE_REACTION_CHAMBER,
             COBBLESTONE_REACTION_CHAMBER_RECIPE_TYPE,
@@ -363,7 +308,7 @@ public class ModJeiPlugin implements IModPlugin {
             ModMenuType.COBBLESTONE_REACTION_CHAMBER_MENU
         );
 
-    private static final MachineJeiDefinition<CobblestoneCrystallizationChamberRecipe, CobblestoneCrystallizationChamberMenu> COBBLESTONE_CRYSTALLIZATION_CHAMBER_DEFINITION =
+    private static final MachineJeiDefinition<RecipeHolder<CobblestoneCrystallizationChamberRecipe>, CobblestoneCrystallizationChamberMenu> COBBLESTONE_CRYSTALLIZATION_CHAMBER_DEFINITION =
         new MachineJeiDefinition<>(
             ModJeiIds.COBBLESTONE_CRYSTALLIZATION_CHAMBER,
             COBBLESTONE_CRYSTALLIZATION_CHAMBER_RECIPE_TYPE,
@@ -373,7 +318,7 @@ public class ModJeiPlugin implements IModPlugin {
             ModMenuType.COBBLESTONE_CRYSTALLIZATION_CHAMBER_MENU
         );
 
-    private static final MachineJeiDefinition<CobblestoneDissolutionChamberRecipe, CobblestoneDissolutionChamberMenu> COBBLESTONE_DISSOLUTION_CHAMBER_DEFINITION =
+    private static final MachineJeiDefinition<RecipeHolder<CobblestoneDissolutionChamberRecipe>, CobblestoneDissolutionChamberMenu> COBBLESTONE_DISSOLUTION_CHAMBER_DEFINITION =
         new MachineJeiDefinition<>(
             ModJeiIds.COBBLESTONE_DISSOLUTION_CHAMBER,
             COBBLESTONE_DISSOLUTION_CHAMBER_RECIPE_TYPE,
@@ -383,7 +328,7 @@ public class ModJeiPlugin implements IModPlugin {
             ModMenuType.COBBLESTONE_DISSOLUTION_CHAMBER_MENU
         );
 
-    private static final MachineJeiDefinition<CobblestoneFluidMixerRecipe, CobblestoneFluidMixerMenu> COBBLESTONE_FLUID_MIXER_DEFINITION =
+    private static final MachineJeiDefinition<RecipeHolder<CobblestoneFluidMixerRecipe>, CobblestoneFluidMixerMenu> COBBLESTONE_FLUID_MIXER_DEFINITION =
         new MachineJeiDefinition<>(
             ModJeiIds.COBBLESTONE_FLUID_MIXER,
             COBBLESTONE_FLUID_MIXER_RECIPE_TYPE,
@@ -437,114 +382,90 @@ public class ModJeiPlugin implements IModPlugin {
         registration.addRecipes(COMPRESSED_STONE_LOOT_RECIPE_TYPE, CompressedStoneLootJeiRecipe.createRecipes());
         registration.addRecipes(WATER_GENERATOR_CONVERSION_RECIPE_TYPE, WaterGeneratorConversionJeiRecipe.createRecipes());
 
-        // レシピの登録本体は機械ごとに違いますが、plugin 側の呼び出し手順は共通化します。
-        List<CobblestoneFurnaceRecipe> recipes = minecraft.level.getRecipeManager()
-            .getAllRecipesFor(ModRecipeTypes.COBBLESTONE_FURNACE.get())
-            .stream()
-            .map(RecipeHolder::value)
-            .toList();
-        registration.addRecipes(COBBLESTONE_FURNACE_DEFINITION.recipeType(), recipes);
+        // RecipeHolder ごと渡して JEI registry name（holder.id）を残す。
+        registration.addRecipes(
+            COBBLESTONE_FURNACE_DEFINITION.recipeType(),
+            minecraft.level.getRecipeManager().getAllRecipesFor(ModRecipeTypes.COBBLESTONE_FURNACE.get())
+        );
 
         // 独自レシピ + 通常かまど全件（cookingTime を total CP に換算）を同じカテゴリへ出す。
-        List<CobblestonePoweredFurnaceRecipe> poweredFurnaceRecipes =
-            CobblestonePoweredFurnaceRecipeHelper.collectAllDisplayRecipes(minecraft.level);
-        registration.addRecipes(COBBLESTONE_POWERED_FURNACE_DEFINITION.recipeType(), poweredFurnaceRecipes);
+        registration.addRecipes(
+            COBBLESTONE_POWERED_FURNACE_DEFINITION.recipeType(),
+            CobblestonePoweredFurnaceRecipeHelper.collectAllDisplayRecipes(minecraft.level)
+        );
 
-        List<CobblestoneExtremeCompressorRecipe> extremeCompressorRecipes = minecraft.level.getRecipeManager()
-            .getAllRecipesFor(ModRecipeTypes.COBBLESTONE_EXTREME_COMPRESSOR.get())
-            .stream()
-            .map(RecipeHolder::value)
-            .toList();
-        registration.addRecipes(COBBLESTONE_EXTREME_COMPRESSOR_DEFINITION.recipeType(), extremeCompressorRecipes);
+        registration.addRecipes(
+            COBBLESTONE_EXTREME_COMPRESSOR_DEFINITION.recipeType(),
+            minecraft.level.getRecipeManager().getAllRecipesFor(ModRecipeTypes.COBBLESTONE_EXTREME_COMPRESSOR.get())
+        );
 
         // 独自レシピ + AE2 刻印機の粉砕相当を同じカテゴリへ出す。
-        List<CobblestoneCrusherRecipe> crusherRecipes =
-            CobblestoneCrusherRecipeHelper.collectAllDisplayRecipes(minecraft.level);
-        registration.addRecipes(COBBLESTONE_CRUSHER_DEFINITION.recipeType(), crusherRecipes);
+        registration.addRecipes(
+            COBBLESTONE_CRUSHER_DEFINITION.recipeType(),
+            CobblestoneCrusherRecipeHelper.collectAllDisplayRecipes(minecraft.level)
+        );
 
-        List<CobblestoneCentrifugeRecipe> centrifugeRecipes = minecraft.level.getRecipeManager()
-            .getAllRecipesFor(ModRecipeTypes.COBBLESTONE_CENTRIFUGE.get())
-            .stream()
-            .map(RecipeHolder::value)
-            .toList();
-        registration.addRecipes(COBBLESTONE_CENTRIFUGE_DEFINITION.recipeType(), centrifugeRecipes);
+        registration.addRecipes(
+            COBBLESTONE_CENTRIFUGE_DEFINITION.recipeType(),
+            minecraft.level.getRecipeManager().getAllRecipesFor(ModRecipeTypes.COBBLESTONE_CENTRIFUGE.get())
+        );
 
-        List<CobblestoneLaserDrillRecipe> laserDrillRecipes = minecraft.level.getRecipeManager()
-            .getAllRecipesFor(ModRecipeTypes.COBBLESTONE_LASER_DRILL.get())
-            .stream()
-            .map(RecipeHolder::value)
-            .toList();
-        registration.addRecipes(COBBLESTONE_LASER_DRILL_DEFINITION.recipeType(), laserDrillRecipes);
+        registration.addRecipes(
+            COBBLESTONE_LASER_DRILL_DEFINITION.recipeType(),
+            minecraft.level.getRecipeManager().getAllRecipesFor(ModRecipeTypes.COBBLESTONE_LASER_DRILL.get())
+        );
 
-        List<CobblestoneMixerRecipe> mixerRecipes = minecraft.level.getRecipeManager()
-            .getAllRecipesFor(ModRecipeTypes.COBBLESTONE_MIXER.get())
-            .stream()
-            .map(RecipeHolder::value)
-            .toList();
-        registration.addRecipes(COBBLESTONE_MIXER_DEFINITION.recipeType(), mixerRecipes);
+        registration.addRecipes(
+            COBBLESTONE_MIXER_DEFINITION.recipeType(),
+            minecraft.level.getRecipeManager().getAllRecipesFor(ModRecipeTypes.COBBLESTONE_MIXER.get())
+        );
 
-        List<StoneBreakSimulatorRecipe> stoneBreakSimulatorRecipes = minecraft.level.getRecipeManager()
-            .getAllRecipesFor(ModRecipeTypes.STONE_BREAK_SIMULATOR.get())
-            .stream()
-            .map(RecipeHolder::value)
-            .toList();
-        registration.addRecipes(STONE_BREAK_SIMULATOR_DEFINITION.recipeType(), StoneBreakSimulatorJeiRecipe.createRecipes(stoneBreakSimulatorRecipes));
+        registration.addRecipes(
+            STONE_BREAK_SIMULATOR_DEFINITION.recipeType(),
+            StoneBreakSimulatorJeiRecipe.createRecipes(
+                minecraft.level.getRecipeManager().getAllRecipesFor(ModRecipeTypes.STONE_BREAK_SIMULATOR.get())
+            )
+        );
 
-        List<CobblestoneMelterRecipe> melterRecipes = minecraft.level.getRecipeManager()
-            .getAllRecipesFor(ModRecipeTypes.COBBLESTONE_MELTER.get())
-            .stream()
-            .map(RecipeHolder::value)
-            .toList();
-        registration.addRecipes(COBBLESTONE_MELTER_DEFINITION.recipeType(), melterRecipes);
+        registration.addRecipes(
+            COBBLESTONE_MELTER_DEFINITION.recipeType(),
+            minecraft.level.getRecipeManager().getAllRecipesFor(ModRecipeTypes.COBBLESTONE_MELTER.get())
+        );
 
-        List<CobblestoneAssemblyMachineRecipe> assemblyMachineRecipes = minecraft.level.getRecipeManager()
-            .getAllRecipesFor(ModRecipeTypes.COBBLESTONE_ASSEMBLY_MACHINE.get())
-            .stream()
-            .map(RecipeHolder::value)
-            .toList();
-        registration.addRecipes(COBBLESTONE_ASSEMBLY_MACHINE_DEFINITION.recipeType(), assemblyMachineRecipes);
+        registration.addRecipes(
+            COBBLESTONE_ASSEMBLY_MACHINE_DEFINITION.recipeType(),
+            minecraft.level.getRecipeManager().getAllRecipesFor(ModRecipeTypes.COBBLESTONE_ASSEMBLY_MACHINE.get())
+        );
 
-        List<CobblestoneEnchanterRecipe> enchanterRecipes = minecraft.level.getRecipeManager()
-            .getAllRecipesFor(ModRecipeTypes.COBBLESTONE_ENCHANTER.get())
-            .stream()
-            .map(RecipeHolder::value)
-            .toList();
-        registration.addRecipes(COBBLESTONE_ENCHANTER_DEFINITION.recipeType(), enchanterRecipes);
+        registration.addRecipes(
+            COBBLESTONE_ENCHANTER_DEFINITION.recipeType(),
+            minecraft.level.getRecipeManager().getAllRecipesFor(ModRecipeTypes.COBBLESTONE_ENCHANTER.get())
+        );
 
-        List<CobblestoneChemicalReactorRecipe> chemicalReactorRecipes = minecraft.level.getRecipeManager()
-            .getAllRecipesFor(ModRecipeTypes.COBBLESTONE_CHEMICAL_REACTOR.get())
-            .stream()
-            .map(RecipeHolder::value)
-            .toList();
-        registration.addRecipes(COBBLESTONE_CHEMICAL_REACTOR_DEFINITION.recipeType(), chemicalReactorRecipes);
+        registration.addRecipes(
+            COBBLESTONE_CHEMICAL_REACTOR_DEFINITION.recipeType(),
+            minecraft.level.getRecipeManager().getAllRecipesFor(ModRecipeTypes.COBBLESTONE_CHEMICAL_REACTOR.get())
+        );
 
-        List<CobblestoneReactionChamberRecipe> reactionChamberRecipes = minecraft.level.getRecipeManager()
-            .getAllRecipesFor(ModRecipeTypes.COBBLESTONE_REACTION_CHAMBER.get())
-            .stream()
-            .map(RecipeHolder::value)
-            .toList();
-        registration.addRecipes(COBBLESTONE_REACTION_CHAMBER_DEFINITION.recipeType(), reactionChamberRecipes);
+        registration.addRecipes(
+            COBBLESTONE_REACTION_CHAMBER_DEFINITION.recipeType(),
+            minecraft.level.getRecipeManager().getAllRecipesFor(ModRecipeTypes.COBBLESTONE_REACTION_CHAMBER.get())
+        );
 
-        List<CobblestoneCrystallizationChamberRecipe> crystallizationChamberRecipes = minecraft.level.getRecipeManager()
-            .getAllRecipesFor(ModRecipeTypes.COBBLESTONE_CRYSTALLIZATION_CHAMBER.get())
-            .stream()
-            .map(RecipeHolder::value)
-            .toList();
-        registration.addRecipes(COBBLESTONE_CRYSTALLIZATION_CHAMBER_DEFINITION.recipeType(), crystallizationChamberRecipes);
+        registration.addRecipes(
+            COBBLESTONE_CRYSTALLIZATION_CHAMBER_DEFINITION.recipeType(),
+            minecraft.level.getRecipeManager().getAllRecipesFor(ModRecipeTypes.COBBLESTONE_CRYSTALLIZATION_CHAMBER.get())
+        );
 
-        List<CobblestoneDissolutionChamberRecipe> dissolutionChamberRecipes = minecraft.level.getRecipeManager()
-            .getAllRecipesFor(ModRecipeTypes.COBBLESTONE_DISSOLUTION_CHAMBER.get())
-            .stream()
-            .map(RecipeHolder::value)
-            .toList();
-        registration.addRecipes(COBBLESTONE_DISSOLUTION_CHAMBER_DEFINITION.recipeType(), dissolutionChamberRecipes);
+        registration.addRecipes(
+            COBBLESTONE_DISSOLUTION_CHAMBER_DEFINITION.recipeType(),
+            minecraft.level.getRecipeManager().getAllRecipesFor(ModRecipeTypes.COBBLESTONE_DISSOLUTION_CHAMBER.get())
+        );
 
-        List<CobblestoneFluidMixerRecipe> fluidMixerRecipes = minecraft.level.getRecipeManager()
-            .getAllRecipesFor(ModRecipeTypes.COBBLESTONE_FLUID_MIXER.get())
-            .stream()
-            .map(RecipeHolder::value)
-            .toList();
-        registration.addRecipes(COBBLESTONE_FLUID_MIXER_DEFINITION.recipeType(), fluidMixerRecipes);
+        registration.addRecipes(
+            COBBLESTONE_FLUID_MIXER_DEFINITION.recipeType(),
+            minecraft.level.getRecipeManager().getAllRecipesFor(ModRecipeTypes.COBBLESTONE_FLUID_MIXER.get())
+        );
     }
 
     @Override

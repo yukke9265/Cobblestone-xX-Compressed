@@ -71,13 +71,14 @@ public final class CobblestonePoweredFurnaceRecipeHelper {
 
     /**
      * JEI 表示用。独自レシピのあとに、通常かまどの全レシピを変換して並べる。
+     * 合成分は元かまど id を付けた RecipeHolder にして、JEIu ブックマーク可能にする。
      */
-    public static List<CobblestonePoweredFurnaceRecipe> collectAllDisplayRecipes(Level level) {
-        List<CobblestonePoweredFurnaceRecipe> recipes = new ArrayList<>();
+    public static List<RecipeHolder<CobblestonePoweredFurnaceRecipe>> collectAllDisplayRecipes(Level level) {
+        List<RecipeHolder<CobblestonePoweredFurnaceRecipe>> recipes = new ArrayList<>();
         HolderLookup.Provider registries = level.registryAccess();
 
         for (RecipeHolder<CobblestonePoweredFurnaceRecipe> recipeHolder : level.getRecipeManager().getAllRecipesFor(ModRecipeTypes.COBBLESTONE_POWERED_FURNACE.get())) {
-            recipes.add(recipeHolder.value());
+            recipes.add(recipeHolder);
         }
 
         for (RecipeHolder<SmeltingRecipe> recipeHolder : level.getRecipeManager().getAllRecipesFor(RecipeType.SMELTING)) {
@@ -86,7 +87,7 @@ public final class CobblestonePoweredFurnaceRecipeHelper {
                 continue;
             }
 
-            recipes.add(converted);
+            recipes.add(new RecipeHolder<>(recipeHolder.id(), converted));
         }
 
         return recipes;

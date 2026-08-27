@@ -22,9 +22,10 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 
 @SuppressWarnings("null")
-public class CobblestoneEnchanterRecipeCategory implements IRecipeCategory<CobblestoneEnchanterRecipe> {
+public class CobblestoneEnchanterRecipeCategory implements IRecipeCategory<RecipeHolder<CobblestoneEnchanterRecipe>> {
     private static final ResourceLocation BACKGROUND_TEXTURE =
         ResourceLocation.fromNamespaceAndPath(CobblestonexXCompressed.MODID, "textures/gui/cobblestone_mixer.png");
 
@@ -46,7 +47,7 @@ public class CobblestoneEnchanterRecipeCategory implements IRecipeCategory<Cobbl
     }
 
     @Override
-    public RecipeType<CobblestoneEnchanterRecipe> getRecipeType() {
+    public RecipeType<RecipeHolder<CobblestoneEnchanterRecipe>> getRecipeType() {
         return ModJeiPlugin.COBBLESTONE_ENCHANTER_RECIPE_TYPE;
     }
 
@@ -66,7 +67,8 @@ public class CobblestoneEnchanterRecipeCategory implements IRecipeCategory<Cobbl
     }
 
     @Override
-    public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, @Nonnull CobblestoneEnchanterRecipe recipe, @Nonnull IFocusGroup focuses) {
+    public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, @Nonnull RecipeHolder<CobblestoneEnchanterRecipe> recipeHolder, @Nonnull IFocusGroup focuses) {
+        CobblestoneEnchanterRecipe recipe = recipeHolder.value();
         JeiCobblestonePowerItems.addPowerSlot(
             builder,
             MachineGuiLayouts.Enchanter.POWER_SLOT_X - BACKGROUND_U,
@@ -84,7 +86,7 @@ public class CobblestoneEnchanterRecipeCategory implements IRecipeCategory<Cobbl
     }
 
     @Override
-    public void draw(@Nonnull CobblestoneEnchanterRecipe recipe, @Nonnull IRecipeSlotsView recipeSlotsView, @Nonnull GuiGraphics guiGraphics, double mouseX, double mouseY) {
+    public void draw(@Nonnull RecipeHolder<CobblestoneEnchanterRecipe> recipeHolder, @Nonnull IRecipeSlotsView recipeSlotsView, @Nonnull GuiGraphics guiGraphics, double mouseX, double mouseY) {
         GuiPartRenderer.renderCobblestoneSlot(guiGraphics, MachineGuiLayouts.Enchanter.POWER_SLOT_X - BACKGROUND_U, MachineGuiLayouts.Enchanter.POWER_SLOT_Y - BACKGROUND_V);
         GuiPartRenderer.renderNormalSlot(guiGraphics, MachineGuiLayouts.Enchanter.TOOL_SLOT_X - BACKGROUND_U, MachineGuiLayouts.Enchanter.TOOL_SLOT_Y - BACKGROUND_V);
         GuiPartRenderer.renderNormalSlot(guiGraphics, MachineGuiLayouts.Enchanter.BOOK_SLOT_X - BACKGROUND_U, MachineGuiLayouts.Enchanter.BOOK_SLOT_Y - BACKGROUND_V);
