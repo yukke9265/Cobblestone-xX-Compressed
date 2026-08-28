@@ -308,6 +308,7 @@
   "item.cobblestonexxcompressed.example_item": "Example Item",
   "item.cobblestonexxcompressed.extreme_compressed_canned_enderite": "Extreme Compressed Canned Enderite",
   "item.cobblestonexxcompressed.extreme_compressed_obsidian": "Extreme Compressed Obsidian",
+  "item.cobblestonexxcompressed.flying_stone": "Flying Stone",
   "item.cobblestonexxcompressed.glow_topaz_bucket": "Glow Topaz Bucket",
   "item.cobblestonexxcompressed.gold_dust": "Gold Dust",
   "item.cobblestonexxcompressed.hot_lava_bucket": "Hot Lava Bucket",
@@ -631,5 +632,6 @@
   "tooltip.cobblestonexxcompressed.configuration_card.power": "CP Input: %s",
   "tooltip.cobblestonexxcompressed.configuration_card.stored": "Stored: %s",
   "tooltip.cobblestonexxcompressed.configuration_card.upgrade": "Upgrade: %s",
+  "tooltip.cobblestonexxcompressed.flying_stone.description": "Grants creative flight while in your inventory or an accessory slot.",
   "tooltip.cobblestonexxcompressed.stone_break_simulator.description": "Simulates breaking compressed stone and generates drops with the inserted pickaxe enchants."
 }

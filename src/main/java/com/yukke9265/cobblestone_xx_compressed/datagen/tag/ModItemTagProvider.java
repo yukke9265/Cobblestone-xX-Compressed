@@ -54,6 +54,13 @@ public class ModItemTagProvider extends ItemTagsProvider {
             this.addPickaxeTags(tier.getItem());
         }
 
+        // 装飾品スロット mod は「そのスロット用タグに入っているアイテム」だけ装備できます。
+        // チャーム枠が一般的なので、Curios と Accessories の両方へ入れておきます。
+        Item flyingStone = Objects.requireNonNull(ModItems.FLYING_STONE.get());
+        this.tag(this.createItemTag("curios", "charm")).add(flyingStone);
+        this.tag(this.createItemTag("curios", "curio")).add(flyingStone);
+        this.tag(this.createItemTag("accessories", "charm")).add(flyingStone);
+
         // AE2 未導入でも datagen できるよう、AE2 アイテムは optional タグ経由で参照します。
         this.addOptionalAe2ItemTag("ae2_sky_stone", "sky_stone_block");
         this.addOptionalAe2ItemTag("ae2_sky_dust", "sky_dust");

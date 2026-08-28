@@ -97,6 +97,7 @@ public class ModEnglishLanguageProvider extends LanguageProvider {
         addItem(ModItems.EXTREME_COMPRESSED_CANNED_ENDERITE, "Extreme Compressed Canned Enderite");
         addItem(ModItems.EXTREME_COMPRESSED_OBSIDIAN, "Extreme Compressed Obsidian");
         addItem(ModItems.CONFIGURATION_CARD, "Configuration Card");
+        addItem(ModItems.FLYING_STONE, "Flying Stone");
 
         addItem(ModItems.COBBLESTONE_WIRE, "Cobblestone Wire");
         for (ModItems.TierCobblestoneWire tier : ModItems.TierCobblestoneWire.values()) {
@@ -273,6 +274,7 @@ public class ModEnglishLanguageProvider extends LanguageProvider {
         add("tooltip.cobblestonexxcompressed.cobblestone_generator.catalyst_rate", "Place in a machine cobblestone slot to supply %s CP/t without being consumed.");
         add("tooltip.cobblestonexxcompressed.cobblestone_parallel_chip.extra", "+%s extra crafts");
         add("tooltip.cobblestonexxcompressed.compressed_cobblestone_pickaxe.stone_break_simulator_bonus", "Stone Break Simulator: +%s Unbreaking");
+        add("tooltip.cobblestonexxcompressed.flying_stone.description", "Grants creative flight while in your inventory or an accessory slot.");
         add("tooltip.cobblestonexxcompressed.configuration_card.empty", "No configuration stored");
         add("tooltip.cobblestonexxcompressed.configuration_card.stored", "Stored: %s");
         add("tooltip.cobblestonexxcompressed.configuration_card.upgrade", "Upgrade: %s");

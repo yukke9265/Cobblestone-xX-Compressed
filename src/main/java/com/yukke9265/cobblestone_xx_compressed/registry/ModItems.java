@@ -5,6 +5,7 @@ import com.yukke9265.cobblestone_xx_compressed.blockitem.CobblestoneGeneratorBlo
 import com.yukke9265.cobblestone_xx_compressed.blockitem.CompressedCobblestoneBlockItem;
 import com.yukke9265.cobblestone_xx_compressed.blockitem.DescribedBlockItem;
 import com.yukke9265.cobblestone_xx_compressed.item.ConfigurationCardItem;
+import com.yukke9265.cobblestone_xx_compressed.item.FlyingStoneItem;
 import com.yukke9265.cobblestone_xx_compressed.item.CobblestoneAccelerationChipItem;
 import com.yukke9265.cobblestone_xx_compressed.item.CobblestoneEnergizedCubeItem;
 import com.yukke9265.cobblestone_xx_compressed.item.CobblestoneParallelChipItem;
@@ -597,6 +598,9 @@ public class ModItems {
 
     public static final DeferredItem<Item> CONFIGURATION_CARD =
         ITEMS.register("configuration_card", () -> new ConfigurationCardItem(createOtherItemProperties()));
+
+    public static final DeferredItem<Item> FLYING_STONE =
+        ITEMS.register("flying_stone", () -> new FlyingStoneItem(createOtherItemProperties()));
 
     public static final DeferredItem<Item> COMPRESSED_COBBLESTONE_SINGULARITY_BIT =
         ITEMS.registerSimpleItem("compressed_cobblestone_singularity_bit", createCobblestoneSingularityProperties());

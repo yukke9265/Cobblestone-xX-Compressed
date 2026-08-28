@@ -2,6 +2,7 @@ package com.yukke9265.cobblestone_xx_compressed.datagen.lang;
 
 import com.yukke9265.cobblestone_xx_compressed.CobblestonexXCompressed;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModBlocks;
+import com.yukke9265.cobblestone_xx_compressed.registry.ModItems;
 
 import net.minecraft.data.PackOutput;
 import net.neoforged.neoforge.common.data.LanguageProvider;
@@ -95,6 +96,8 @@ public class ModJapaneseLanguageProvider extends LanguageProvider {
         add("tooltip.cobblestonexxcompressed.cobblestone_generator.catalyst_rate", "機械の丸石スロットに置くと、消費せず %s CP/t を供給します。");
         add("tooltip.cobblestonexxcompressed.cobblestone_parallel_chip.extra", "追加処理 +%s");
         add("tooltip.cobblestonexxcompressed.compressed_cobblestone_pickaxe.stone_break_simulator_bonus", "石破壊シミュレーター: 耐久相当 +%s");
+        addItem(ModItems.FLYING_STONE, "飛行石");
+        add("tooltip.cobblestonexxcompressed.flying_stone.description", "インベントリか装飾品スロットにあるあいだ、クリエイティブ飛行が使えます。");
         add("tooltip.cobblestonexxcompressed.configuration_card.empty", "設定は保存されていません");
         add("tooltip.cobblestonexxcompressed.configuration_card.stored", "保存先: %s");
         add("tooltip.cobblestonexxcompressed.configuration_card.upgrade", "アップグレード: %s");
