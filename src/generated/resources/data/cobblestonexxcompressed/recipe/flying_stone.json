@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": {
+      "item": "cobblestonexxcompressed:tier_sapphire_compressed_cobblestone"
+    },
+    "G": {
+      "item": "minecraft:glowstone"
+    },
+    "S": {
+      "item": "cobblestonexxcompressed:tier_sapphire_cobblestone_wire"
+    }
+  },
+  "pattern": [
+    " CS",
+    "CGC",
+    " C "
+  ],
+  "result": {
+    "count": 1,
+    "id": "cobblestonexxcompressed:flying_stone"
+  }
+}

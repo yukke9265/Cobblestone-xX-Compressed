@@ -83,6 +83,20 @@ public final class MachineGuiLayouts {
         }
     }
 
+    public static final class FeCube {
+        // 充電スロットは右下。総充電量バーは GUI 左端から充電スロット手前まで、高さは発電機 FE バーの 2 倍。
+        public static final int CHARGE_SLOT_X = FeGenerator.CHARGE_SLOT_X;
+        public static final int CHARGE_SLOT_Y = FeGenerator.CHARGE_SLOT_Y;
+        public static final int BAR_X = PLAYER_INVENTORY_START_X;
+        public static final int BAR_HEIGHT = FeGenerator.BAR_HEIGHT * 2;
+        public static final int BAR_WIDTH = CHARGE_SLOT_X - BAR_X - 2;
+        private static final int CHARGE_SLOT_CENTER_Y = CHARGE_SLOT_Y + SLOT_SIZE / 2;
+        public static final int FE_BAR_Y = CHARGE_SLOT_CENTER_Y - BAR_HEIGHT / 2;
+
+        private FeCube() {
+        }
+    }
+
     public static final class ExtremeCompressor {
         public static final int MACHINE_SLOT_Y = PoweredMachine.MACHINE_SLOT_Y + 3;//アイテム数表示と被らないように下げる
         public static final int INPUT_SLOT_X = PoweredMachine.INPUT_SLOT_X;

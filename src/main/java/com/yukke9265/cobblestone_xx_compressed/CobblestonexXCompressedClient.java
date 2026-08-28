@@ -10,6 +10,7 @@ import com.yukke9265.cobblestone_xx_compressed.screen.CobblestoneDissolutionCham
 import com.yukke9265.cobblestone_xx_compressed.screen.CobblestoneEnchanterScreen;
 import com.yukke9265.cobblestone_xx_compressed.screen.CobblestoneExtremeCompressorScreen;
 import com.yukke9265.cobblestone_xx_compressed.screen.CobblestoneFEGeneratorScreen;
+import com.yukke9265.cobblestone_xx_compressed.screen.CobblestoneFeCubeScreen;
 import com.yukke9265.cobblestone_xx_compressed.screen.CobblestoneFluidMixerScreen;
 import com.yukke9265.cobblestone_xx_compressed.screen.CobblestoneLaserDrillScreen;
 import com.yukke9265.cobblestone_xx_compressed.screen.CobblestoneMelterScreen;
@@ -17,6 +18,7 @@ import com.yukke9265.cobblestone_xx_compressed.screen.CobblestoneMixerScreen;
 import com.yukke9265.cobblestone_xx_compressed.screen.CobblestonePoweredFurnaceScreen;
 import com.yukke9265.cobblestone_xx_compressed.screen.CobblestoneReactionChamberScreen;
 import com.yukke9265.cobblestone_xx_compressed.screen.CobblestoneCrystallizationChamberScreen;
+import com.yukke9265.cobblestone_xx_compressed.screen.CobblestoneDrawerScreen;
 import com.yukke9265.cobblestone_xx_compressed.screen.CobblestoneTankScreen;
 import com.yukke9265.cobblestone_xx_compressed.screen.CobblestoneWaterGeneratorScreen;
 import com.yukke9265.cobblestone_xx_compressed.screen.CobblestoneMultiblockCrusherScreen;
@@ -80,6 +82,7 @@ public class CobblestonexXCompressedClient {
         event.register(ModMenuType.COBBLESTONE_EXTREME_COMPRESSOR_MENU.get(), CobblestoneExtremeCompressorScreen::new);
         event.register(ModMenuType.COBBLESTONE_CRUSHER_MENU.get(), CobblestoneCrusherScreen::new);
         event.register(ModMenuType.COBBLESTONE_FE_GENERATOR_MENU.get(), CobblestoneFEGeneratorScreen::new);
+        event.register(ModMenuType.COBBLESTONE_FE_CUBE_MENU.get(), CobblestoneFeCubeScreen::new);
         event.register(ModMenuType.COBBLESTONE_CENTRIFUGE_MENU.get(), CobblestoneCentrifugeScreen::new);
         event.register(ModMenuType.COBBLESTONE_LASER_DRILL_MENU.get(), CobblestoneLaserDrillScreen::new);
         event.register(ModMenuType.COBBLESTONE_MIXER_MENU.get(), CobblestoneMixerScreen::new);
@@ -93,6 +96,7 @@ public class CobblestonexXCompressedClient {
         event.register(ModMenuType.COBBLESTONE_DISSOLUTION_CHAMBER_MENU.get(), CobblestoneDissolutionChamberScreen::new);
         event.register(ModMenuType.COBBLESTONE_FLUID_MIXER_MENU.get(), CobblestoneFluidMixerScreen::new);
         event.register(ModMenuType.COBBLESTONE_TANK_MENU.get(), CobblestoneTankScreen::new);
+        event.register(ModMenuType.COBBLESTONE_DRAWER_MENU.get(), CobblestoneDrawerScreen::new);
         event.register(ModMenuType.COBBLESTONE_WATER_GENERATOR_MENU.get(), CobblestoneWaterGeneratorScreen::new);
         event.register(ModMenuType.COBBLESTONE_MULTIBLOCK_CRUSHER_MENU.get(), CobblestoneMultiblockCrusherScreen::new);
     }

@@ -83,7 +83,7 @@ public class CobblestoneMultiblockCrusherScreen extends BaseScreen<CobblestoneMu
         super.init();
         this.addRenderableWidget(
             Button.builder(
-                Component.literal("start/stop"),
+                Component.translatable("gui.cobblestonexxcompressed.start_stop"),
                 button -> this.sendMenuButtonClick(0)
             ).bounds(
                 this.leftPos + this.imageWidth + 4,
@@ -175,7 +175,9 @@ public class CobblestoneMultiblockCrusherScreen extends BaseScreen<CobblestoneMu
     @Override
     protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         super.renderLabels(guiGraphics, mouseX, mouseY);
-        String formedText = this.menu.isFormed() ? "Formed" : "Incomplete";
+        Component formedText = this.menu.isFormed()
+            ? Component.translatable("gui.cobblestonexxcompressed.multiblock.formed")
+            : Component.translatable("gui.cobblestonexxcompressed.multiblock.incomplete");
         guiGraphics.drawString(this.font, formedText, 8, 18, this.menu.isFormed() ? 0x55FF55 : 0xFF5555, false);
         guiGraphics.drawString(
             this.font,
@@ -213,10 +215,24 @@ public class CobblestoneMultiblockCrusherScreen extends BaseScreen<CobblestoneMu
         guiGraphics.fill(panelX, panelY, panelX + 1, panelY + this.imageHeight, COLOR_PANEL_BORDER);
         guiGraphics.fill(panelX + STRUCTURE_PANEL_WIDTH - 1, panelY, panelX + STRUCTURE_PANEL_WIDTH, panelY + this.imageHeight, COLOR_PANEL_BORDER);
 
-        guiGraphics.drawString(this.font, "Structure", panelX + 6, panelY + 6, 0xFFFFFF, false);
+        guiGraphics.drawString(
+            this.font,
+            Component.translatable("gui.cobblestonexxcompressed.multiblock.structure"),
+            panelX + 6,
+            panelY + 6,
+            0xFFFFFF,
+            false
+        );
         String progressText = this.menu.getStructureMatchedCount() + "/" + this.menu.getStructureRequiredCount();
         guiGraphics.drawString(this.font, progressText, panelX + 6, panelY + 18, this.menu.isFormed() ? 0x55FF55 : 0xFFAA55, false);
-        guiGraphics.drawString(this.font, "下=正面", panelX + 6, panelY + 30, 0xAAAAAA, false);
+        guiGraphics.drawString(
+            this.font,
+            Component.translatable("gui.cobblestonexxcompressed.multiblock.guide_orientation"),
+            panelX + 6,
+            panelY + 30,
+            0xAAAAAA,
+            false
+        );
 
         String layerText = "Y+" + this.selectedLayer;
         int layerTextWidth = this.font.width(layerText);
@@ -268,9 +284,20 @@ public class CobblestoneMultiblockCrusherScreen extends BaseScreen<CobblestoneMu
         }
 
         hovered.ifPresent(cell -> {
-            String status = cell.matched() ? "OK" : "不足/不一致";
-            Component line1 = Component.literal(MultiblockStructureStatus.typeLabel(cell.type()));
-            Component line2 = Component.literal(status + "  (" + cell.relativeX() + "," + cell.relativeY() + "," + cell.relativeZ() + ")");
+            Component line1 = MultiblockStructureStatus.typeLabel(cell.type());
+            Component line2 = cell.matched()
+                ? Component.translatable(
+                    "gui.cobblestonexxcompressed.multiblock.cell_matched",
+                    cell.relativeX(),
+                    cell.relativeY(),
+                    cell.relativeZ()
+                )
+                : Component.translatable(
+                    "gui.cobblestonexxcompressed.multiblock.cell_mismatch",
+                    cell.relativeX(),
+                    cell.relativeY(),
+                    cell.relativeZ()
+                );
             guiGraphics.renderTooltip(this.font, List.of(line1, line2), Optional.empty(), mouseX, mouseY);
         });
     }

@@ -194,6 +194,16 @@ public class ModEnglishLanguageProvider extends LanguageProvider {
             addBlock(tier.getBlock(), tier.getEnglishDisplayName());
         }
 
+        addBlock(ModBlocks.COBBLESTONE_DRAWER, "Cobblestone Drawer");
+        for (ModBlocks.TierCobblestoneDrawer tier : ModBlocks.TierCobblestoneDrawer.values()) {
+            addBlock(tier.getBlock(), tier.getEnglishDisplayName());
+        }
+
+        addBlock(ModBlocks.COBBLESTONE_FE_CUBE, "Cobblestone FE Cube");
+        for (ModBlocks.TierCobblestoneFeCube tier : ModBlocks.TierCobblestoneFeCube.values()) {
+            addBlock(tier.getBlock(), tier.getEnglishDisplayName());
+        }
+
         addBlock(ModBlocks.COBBLESTONE_FURNACE, "Cobblestone Furnace");
         addBlock(ModBlocks.COBBLESTONE_FE_GENERATOR, "Cobblestone FE Generator");
         addBlock(ModBlocks.COBBLESTONE_POWERED_FURNACE, "Cobblestone Powered Furnace");
@@ -255,26 +265,45 @@ public class ModEnglishLanguageProvider extends LanguageProvider {
         add("gui.cobblestonexxcompressed.cobblestone_power", "CP");
         add("gui.cobblestonexxcompressed.fe_energy", "FE Energy");
         add("gui.cobblestonexxcompressed.convert_fe_rate", "Convert FE");
+        add("gui.cobblestonexxcompressed.input_fe_rate", "Input FE");
         add("gui.cobblestonexxcompressed.output_fe_rate", "Output FE");
         add("gui.cobblestonexxcompressed.fluid", "Fluid");
         add("gui.cobblestonexxcompressed.item", "Item");
         add("gui.cobblestonexxcompressed.fluid_amount", "Fluid Amount");
+        add("gui.cobblestonexxcompressed.stored_amount", "Stored Amount");
         add("gui.cobblestonexxcompressed.empty", "Empty");
         add("gui.cobblestonexxcompressed.auto_export", "Auto Export");
         add("gui.cobblestonexxcompressed.auto_insert", "Auto Insert");
+        add("gui.cobblestonexxcompressed.void_overflow", "Void Overflow");
         add("gui.cobblestonexxcompressed.mute_sound", "Mute");
         add("gui.cobblestonexxcompressed.filter.whitelist", "WL");
         add("gui.cobblestonexxcompressed.filter.blacklist", "BL");
         add("gui.cobblestonexxcompressed.filter.open", "Filter");
         add("gui.cobblestonexxcompressed.filter.close", "Close");
         add("gui.cobblestonexxcompressed.start_stop", "Start/Stop");
+        add("gui.cobblestonexxcompressed.multiblock.structure", "Structure");
+        add("gui.cobblestonexxcompressed.multiblock.guide_orientation", "Down=Front");
+        add("gui.cobblestonexxcompressed.multiblock.formed", "Formed");
+        add("gui.cobblestonexxcompressed.multiblock.incomplete", "Incomplete");
+        add("gui.cobblestonexxcompressed.multiblock.cell_matched", "OK  (%s,%s,%s)");
+        add("gui.cobblestonexxcompressed.multiblock.cell_mismatch", "Missing/Mismatch  (%s,%s,%s)");
+        add("multiblock_cell.cobblestonexxcompressed.core", "Core");
+        add("multiblock_cell.cobblestonexxcompressed.air", "Air");
+        add("multiblock_cell.cobblestonexxcompressed.casing", "Casing");
+        add("multiblock_cell.cobblestonexxcompressed.inout", "I/O (Port/Casing)");
+        add("multiblock_cell.cobblestonexxcompressed.item_in", "Item Input");
+        add("multiblock_cell.cobblestonexxcompressed.item_out", "Item Output");
+        add("multiblock_cell.cobblestonexxcompressed.fluid_in", "Fluid Input");
+        add("multiblock_cell.cobblestonexxcompressed.fluid_out", "Fluid Output");
+        add("multiblock_cell.cobblestonexxcompressed.cobble_in", "Cobble Input");
+        add("multiblock_cell.cobblestonexxcompressed.upgrade", "Upgrade");
         add("tooltip.cobblestonexxcompressed.compressed_cobblestone.compression", "x%s compressed");
         add("tooltip.cobblestonexxcompressed.cobblestone_energized_cube.capacity", "x%s CP capacity");
         add("tooltip.cobblestonexxcompressed.cobblestone_acceleration_chip.rate", "x%s CP/t");
         add("tooltip.cobblestonexxcompressed.cobblestone_generator.catalyst_rate", "Place in a machine cobblestone slot to supply %s CP/t without being consumed.");
         add("tooltip.cobblestonexxcompressed.cobblestone_parallel_chip.extra", "+%s extra crafts");
         add("tooltip.cobblestonexxcompressed.compressed_cobblestone_pickaxe.stone_break_simulator_bonus", "Stone Break Simulator: +%s Unbreaking");
-        add("tooltip.cobblestonexxcompressed.flying_stone.description", "Grants creative flight while in your inventory or an accessory slot.");
+        add("tooltip.cobblestonexxcompressed.flying_stone.description", "Grants creative flight while in your inventory or an accessory slot. Balse!!!!!!");
         add("tooltip.cobblestonexxcompressed.configuration_card.empty", "No configuration stored");
         add("tooltip.cobblestonexxcompressed.configuration_card.stored", "Stored: %s");
         add("tooltip.cobblestonexxcompressed.configuration_card.upgrade", "Upgrade: %s");

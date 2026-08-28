@@ -78,6 +78,14 @@ public class CobblestonexXCompressed {
                 for (ModItems.TierCobblestoneTankItem tier : ModItems.TierCobblestoneTankItem.values()) {
                     output.accept(tier.getItem().get());
                 }
+                output.accept(ModItems.COBBLESTONE_DRAWER_ITEM.get());
+                for (ModItems.TierCobblestoneDrawerItem tier : ModItems.TierCobblestoneDrawerItem.values()) {
+                    output.accept(tier.getItem().get());
+                }
+                output.accept(ModItems.COBBLESTONE_FE_CUBE_ITEM.get());
+                for (ModItems.TierCobblestoneFeCubeItem tier : ModItems.TierCobblestoneFeCubeItem.values()) {
+                    output.accept(tier.getItem().get());
+                }
                 output.accept(ModItems.COMPRESSED_COBBLESTONE_SINGULARITY_BIT.get());
                 for (ModItems.TierCompressedCobblestoneSingularityBit tier : ModItems.TierCompressedCobblestoneSingularityBit.values()) {
                     output.accept(tier.getItem().get());
@@ -365,6 +373,21 @@ public class CobblestonexXCompressed {
         FluxNetworkCompat.registerBlockEntity(event, ModBlockEntities.COBBLESTONE_FE_GENERATOR_BLOCK_ENTITY.get(),
             (blockEntity, side) -> blockEntity.getFluxEnergyCapability(side));
 
+        event.registerBlockEntity(
+            Capabilities.ItemHandler.BLOCK,
+            ModBlockEntities.COBBLESTONE_FE_CUBE_BLOCK_ENTITY.get(),
+            (blockEntity, side) -> blockEntity.getAutomationItemHandler(side)
+        );
+
+        event.registerBlockEntity(
+            Capabilities.EnergyStorage.BLOCK,
+            ModBlockEntities.COBBLESTONE_FE_CUBE_BLOCK_ENTITY.get(),
+            (blockEntity, side) -> blockEntity.getEnergyStorage(side)
+        );
+
+        FluxNetworkCompat.registerBlockEntity(event, ModBlockEntities.COBBLESTONE_FE_CUBE_BLOCK_ENTITY.get(),
+            (blockEntity, side) -> blockEntity.getFluxEnergyCapability(side));
+
         // Cobblestone Centrifuge は入力 1 枠、CP 投入 1 枠、出力 2 枠を持ちます。
         // 側面設定に応じて、入力専用、全出力、出力1専用、出力2専用、CP 投入を切り替えます。
         event.registerBlockEntity(
@@ -495,6 +518,12 @@ public class CobblestonexXCompressed {
             Capabilities.FluidHandler.BLOCK,
             ModBlockEntities.COBBLESTONE_TANK_BLOCK_ENTITY.get(),
             (blockEntity, side) -> blockEntity.getFluidHandler(side)
+        );
+
+        event.registerBlockEntity(
+            Capabilities.ItemHandler.BLOCK,
+            ModBlockEntities.COBBLESTONE_DRAWER_BLOCK_ENTITY.get(),
+            (blockEntity, side) -> blockEntity.getAutomationItemHandler(side)
         );
 
         event.registerBlockEntity(

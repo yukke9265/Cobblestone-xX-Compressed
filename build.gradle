@@ -180,27 +180,30 @@ neoForge.ideSyncTask generateModMetadata
 
 // Debug 起動は bin/main を見ると、言語サーバーの出力が空・未完成のときに
 // "is not a valid mod file" で落ちる。Gradle の classes / resources を使う。
-// パスは configuration cache のため、タスク登録時に確定しておく。
-def vscodeLaunchFile = file('.vscode/launch.json')
-def vscodeClassesDir = file('build/classes/java/main')
-def vscodeResourcesDir = file('build/resources/main')
+// パスは configuration cache のため、layout でタスク登録時に確定しておく。
+def vscodeLaunchFile = layout.projectDirectory.file('.vscode/launch.json')
+def vscodeClassesDir = layout.buildDirectory.dir('classes/java/main')
+def vscodeResourcesDir = layout.buildDirectory.dir('resources/main')
 def vscodeModId = project.mod_id
 
 def syncVscodeLaunchModFolders = tasks.register('syncVscodeLaunchModFolders') {
     doLast {
-        if (!vscodeLaunchFile.exists()) {
+        def launchFile = vscodeLaunchFile.asFile
+        if (!launchFile.exists()) {
             return
         }
 
-        def desired = "-Dfml.modFolders=${vscodeModId}%%${vscodeClassesDir.canonicalFile.absolutePath};${vscodeModId}%%${vscodeResourcesDir.canonicalFile.absolutePath}"
+        def classesPath = vscodeClassesDir.get().asFile.canonicalFile.absolutePath
+        def resourcesPath = vscodeResourcesDir.get().asFile.canonicalFile.absolutePath
+        def desired = "-Dfml.modFolders=${vscodeModId}%%${classesPath};${vscodeModId}%%${resourcesPath}"
         def desiredJson = desired.replace('\\', '\\\\').replace('=', '\\u003d')
-        def text = vscodeLaunchFile.getText('UTF-8')
+        def text = launchFile.getText('UTF-8')
         def patched = text.replaceAll(
             /-Dfml\.modFolders(?:\\u003d|=)[^"]*/,
             java.util.regex.Matcher.quoteReplacement(desiredJson)
         )
         if (patched != text) {
-            vscodeLaunchFile.write(patched, 'UTF-8')
+            launchFile.write(patched, 'UTF-8')
         }
     }
 }
@@ -218,36 +221,9 @@ tasks.named('processResources').configure {
 
 // Cursor のエージェント用 Gradle は GRADLE_USER_HOME が一時フォルダになる。
 // その状態で prepareDataRun すると build/moddev の Data 起動ファイルが
-// 一時キャッシュを指し、Debug Data が fml_loader を二重読み込みして落ちる。
-// 起動ファイルを作るときは、ユーザーの .gradle を明示する。
-// 例: gradlew.bat -g "%USERPROFILE%\.gradle" prepareDataRun
-def assertModdevUsesUserGradleHome = { fileName ->
-    def moddevFile = file("build/moddev/${fileName}")
-    if (!moddevFile.exists()) {
-        return
-    }
-
-    def text = moddevFile.getText('UTF-8')
-    if (text.contains('cursor-sandbox-cache')) {
-        throw new GradleException(
-            "${moddevFile.name} が Cursor の一時 Gradle キャッシュを指しています。" +
-            "gradlew.bat -g \"%USERPROFILE%\\.gradle\" prepareDataRun を実行してください。"
-        )
-    }
-}
-
-tasks.named('writeDataLegacyClasspath').configure {
-    doLast {
-        assertModdevUsesUserGradleHome('dataLegacyClasspath.txt')
-    }
-}
-
-tasks.named('prepareDataRun').configure {
-    doLast {
-        assertModdevUsesUserGradleHome('dataRunVmArgs.txt')
-        assertModdevUsesUserGradleHome('dataLegacyClasspath.txt')
-    }
-}
+// 一時キャッシュを指し、VS Code の Debug Data が fml_loader を二重読み込みして落ちる。
+// IDE から Debug Data する前に、必要なら次を実行する:
+//   gradlew.bat -g "%USERPROFILE%\.gradle" prepareDataRun
 
 // maven-publish プラグインで公開できるようにする設定例です
 publishing {

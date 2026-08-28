@@ -284,6 +284,8 @@ public class ModRecipeProvider extends RecipeProvider {
         buildCobblestoneGeneratorRecipes(output);
         buildCobblestoneMachineCasingRecipes(output);
         buildCobblestoneTankRecipes(output);
+        buildCobblestoneDrawerRecipes(output);
+        buildCobblestoneFeCubeRecipes(output);
         buildCobblestoneBreadRecipe(output);
         buildFortuneEnchantedBookRecipes(output);
         // buildGemRecipes(output); //gemはドロップによる獲得に変更するため、レシピを削除します。
@@ -300,6 +302,7 @@ public class ModRecipeProvider extends RecipeProvider {
         buildCobblestoneMachineBlockRecipes(output);
         buildCustomMachineRecipes(output);
         buildConfigurationCardRecipe(output);
+        buildFlyingStoneRecipe(output);
         buildMultiblockPortAndUpgradeRecipes(output);
 
         // ここから下は独自 RecipeType / RecipeSerializer を使う機械レシピです。
@@ -1078,6 +1081,58 @@ public class ModRecipeProvider extends RecipeProvider {
         }
     }
 
+    private void buildCobblestoneDrawerRecipes(RecipeOutput output) {
+        // Cobblestone Drawer は中央にチェスト、外周に同じ tier の圧縮丸石を 8 個並べるレシピです。
+        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ModBlocks.COBBLESTONE_DRAWER.get())
+            .pattern("CCC")
+            .pattern("CTC")
+            .pattern("CCC")
+            .define('C', ModBlocks.COMPRESSED_COBBLESTONE.get())
+            .define('T', Items.CHEST)
+            .unlockedBy("has_cobblestone_drawer_material", has(ModBlocks.COMPRESSED_COBBLESTONE.get()))
+            .save(output, modRecipeId("cobblestone_drawer"));
+
+        for (ModBlocks.TierCobblestoneDrawer tier : ModBlocks.TierCobblestoneDrawer.values()) {
+            ItemLike compressedCobblestone = ModBlocks.TierCompressedCobblestone.valueOf(tier.name()).getBlock().get();
+            ItemLike result = ModItems.TierCobblestoneDrawerItem.valueOf(tier.name()).getItem().get();
+
+            ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, result)
+                .pattern("CCC")
+                .pattern("CTC")
+                .pattern("CCC")
+                .define('C', compressedCobblestone)
+                .define('T', Items.CHEST)
+                .unlockedBy("has_" + tier.getRegistryName(), has(compressedCobblestone))
+                .save(output, modRecipeId(tier.getRegistryName()));
+        }
+    }
+
+    private void buildCobblestoneFeCubeRecipes(RecipeOutput output) {
+        // FE キューブは中央のレッドストーンブロックを、各 tier の圧縮丸石 8 個で囲みます。
+        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ModBlocks.COBBLESTONE_FE_CUBE.get())
+            .pattern("CCC")
+            .pattern("CRC")
+            .pattern("CCC")
+            .define('C', ModBlocks.COMPRESSED_COBBLESTONE.get())
+            .define('R', Items.REDSTONE_BLOCK)
+            .unlockedBy("has_cobblestone_fe_cube_material", has(ModBlocks.COMPRESSED_COBBLESTONE.get()))
+            .save(output, modRecipeId("cobblestone_fe_cube"));
+
+        for (ModBlocks.TierCobblestoneFeCube tier : ModBlocks.TierCobblestoneFeCube.values()) {
+            ItemLike compressedCobblestone = ModBlocks.TierCompressedCobblestone.valueOf(tier.name()).getBlock().get();
+            ItemLike result = ModItems.TierCobblestoneFeCubeItem.valueOf(tier.name()).getItem().get();
+
+            ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, result)
+                .pattern("CCC")
+                .pattern("CRC")
+                .pattern("CCC")
+                .define('C', compressedCobblestone)
+                .define('R', Items.REDSTONE_BLOCK)
+                .unlockedBy("has_" + tier.getRegistryName(), has(compressedCobblestone))
+                .save(output, modRecipeId(tier.getRegistryName()));
+        }
+    }
+
     private void buildCustomMachineRecipes(RecipeOutput output) {
         // 丸石エンチャンターは、鉄 tier の圧縮丸石と gem、中央のエンチャントテーブルで組みます。
         // 通常の機械共通レシピとは形が違うため、個別レシピとして分けておきます。
@@ -1123,6 +1178,22 @@ public class ModRecipeProvider extends RecipeProvider {
             .define('R', Items.REDSTONE)
             .unlockedBy("has_configuration_card_material", has(ModBlocks.COBBLESTONE_MACHINE_CASING.get()))
             .save(output, modRecipeId("configuration_card"));
+    }
+
+    private void buildFlyingStoneRecipe(RecipeOutput output) {
+        // 飛行石はサファイア tier の圧縮丸石・ワイヤとグロウストーンで組み立てます。
+        ItemLike compressedSapphireCobblestone = ModBlocks.TierCompressedCobblestone.SAPPHIRE.getBlock().get();
+        ItemLike sapphireWire = ModItems.TierCobblestoneWire.SAPPHIRE.getItem().get();
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.FLYING_STONE.get())
+            .pattern(" CS")
+            .pattern("CGC")
+            .pattern(" C ")
+            .define('C', compressedSapphireCobblestone)
+            .define('G', Items.GLOWSTONE)
+            .define('S', sapphireWire)
+            .unlockedBy("has_tier_sapphire_compressed_cobblestone", has(compressedSapphireCobblestone))
+            .save(output, modRecipeId("flying_stone"));
     }
 
     private ResourceLocation modRecipeId(String path) {

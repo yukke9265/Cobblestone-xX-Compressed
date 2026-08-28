@@ -58,6 +58,8 @@ public class ModBlockLootTableProvider implements DataProvider {
         futures.add(DataProvider.saveStable(cache, createSimpleSelfDropLoot("compressed_cobblestone"), rootPath.resolve("compressed_cobblestone.json")));
         futures.add(DataProvider.saveStable(cache, createSimpleSelfDropLoot("cobblestone_machine_casing"), rootPath.resolve("cobblestone_machine_casing.json")));
         futures.add(DataProvider.saveStable(cache, createSimpleSelfDropLoot("cobblestone_tank"), rootPath.resolve("cobblestone_tank.json")));
+        futures.add(DataProvider.saveStable(cache, createSimpleSelfDropLoot("cobblestone_drawer"), rootPath.resolve("cobblestone_drawer.json")));
+        futures.add(DataProvider.saveStable(cache, createSimpleSelfDropLoot("cobblestone_fe_cube"), rootPath.resolve("cobblestone_fe_cube.json")));
         futures.add(DataProvider.saveStable(cache, createSimpleSelfDropLoot("cobblestone_multiblock_crusher"), rootPath.resolve("cobblestone_multiblock_crusher.json")));
         futures.add(DataProvider.saveStable(cache, createSimpleSelfDropLoot("multiblock_item_input_port"), rootPath.resolve("multiblock_item_input_port.json")));
         futures.add(DataProvider.saveStable(cache, createSimpleSelfDropLoot("multiblock_item_output_port"), rootPath.resolve("multiblock_item_output_port.json")));
@@ -97,6 +99,16 @@ public class ModBlockLootTableProvider implements DataProvider {
         }
 
         for (ModBlocks.TierCobblestoneTank tier : ModBlocks.TierCobblestoneTank.values()) {
+            String name = tier.getRegistryName();
+            futures.add(DataProvider.saveStable(cache, createSimpleSelfDropLoot(name), rootPath.resolve(name + ".json")));
+        }
+
+        for (ModBlocks.TierCobblestoneDrawer tier : ModBlocks.TierCobblestoneDrawer.values()) {
+            String name = tier.getRegistryName();
+            futures.add(DataProvider.saveStable(cache, createSimpleSelfDropLoot(name), rootPath.resolve(name + ".json")));
+        }
+
+        for (ModBlocks.TierCobblestoneFeCube tier : ModBlocks.TierCobblestoneFeCube.values()) {
             String name = tier.getRegistryName();
             futures.add(DataProvider.saveStable(cache, createSimpleSelfDropLoot(name), rootPath.resolve(name + ".json")));
         }

@@ -9,6 +9,7 @@ import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneDissolutionChambe
 import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneEnchanterMenu;
 import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneExtremeCompressorMenu;
 import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneFEGeneratorMenu;
+import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneFeCubeMenu;
 import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneFluidMixerMenu;
 import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneFurnaceMenu;
 import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneLaserDrillMenu;
@@ -17,6 +18,7 @@ import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneMixerMenu;
 import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneReactionChamberMenu;
 import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneCrystallizationChamberMenu;
 import com.yukke9265.cobblestone_xx_compressed.menu.CobblestonePoweredFurnaceMenu;
+import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneDrawerMenu;
 import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneTankMenu;
 import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneWaterGeneratorMenu;
 import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneMultiblockCrusherMenu;
@@ -60,6 +62,12 @@ public class ModMenuType {
         MENU_TYPES.register(
             "cobblestone_fe_generator_menu",
             () -> IMenuTypeExtension.create(CobblestoneFEGeneratorMenu::new)
+        );
+
+    public static final Supplier<MenuType<CobblestoneFeCubeMenu>> COBBLESTONE_FE_CUBE_MENU =
+        MENU_TYPES.register(
+            "cobblestone_fe_cube_menu",
+            () -> IMenuTypeExtension.create(CobblestoneFeCubeMenu::new)
         );
 
     public static final Supplier<MenuType<CobblestoneCentrifugeMenu>> COBBLESTONE_CENTRIFUGE_MENU =
@@ -138,6 +146,12 @@ public class ModMenuType {
         MENU_TYPES.register(
             "cobblestone_tank_menu",
             () -> IMenuTypeExtension.create(CobblestoneTankMenu::new)
+        );
+
+    public static final Supplier<MenuType<CobblestoneDrawerMenu>> COBBLESTONE_DRAWER_MENU =
+        MENU_TYPES.register(
+            "cobblestone_drawer_menu",
+            () -> IMenuTypeExtension.create(CobblestoneDrawerMenu::new)
         );
 
     public static final Supplier<MenuType<CobblestoneWaterGeneratorMenu>> COBBLESTONE_WATER_GENERATOR_MENU =

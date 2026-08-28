@@ -48,6 +48,12 @@ public class ModBlockStateProvider extends BlockStateProvider {
             registerCobblestoneTankBlock(tier.getBlock().get(), tier.getRegistryName(), tier.getRegistryName());
         }
 
+        registerCobblestoneDrawerBlock(ModBlocks.COBBLESTONE_DRAWER.get(), "cobblestone_drawer", "cobblestone_drawer");
+
+        for (ModBlocks.TierCobblestoneDrawer tier : ModBlocks.TierCobblestoneDrawer.values()) {
+            registerCobblestoneDrawerBlock(tier.getBlock().get(), tier.getRegistryName(), tier.getRegistryName());
+        }
+
         for (ModBlocks.TierCobblestoneGenerator generatorVariant : ModBlocks.TierCobblestoneGenerator.values()) {
             registerCobblestoneGeneratorBlock(generatorVariant);
         }
@@ -58,6 +64,12 @@ public class ModBlockStateProvider extends BlockStateProvider {
         registerStandardOnOffMachineBlock(ModBlocks.COBBLESTONE_POWERED_FURNACE.get(), "cobblestone_powered_furnace");
         registerStandardOnOffMachineBlock(ModBlocks.COBBLESTONE_CRUSHER.get(), "cobblestone_crusher");
         registerStandardOnOffMachineBlock(ModBlocks.COBBLESTONE_FE_GENERATOR.get(), "cobblestone_fe_generator");
+        registerCobblestoneFeCubeBlock(ModBlocks.COBBLESTONE_FE_CUBE.get(), "cobblestone_fe_cube", "cobblestone_fe_cube");
+
+        for (ModBlocks.TierCobblestoneFeCube tier : ModBlocks.TierCobblestoneFeCube.values()) {
+            registerCobblestoneFeCubeBlock(tier.getBlock().get(), tier.getRegistryName(), tier.getRegistryName());
+        }
+
         registerStandardOnOffMachineBlock(ModBlocks.COBBLESTONE_CENTRIFUGE.get(), "cobblestone_centrifuge");
         registerStandardOnOffMachineBlock(ModBlocks.COBBLESTONE_LASER_DRILL.get(), "cobblestone_laser_drill");
         registerStandardOnOffMachineBlock(ModBlocks.COBBLESTONE_MIXER.get(), "cobblestone_mixer");
@@ -213,6 +225,14 @@ public class ModBlockStateProvider extends BlockStateProvider {
         registerCubeAllBlock(block, "cobblestone_tank", modelName, textureName);
     }
 
+    private void registerCobblestoneDrawerBlock(
+        net.minecraft.world.level.block.Block block,
+        String modelName,
+        String textureName
+    ) {
+        registerCubeAllBlock(block, "cobblestone_drawer", modelName, textureName);
+    }
+
     private void registerCobblestoneGeneratorBlock(ModBlocks.TierCobblestoneGenerator generatorVariant) {
         registerCubeAllBlock(
             generatorVariant.getBlock().get(),
@@ -248,6 +268,32 @@ public class ModBlockStateProvider extends BlockStateProvider {
             .texture("south", this.modLoc("block/" + textureBlockName + "/" + textureBlockName + "_side"))
             .texture("west", this.modLoc("block/" + textureBlockName + "/" + textureBlockName + "_side"))
             .texture("east", this.modLoc("block/" + textureBlockName + "/" + textureBlockName + "_side"));
+
+        this.getVariantBuilder(block).forAllStates(state -> {
+            Direction facing = state.getValue(OnOffBlock.FACING);
+            boolean isOn = state.getValue(OnOffBlock.ON);
+
+            int rotationY = switch (facing) {
+                case SOUTH -> 180;
+                case EAST -> 90;
+                case WEST -> 270;
+                default -> 0;
+            };
+
+            return ConfiguredModel.builder()
+                .modelFile(isOn ? onModel : offModel)
+                .rotationY(rotationY)
+                .build();
+        });
+
+        this.simpleBlockItem(block, offModel);
+    }
+
+    @SuppressWarnings("null")
+    private void registerCobblestoneFeCubeBlock(Block block, String blockName, String textureName) {
+        String texturePath = "cobblestone_fe_cube/" + textureName;
+        ModelFile offModel = this.models().cubeAll(blockName + "_off", this.modLoc("block/" + texturePath));
+        ModelFile onModel = this.models().cubeAll(blockName + "_on", this.modLoc("block/" + texturePath));
 
         this.getVariantBuilder(block).forAllStates(state -> {
             Direction facing = state.getValue(OnOffBlock.FACING);

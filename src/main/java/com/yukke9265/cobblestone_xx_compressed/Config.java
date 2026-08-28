@@ -34,6 +34,10 @@ public class Config {
             .comment("A list of items to log on common setup.")
             .defineListAllowEmpty("items", List.of("minecraft:iron_ingot"), () -> "", Config::validateItemName);
 
+    public static final ModConfigSpec.IntValue DRAWER_EXTERNAL_SLOT_COUNT = BUILDER
+            .comment("Cobblestone Drawer がパイプへ同時公開する仮想スロット数。1 スロット = 最大 1 スタック分。")
+            .defineInRange("cobblestoneDrawerExternalSlotCount", 18, 1, 128);
+
     static final ModConfigSpec SPEC = BUILDER.build();
 
     private static boolean validateItemName(final Object obj) {

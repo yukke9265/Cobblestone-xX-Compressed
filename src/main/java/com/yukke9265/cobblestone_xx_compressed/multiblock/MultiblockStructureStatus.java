@@ -1,7 +1,10 @@
 package com.yukke9265.cobblestone_xx_compressed.multiblock;
 
+import java.util.Locale;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -84,22 +87,11 @@ public final class MultiblockStructureStatus {
         }
     }
 
-    public static String typeLabel(MultiblockCellType type) {
+    public static Component typeLabel(MultiblockCellType type) {
         if (type == null) {
-            return "-";
+            return Component.literal("-");
         }
 
-        return switch (type) {
-            case CORE -> "コア";
-            case AIR -> "空気";
-            case CASING -> "筐体";
-            case INOUT -> "IO(ポート/筐体)";
-            case ITEM_IN -> "アイテム入力";
-            case ITEM_OUT -> "アイテム出力";
-            case FLUID_IN -> "流体入力";
-            case FLUID_OUT -> "流体出力";
-            case COBBLE_IN -> "丸石入力";
-            case UPGRADE -> "アップグレード";
-        };
+        return Component.translatable("multiblock_cell.cobblestonexxcompressed." + type.name().toLowerCase(Locale.ROOT));
     }
 }

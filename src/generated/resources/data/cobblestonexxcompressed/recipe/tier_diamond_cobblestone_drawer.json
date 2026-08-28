@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "C": {
+      "item": "cobblestonexxcompressed:tier_diamond_compressed_cobblestone"
+    },
+    "T": {
+      "item": "minecraft:chest"
+    }
+  },
+  "pattern": [
+    "CCC",
+    "CTC",
+    "CCC"
+  ],
+  "result": {
+    "count": 1,
+    "id": "cobblestonexxcompressed:tier_diamond_cobblestone_drawer"
+  }
+}

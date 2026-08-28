@@ -12,6 +12,7 @@ import com.yukke9265.cobblestone_xx_compressed.blockentity.CobblestoneDissolutio
 import com.yukke9265.cobblestone_xx_compressed.blockentity.CobblestoneEnchanterBlockEntity;
 import com.yukke9265.cobblestone_xx_compressed.blockentity.CobblestoneExtremeCompressorBlockEntity;
 import com.yukke9265.cobblestone_xx_compressed.blockentity.CobblestoneFEGeneratorBlockEntity;
+import com.yukke9265.cobblestone_xx_compressed.blockentity.CobblestoneFeCubeBlockEntity;
 import com.yukke9265.cobblestone_xx_compressed.blockentity.CobblestoneFluidMixerBlockEntity;
 import com.yukke9265.cobblestone_xx_compressed.blockentity.CobblestoneFurnaceBlockEntity;
 import com.yukke9265.cobblestone_xx_compressed.blockentity.CobblestoneLaserDrillBlockEntity;
@@ -20,6 +21,7 @@ import com.yukke9265.cobblestone_xx_compressed.blockentity.CobblestoneMixerBlock
 import com.yukke9265.cobblestone_xx_compressed.blockentity.CobblestoneReactionChamberBlockEntity;
 import com.yukke9265.cobblestone_xx_compressed.blockentity.CobblestoneCrystallizationChamberBlockEntity;
 import com.yukke9265.cobblestone_xx_compressed.blockentity.CobblestonePoweredFurnaceBlockEntity;
+import com.yukke9265.cobblestone_xx_compressed.blockentity.CobblestoneDrawerBlockEntity;
 import com.yukke9265.cobblestone_xx_compressed.blockentity.CobblestoneTankBlockEntity;
 import com.yukke9265.cobblestone_xx_compressed.blockentity.CobblestoneWaterGeneratorBlockEntity;
 import com.yukke9265.cobblestone_xx_compressed.blockentity.CobblestoneMultiblockCrusherBlockEntity;
@@ -76,6 +78,15 @@ public class ModBlockEntities {
             () -> BlockEntityType.Builder.of(
                 CobblestoneFEGeneratorBlockEntity::new,
                 ModBlocks.COBBLESTONE_FE_GENERATOR.get()
+            ).build(null)
+        );
+
+    public static final Supplier<BlockEntityType<CobblestoneFeCubeBlockEntity>> COBBLESTONE_FE_CUBE_BLOCK_ENTITY =
+        BLOCK_ENTITY_TYPES.register(
+            "cobblestone_fe_cube",
+            () -> BlockEntityType.Builder.of(
+                (pos, state) -> new CobblestoneFeCubeBlockEntity(pos, state),
+                getCobblestoneFeCubeBlocks()
             ).build(null)
         );
 
@@ -220,6 +231,15 @@ public class ModBlockEntities {
             ).build(null)
         );
 
+    public static final Supplier<BlockEntityType<CobblestoneDrawerBlockEntity>> COBBLESTONE_DRAWER_BLOCK_ENTITY =
+        BLOCK_ENTITY_TYPES.register(
+            "cobblestone_drawer",
+            () -> BlockEntityType.Builder.of(
+                (pos, state) -> new CobblestoneDrawerBlockEntity(pos, state),
+                getCobblestoneDrawerBlocks()
+            ).build(null)
+        );
+
     public static final Supplier<BlockEntityType<CobblestoneMultiblockCrusherBlockEntity>> COBBLESTONE_MULTIBLOCK_CRUSHER_BLOCK_ENTITY =
         BLOCK_ENTITY_TYPES.register(
             "cobblestone_multiblock_crusher",
@@ -247,6 +267,32 @@ public class ModBlockEntities {
 
         int index = 1;
         for (ModBlocks.TierCobblestoneTank tier : ModBlocks.TierCobblestoneTank.values()) {
+            blocks[index] = tier.getBlock().get();
+            index++;
+        }
+
+        return blocks;
+    }
+
+    private static Block[] getCobblestoneDrawerBlocks() {
+        Block[] blocks = new Block[ModBlocks.TierCobblestoneDrawer.values().length + 1];
+        blocks[0] = ModBlocks.COBBLESTONE_DRAWER.get();
+
+        int index = 1;
+        for (ModBlocks.TierCobblestoneDrawer tier : ModBlocks.TierCobblestoneDrawer.values()) {
+            blocks[index] = tier.getBlock().get();
+            index++;
+        }
+
+        return blocks;
+    }
+
+    private static Block[] getCobblestoneFeCubeBlocks() {
+        Block[] blocks = new Block[ModBlocks.TierCobblestoneFeCube.values().length + 1];
+        blocks[0] = ModBlocks.COBBLESTONE_FE_CUBE.get();
+
+        int index = 1;
+        for (ModBlocks.TierCobblestoneFeCube tier : ModBlocks.TierCobblestoneFeCube.values()) {
             blocks[index] = tier.getBlock().get();
             index++;
         }

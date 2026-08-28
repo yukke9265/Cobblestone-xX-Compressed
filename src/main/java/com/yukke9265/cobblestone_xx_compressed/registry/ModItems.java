@@ -1663,6 +1663,12 @@ public class ModItems {
     public static final DeferredItem<BlockItem> COBBLESTONE_TANK_ITEM =
         registerCompressedCobblestoneBlockItem("cobblestone_tank", ModBlocks.COBBLESTONE_TANK);
 
+    public static final DeferredItem<BlockItem> COBBLESTONE_DRAWER_ITEM =
+        registerCompressedCobblestoneBlockItem("cobblestone_drawer", ModBlocks.COBBLESTONE_DRAWER);
+
+    public static final DeferredItem<BlockItem> COBBLESTONE_FE_CUBE_ITEM =
+        registerCompressedCobblestoneBlockItem("cobblestone_fe_cube", ModBlocks.COBBLESTONE_FE_CUBE);
+
     public enum TierCompressedCobblestoneItem {
         COPPER(ModBlocks.TierCompressedCobblestone.COPPER),
         IRON(ModBlocks.TierCompressedCobblestone.IRON),
@@ -1866,6 +1872,74 @@ public class ModItems {
         }
     }
 
+    public enum TierCobblestoneDrawerItem {
+        COPPER(ModBlocks.TierCobblestoneDrawer.COPPER),
+        IRON(ModBlocks.TierCobblestoneDrawer.IRON),
+        GOLD(ModBlocks.TierCobblestoneDrawer.GOLD),
+        AMETHYST(ModBlocks.TierCobblestoneDrawer.AMETHYST),
+        AQUAMARINE(ModBlocks.TierCobblestoneDrawer.AQUAMARINE),
+        TOPAZ(ModBlocks.TierCobblestoneDrawer.TOPAZ),
+        RUBY(ModBlocks.TierCobblestoneDrawer.RUBY),
+        SAPPHIRE(ModBlocks.TierCobblestoneDrawer.SAPPHIRE),
+        DIAMOND(ModBlocks.TierCobblestoneDrawer.DIAMOND),
+        EMERALD(ModBlocks.TierCobblestoneDrawer.EMERALD),
+        NETHERITE(ModBlocks.TierCobblestoneDrawer.NETHERITE),
+        OBSIDIAN(ModBlocks.TierCobblestoneDrawer.OBSIDIAN);
+
+        private final ModBlocks.TierCobblestoneDrawer blockTier;
+        private DeferredItem<BlockItem> item;
+
+        TierCobblestoneDrawerItem(ModBlocks.TierCobblestoneDrawer blockTier) {
+            this.blockTier = blockTier;
+        }
+
+        public DeferredItem<BlockItem> getItem() {
+            return this.item;
+        }
+
+        private void setItem(DeferredItem<BlockItem> item) {
+            this.item = item;
+        }
+
+        public ModBlocks.TierCobblestoneDrawer getBlockTier() {
+            return this.blockTier;
+        }
+    }
+
+    public enum TierCobblestoneFeCubeItem {
+        COPPER(ModBlocks.TierCobblestoneFeCube.COPPER),
+        IRON(ModBlocks.TierCobblestoneFeCube.IRON),
+        GOLD(ModBlocks.TierCobblestoneFeCube.GOLD),
+        AMETHYST(ModBlocks.TierCobblestoneFeCube.AMETHYST),
+        AQUAMARINE(ModBlocks.TierCobblestoneFeCube.AQUAMARINE),
+        TOPAZ(ModBlocks.TierCobblestoneFeCube.TOPAZ),
+        RUBY(ModBlocks.TierCobblestoneFeCube.RUBY),
+        SAPPHIRE(ModBlocks.TierCobblestoneFeCube.SAPPHIRE),
+        DIAMOND(ModBlocks.TierCobblestoneFeCube.DIAMOND),
+        EMERALD(ModBlocks.TierCobblestoneFeCube.EMERALD),
+        NETHERITE(ModBlocks.TierCobblestoneFeCube.NETHERITE),
+        OBSIDIAN(ModBlocks.TierCobblestoneFeCube.OBSIDIAN);
+
+        private final ModBlocks.TierCobblestoneFeCube blockTier;
+        private DeferredItem<BlockItem> item;
+
+        TierCobblestoneFeCubeItem(ModBlocks.TierCobblestoneFeCube blockTier) {
+            this.blockTier = blockTier;
+        }
+
+        public DeferredItem<BlockItem> getItem() {
+            return this.item;
+        }
+
+        private void setItem(DeferredItem<BlockItem> item) {
+            this.item = item;
+        }
+
+        public ModBlocks.TierCobblestoneFeCube getBlockTier() {
+            return this.blockTier;
+        }
+    }
+
     static {
         for (TierCompressedCobblestoneItem tier : TierCompressedCobblestoneItem.values()) {
             tier.setItem(registerCompressedCobblestoneTooltipBlockItem(
@@ -1895,6 +1969,24 @@ public class ModItems {
 
     static {
         for (TierCobblestoneTankItem tier : TierCobblestoneTankItem.values()) {
+            tier.setItem(registerCompressedCobblestoneBlockItem(
+                tier.getBlockTier().getRegistryName(),
+                tier.getBlockTier().getBlock()
+            ));
+        }
+    }
+
+    static {
+        for (TierCobblestoneDrawerItem tier : TierCobblestoneDrawerItem.values()) {
+            tier.setItem(registerCompressedCobblestoneBlockItem(
+                tier.getBlockTier().getRegistryName(),
+                tier.getBlockTier().getBlock()
+            ));
+        }
+    }
+
+    static {
+        for (TierCobblestoneFeCubeItem tier : TierCobblestoneFeCubeItem.values()) {
             tier.setItem(registerCompressedCobblestoneBlockItem(
                 tier.getBlockTier().getRegistryName(),
                 tier.getBlockTier().getBlock()

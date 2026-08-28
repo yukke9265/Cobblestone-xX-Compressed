@@ -34,7 +34,9 @@ public class CobblestoneTankMenu extends BaseMenu {
         AutomationMode.IN_OUT
     };
 
-    private static final int DATA_COUNT = 8 + BaseBlockEntity.AUTOMATION_FACE_COUNT * 2;
+    private static final int VOID_OVERFLOW_BUTTON_ID = 203;
+
+    private static final int DATA_COUNT = 9 + BaseBlockEntity.AUTOMATION_FACE_COUNT * 2;
     private static final int DATA_INDEX_STORED_FLUID = 0;
     private static final int DATA_INDEX_MAX_FLUID = 2;
     private static final int DATA_INDEX_FLUID_ID = 4;
@@ -43,6 +45,7 @@ public class CobblestoneTankMenu extends BaseMenu {
     private static final int DATA_INDEX_AUTO_EXPORT = DATA_INDEX_FLUID_AUTOMATION_START + BaseBlockEntity.AUTOMATION_FACE_COUNT;
     private static final int DATA_INDEX_AUTO_INSERT = DATA_INDEX_AUTO_EXPORT + 1;
     private static final int DATA_INDEX_SOUND_MUTED = DATA_INDEX_AUTO_INSERT + 1;
+    private static final int DATA_INDEX_VOID_OVERFLOW = DATA_INDEX_SOUND_MUTED + 1;
 
     private static final int SLOT_SIZE = 18;
     private static final int INPUT_SLOT_X = 26;
@@ -118,6 +121,10 @@ public class CobblestoneTankMenu extends BaseMenu {
         return this.tankData.get(DATA_INDEX_SOUND_MUTED) != 0;
     }
 
+    public boolean isVoidOverflowEnabled() {
+        return this.tankData.get(DATA_INDEX_VOID_OVERFLOW) != 0;
+    }
+
     public int getItemAutomationButtonId(AutomationSide automationSide) {
         return this.getAutomationButtonId(automationSide.getIndex());
     }
@@ -132,6 +139,10 @@ public class CobblestoneTankMenu extends BaseMenu {
 
     public int getAutoInsertButtonId() {
         return this.getAutoInsertToggleButtonId();
+    }
+
+    public int getVoidOverflowButtonId() {
+        return VOID_OVERFLOW_BUTTON_ID;
     }
 
     public int getFluidInteractionButtonId() {
@@ -168,7 +179,20 @@ public class CobblestoneTankMenu extends BaseMenu {
             return true;
         }
 
+        if (this.handleVoidOverflowButtonClick(id)) {
+            return true;
+        }
+
         return this.handleMuteSoundButtonClick(this.tankBlockEntity, id);
+    }
+
+    private boolean handleVoidOverflowButtonClick(int buttonId) {
+        if (buttonId != VOID_OVERFLOW_BUTTON_ID) {
+            return false;
+        }
+
+        this.tankBlockEntity.toggleVoidOverflowEnabled();
+        return true;
     }
 
     @Override

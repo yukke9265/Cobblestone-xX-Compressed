@@ -12,6 +12,7 @@ import com.yukke9265.cobblestone_xx_compressed.block.CobblestoneDissolutionChamb
 import com.yukke9265.cobblestone_xx_compressed.block.CobblestoneEnchanterBlock;
 import com.yukke9265.cobblestone_xx_compressed.block.CobblestoneExtremeCompressorBlock;
 import com.yukke9265.cobblestone_xx_compressed.block.CobblestoneFEGeneratorBlock;
+import com.yukke9265.cobblestone_xx_compressed.block.CobblestoneFeCubeBlock;
 import com.yukke9265.cobblestone_xx_compressed.block.CobblestoneFluidMixerBlock;
 import com.yukke9265.cobblestone_xx_compressed.block.CobblestoneFurnaceBlock;
 import com.yukke9265.cobblestone_xx_compressed.block.CobblestoneLaserDrillBlock;
@@ -20,6 +21,7 @@ import com.yukke9265.cobblestone_xx_compressed.block.CobblestoneMixerBlock;
 import com.yukke9265.cobblestone_xx_compressed.block.CobblestonePoweredFurnaceBlock;
 import com.yukke9265.cobblestone_xx_compressed.block.CobblestoneReactionChamberBlock;
 import com.yukke9265.cobblestone_xx_compressed.block.CobblestoneCrystallizationChamberBlock;
+import com.yukke9265.cobblestone_xx_compressed.block.CobblestoneDrawerBlock;
 import com.yukke9265.cobblestone_xx_compressed.block.CobblestoneTankBlock;
 import com.yukke9265.cobblestone_xx_compressed.block.CobblestoneWaterGeneratorBlock;
 import com.yukke9265.cobblestone_xx_compressed.block.CobblestoneMultiblockCrusherBlock;
@@ -37,6 +39,8 @@ public class ModBlocks {
     public static final DeferredRegister.Blocks BLOCKS = 
         DeferredRegister.createBlocks(CobblestonexXCompressed.MODID);
     public static final long BASE_COBBLESTONE_TANK_CAPACITY = 8_000L;
+    public static final long BASE_COBBLESTONE_DRAWER_CAPACITY = 512L;
+    public static final long BASE_FE_CUBE_CAPACITY = 100000L;
 
     // 圧縮丸石の tier 一覧です。
     // 登録名と表示名をここにまとめておくと、block 登録、item 登録、datagen を同じ順番で回せます。
@@ -189,6 +193,101 @@ public class ModBlocks {
             this.registryName = registryName;
             this.englishDisplayName = englishDisplayName;
             this.capacity = calculateCobblestoneTankCapacity(tierLevel);
+        }
+
+        public String getRegistryName() {
+            return this.registryName;
+        }
+
+        public String getEnglishDisplayName() {
+            return this.englishDisplayName;
+        }
+
+        public long getCapacity() {
+            return this.capacity;
+        }
+
+        public DeferredBlock<Block> getBlock() {
+            return this.block;
+        }
+
+        private void setBlock(DeferredBlock<Block> block) {
+            this.block = block;
+        }
+    }
+
+    // Cobblestone Drawer は通常版 8 スタック (= 512 個) を起点に、
+    // tier が 1 段上がるごとに容量を 8 倍へ増やします。
+    public enum TierCobblestoneDrawer {
+        COPPER("tier_copper_cobblestone_drawer", "Copper Cobblestone Drawer", 1),
+        IRON("tier_iron_cobblestone_drawer", "Iron Cobblestone Drawer", 2),
+        GOLD("tier_gold_cobblestone_drawer", "Gold Cobblestone Drawer", 3),
+        AMETHYST("tier_amethyst_cobblestone_drawer", "Amethyst Cobblestone Drawer", 4),
+        AQUAMARINE("tier_aquamarine_cobblestone_drawer", "Aquamarine Cobblestone Drawer", 5),
+        TOPAZ("tier_topaz_cobblestone_drawer", "Topaz Cobblestone Drawer", 6),
+        RUBY("tier_ruby_cobblestone_drawer", "Ruby Cobblestone Drawer", 7),
+        SAPPHIRE("tier_sapphire_cobblestone_drawer", "Sapphire Cobblestone Drawer", 8),
+        DIAMOND("tier_diamond_cobblestone_drawer", "Diamond Cobblestone Drawer", 9),
+        EMERALD("tier_emerald_cobblestone_drawer", "Emerald Cobblestone Drawer", 10),
+        NETHERITE("tier_netherite_cobblestone_drawer", "Netherite Cobblestone Drawer", 11),
+        OBSIDIAN("tier_obsidian_cobblestone_drawer", "Obsidian Cobblestone Drawer", 12);
+
+        private final String registryName;
+        private final String englishDisplayName;
+        private final long capacity;
+        private DeferredBlock<Block> block;
+
+        TierCobblestoneDrawer(String registryName, String englishDisplayName, int tierLevel) {
+            this.registryName = registryName;
+            this.englishDisplayName = englishDisplayName;
+            this.capacity = calculateCobblestoneDrawerCapacity(tierLevel);
+        }
+
+        public String getRegistryName() {
+            return this.registryName;
+        }
+
+        public String getEnglishDisplayName() {
+            return this.englishDisplayName;
+        }
+
+        public long getCapacity() {
+            return this.capacity;
+        }
+
+        public DeferredBlock<Block> getBlock() {
+            return this.block;
+        }
+
+        private void setBlock(DeferredBlock<Block> block) {
+            this.block = block;
+        }
+    }
+
+    // FE キューブは通常版 4,096 FE を起点に、tier が 1 段上がるごとに容量を 8 倍へ増やします。
+    public enum TierCobblestoneFeCube {
+        COPPER("tier_copper_cobblestone_fe_cube", "Copper Cobblestone FE Cube", 1),
+        IRON("tier_iron_cobblestone_fe_cube", "Iron Cobblestone FE Cube", 2),
+        GOLD("tier_gold_cobblestone_fe_cube", "Gold Cobblestone FE Cube", 3),
+        AMETHYST("tier_amethyst_cobblestone_fe_cube", "Amethyst Cobblestone FE Cube", 4),
+        AQUAMARINE("tier_aquamarine_cobblestone_fe_cube", "Aquamarine Cobblestone FE Cube", 5),
+        TOPAZ("tier_topaz_cobblestone_fe_cube", "Topaz Cobblestone FE Cube", 6),
+        RUBY("tier_ruby_cobblestone_fe_cube", "Ruby Cobblestone FE Cube", 7),
+        SAPPHIRE("tier_sapphire_cobblestone_fe_cube", "Sapphire Cobblestone FE Cube", 8),
+        DIAMOND("tier_diamond_cobblestone_fe_cube", "Diamond Cobblestone FE Cube", 9),
+        EMERALD("tier_emerald_cobblestone_fe_cube", "Emerald Cobblestone FE Cube", 10),
+        NETHERITE("tier_netherite_cobblestone_fe_cube", "Netherite Cobblestone FE Cube", 11),
+        OBSIDIAN("tier_obsidian_cobblestone_fe_cube", "Obsidian Cobblestone FE Cube", 12);
+
+        private final String registryName;
+        private final String englishDisplayName;
+        private final long capacity;
+        private DeferredBlock<Block> block;
+
+        TierCobblestoneFeCube(String registryName, String englishDisplayName, int tierLevel) {
+            this.registryName = registryName;
+            this.englishDisplayName = englishDisplayName;
+            this.capacity = calculateFeCubeCapacity(tierLevel);
         }
 
         public String getRegistryName() {
@@ -418,12 +517,42 @@ public class ModBlocks {
         return capacity;
     }
 
+    private static long calculateCobblestoneDrawerCapacity(int tierLevel) {
+        long capacity = BASE_COBBLESTONE_DRAWER_CAPACITY;
+        for (int index = 0; index < tierLevel; index++) {
+            capacity *= 8L;
+        }
+
+        return capacity;
+    }
+
+    private static long calculateFeCubeCapacity(int tierLevel) {
+        long capacity = BASE_FE_CUBE_CAPACITY;
+        for (int index = 0; index < tierLevel; index++) {
+            capacity *= 8L;
+        }
+
+        return capacity;
+    }
+
     private static BlockBehaviour.Properties createCobblestoneTankProperties() {
+        return createCobblestoneMachineProperties();
+    }
+
+    private static BlockBehaviour.Properties createCobblestoneDrawerProperties() {
         return createCobblestoneMachineProperties();
     }
 
     private static DeferredBlock<Block> registerCobblestoneTank(String name, long capacity) {
         return BLOCKS.register(name, () -> new CobblestoneTankBlock(createCobblestoneTankProperties(), capacity));
+    }
+
+    private static DeferredBlock<Block> registerCobblestoneDrawer(String name, long capacity) {
+        return BLOCKS.register(name, () -> new CobblestoneDrawerBlock(createCobblestoneDrawerProperties(), capacity));
+    }
+
+    private static DeferredBlock<Block> registerCobblestoneFeCube(String name, long capacity) {
+        return BLOCKS.register(name, () -> new CobblestoneFeCubeBlock(createCobblestoneMachineProperties(), capacity));
     }
 
     private static BlockBehaviour.Properties createCobblestoneGeneratorProperties() {
@@ -449,6 +578,12 @@ public class ModBlocks {
     public static final DeferredBlock<Block> COBBLESTONE_TANK =
         registerCobblestoneTank("cobblestone_tank", BASE_COBBLESTONE_TANK_CAPACITY);
 
+    public static final DeferredBlock<Block> COBBLESTONE_DRAWER =
+        registerCobblestoneDrawer("cobblestone_drawer", BASE_COBBLESTONE_DRAWER_CAPACITY);
+
+    public static final DeferredBlock<Block> COBBLESTONE_FE_CUBE =
+        registerCobblestoneFeCube("cobblestone_fe_cube", BASE_FE_CUBE_CAPACITY);
+
     static {
         for (TierCompressedCobblestone tier : TierCompressedCobblestone.values()) {
             tier.setBlock(registerCompressedCobblestone(tier.getRegistryName()));
@@ -470,6 +605,18 @@ public class ModBlocks {
     static {
         for (TierCobblestoneTank tier : TierCobblestoneTank.values()) {
             tier.setBlock(registerCobblestoneTank(tier.getRegistryName(), tier.getCapacity()));
+        }
+    }
+
+    static {
+        for (TierCobblestoneDrawer tier : TierCobblestoneDrawer.values()) {
+            tier.setBlock(registerCobblestoneDrawer(tier.getRegistryName(), tier.getCapacity()));
+        }
+    }
+
+    static {
+        for (TierCobblestoneFeCube tier : TierCobblestoneFeCube.values()) {
+            tier.setBlock(registerCobblestoneFeCube(tier.getRegistryName(), tier.getCapacity()));
         }
     }
 

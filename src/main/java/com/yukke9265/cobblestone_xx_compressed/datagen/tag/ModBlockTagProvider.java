@@ -26,6 +26,7 @@ public class ModBlockTagProvider extends BlockTagsProvider {
             .add(ModBlocks.COMPRESSED_STONE.get())
             .add(ModBlocks.COBBLESTONE_MACHINE_CASING.get())
             .add(ModBlocks.COBBLESTONE_TANK.get())
+            .add(ModBlocks.COBBLESTONE_DRAWER.get())
             .add(ModBlocks.COBBLESTONE_FURNACE.get())
             .add(ModBlocks.COBBLESTONE_POWERED_FURNACE.get())
             .add(ModBlocks.COBBLESTONE_EXTREME_COMPRESSOR.get())
@@ -43,6 +44,7 @@ public class ModBlockTagProvider extends BlockTagsProvider {
             .add(ModBlocks.COBBLESTONE_CRYSTALLIZATION_CHAMBER.get())
             .add(ModBlocks.COBBLESTONE_DISSOLUTION_CHAMBER.get())
             .add(ModBlocks.COBBLESTONE_FE_GENERATOR.get())
+            .add(ModBlocks.COBBLESTONE_FE_CUBE.get())
             .add(ModBlocks.COBBLESTONE_WATER_GENERATOR.get());
 
         for (ModBlocks.TierCobblestoneGenerator generatorVariant : ModBlocks.TierCobblestoneGenerator.values()) {
@@ -62,6 +64,14 @@ public class ModBlockTagProvider extends BlockTagsProvider {
         }
 
         for (ModBlocks.TierCobblestoneTank tier : ModBlocks.TierCobblestoneTank.values()) {
+            this.tag(BlockTags.MINEABLE_WITH_PICKAXE).add(tier.getBlock().get());
+        }
+
+        for (ModBlocks.TierCobblestoneDrawer tier : ModBlocks.TierCobblestoneDrawer.values()) {
+            this.tag(BlockTags.MINEABLE_WITH_PICKAXE).add(tier.getBlock().get());
+        }
+
+        for (ModBlocks.TierCobblestoneFeCube tier : ModBlocks.TierCobblestoneFeCube.values()) {
             this.tag(BlockTags.MINEABLE_WITH_PICKAXE).add(tier.getBlock().get());
         }
     }

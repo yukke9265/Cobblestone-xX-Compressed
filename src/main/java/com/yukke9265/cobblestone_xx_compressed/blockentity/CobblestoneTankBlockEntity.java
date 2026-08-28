@@ -57,10 +57,12 @@ public class CobblestoneTankBlockEntity extends BaseBlockEntity implements MenuP
     private static final int DATA_INDEX_AUTO_EXPORT = DATA_INDEX_FLUID_AUTOMATION_START + AUTOMATION_FACE_COUNT;
     private static final int DATA_INDEX_AUTO_INSERT = DATA_INDEX_AUTO_EXPORT + 1;
     private static final int DATA_INDEX_SOUND_MUTED = DATA_INDEX_AUTO_INSERT + 1;
+    private static final int DATA_INDEX_VOID_OVERFLOW = DATA_INDEX_SOUND_MUTED + 1;
 
     private final long maxFluidAmount;
     private long storedFluidAmount;
     private FluidStack storedFluid = FluidStack.EMPTY;
+    private boolean voidOverflowEnabled;
 
     private final FixedSizeItemStackHandler itemStackHandler = new FixedSizeItemStackHandler(2) {
         @Override
@@ -251,6 +253,23 @@ public class CobblestoneTankBlockEntity extends BaseBlockEntity implements MenuP
 
     public long getMaxFluidAmount() {
         return this.maxFluidAmount;
+    }
+
+    public boolean isVoidOverflowEnabled() {
+        return this.voidOverflowEnabled;
+    }
+
+    public int getVoidOverflowEnabledId() {
+        return this.voidOverflowEnabled ? 1 : 0;
+    }
+
+    public void setVoidOverflowEnabled(boolean voidOverflowEnabled) {
+        this.voidOverflowEnabled = voidOverflowEnabled;
+        this.setChanged();
+    }
+
+    public void toggleVoidOverflowEnabled() {
+        this.setVoidOverflowEnabled(!this.voidOverflowEnabled);
     }
 
     public FluidStack getDisplayedFluid() {
@@ -685,12 +704,17 @@ public class CobblestoneTankBlockEntity extends BaseBlockEntity implements MenuP
         }
 
         long remainingCapacity = this.maxFluidAmount - this.storedFluidAmount;
-        if (remainingCapacity <= 0L) {
+        int storedAmount = 0;
+        if (remainingCapacity > 0L) {
+            storedAmount = (int) Math.min(remainingCapacity, resource.getAmount());
+        }
+
+        if (storedAmount <= 0 && !this.voidOverflowEnabled) {
             return 0;
         }
 
-        int acceptedAmount = (int) Math.min(remainingCapacity, resource.getAmount());
-        if (acceptedAmount <= 0) {
+        int consumedAmount = this.voidOverflowEnabled ? resource.getAmount() : storedAmount;
+        if (consumedAmount <= 0) {
             return 0;
         }
 
@@ -699,11 +723,14 @@ public class CobblestoneTankBlockEntity extends BaseBlockEntity implements MenuP
                 this.storedFluid = resource.copyWithAmount(1);
             }
 
-            this.storedFluidAmount += acceptedAmount;
+            if (storedAmount > 0) {
+                this.storedFluidAmount += storedAmount;
+            }
+
             this.syncToClient();
         }
 
-        return acceptedAmount;
+        return consumedAmount;
     }
 
     private FluidStack drainInternal(int amount, IFluidHandler.FluidAction action) {
@@ -795,6 +822,10 @@ public class CobblestoneTankBlockEntity extends BaseBlockEntity implements MenuP
                     return CobblestoneTankBlockEntity.this.getSoundMutedId();
                 }
 
+                if (index == DATA_INDEX_VOID_OVERFLOW) {
+                    return CobblestoneTankBlockEntity.this.getVoidOverflowEnabledId();
+                }
+
                 return 0;
             }
 
@@ -804,7 +835,7 @@ public class CobblestoneTankBlockEntity extends BaseBlockEntity implements MenuP
 
             @Override
             public int getCount() {
-                return DATA_INDEX_SOUND_MUTED + 1;
+                return DATA_INDEX_VOID_OVERFLOW + 1;
             }
         };
 
@@ -817,6 +848,7 @@ public class CobblestoneTankBlockEntity extends BaseBlockEntity implements MenuP
         this.saveAutomationModes(tag);
         tag.put("inventory", this.itemStackHandler.serializeNBT(registries));
         tag.putLong("storedFluidAmount", this.storedFluidAmount);
+        tag.putBoolean("voidOverflowEnabled", this.voidOverflowEnabled);
         if (!this.storedFluid.isEmpty()) {
             tag.put("storedFluid", this.storedFluid.save(registries));
         }
@@ -831,6 +863,7 @@ public class CobblestoneTankBlockEntity extends BaseBlockEntity implements MenuP
         }
 
         this.storedFluidAmount = tag.getLong("storedFluidAmount");
+        this.voidOverflowEnabled = tag.getBoolean("voidOverflowEnabled");
         if (tag.contains("storedFluid", CompoundTag.TAG_COMPOUND)) {
             this.storedFluid = FluidStack.parseOptional(registries, tag.getCompound("storedFluid"));
             if (!this.storedFluid.isEmpty()) {
