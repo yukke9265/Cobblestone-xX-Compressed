@@ -77,11 +77,13 @@ import com.yukke9265.cobblestone_xx_compressed.screen.CobblestoneFurnaceScreen;
 import com.yukke9265.cobblestone_xx_compressed.screen.CobblestoneLaserDrillScreen;
 import com.yukke9265.cobblestone_xx_compressed.screen.CobblestoneMelterScreen;
 import com.yukke9265.cobblestone_xx_compressed.screen.CobblestoneMixerScreen;
+import com.yukke9265.cobblestone_xx_compressed.screen.CobblestonePoweredCrafterScreen;
 import com.yukke9265.cobblestone_xx_compressed.screen.CobblestonePoweredFurnaceScreen;
 import com.yukke9265.cobblestone_xx_compressed.screen.CobblestoneReactionChamberScreen;
 import com.yukke9265.cobblestone_xx_compressed.screen.BaseScreen;
 import com.yukke9265.cobblestone_xx_compressed.screen.StoneBreakSimulatorScreen;
 
+import mezz.jei.api.constants.RecipeTypes;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.gui.handlers.IGuiClickableArea;
@@ -471,6 +473,8 @@ public class ModJeiPlugin implements IModPlugin {
     @Override
     public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
         registration.addRecipeCatalyst(new ItemStack(ModBlocks.COBBLESTONE_WATER_GENERATOR.get()), WATER_GENERATOR_CONVERSION_RECIPE_TYPE);
+        // バニラ作業台レシピをそのまま使うため、作業台カテゴリの catalyst として登録します。
+        registration.addRecipeCatalyst(new ItemStack(ModBlocks.COBBLESTONE_POWERED_CRAFTER.get()), RecipeTypes.CRAFTING);
 
         for (MachineJeiDefinition<?, ?> definition : MACHINE_DEFINITIONS) {
             registration.addRecipeCatalyst(definition.createCatalyst(), definition.recipeType());
@@ -488,6 +492,7 @@ public class ModJeiPlugin implements IModPlugin {
         this.registerBaseScreenGuiHandler(registration, CobblestoneCentrifugeScreen.class);
         this.registerBaseScreenGuiHandler(registration, CobblestoneLaserDrillScreen.class);
         this.registerBaseScreenGuiHandler(registration, CobblestoneMixerScreen.class);
+        this.registerBaseScreenGuiHandler(registration, CobblestonePoweredCrafterScreen.class);
         this.registerBaseScreenGuiHandler(registration, StoneBreakSimulatorScreen.class);
         this.registerBaseScreenGuiHandler(registration, CobblestoneMelterScreen.class);
         this.registerBaseScreenGuiHandler(registration, CobblestoneAssemblyMachineScreen.class);

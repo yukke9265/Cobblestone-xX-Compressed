@@ -16,6 +16,7 @@ import com.yukke9265.cobblestone_xx_compressed.registry.ModItems;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModMenuType;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModRecipeSerializers;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModRecipeTypes;
+import com.yukke9265.cobblestone_xx_compressed.util.EfficiencyEnchantedBookHelper;
 import com.yukke9265.cobblestone_xx_compressed.util.FortuneEnchantedBookHelper;
 
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -98,12 +99,17 @@ public class CobblestonexXCompressed {
                 for (ModItems.TierCompressedCobblestoneSingularity tier : ModItems.TierCompressedCobblestoneSingularity.values()) {
                     output.accept(tier.getItem().get());
                 }
-                // 幸運本は通常アイテム登録ではなく component 付き ItemStack なので、
+                // 幸運本・効率本は通常アイテム登録ではなく component 付き ItemStack なので、
                 // creative tab 側で完成済みの本を 1 冊ずつ並べます。
                 for (int fortuneLevel = FortuneEnchantedBookHelper.FIRST_FORTUNE_BOOK_LEVEL;
                      fortuneLevel <= FortuneEnchantedBookHelper.LAST_FORTUNE_BOOK_LEVEL;
                      fortuneLevel++) {
                     output.accept(FortuneEnchantedBookHelper.createFortuneEnchantedBook(parameters.holders(), fortuneLevel));
+                }
+                for (int efficiencyLevel = EfficiencyEnchantedBookHelper.FIRST_EFFICIENCY_BOOK_LEVEL;
+                     efficiencyLevel <= EfficiencyEnchantedBookHelper.LAST_EFFICIENCY_BOOK_LEVEL;
+                     efficiencyLevel++) {
+                    output.accept(EfficiencyEnchantedBookHelper.createEfficiencyEnchantedBook(parameters.holders(), efficiencyLevel));
                 }
                 output.accept(ModItems.COBBLESTONE_GEM.get());
                 for (ModItems.TierCobblestoneGem tier : ModItems.TierCobblestoneGem.values()) {
@@ -195,6 +201,7 @@ public class CobblestonexXCompressed {
                 output.accept(ModItems.COBBLESTONE_CENTRIFUGE_ITEM.get());
                 output.accept(ModItems.COBBLESTONE_LASER_DRILL_ITEM.get());
                 output.accept(ModItems.COBBLESTONE_MIXER_ITEM.get());
+                output.accept(ModItems.COBBLESTONE_POWERED_CRAFTER_ITEM.get());
                 output.accept(ModItems.STONE_BREAK_SIMULATOR_ITEM.get());
                 output.accept(ModItems.COBBLESTONE_MELTER_ITEM.get());
                 output.accept(ModItems.COBBLESTONE_ASSEMBLY_MACHINE_ITEM.get());
@@ -409,6 +416,12 @@ public class CobblestonexXCompressed {
         event.registerBlockEntity(
             Capabilities.ItemHandler.BLOCK,
             ModBlockEntities.COBBLESTONE_MIXER_BLOCK_ENTITY.get(),
+            (blockEntity, side) -> blockEntity.getAutomationItemHandler(side)
+        );
+
+        event.registerBlockEntity(
+            Capabilities.ItemHandler.BLOCK,
+            ModBlockEntities.COBBLESTONE_POWERED_CRAFTER_BLOCK_ENTITY.get(),
             (blockEntity, side) -> blockEntity.getAutomationItemHandler(side)
         );
 

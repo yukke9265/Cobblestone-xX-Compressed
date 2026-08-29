@@ -7,6 +7,7 @@ import javax.annotation.Nonnull;
 import com.yukke9265.cobblestone_xx_compressed.CobblestonexXCompressed;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModBlocks;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModItems;
+import com.yukke9265.cobblestone_xx_compressed.util.EfficiencyEnchantedBookHelper;
 import com.yukke9265.cobblestone_xx_compressed.util.FortuneEnchantedBookHelper;
 
 import net.minecraft.core.HolderLookup;
@@ -180,6 +181,14 @@ public class ModRecipeProvider extends RecipeProvider {
             ModBlocks.COBBLESTONE_MIXER.get()
         ),
         new MachineBlockRecipeDefinition(
+            "cobblestone_powered_crafter",
+            ModBlocks.TierCompressedCobblestone.IRON.getBlock().get(),
+            ModItems.TIER_IRON_COBBLESTONE_MOTOR.get(),
+            ModBlocks.TierCobblestoneMachineCasing.IRON.getBlock().get(),
+            ModItems.TierCobblestoneProcessor.IRON.getItem().get(),
+            ModBlocks.COBBLESTONE_POWERED_CRAFTER.get()
+        ),
+        new MachineBlockRecipeDefinition(
             "cobblestone_centrifuge",
             ModBlocks.TierCompressedCobblestone.GOLD.getBlock().get(),
             ModItems.TIER_GOLD_COBBLESTONE_MOTOR.get(),
@@ -288,6 +297,7 @@ public class ModRecipeProvider extends RecipeProvider {
         buildCobblestoneFeCubeRecipes(output);
         buildCobblestoneBreadRecipe(output);
         buildFortuneEnchantedBookRecipes(output);
+        buildEfficiencyEnchantedBookRecipes(output);
         // buildGemRecipes(output); //gemはドロップによる獲得に変更するため、レシピを削除します。
         buildCobblestoneRodRecipes(output);
         buildCobblestonePickaxeRecipes(output);
@@ -369,6 +379,45 @@ public class ModRecipeProvider extends RecipeProvider {
         // ここは「前レベルの幸運本だけ」を素材にしたいので、
         // enchanted_book というアイテム種別だけでなく保存エンチャントの中身まで一致させます。
         return DataComponentIngredient.of(true, FortuneEnchantedBookHelper.createFortuneEnchantedBook(holderLookup, fortuneLevel - 1));
+    }
+
+    private void buildEfficiencyEnchantedBookRecipes(RecipeOutput output) {
+        HolderLookup.Provider holderLookup = this.lookupProvider.join();
+
+        // 効率 4 は本をレッドストーンブロックで囲み、
+        // 効率 5 以降は幸運本と同じ形でシンギュラリティ外周へ置き換えます。
+        for (int efficiencyLevel = EfficiencyEnchantedBookHelper.FIRST_EFFICIENCY_BOOK_LEVEL;
+             efficiencyLevel <= EfficiencyEnchantedBookHelper.LAST_EFFICIENCY_BOOK_LEVEL;
+             efficiencyLevel++) {
+            ItemStack resultBook = EfficiencyEnchantedBookHelper.createEfficiencyEnchantedBook(holderLookup, efficiencyLevel);
+
+            if (efficiencyLevel == EfficiencyEnchantedBookHelper.FIRST_EFFICIENCY_BOOK_LEVEL) {
+                ShapedRecipeBuilder.shaped(RecipeCategory.MISC, resultBook)
+                    .pattern("CCC")
+                    .pattern("CBC")
+                    .pattern("CCC")
+                    .define('C', Items.REDSTONE_BLOCK)
+                    .define('B', Items.BOOK)
+                    .unlockedBy("has_redstone_block", has(Items.REDSTONE_BLOCK))
+                    .save(output, modRecipeId("efficiency_" + efficiencyLevel + "_enchanted_book"));
+                continue;
+            }
+
+            ItemLike singularity = EfficiencyEnchantedBookHelper.getRequiredSingularityTier(efficiencyLevel).getItem().get();
+            ShapedRecipeBuilder.shaped(RecipeCategory.MISC, resultBook)
+                .pattern("CCC")
+                .pattern("CBC")
+                .pattern("CCC")
+                .define('C', singularity)
+                .define('B', createEfficiencyBookBaseIngredient(holderLookup, efficiencyLevel))
+                .unlockedBy("has_" + EfficiencyEnchantedBookHelper.getRequiredSingularityTier(efficiencyLevel).getRegistryName(), has(singularity))
+                .save(output, modRecipeId("efficiency_" + efficiencyLevel + "_enchanted_book"));
+        }
+    }
+
+    private Ingredient createEfficiencyBookBaseIngredient(HolderLookup.Provider holderLookup, int efficiencyLevel) {
+        // 効率 5 以降は「前レベルの効率本だけ」を素材にします。
+        return DataComponentIngredient.of(true, EfficiencyEnchantedBookHelper.createEfficiencyEnchantedBook(holderLookup, efficiencyLevel - 1));
     }
 
     private void buildCompressedCobblestoneRecipes(RecipeOutput output) {

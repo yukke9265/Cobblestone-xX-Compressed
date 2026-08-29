@@ -2044,6 +2044,12 @@ public class ModItems {
             ModBlocks.COBBLESTONE_MIXER,
             TooltipTranslationKeys.machineDescription("cobblestone_mixer"));
 
+    public static final DeferredItem<BlockItem> COBBLESTONE_POWERED_CRAFTER_ITEM =
+        registerDescribedBlockItem(
+            "cobblestone_powered_crafter",
+            ModBlocks.COBBLESTONE_POWERED_CRAFTER,
+            TooltipTranslationKeys.machineDescription("cobblestone_powered_crafter"));
+
     public static final DeferredItem<BlockItem> STONE_BREAK_SIMULATOR_ITEM =
         registerDescribedBlockItem(
             "stone_break_simulator",

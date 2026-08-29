@@ -73,6 +73,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
         registerStandardOnOffMachineBlock(ModBlocks.COBBLESTONE_CENTRIFUGE.get(), "cobblestone_centrifuge");
         registerStandardOnOffMachineBlock(ModBlocks.COBBLESTONE_LASER_DRILL.get(), "cobblestone_laser_drill");
         registerStandardOnOffMachineBlock(ModBlocks.COBBLESTONE_MIXER.get(), "cobblestone_mixer");
+        registerStandardOnOffMachineBlock(ModBlocks.COBBLESTONE_POWERED_CRAFTER.get(), "cobblestone_powered_crafter");
         registerStandardOnOffMachineBlock(ModBlocks.STONE_BREAK_SIMULATOR.get(), "stone_break_simulator");
         registerCobblestoneExtremeCompressorBlock(ModBlocks.COBBLESTONE_EXTREME_COMPRESSOR.get(), "cobblestone_extreme_compressor");
         registerCobblestoneMelterBlock(ModBlocks.COBBLESTONE_MELTER.get(), "cobblestone_melter");

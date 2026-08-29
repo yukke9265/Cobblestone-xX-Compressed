@@ -38,6 +38,7 @@ public class ModBlockTagProvider extends BlockTagsProvider {
             .add(ModBlocks.COBBLESTONE_ENCHANTER.get())
             .add(ModBlocks.COBBLESTONE_CHEMICAL_REACTOR.get())
             .add(ModBlocks.COBBLESTONE_MIXER.get())
+            .add(ModBlocks.COBBLESTONE_POWERED_CRAFTER.get())
             .add(ModBlocks.STONE_BREAK_SIMULATOR.get())
             .add(ModBlocks.COBBLESTONE_FLUID_MIXER.get())
             .add(ModBlocks.COBBLESTONE_REACTION_CHAMBER.get())

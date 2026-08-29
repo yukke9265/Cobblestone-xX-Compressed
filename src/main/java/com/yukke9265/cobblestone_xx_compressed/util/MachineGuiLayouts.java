@@ -269,6 +269,62 @@ public final class MachineGuiLayouts {
         }
     }
 
+    /**
+     * 作業台相当の 3x3 入力。
+     * タイトル・CP スロットと被らないよう、グリッドは少し右下へ置き、
+     * CP バーはグリッド右の空きへ短く配置します。
+     */
+    public static final class PoweredCrafter {
+        public static final int GRID_START_X = 36;
+        public static final int GRID_START_Y = 16;
+        public static final int INPUT_SLOT_1_X = GRID_START_X;
+        public static final int INPUT_SLOT_1_Y = GRID_START_Y;
+        public static final int INPUT_SLOT_2_X = INPUT_SLOT_1_X + SLOT_SIZE;
+        public static final int INPUT_SLOT_2_Y = GRID_START_Y;
+        public static final int INPUT_SLOT_3_X = INPUT_SLOT_2_X + SLOT_SIZE;
+        public static final int INPUT_SLOT_3_Y = GRID_START_Y;
+        public static final int INPUT_SLOT_4_X = GRID_START_X;
+        public static final int INPUT_SLOT_4_Y = GRID_START_Y + SLOT_SIZE;
+        public static final int INPUT_SLOT_5_X = INPUT_SLOT_2_X;
+        public static final int INPUT_SLOT_5_Y = INPUT_SLOT_4_Y;
+        public static final int INPUT_SLOT_6_X = INPUT_SLOT_3_X;
+        public static final int INPUT_SLOT_6_Y = INPUT_SLOT_4_Y;
+        public static final int INPUT_SLOT_7_X = GRID_START_X;
+        public static final int INPUT_SLOT_7_Y = INPUT_SLOT_4_Y + SLOT_SIZE;
+        public static final int INPUT_SLOT_8_X = INPUT_SLOT_2_X;
+        public static final int INPUT_SLOT_8_Y = INPUT_SLOT_7_Y;
+        public static final int INPUT_SLOT_9_X = INPUT_SLOT_3_X;
+        public static final int INPUT_SLOT_9_Y = INPUT_SLOT_7_Y;
+        public static final int POWER_SLOT_X = 10;
+        public static final int POWER_SLOT_Y = 51;
+        public static final int PROGRESS_BAR_X = 104;
+        public static final int PROGRESS_BAR_Y = 34;
+        public static final int PROGRESS_BAR_WIDTH = 16;
+        public static final int PROGRESS_BAR_HEIGHT = 16;
+        public static final int OUTPUT_SLOT_X = 135;
+        public static final int OUTPUT_SLOT_Y = 34;
+        // グリッド右端(40+54=94)の少し右から、本体右端手前まで延ばす。
+        public static final int POWER_BAR_X = 92;
+        public static final int POWER_BAR_Y = 63;
+        public static final int POWER_BAR_WIDTH = 76;
+        public static final int POWER_BAR_HEIGHT = 8;
+        public static final int POWER_LABEL_X = POWER_BAR_X;
+        public static final int POWER_LABEL_Y = POWER_BAR_Y - 10;
+
+        private PoweredCrafter() {
+        }
+
+        public static int getInputSlotX(int gridIndex) {
+            int column = gridIndex % 3;
+            return GRID_START_X + column * SLOT_SIZE;
+        }
+
+        public static int getInputSlotY(int gridIndex) {
+            int row = gridIndex / 3;
+            return GRID_START_Y + row * SLOT_SIZE;
+        }
+    }
+
     public static final class StoneBreakSimulator {
         public static final int INPUT_SLOT_1_X = 36;
         public static final int INPUT_SLOT_1_Y = 25;

@@ -340,23 +340,33 @@ public abstract class PoweredMachineBlockEntityBase<R> extends BaseBlockEntity {
     }
 
     /**
-     * 1 tick で今のレシピを完了したあと、余り CP で追加完了できる回数を返します。
+     * 1 回の progress 完了で行うクラフト回数です。
      *
-     * チップが無いときは 0 です。あるときは tier に応じて +1, +2, +3... と加算します。
+     * 既定は「本処理 1 回 + Parallel Chip の追加回数」です。
+     * Auto Crafter のように既定バッチ×乗算へ変えたい機械だけ override します。
      */
-    protected final int getParallelExtraCraftCount() {
+    protected int getCraftsPerCompletion() {
         ItemStackHandler itemStackHandler = this.getItemStackHandler();
         if (itemStackHandler == null) {
-            return 0;
+            return 1;
         }
 
         int parallelSlotIndex = this.getParallelUpgradeSlotIndex();
         if (parallelSlotIndex < 0 || itemStackHandler.getSlots() <= parallelSlotIndex) {
-            return 0;
+            return 1;
         }
 
         ItemStack parallelStack = itemStackHandler.getStackInSlot(parallelSlotIndex);
-        return MachineUpgradeHelper.getParallelExtraCraftCount(parallelStack);
+        return 1 + MachineUpgradeHelper.getParallelExtraCraftCount(parallelStack);
+    }
+
+    /**
+     * 1 tick で今のレシピを完了したあと、余り CP で追加完了できる回数を返します。
+     *
+     * getCraftsPerCompletion() - 1 です。チップが無い通常機械では 0 になります。
+     */
+    protected final int getParallelExtraCraftCount() {
+        return Math.max(0, this.getCraftsPerCompletion() - 1);
     }
 
     /**

@@ -13,6 +13,9 @@ public final class FilterTargetIds {
     public static final String ITEM_INPUT_4 = "item:input4";
     public static final String ITEM_INPUT_5 = "item:input5";
     public static final String ITEM_INPUT_6 = "item:input6";
+    public static final String ITEM_INPUT_7 = "item:input7";
+    public static final String ITEM_INPUT_8 = "item:input8";
+    public static final String ITEM_INPUT_9 = "item:input9";
     public static final String FLUID_INPUT = "fluid:input";
     public static final String FLUID_INPUT_1 = "fluid:input1";
     public static final String FLUID_INPUT_2 = "fluid:input2";

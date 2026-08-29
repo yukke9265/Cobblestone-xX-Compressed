@@ -18,6 +18,7 @@ import com.yukke9265.cobblestone_xx_compressed.block.CobblestoneFurnaceBlock;
 import com.yukke9265.cobblestone_xx_compressed.block.CobblestoneLaserDrillBlock;
 import com.yukke9265.cobblestone_xx_compressed.block.CobblestoneMelterBlock;
 import com.yukke9265.cobblestone_xx_compressed.block.CobblestoneMixerBlock;
+import com.yukke9265.cobblestone_xx_compressed.block.CobblestonePoweredCrafterBlock;
 import com.yukke9265.cobblestone_xx_compressed.block.CobblestonePoweredFurnaceBlock;
 import com.yukke9265.cobblestone_xx_compressed.block.CobblestoneReactionChamberBlock;
 import com.yukke9265.cobblestone_xx_compressed.block.CobblestoneCrystallizationChamberBlock;
@@ -686,6 +687,14 @@ public class ModBlocks {
         BLOCKS.register(
             "cobblestone_mixer",
             () -> new CobblestoneMixerBlock(
+                createCobblestoneMachineProperties()
+            )
+        );
+
+    public static final DeferredBlock<Block> COBBLESTONE_POWERED_CRAFTER =
+        BLOCKS.register(
+            "cobblestone_powered_crafter",
+            () -> new CobblestonePoweredCrafterBlock(
                 createCobblestoneMachineProperties()
             )
         );
