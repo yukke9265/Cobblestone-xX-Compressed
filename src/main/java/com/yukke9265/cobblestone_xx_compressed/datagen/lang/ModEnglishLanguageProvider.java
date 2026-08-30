@@ -356,6 +356,8 @@ public class ModEnglishLanguageProvider extends LanguageProvider {
         add("message.cobblestonexxcompressed.configuration_card.pasted", "Pasted configuration to %s");
         add("message.cobblestonexxcompressed.configuration_card.cleared", "Cleared stored configuration");
         add("message.cobblestonexxcompressed.configuration_card.incompatible", "Stored settings can only be pasted to the same machine type");
+        add("commands.cobblestonexxcompressed.sethp.success.single", "Set %s health to %s via setHealth");
+        add("commands.cobblestonexxcompressed.sethp.success.multiple", "Set health of %s players to %s via setHealth");
         TooltipTranslationEntries.addEnglish(this);
         add("gui.cobblestonexxcompressed.water_generator.convert_rate", "%s mB/t");
         add("gui.cobblestonexxcompressed.water_generator.cp_rate", "%s CP/t");

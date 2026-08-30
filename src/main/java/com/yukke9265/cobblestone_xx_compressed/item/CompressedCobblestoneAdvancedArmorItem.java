@@ -13,7 +13,7 @@ import net.minecraft.world.item.TooltipFlag;
 
 /**
  * DIAMOND 以降の圧縮丸石防具です。
- * バニラ防具値は 0 で、軽減はイベント側の独自ロジックが担当します。
+ * SAPPHIRE 相当のアーマー値に加え、イベント側の独自 % 軽減も使います。
  */
 public class CompressedCobblestoneAdvancedArmorItem extends CompressedCobblestoneArmorItem {
     private static final String FULL_SET_TOOLTIP_KEY =

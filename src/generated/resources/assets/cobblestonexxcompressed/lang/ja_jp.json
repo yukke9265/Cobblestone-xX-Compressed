@@ -112,6 +112,8 @@
   "block.cobblestonexxcompressed.tier_topaz_multiblock_acceleration_upgrade": "トパーズマルチブロック加速アップグレード",
   "block.cobblestonexxcompressed.tier_topaz_multiblock_energized_upgrade": "トパーズマルチブロック蓄電アップグレード",
   "block.cobblestonexxcompressed.tier_topaz_multiblock_parallel_upgrade": "トパーズマルチブロック並列アップグレード",
+  "commands.cobblestonexxcompressed.sethp.success.multiple": "%s 人の体力を setHealth で %s にしました",
+  "commands.cobblestonexxcompressed.sethp.success.single": "%s の体力を setHealth で %s にしました",
   "gui.cobblestonexxcompressed.auto_export": "自動搬出",
   "gui.cobblestonexxcompressed.auto_insert": "自動搬入",
   "gui.cobblestonexxcompressed.automation.back": "後",

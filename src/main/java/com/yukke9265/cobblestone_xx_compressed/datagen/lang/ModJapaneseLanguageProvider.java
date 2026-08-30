@@ -182,6 +182,8 @@ public class ModJapaneseLanguageProvider extends LanguageProvider {
         add("message.cobblestonexxcompressed.configuration_card.pasted", "%s に設定を貼り付けました");
         add("message.cobblestonexxcompressed.configuration_card.cleared", "保存した設定を消去しました");
         add("message.cobblestonexxcompressed.configuration_card.incompatible", "同じ機械にだけ貼り付けできます");
+        add("commands.cobblestonexxcompressed.sethp.success.single", "%s の体力を setHealth で %s にしました");
+        add("commands.cobblestonexxcompressed.sethp.success.multiple", "%s 人の体力を setHealth で %s にしました");
 
         TooltipTranslationEntries.addJapanese(this);
     }

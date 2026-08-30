@@ -36,8 +36,8 @@ public final class ModArmorMaterials {
      * - 下の「ベース値」「上限値」を ordinal 比例で補間し、バニラ防具として機能します。
      *
      * DIAMOND 以降:
-     * - バニラ防具値は 0 に固定します。
-     * - 被ダメ軽減は {@code CompressedCobblestoneArmorProtectionRules} 側の独自ロジックが担当します。
+     * - バニラ防具値は SAPPHIRE 上限相当を載せ、プロテクション系エンチャントが乗るようにします。
+     * - 追加の % 軽減は {@code CompressedCobblestoneArmorProtectionRules} 側の独自ロジックが担当します。
      */
     public enum CobblestoneArmorMaterial {
         BASE(
@@ -140,13 +140,16 @@ public final class ModArmorMaterials {
             this.repairIngredient = repairIngredient;
 
             if (this.usesCustomProtection()) {
+                // 独自 % 軽減に加えて、SAPPHIRE 相当のアーマー値を残します。
+                // 防御 0 だとアーマー属性が付かないため、プロテクション系が効きません。
                 float advancedProgress = computeAdvancedProgressStep(this.ordinal());
-                this.helmetDefense = 0;
-                this.chestplateDefense = 0;
-                this.leggingsDefense = 0;
-                this.bootsDefense = 0;
+                this.helmetDefense = CAP_HELMET_DEFENSE;
+                this.chestplateDefense = CAP_CHESTPLATE_DEFENSE;
+                this.leggingsDefense = CAP_LEGGINGS_DEFENSE;
+                this.bootsDefense = CAP_BOOTS_DEFENSE;
                 this.enchantmentValue = lerpInt(ADVANCED_ENCHANTMENT_VALUE_BASE, ADVANCED_ENCHANTMENT_VALUE_CAP, advancedProgress);
-                this.toughness = 0.0f;
+                this.toughness = CAP_TOUGHNESS;
+                // ノックバックはイベント側で 100% 無効にするので、素材側は 0 のままです。
                 this.knockbackResistance = 0.0f;
             } else {
                 float vanillaProgress = computeVanillaProgressStep(this.ordinal());
@@ -161,7 +164,7 @@ public final class ModArmorMaterials {
         }
 
         /**
-         * DIAMOND 以降はバニラ防具値を使わず、イベント側で軽減します。
+         * DIAMOND 以降は独自 % 軽減を使い、あわせて SAPPHIRE 相当のアーマー値も持ちます。
          */
         public boolean usesCustomProtection() {
             return this.ordinal() >= ADVANCED_TIER_START_ORDINAL;

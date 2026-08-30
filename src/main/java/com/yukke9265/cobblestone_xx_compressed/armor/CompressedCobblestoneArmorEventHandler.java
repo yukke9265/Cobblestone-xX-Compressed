@@ -9,6 +9,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.common.damagesource.DamageContainer;
@@ -48,7 +49,10 @@ public final class CompressedCobblestoneArmorEventHandler {
         refreshArmorState(event.getEntity());
     }
 
-    @SubscribeEvent
+    /**
+     * シールドプロジェクターより先に軽減し、残りダメだけを肩代わりへ渡します。
+     */
+    @SubscribeEvent(priority = EventPriority.HIGH)
     public static void onIncomingDamage(LivingIncomingDamageEvent event) {
         LivingEntity entity = event.getEntity();
         if (entity.level().isClientSide()) {

@@ -236,6 +236,8 @@
   "cobblestonexxcompressed.configuration.section.cobblestonexxcompressed.common.toml": "Cobblestone xXCompressed Configs",
   "cobblestonexxcompressed.configuration.section.cobblestonexxcompressed.common.toml.title": "Cobblestone xXCompressed Configs",
   "cobblestonexxcompressed.configuration.title": "Cobblestone xXCompressed Configs",
+  "commands.cobblestonexxcompressed.sethp.success.multiple": "Set health of %s players to %s via setHealth",
+  "commands.cobblestonexxcompressed.sethp.success.single": "Set %s health to %s via setHealth",
   "fluid_type.cobblestonexxcompressed.glow_topaz": "Glow Topaz",
   "fluid_type.cobblestonexxcompressed.hot_lava": "Hot Lava",
   "fluid_type.cobblestonexxcompressed.hot_unstable_emerald": "Hot Unstable Emerald",

@@ -23,6 +23,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -343,6 +345,31 @@ public class ShieldProjectorBlockEntity extends PoweredMachineBlockEntityBase<Sh
         return absorbable;
     }
 
+    /**
+     * 肩代わりが効いたときのフィードバック音です。GUI の消音が ON なら鳴らしません。
+     */
+    public void playAbsorbFeedbackSound(Player player) {
+        if (this.isSoundMuted()) {
+            return;
+        }
+
+        Level currentLevel = this.level;
+        if (currentLevel == null || currentLevel.isClientSide()) {
+            return;
+        }
+
+        currentLevel.playSound(
+            null,
+            player.getX(),
+            player.getY(),
+            player.getZ(),
+            SoundEvents.SHIELD_BLOCK,
+            SoundSource.PLAYERS,
+            0.35f,
+            1.15f
+        );
+    }
+
     public long getStoredShield() {
         return this.storedShield;
     }
@@ -397,7 +424,6 @@ public class ShieldProjectorBlockEntity extends PoweredMachineBlockEntityBase<Sh
 
         this.updateTrackerRegistration();
         this.clampStoredShield();
-        this.protectPlayersInRange();
         this.syncShieldToNearbyPlayers();
     }
 
@@ -420,25 +446,6 @@ public class ShieldProjectorBlockEntity extends PoweredMachineBlockEntityBase<Sh
         if (this.storedShield > maxShield) {
             this.storedShield = maxShield;
             this.setChanged();
-        }
-    }
-
-    private void protectPlayersInRange() {
-        if (!this.canProtectPlayers()) {
-            return;
-        }
-
-        List<ServerPlayer> players = ((ServerLevel) this.level).getEntitiesOfClass(
-            ServerPlayer.class,
-            this.createProtectionArea(),
-            player -> this.isPlayerInRange(player) && player.isAlive()
-        );
-
-        for (ServerPlayer player : players) {
-            float maxHealth = player.getMaxHealth();
-            if (player.getHealth() < maxHealth) {
-                player.setHealth(maxHealth);
-            }
         }
     }
 
