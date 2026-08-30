@@ -3,22 +3,19 @@
   "category": "building",
   "key": {
     "A": {
-      "item": "cobblestonexxcompressed:tier_iron_cobblestone_machine_casing"
+      "item": "cobblestonexxcompressed:tier_amethyst_cobblestone_machine_casing"
     },
     "C": {
-      "item": "cobblestonexxcompressed:tier_iron_compressed_cobblestone"
+      "item": "cobblestonexxcompressed:tier_aquamarine_cobblestone_machine_casing"
     },
-    "M": {
-      "item": "cobblestonexxcompressed:tier_iron_cobblestone_motor"
-    },
-    "P": {
-      "item": "cobblestonexxcompressed:tier_iron_cobblestone_processor"
+    "D": {
+      "item": "minecraft:diamond_block"
     }
   },
   "pattern": [
-    "CCC",
-    "MAP",
-    "CCC"
+    "DAD",
+    "ACA",
+    "DAD"
   ],
   "result": {
     "count": 1,

@@ -1,27 +1,27 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_cobblestone_shield_projector": {
-      "conditions": {
-        "items": [
-          {
-            "items": "cobblestonexxcompressed:tier_iron_cobblestone_processor"
-          }
-        ]
-      },
-      "trigger": "minecraft:inventory_changed"
-    },
     "has_the_recipe": {
       "conditions": {
         "recipe": "cobblestonexxcompressed:cobblestone_shield_projector"
       },
       "trigger": "minecraft:recipe_unlocked"
+    },
+    "has_tier_aquamarine_cobblestone_machine_casing": {
+      "conditions": {
+        "items": [
+          {
+            "items": "cobblestonexxcompressed:tier_aquamarine_cobblestone_machine_casing"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
     }
   },
   "requirements": [
     [
       "has_the_recipe",
-      "has_cobblestone_shield_projector"
+      "has_tier_aquamarine_cobblestone_machine_casing"
     ]
   ],
   "rewards": {

@@ -173,14 +173,6 @@ public class ModRecipeProvider extends RecipeProvider {
             ModBlocks.COBBLESTONE_CRUSHER.get()
         ),
         new MachineBlockRecipeDefinition(
-            "cobblestone_shield_projector",
-            ModBlocks.TierCompressedCobblestone.IRON.getBlock().get(),
-            ModItems.TIER_IRON_COBBLESTONE_MOTOR.get(),
-            ModBlocks.TierCobblestoneMachineCasing.IRON.getBlock().get(),
-            ModItems.TierCobblestoneProcessor.IRON.getItem().get(),
-            ModBlocks.COBBLESTONE_SHIELD_PROJECTOR.get()
-        ),
-        new MachineBlockRecipeDefinition(
             "cobblestone_mixer",
             ModBlocks.TierCompressedCobblestone.IRON.getBlock().get(),
             ModItems.TIER_IRON_COBBLESTONE_MOTOR.get(),
@@ -1182,6 +1174,20 @@ public class ModRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_" + recipe.recipeName, has(recipe.processor))
                 .save(output, modRecipeId(recipe.recipeName));
         }
+
+        // シールドプロジェクターは四隅ダイヤモンド、中央アクアマリン casing、残りアメジスト casing です。
+        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ModBlocks.COBBLESTONE_SHIELD_PROJECTOR.get())
+            .pattern("DAD")
+            .pattern("ACA")
+            .pattern("DAD")
+            .define('D', Items.DIAMOND_BLOCK)
+            .define('A', ModBlocks.TierCobblestoneMachineCasing.AMETHYST.getBlock().get())
+            .define('C', ModBlocks.TierCobblestoneMachineCasing.AQUAMARINE.getBlock().get())
+            .unlockedBy(
+                "has_tier_aquamarine_cobblestone_machine_casing",
+                has(ModBlocks.TierCobblestoneMachineCasing.AQUAMARINE.getBlock().get())
+            )
+            .save(output, modRecipeId("cobblestone_shield_projector"));
 
         // Cobblestone Furnace は最序盤で作れる基本機械なので、
         // 圧縮丸石ではなくバニラの丸石とかまどだけで作れるようにします。
