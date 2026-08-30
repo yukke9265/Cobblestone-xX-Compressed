@@ -31,6 +31,7 @@ public class ModJapaneseLanguageProvider extends LanguageProvider {
         addBlock(ModBlocks.COBBLESTONE_POWERED_FURNACE, "丸石動力かまど");
         addBlock(ModBlocks.COBBLESTONE_EXTREME_COMPRESSOR, "丸石エクストリームコンプレッサー");
         addBlock(ModBlocks.COBBLESTONE_CRUSHER, "丸石クラッシャー");
+        addBlock(ModBlocks.SHIELD_PROJECTOR, "シールドプロジェクター");
         addBlock(ModBlocks.COBBLESTONE_CENTRIFUGE, "丸石遠心分離機");
         addBlock(ModBlocks.COBBLESTONE_LASER_DRILL, "丸石レーザードリル");
         addBlock(ModBlocks.COBBLESTONE_MELTER, "丸石溶解機");
@@ -80,6 +81,8 @@ public class ModJapaneseLanguageProvider extends LanguageProvider {
         add("gui.cobblestonexxcompressed.automation.left", "左");
         add("gui.cobblestonexxcompressed.automation.right", "右");
         add("gui.cobblestonexxcompressed.cobblestone_power", "CP");
+        add("gui.cobblestonexxcompressed.shield", "シールド");
+        add("gui.cobblestonexxcompressed.shield_rate", "シールド生成");
         add("gui.cobblestonexxcompressed.fe_energy", "FE エネルギー");
         add("gui.cobblestonexxcompressed.convert_fe_rate", "FE 変換量");
         add("gui.cobblestonexxcompressed.input_fe_rate", "FE 入力量");
@@ -129,6 +132,25 @@ public class ModJapaneseLanguageProvider extends LanguageProvider {
         add("tooltip.cobblestonexxcompressed.cobblestone_generator.catalyst_rate", "機械の丸石スロットに置くと、消費せず %s CP/t を供給します。");
         add("tooltip.cobblestonexxcompressed.cobblestone_parallel_chip.extra", "追加処理 +%s");
         add("tooltip.cobblestonexxcompressed.compressed_cobblestone_pickaxe.stone_break_simulator_bonus", "石破壊シミュレーター: 耐久相当 +%s");
+        add("tooltip.cobblestonexxcompressed.compressed_cobblestone_armor.custom_protection.full_set", "独自防御（4部位）: %s%%");
+        add("tooltip.cobblestonexxcompressed.compressed_cobblestone_armor.custom_protection.piece", "独自防御（この部位）: %s%%");
+        add("tooltip.cobblestonexxcompressed.compressed_cobblestone_armor.knockback_immunity", "ノックバック無効");
+
+        for (ModItems.CompressedCobblestoneArmorPiece piece : ModItems.CompressedCobblestoneArmorPiece.values()) {
+            addItem(
+                ModItems.getBaseCompressedCobblestoneArmor(piece),
+                translateBaseArmorName(piece.getEnglishDisplaySuffix())
+            );
+        }
+        for (ModItems.TierCompressedCobblestoneArmor tier : ModItems.TierCompressedCobblestoneArmor.values()) {
+            for (ModItems.CompressedCobblestoneArmorPiece piece : ModItems.CompressedCobblestoneArmorPiece.values()) {
+                addItem(
+                    tier.getItem(piece),
+                    translateTierArmorName(tier.getEnglishDisplayName(piece), piece.getEnglishDisplaySuffix())
+                );
+            }
+        }
+
         addItem(ModItems.FLYING_STONE, "飛行石");
         add("tooltip.cobblestonexxcompressed.flying_stone.description", "インベントリか装飾品スロットにあるあいだ、クリエイティブ飛行が使えます。バルス!!!!!!");
         add("tooltip.cobblestonexxcompressed.configuration_card.empty", "設定は保存されていません");
@@ -162,5 +184,25 @@ public class ModJapaneseLanguageProvider extends LanguageProvider {
             .replace("Emerald ", "エメラルド")
             .replace("Netherite ", "ネザライト")
             .replace("Obsidian ", "黒曜石");
+    }
+
+    private static String translateBaseArmorName(String englishPieceSuffix) {
+        return "圧縮丸石" + translateArmorPieceSuffix(englishPieceSuffix);
+    }
+
+    private static String translateTierArmorName(String englishDisplayName, String englishPieceSuffix) {
+        return translateTierMaterialPrefix(
+            englishDisplayName.replace("Compressed Cobblestone " + englishPieceSuffix, "圧縮丸石" + translateArmorPieceSuffix(englishPieceSuffix))
+        );
+    }
+
+    private static String translateArmorPieceSuffix(String englishPieceSuffix) {
+        return switch (englishPieceSuffix) {
+            case "Helmet" -> "ヘルメット";
+            case "Chestplate" -> "チェストプレート";
+            case "Leggings" -> "レギンス";
+            case "Boots" -> "ブーツ";
+            default -> englishPieceSuffix;
+        };
     }
 }

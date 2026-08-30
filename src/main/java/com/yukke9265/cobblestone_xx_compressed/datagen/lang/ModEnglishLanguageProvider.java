@@ -114,6 +114,18 @@ public class ModEnglishLanguageProvider extends LanguageProvider {
             addItem(tier.getItem(), tier.getEnglishDisplayName());
         }
 
+        for (ModItems.CompressedCobblestoneArmorPiece piece : ModItems.CompressedCobblestoneArmorPiece.values()) {
+            addItem(
+                ModItems.getBaseCompressedCobblestoneArmor(piece),
+                "Compressed Cobblestone " + piece.getEnglishDisplaySuffix()
+            );
+        }
+        for (ModItems.TierCompressedCobblestoneArmor tier : ModItems.TierCompressedCobblestoneArmor.values()) {
+            for (ModItems.CompressedCobblestoneArmorPiece piece : ModItems.CompressedCobblestoneArmorPiece.values()) {
+                addItem(tier.getItem(piece), tier.getEnglishDisplayName(piece));
+            }
+        }
+
         addItem(ModItems.COBBLESTONE_MOTOR, "Cobblestone Motor");
         for (ModItems.TierCobblestoneMotor tier : ModItems.TierCobblestoneMotor.values()) {
             addItem(tier.getItem(), tier.getEnglishDisplayName());
@@ -211,6 +223,7 @@ public class ModEnglishLanguageProvider extends LanguageProvider {
         // 明示キーで追加して datagen の反映を確認しやすくします。
         add("block.cobblestonexxcompressed.cobblestone_extreme_compressor", "Cobblestone Extreme Compressor");
         addBlock(ModBlocks.COBBLESTONE_CRUSHER, "Cobblestone Crusher");
+        addBlock(ModBlocks.SHIELD_PROJECTOR, "Shield Projector");
         addBlock(ModBlocks.COBBLESTONE_CENTRIFUGE, "Cobblestone Centrifuge");
         addBlock(ModBlocks.COBBLESTONE_LASER_DRILL, "Cobblestone Laser Drill");
         addBlock(ModBlocks.COBBLESTONE_MELTER, "Cobblestone Melter");
@@ -264,6 +277,8 @@ public class ModEnglishLanguageProvider extends LanguageProvider {
         add("gui.cobblestonexxcompressed.automation.left", "Left");
         add("gui.cobblestonexxcompressed.automation.right", "Right");
         add("gui.cobblestonexxcompressed.cobblestone_power", "CP");
+        add("gui.cobblestonexxcompressed.shield", "Shield");
+        add("gui.cobblestonexxcompressed.shield_rate", "Shield Rate");
         add("gui.cobblestonexxcompressed.fe_energy", "FE Energy");
         add("gui.cobblestonexxcompressed.convert_fe_rate", "Convert FE");
         add("gui.cobblestonexxcompressed.input_fe_rate", "Input FE");
@@ -304,6 +319,9 @@ public class ModEnglishLanguageProvider extends LanguageProvider {
         add("tooltip.cobblestonexxcompressed.cobblestone_generator.catalyst_rate", "Place in a machine cobblestone slot to supply %s CP/t without being consumed.");
         add("tooltip.cobblestonexxcompressed.cobblestone_parallel_chip.extra", "+%s extra crafts");
         add("tooltip.cobblestonexxcompressed.compressed_cobblestone_pickaxe.stone_break_simulator_bonus", "Stone Break Simulator: +%s Unbreaking");
+        add("tooltip.cobblestonexxcompressed.compressed_cobblestone_armor.custom_protection.full_set", "Custom Protection (Full Set): %s%%");
+        add("tooltip.cobblestonexxcompressed.compressed_cobblestone_armor.custom_protection.piece", "Custom Protection (This Piece): %s%%");
+        add("tooltip.cobblestonexxcompressed.compressed_cobblestone_armor.knockback_immunity", "Knockback Immunity");
         add("tooltip.cobblestonexxcompressed.flying_stone.description", "Grants creative flight while in your inventory or an accessory slot. Balse!!!!!!");
         add("tooltip.cobblestonexxcompressed.configuration_card.empty", "No configuration stored");
         add("tooltip.cobblestonexxcompressed.configuration_card.stored", "Stored: %s");

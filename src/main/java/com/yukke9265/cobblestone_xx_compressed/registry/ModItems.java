@@ -1,5 +1,7 @@
 package com.yukke9265.cobblestone_xx_compressed.registry;
 
+import java.util.EnumMap;
+
 import com.yukke9265.cobblestone_xx_compressed.CobblestonexXCompressed;
 import com.yukke9265.cobblestone_xx_compressed.blockitem.CobblestoneGeneratorBlockItem;
 import com.yukke9265.cobblestone_xx_compressed.blockitem.CompressedCobblestoneBlockItem;
@@ -9,12 +11,15 @@ import com.yukke9265.cobblestone_xx_compressed.item.FlyingStoneItem;
 import com.yukke9265.cobblestone_xx_compressed.item.CobblestoneAccelerationChipItem;
 import com.yukke9265.cobblestone_xx_compressed.item.CobblestoneEnergizedCubeItem;
 import com.yukke9265.cobblestone_xx_compressed.item.CobblestoneParallelChipItem;
+import com.yukke9265.cobblestone_xx_compressed.item.CompressedCobblestoneAdvancedArmorItem;
+import com.yukke9265.cobblestone_xx_compressed.item.CompressedCobblestoneArmorItem;
 import com.yukke9265.cobblestone_xx_compressed.item.CompressedCobblestonePickaxeItem;
 import com.yukke9265.cobblestone_xx_compressed.util.TooltipTranslationKeys;
 
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.food.FoodProperties;
+import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.PickaxeItem;
@@ -436,6 +441,40 @@ public class ModItems {
         );
     }
 
+    // 防具は耐久値を持たず、不可壊として登録します。
+    private static Item.Properties createCompressedCobblestoneArmorProperties() {
+        return new Item.Properties()
+            .component(net.minecraft.core.component.DataComponents.UNBREAKABLE, new net.minecraft.world.item.component.Unbreakable(true));
+    }
+
+    // 防具もピッケルと同様、性能本体は ModArmorMaterials 側に置きます。
+    // DIAMOND 以降は CompressedCobblestoneAdvancedArmorItem として独自軽減ロジックへ接続します。
+    private static DeferredItem<Item> registerCompressedCobblestoneArmor(
+        String name,
+        ModArmorMaterials.CobblestoneArmorMaterial material,
+        ArmorItem.Type armorType
+    ) {
+        if (material.usesCustomProtection()) {
+            return ITEMS.register(
+                name,
+                () -> new CompressedCobblestoneAdvancedArmorItem(
+                    material,
+                    armorType,
+                    createCompressedCobblestoneArmorProperties()
+                )
+            );
+        }
+
+        return ITEMS.register(
+            name,
+            () -> new CompressedCobblestoneArmorItem(
+                material,
+                armorType,
+                createCompressedCobblestoneArmorProperties()
+            )
+        );
+    }
+
     private static DeferredItem<Item> registerTierCobblestoneMotor(String name) {
         return ITEMS.registerSimpleItem(name, createCobblestoneComponentProperties());
     }
@@ -623,6 +662,71 @@ public class ModItems {
             "compressed_cobblestone_pickaxe",
             ModToolTiers.CobblestonePickaxeMaterial.BASE
         );
+
+    // 圧縮丸石防具の部位一覧です。登録名・英語名・ArmorItem.Type を 1 か所にまとめます。
+    public enum CompressedCobblestoneArmorPiece {
+        HELMET(ArmorItem.Type.HELMET, "helmet", "Helmet"),
+        CHESTPLATE(ArmorItem.Type.CHESTPLATE, "chestplate", "Chestplate"),
+        LEGGINGS(ArmorItem.Type.LEGGINGS, "leggings", "Leggings"),
+        BOOTS(ArmorItem.Type.BOOTS, "boots", "Boots");
+
+        private final ArmorItem.Type armorType;
+        private final String registrySuffix;
+        private final String englishDisplaySuffix;
+
+        CompressedCobblestoneArmorPiece(ArmorItem.Type armorType, String registrySuffix, String englishDisplaySuffix) {
+            this.armorType = armorType;
+            this.registrySuffix = registrySuffix;
+            this.englishDisplaySuffix = englishDisplaySuffix;
+        }
+
+        public ArmorItem.Type getArmorType() {
+            return this.armorType;
+        }
+
+        public String getRegistrySuffix() {
+            return this.registrySuffix;
+        }
+
+        public String getEnglishDisplaySuffix() {
+            return this.englishDisplaySuffix;
+        }
+    }
+
+    // 通常版の圧縮丸石防具一式。性能は ModArmorMaterials.CobblestoneArmorMaterial.BASE を参照します。
+    public static final DeferredItem<Item> COMPRESSED_COBBLESTONE_HELMET =
+        registerCompressedCobblestoneArmor(
+            "compressed_cobblestone_helmet",
+            ModArmorMaterials.CobblestoneArmorMaterial.BASE,
+            ArmorItem.Type.HELMET
+        );
+    public static final DeferredItem<Item> COMPRESSED_COBBLESTONE_CHESTPLATE =
+        registerCompressedCobblestoneArmor(
+            "compressed_cobblestone_chestplate",
+            ModArmorMaterials.CobblestoneArmorMaterial.BASE,
+            ArmorItem.Type.CHESTPLATE
+        );
+    public static final DeferredItem<Item> COMPRESSED_COBBLESTONE_LEGGINGS =
+        registerCompressedCobblestoneArmor(
+            "compressed_cobblestone_leggings",
+            ModArmorMaterials.CobblestoneArmorMaterial.BASE,
+            ArmorItem.Type.LEGGINGS
+        );
+    public static final DeferredItem<Item> COMPRESSED_COBBLESTONE_BOOTS =
+        registerCompressedCobblestoneArmor(
+            "compressed_cobblestone_boots",
+            ModArmorMaterials.CobblestoneArmorMaterial.BASE,
+            ArmorItem.Type.BOOTS
+        );
+
+    public static DeferredItem<Item> getBaseCompressedCobblestoneArmor(CompressedCobblestoneArmorPiece piece) {
+        return switch (piece) {
+            case HELMET -> COMPRESSED_COBBLESTONE_HELMET;
+            case CHESTPLATE -> COMPRESSED_COBBLESTONE_CHESTPLATE;
+            case LEGGINGS -> COMPRESSED_COBBLESTONE_LEGGINGS;
+            case BOOTS -> COMPRESSED_COBBLESTONE_BOOTS;
+        };
+    }
 
     public static final DeferredItem<Item> COBBLESTONE_MOTOR =
         ITEMS.registerSimpleItem("cobblestone_motor", createCobblestoneComponentProperties());
@@ -826,6 +930,115 @@ public class ModItems {
 
         private void setItem(DeferredItem<Item> item) {
             this.item = item;
+        }
+    }
+
+    // 圧縮丸石防具の tier 版です。
+    // 登録名・英語名・性能素材を 1 か所にまとめ、lang / model / recipe / creative tab から同じ順で使います。
+    public enum TierCompressedCobblestoneArmor {
+        COPPER(
+            "tier_copper_compressed_cobblestone",
+            "Copper Compressed Cobblestone",
+            ModArmorMaterials.CobblestoneArmorMaterial.COPPER
+        ),
+        IRON(
+            "tier_iron_compressed_cobblestone",
+            "Iron Compressed Cobblestone",
+            ModArmorMaterials.CobblestoneArmorMaterial.IRON
+        ),
+        GOLD(
+            "tier_gold_compressed_cobblestone",
+            "Gold Compressed Cobblestone",
+            ModArmorMaterials.CobblestoneArmorMaterial.GOLD
+        ),
+        AMETHYST(
+            "tier_amethyst_compressed_cobblestone",
+            "Amethyst Compressed Cobblestone",
+            ModArmorMaterials.CobblestoneArmorMaterial.AMETHYST
+        ),
+        AQUAMARINE(
+            "tier_aquamarine_compressed_cobblestone",
+            "Aquamarine Compressed Cobblestone",
+            ModArmorMaterials.CobblestoneArmorMaterial.AQUAMARINE
+        ),
+        TOPAZ(
+            "tier_topaz_compressed_cobblestone",
+            "Topaz Compressed Cobblestone",
+            ModArmorMaterials.CobblestoneArmorMaterial.TOPAZ
+        ),
+        RUBY(
+            "tier_ruby_compressed_cobblestone",
+            "Ruby Compressed Cobblestone",
+            ModArmorMaterials.CobblestoneArmorMaterial.RUBY
+        ),
+        SAPPHIRE(
+            "tier_sapphire_compressed_cobblestone",
+            "Sapphire Compressed Cobblestone",
+            ModArmorMaterials.CobblestoneArmorMaterial.SAPPHIRE
+        ),
+        DIAMOND(
+            "tier_diamond_compressed_cobblestone",
+            "Diamond Compressed Cobblestone",
+            ModArmorMaterials.CobblestoneArmorMaterial.DIAMOND
+        ),
+        EMERALD(
+            "tier_emerald_compressed_cobblestone",
+            "Emerald Compressed Cobblestone",
+            ModArmorMaterials.CobblestoneArmorMaterial.EMERALD
+        ),
+        NETHERITE(
+            "tier_netherite_compressed_cobblestone",
+            "Netherite Compressed Cobblestone",
+            ModArmorMaterials.CobblestoneArmorMaterial.NETHERITE
+        ),
+        OBSIDIAN(
+            "tier_obsidian_compressed_cobblestone",
+            "Obsidian Compressed Cobblestone",
+            ModArmorMaterials.CobblestoneArmorMaterial.OBSIDIAN
+        );
+
+        private final String registryPrefix;
+        private final String englishDisplayPrefix;
+        private final ModArmorMaterials.CobblestoneArmorMaterial material;
+        private final EnumMap<CompressedCobblestoneArmorPiece, DeferredItem<Item>> items =
+            new EnumMap<>(CompressedCobblestoneArmorPiece.class);
+
+        TierCompressedCobblestoneArmor(
+            String registryPrefix,
+            String englishDisplayPrefix,
+            ModArmorMaterials.CobblestoneArmorMaterial material
+        ) {
+            this.registryPrefix = registryPrefix;
+            this.englishDisplayPrefix = englishDisplayPrefix;
+            this.material = material;
+        }
+
+        public String getRegistryPrefix() {
+            return this.registryPrefix;
+        }
+
+        public String getEnglishDisplayPrefix() {
+            return this.englishDisplayPrefix;
+        }
+
+        public ModArmorMaterials.CobblestoneArmorMaterial getMaterial() {
+            return this.material;
+        }
+
+        public String getRegistryName(CompressedCobblestoneArmorPiece piece) {
+            return this.registryPrefix + "_" + piece.getRegistrySuffix();
+        }
+
+        public String getEnglishDisplayName(CompressedCobblestoneArmorPiece piece) {
+            return this.englishDisplayPrefix + " " + piece.getEnglishDisplaySuffix();
+        }
+
+        public DeferredItem<Item> getItem(CompressedCobblestoneArmorPiece piece) {
+            return this.items.get(piece);
+        }
+
+        private void setItem(CompressedCobblestoneArmorPiece piece, DeferredItem<Item> item) {
+            this.items.put(piece, item);
         }
     }
 
@@ -1378,6 +1591,21 @@ public class ModItems {
     static {
         for (TierCompressedCobblestonePickaxe tier : TierCompressedCobblestonePickaxe.values()) {
             tier.setItem(registerCobblestonePickaxe(tier.getRegistryName(), tier.getMaterial()));
+        }
+    }
+
+    static {
+        for (TierCompressedCobblestoneArmor tier : TierCompressedCobblestoneArmor.values()) {
+            for (CompressedCobblestoneArmorPiece piece : CompressedCobblestoneArmorPiece.values()) {
+                tier.setItem(
+                    piece,
+                    registerCompressedCobblestoneArmor(
+                        tier.getRegistryName(piece),
+                        tier.getMaterial(),
+                        piece.getArmorType()
+                    )
+                );
+            }
         }
     }
 
@@ -2030,6 +2258,12 @@ public class ModItems {
             "cobblestone_crusher",
             ModBlocks.COBBLESTONE_CRUSHER,
             TooltipTranslationKeys.machineDescription("cobblestone_crusher"));
+
+    public static final DeferredItem<BlockItem> SHIELD_PROJECTOR_ITEM =
+        registerDescribedBlockItem(
+            "shield_projector",
+            ModBlocks.SHIELD_PROJECTOR,
+            TooltipTranslationKeys.machineDescription("shield_projector"));
 
     public static final DeferredItem<BlockItem> COBBLESTONE_FE_GENERATOR_ITEM =
         registerDescribedBlockItem(

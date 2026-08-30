@@ -10,6 +10,12 @@ alwaysApply: true
 ## Environment
 - Java 21 / Minecraft 1.21.1 / NeoForge 1.21.1
 
+## Mod overview
+- `cobblestone-xx-compressed`(略称: CXC 丸石工業)
+  - 圧縮丸石をメインとして、機械などを追加するモッド
+- `stone-io-network`(略称: SION)
+  - シンプルな輸送系mod
+
 ## Response Style
 - 日本語・簡潔。先に結論。Java 初心者向けに順序立てて説明する。
 

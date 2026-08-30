@@ -15,6 +15,7 @@ import net.minecraft.data.tags.TagsProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
@@ -54,6 +55,15 @@ public class ModItemTagProvider extends ItemTagsProvider {
             this.addPickaxeTags(tier.getItem());
         }
 
+        for (ModItems.CompressedCobblestoneArmorPiece piece : ModItems.CompressedCobblestoneArmorPiece.values()) {
+            this.addArmorTags(ModItems.getBaseCompressedCobblestoneArmor(piece), piece.getArmorType());
+        }
+        for (ModItems.TierCompressedCobblestoneArmor tier : ModItems.TierCompressedCobblestoneArmor.values()) {
+            for (ModItems.CompressedCobblestoneArmorPiece piece : ModItems.CompressedCobblestoneArmorPiece.values()) {
+                this.addArmorTags(tier.getItem(piece), piece.getArmorType());
+            }
+        }
+
         // 装飾品スロット mod は「そのスロット用タグに入っているアイテム」だけ装備できます。
         // チャーム枠が一般的なので、Curios と Accessories の両方へ入れておきます。
         Item flyingStone = Objects.requireNonNull(ModItems.FLYING_STONE.get());
@@ -73,6 +83,34 @@ public class ModItemTagProvider extends ItemTagsProvider {
     private void addOptionalAe2ItemTag(String tagPath, String ae2ItemPath) {
         this.tag(this.createItemTag(CobblestonexXCompressed.MODID, tagPath))
             .addOptional(ResourceLocation.fromNamespaceAndPath("ae2", ae2ItemPath));
+    }
+
+    @SuppressWarnings("null")
+    private void addArmorTags(DeferredItem<Item> armorItem, ArmorItem.Type armorType) {
+        Item item = Objects.requireNonNull(armorItem.get());
+
+        switch (armorType) {
+            case HELMET -> {
+                this.tag(ItemTags.HEAD_ARMOR).add(item);
+                this.tag(ItemTags.HEAD_ARMOR_ENCHANTABLE).add(item);
+            }
+            case CHESTPLATE -> {
+                this.tag(ItemTags.CHEST_ARMOR).add(item);
+                this.tag(ItemTags.CHEST_ARMOR_ENCHANTABLE).add(item);
+            }
+            case LEGGINGS -> {
+                this.tag(ItemTags.LEG_ARMOR).add(item);
+                this.tag(ItemTags.LEG_ARMOR_ENCHANTABLE).add(item);
+            }
+            case BOOTS -> {
+                this.tag(ItemTags.FOOT_ARMOR).add(item);
+                this.tag(ItemTags.FOOT_ARMOR_ENCHANTABLE).add(item);
+            }
+            default -> {
+            }
+        }
+
+        this.tag(ItemTags.ARMOR_ENCHANTABLE).add(item);
     }
 
     @SuppressWarnings("null")

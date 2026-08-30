@@ -173,6 +173,14 @@ public class ModRecipeProvider extends RecipeProvider {
             ModBlocks.COBBLESTONE_CRUSHER.get()
         ),
         new MachineBlockRecipeDefinition(
+            "shield_projector",
+            ModBlocks.TierCompressedCobblestone.IRON.getBlock().get(),
+            ModItems.TIER_IRON_COBBLESTONE_MOTOR.get(),
+            ModBlocks.TierCobblestoneMachineCasing.IRON.getBlock().get(),
+            ModItems.TierCobblestoneProcessor.IRON.getItem().get(),
+            ModBlocks.SHIELD_PROJECTOR.get()
+        ),
+        new MachineBlockRecipeDefinition(
             "cobblestone_mixer",
             ModBlocks.TierCompressedCobblestone.IRON.getBlock().get(),
             ModItems.TIER_IRON_COBBLESTONE_MOTOR.get(),
@@ -301,6 +309,7 @@ public class ModRecipeProvider extends RecipeProvider {
         // buildGemRecipes(output); //gemはドロップによる獲得に変更するため、レシピを削除します。
         buildCobblestoneRodRecipes(output);
         buildCobblestonePickaxeRecipes(output);
+        buildCobblestoneArmorRecipes(output);
         buildCobblestoneWireRecipes(output);
         buildCobblestoneCircuitRecipes(output);
         buildCobblestoneCircuitPackageRecipes(output);
@@ -323,6 +332,7 @@ public class ModRecipeProvider extends RecipeProvider {
         CobblestonePoweredFurnaceRecipeDatagen.register(output);
         CobblestoneExtremeCompressorRecipeDatagen.register(output);
         CobblestoneCrusherRecipeDatagen.register(output);
+        ShieldProjectorRecipeDatagen.register(output);
         CobblestoneCentrifugeRecipeDatagen.register(output);
         CobblestoneLaserDrillRecipeDatagen.register(output);
         CobblestoneMelterRecipeDatagen.register(output);
@@ -672,6 +682,73 @@ public class ModRecipeProvider extends RecipeProvider {
                 .define('R', rod)
                 .unlockedBy("has_" + tier.getRegistryName() + "_head", has(compressedCobblestone))
                 .save(output, modRecipeId(tier.getRegistryName()));
+        }
+    }
+
+    private void buildCobblestoneArmorRecipes(RecipeOutput output) {
+        // バニラ鉄防具と同じ形です。素材だけ圧縮丸石（tier 版は対応 tier の圧縮丸石）に差し替えます。
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, ModItems.COMPRESSED_COBBLESTONE_HELMET.get())
+            .pattern("CCC")
+            .pattern("C C")
+            .define('C', ModItems.COMPRESSED_COBBLESTONE_ITEM.get())
+            .unlockedBy("has_compressed_cobblestone", has(ModItems.COMPRESSED_COBBLESTONE_ITEM.get()))
+            .save(output, modRecipeId("compressed_cobblestone_helmet"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, ModItems.COMPRESSED_COBBLESTONE_CHESTPLATE.get())
+            .pattern("C C")
+            .pattern("CCC")
+            .pattern("CCC")
+            .define('C', ModItems.COMPRESSED_COBBLESTONE_ITEM.get())
+            .unlockedBy("has_compressed_cobblestone", has(ModItems.COMPRESSED_COBBLESTONE_ITEM.get()))
+            .save(output, modRecipeId("compressed_cobblestone_chestplate"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, ModItems.COMPRESSED_COBBLESTONE_LEGGINGS.get())
+            .pattern("CCC")
+            .pattern("C C")
+            .pattern("C C")
+            .define('C', ModItems.COMPRESSED_COBBLESTONE_ITEM.get())
+            .unlockedBy("has_compressed_cobblestone", has(ModItems.COMPRESSED_COBBLESTONE_ITEM.get()))
+            .save(output, modRecipeId("compressed_cobblestone_leggings"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, ModItems.COMPRESSED_COBBLESTONE_BOOTS.get())
+            .pattern("C C")
+            .pattern("C C")
+            .define('C', ModItems.COMPRESSED_COBBLESTONE_ITEM.get())
+            .unlockedBy("has_compressed_cobblestone", has(ModItems.COMPRESSED_COBBLESTONE_ITEM.get()))
+            .save(output, modRecipeId("compressed_cobblestone_boots"));
+
+        for (ModItems.TierCompressedCobblestoneArmor tier : ModItems.TierCompressedCobblestoneArmor.values()) {
+            ItemLike compressedCobblestone = ModItems.TierCompressedCobblestoneItem.valueOf(tier.name()).getItem().get();
+
+            ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, tier.getItem(ModItems.CompressedCobblestoneArmorPiece.HELMET).get())
+                .pattern("CCC")
+                .pattern("C C")
+                .define('C', compressedCobblestone)
+                .unlockedBy("has_" + tier.getRegistryPrefix(), has(compressedCobblestone))
+                .save(output, modRecipeId(tier.getRegistryName(ModItems.CompressedCobblestoneArmorPiece.HELMET)));
+
+            ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, tier.getItem(ModItems.CompressedCobblestoneArmorPiece.CHESTPLATE).get())
+                .pattern("C C")
+                .pattern("CCC")
+                .pattern("CCC")
+                .define('C', compressedCobblestone)
+                .unlockedBy("has_" + tier.getRegistryPrefix(), has(compressedCobblestone))
+                .save(output, modRecipeId(tier.getRegistryName(ModItems.CompressedCobblestoneArmorPiece.CHESTPLATE)));
+
+            ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, tier.getItem(ModItems.CompressedCobblestoneArmorPiece.LEGGINGS).get())
+                .pattern("CCC")
+                .pattern("C C")
+                .pattern("C C")
+                .define('C', compressedCobblestone)
+                .unlockedBy("has_" + tier.getRegistryPrefix(), has(compressedCobblestone))
+                .save(output, modRecipeId(tier.getRegistryName(ModItems.CompressedCobblestoneArmorPiece.LEGGINGS)));
+
+            ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, tier.getItem(ModItems.CompressedCobblestoneArmorPiece.BOOTS).get())
+                .pattern("C C")
+                .pattern("C C")
+                .define('C', compressedCobblestone)
+                .unlockedBy("has_" + tier.getRegistryPrefix(), has(compressedCobblestone))
+                .save(output, modRecipeId(tier.getRegistryName(ModItems.CompressedCobblestoneArmorPiece.BOOTS)));
         }
     }
 

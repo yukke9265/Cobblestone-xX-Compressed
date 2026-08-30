@@ -18,6 +18,7 @@ import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneMelterRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneMixerRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestonePoweredFurnaceRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneReactionChamberRecipe;
+import com.yukke9265.cobblestone_xx_compressed.recipe.ShieldProjectorRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.StoneBreakSimulatorRecipe;
 
 import net.minecraft.data.recipes.RecipeOutput;
@@ -503,6 +504,22 @@ final class MachineRecipeOutputHelper {
         );
 
         output.accept(modRecipeId("cobblestone_fluid_mixer/" + recipeName), recipe, null);
+    }
+
+    public static void saveShieldProjectorRecipe(
+        RecipeOutput output,
+        String recipeName,
+        long totalCobblestonePower,
+        long cobblestonePowerPerTick,
+        long shieldOutput
+    ) {
+        ShieldProjectorRecipe recipe = new ShieldProjectorRecipe(
+            totalCobblestonePower,
+            cobblestonePowerPerTick,
+            shieldOutput
+        );
+
+        output.accept(modRecipeId("shield_projector/" + recipeName), recipe, null);
     }
 
     private static ResourceLocation modRecipeId(String path) {

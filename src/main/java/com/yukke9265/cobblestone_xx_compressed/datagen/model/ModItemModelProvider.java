@@ -124,6 +124,15 @@ public class ModItemModelProvider extends ItemModelProvider {
             registerCompressedCobblestonePickaxeItemModel(tier.getItem());
         }
 
+        for (ModItems.CompressedCobblestoneArmorPiece piece : ModItems.CompressedCobblestoneArmorPiece.values()) {
+            registerCompressedCobblestoneArmorItemModel(ModItems.getBaseCompressedCobblestoneArmor(piece));
+        }
+        for (ModItems.TierCompressedCobblestoneArmor tier : ModItems.TierCompressedCobblestoneArmor.values()) {
+            for (ModItems.CompressedCobblestoneArmorPiece piece : ModItems.CompressedCobblestoneArmorPiece.values()) {
+                registerCompressedCobblestoneArmorItemModel(tier.getItem(piece));
+            }
+        }
+
         registerCobblestoneMotorItemModel(ModItems.COBBLESTONE_MOTOR);
 
         for (ModItems.TierCobblestoneMotor tier : ModItems.TierCobblestoneMotor.values()) {
@@ -254,6 +263,11 @@ public class ModItemModelProvider extends ItemModelProvider {
     // ツールは generated ではなく handheld を親にすると、手持ち時の持ち方がピッケルらしくなります。
     private void registerCompressedCobblestonePickaxeItemModel(DeferredItem<Item> item) {
         registerHandheldItemModel(item, "compressed_cobblestone_pickaxe");
+    }
+
+    // 防具アイテムは generated モデルで、登録名と同じ PNG を layer0 に使います。
+    private void registerCompressedCobblestoneArmorItemModel(DeferredItem<Item> item) {
+        registerGeneratedItemModel(item, "compressed_cobblestone_armor");
     }
 
     private void registerCobblestoneMotorItemModel(DeferredItem<Item> item) {

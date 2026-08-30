@@ -63,6 +63,11 @@ public class ModBlockStateProvider extends BlockStateProvider {
         registerStandardOnOffMachineBlock(ModBlocks.COBBLESTONE_FURNACE.get(), "cobblestone_furnace");
         registerStandardOnOffMachineBlock(ModBlocks.COBBLESTONE_POWERED_FURNACE.get(), "cobblestone_powered_furnace");
         registerStandardOnOffMachineBlock(ModBlocks.COBBLESTONE_CRUSHER.get(), "cobblestone_crusher");
+        registerStandardOnOffMachineBlockWithSharedTextures(
+            ModBlocks.SHIELD_PROJECTOR.get(),
+            "shield_projector",
+            "cobblestone_fe_generator"
+        );
         registerStandardOnOffMachineBlock(ModBlocks.COBBLESTONE_FE_GENERATOR.get(), "cobblestone_fe_generator");
         registerCobblestoneFeCubeBlock(ModBlocks.COBBLESTONE_FE_CUBE.get(), "cobblestone_fe_cube", "cobblestone_fe_cube");
 

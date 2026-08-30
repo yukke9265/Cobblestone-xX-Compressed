@@ -5,6 +5,7 @@ import java.util.function.Supplier;
 import com.yukke9265.cobblestone_xx_compressed.CobblestonexXCompressed;
 import com.yukke9265.cobblestone_xx_compressed.blockentity.CobblestoneGeneratorBlockEntity;
 import com.yukke9265.cobblestone_xx_compressed.blockentity.CobblestoneCrusherBlockEntity;
+import com.yukke9265.cobblestone_xx_compressed.blockentity.ShieldProjectorBlockEntity;
 import com.yukke9265.cobblestone_xx_compressed.blockentity.CobblestoneCentrifugeBlockEntity;
 import com.yukke9265.cobblestone_xx_compressed.blockentity.CobblestoneAssemblyMachineBlockEntity;
 import com.yukke9265.cobblestone_xx_compressed.blockentity.CobblestoneChemicalReactorBlockEntity;
@@ -70,6 +71,15 @@ public class ModBlockEntities {
             () -> BlockEntityType.Builder.of(
                 CobblestoneCrusherBlockEntity::new,
                 ModBlocks.COBBLESTONE_CRUSHER.get()
+            ).build(null)
+        );
+
+    public static final Supplier<BlockEntityType<ShieldProjectorBlockEntity>> SHIELD_PROJECTOR_BLOCK_ENTITY =
+        BLOCK_ENTITY_TYPES.register(
+            "shield_projector",
+            () -> BlockEntityType.Builder.of(
+                ShieldProjectorBlockEntity::new,
+                ModBlocks.SHIELD_PROJECTOR.get()
             ).build(null)
         );
 

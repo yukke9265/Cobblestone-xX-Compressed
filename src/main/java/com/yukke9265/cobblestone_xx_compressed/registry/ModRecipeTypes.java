@@ -4,6 +4,7 @@ import java.util.function.Supplier;
 
 import com.yukke9265.cobblestone_xx_compressed.CobblestonexXCompressed;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneCrusherRecipe;
+import com.yukke9265.cobblestone_xx_compressed.recipe.ShieldProjectorRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneCentrifugeRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneAssemblyMachineRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneChemicalReactorRecipe;
@@ -39,6 +40,9 @@ public class ModRecipeTypes {
 
     public static final Supplier<RecipeType<CobblestoneCrusherRecipe>> COBBLESTONE_CRUSHER =
         RECIPE_TYPES.register("cobblestone_crusher", RecipeType::simple);
+
+    public static final Supplier<RecipeType<ShieldProjectorRecipe>> SHIELD_PROJECTOR =
+        RECIPE_TYPES.register("shield_projector", RecipeType::simple);
 
     public static final Supplier<RecipeType<CobblestoneCentrifugeRecipe>> COBBLESTONE_CENTRIFUGE =
         RECIPE_TYPES.register("cobblestone_centrifuge", RecipeType::simple);

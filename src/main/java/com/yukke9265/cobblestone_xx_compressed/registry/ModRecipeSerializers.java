@@ -4,6 +4,7 @@ import java.util.function.Supplier;
 
 import com.yukke9265.cobblestone_xx_compressed.CobblestonexXCompressed;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneCrusherRecipe;
+import com.yukke9265.cobblestone_xx_compressed.recipe.ShieldProjectorRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneCentrifugeRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneAssemblyMachineRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneChemicalReactorRecipe;
@@ -91,6 +92,22 @@ public class ModRecipeSerializers {
                 @Override
                 public StreamCodec<RegistryFriendlyByteBuf, CobblestoneCrusherRecipe> streamCodec() {
                     return CobblestoneCrusherRecipe.STREAM_CODEC;
+                }
+            }
+        );
+
+    public static final Supplier<RecipeSerializer<ShieldProjectorRecipe>> SHIELD_PROJECTOR =
+        RECIPE_SERIALIZERS.register(
+            "shield_projector",
+            () -> new RecipeSerializer<ShieldProjectorRecipe>() {
+                @Override
+                public MapCodec<ShieldProjectorRecipe> codec() {
+                    return ShieldProjectorRecipe.CODEC;
+                }
+
+                @Override
+                public StreamCodec<RegistryFriendlyByteBuf, ShieldProjectorRecipe> streamCodec() {
+                    return ShieldProjectorRecipe.STREAM_CODEC;
                 }
             }
         );

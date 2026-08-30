@@ -2,6 +2,7 @@ package com.yukke9265.cobblestone_xx_compressed.registry;
 
 import com.yukke9265.cobblestone_xx_compressed.CobblestonexXCompressed;
 import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneCrusherMenu;
+import com.yukke9265.cobblestone_xx_compressed.menu.ShieldProjectorMenu;
 import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneCentrifugeMenu;
 import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneAssemblyMachineMenu;
 import com.yukke9265.cobblestone_xx_compressed.menu.CobblestoneChemicalReactorMenu;
@@ -57,6 +58,12 @@ public class ModMenuType {
         MENU_TYPES.register(
             "cobblestone_crusher_menu",
             () -> IMenuTypeExtension.create(CobblestoneCrusherMenu::new)
+        );
+
+    public static final Supplier<MenuType<ShieldProjectorMenu>> SHIELD_PROJECTOR_MENU =
+        MENU_TYPES.register(
+            "shield_projector_menu",
+            () -> IMenuTypeExtension.create(ShieldProjectorMenu::new)
         );
 
     public static final Supplier<MenuType<CobblestoneFEGeneratorMenu>> COBBLESTONE_FE_GENERATOR_MENU =

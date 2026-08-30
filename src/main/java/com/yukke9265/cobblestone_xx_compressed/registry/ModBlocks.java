@@ -5,6 +5,7 @@ import java.util.function.Supplier;
 import com.yukke9265.cobblestone_xx_compressed.CobblestonexXCompressed;
 import com.yukke9265.cobblestone_xx_compressed.block.CobblestoneGeneratorBlock;
 import com.yukke9265.cobblestone_xx_compressed.block.CobblestoneCrusherBlock;
+import com.yukke9265.cobblestone_xx_compressed.block.ShieldProjectorBlock;
 import com.yukke9265.cobblestone_xx_compressed.block.CobblestoneCentrifugeBlock;
 import com.yukke9265.cobblestone_xx_compressed.block.CobblestoneAssemblyMachineBlock;
 import com.yukke9265.cobblestone_xx_compressed.block.CobblestoneChemicalReactorBlock;
@@ -655,6 +656,14 @@ public class ModBlocks {
         BLOCKS.register(
             "cobblestone_crusher",
             () -> new CobblestoneCrusherBlock(
+                createCobblestoneMachineProperties()
+            )
+        );
+
+    public static final DeferredBlock<Block> SHIELD_PROJECTOR =
+        BLOCKS.register(
+            "shield_projector",
+            () -> new ShieldProjectorBlock(
                 createCobblestoneMachineProperties()
             )
         );

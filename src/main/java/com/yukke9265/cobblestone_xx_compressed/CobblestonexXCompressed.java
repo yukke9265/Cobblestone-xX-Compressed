@@ -8,6 +8,9 @@ import com.yukke9265.cobblestone_xx_compressed.datagen.ModDatagen;
 import com.yukke9265.cobblestone_xx_compressed.multiblock.MultiblockCellType;
 import com.yukke9265.cobblestone_xx_compressed.multiblock.MultiblockFormIndex;
 import com.yukke9265.cobblestone_xx_compressed.network.SetFilterGhostPayload;
+import com.yukke9265.cobblestone_xx_compressed.network.ShieldProjectorHudPayload;
+import com.yukke9265.cobblestone_xx_compressed.registry.ModArmorMaterials;
+import com.yukke9265.cobblestone_xx_compressed.registry.ModAttachmentTypes;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModBlockEntities;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModBlocks;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModFluidTypes;
@@ -161,6 +164,14 @@ public class CobblestonexXCompressed {
                 for (ModItems.TierCompressedCobblestonePickaxe tier : ModItems.TierCompressedCobblestonePickaxe.values()) {
                     output.accept(tier.getItem().get());
                 }
+                for (ModItems.CompressedCobblestoneArmorPiece piece : ModItems.CompressedCobblestoneArmorPiece.values()) {
+                    output.accept(ModItems.getBaseCompressedCobblestoneArmor(piece).get());
+                }
+                for (ModItems.TierCompressedCobblestoneArmor tier : ModItems.TierCompressedCobblestoneArmor.values()) {
+                    for (ModItems.CompressedCobblestoneArmorPiece piece : ModItems.CompressedCobblestoneArmorPiece.values()) {
+                        output.accept(tier.getItem(piece).get());
+                    }
+                }
                 output.accept(ModItems.COBBLESTONE_MOTOR.get());
                 for (ModItems.TierCobblestoneMotor tier : ModItems.TierCobblestoneMotor.values()) {
                     output.accept(tier.getItem().get());
@@ -197,6 +208,7 @@ public class CobblestonexXCompressed {
                 output.accept(ModItems.COBBLESTONE_POWERED_FURNACE_ITEM.get());
                 output.accept(ModItems.COBBLESTONE_EXTREME_COMPRESSOR_ITEM.get());
                 output.accept(ModItems.COBBLESTONE_CRUSHER_ITEM.get());
+                output.accept(ModItems.SHIELD_PROJECTOR_ITEM.get());
                 output.accept(ModItems.COBBLESTONE_FE_GENERATOR_ITEM.get());
                 output.accept(ModItems.COBBLESTONE_CENTRIFUGE_ITEM.get());
                 output.accept(ModItems.COBBLESTONE_LASER_DRILL_ITEM.get());
@@ -267,6 +279,12 @@ public class CobblestonexXCompressed {
         // タブが登録されるように Deferred Register を mod イベントバスへ登録します
         CREATIVE_MODE_TABS.register(modEventBus);
 
+        // 防具素材は Item より先に登録しておきます。
+        ModArmorMaterials.ARMOR_MATERIALS.register(modEventBus);
+
+        // 防具状態キャッシュ用 Attachment も Item より先に登録します。
+        ModAttachmentTypes.ATTACHMENT_TYPES.register(modEventBus);
+
         //ModItemsクラスのアイテムも登録します
         ModItems.ITEMS.register(modEventBus);
 
@@ -322,6 +340,11 @@ public class CobblestonexXCompressed {
             SetFilterGhostPayload.STREAM_CODEC,
             SetFilterGhostPayload::handle
         );
+        registrar.playToClient(
+            ShieldProjectorHudPayload.TYPE,
+            ShieldProjectorHudPayload.STREAM_CODEC,
+            ShieldProjectorHudPayload::handle
+        );
     }
 
     private void registerCapabilities(RegisterCapabilitiesEvent event) {
@@ -356,6 +379,12 @@ public class CobblestonexXCompressed {
         event.registerBlockEntity(
             Capabilities.ItemHandler.BLOCK,
             ModBlockEntities.COBBLESTONE_CRUSHER_BLOCK_ENTITY.get(),
+            (blockEntity, side) -> blockEntity.getAutomationItemHandler(side)
+        );
+
+        event.registerBlockEntity(
+            Capabilities.ItemHandler.BLOCK,
+            ModBlockEntities.SHIELD_PROJECTOR_BLOCK_ENTITY.get(),
             (blockEntity, side) -> blockEntity.getAutomationItemHandler(side)
         );
 

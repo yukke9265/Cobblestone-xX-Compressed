@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "C": {
+      "item": "cobblestonexxcompressed:tier_ruby_compressed_cobblestone"
+    }
+  },
+  "pattern": [
+    "CCC",
+    "C C"
+  ],
+  "result": {
+    "count": 1,
+    "id": "cobblestonexxcompressed:tier_ruby_compressed_cobblestone_helmet"
+  }
+}
