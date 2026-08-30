@@ -13,10 +13,16 @@ public final class ShieldProjectorClientSync {
     private ShieldProjectorClientSync() {
     }
 
-    public static void sendToPlayer(ServerPlayer player, BlockPos projectorPos, long storedShield, long maxShield) {
+    public static void sendToPlayer(
+        ServerPlayer player,
+        BlockPos projectorPos,
+        long storedShield,
+        long maxShield,
+        long shieldGenerationRate
+    ) {
         PacketDistributor.sendToPlayer(
             player,
-            new ShieldProjectorHudPayload(projectorPos, storedShield, maxShield)
+            new ShieldProjectorHudPayload(projectorPos, storedShield, maxShield, shieldGenerationRate)
         );
     }
 }

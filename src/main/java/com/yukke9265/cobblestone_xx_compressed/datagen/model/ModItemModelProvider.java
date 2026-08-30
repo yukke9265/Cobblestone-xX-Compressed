@@ -175,6 +175,30 @@ public class ModItemModelProvider extends ItemModelProvider {
             registerCobblestoneParallelChipItemModel(tier.getItem());
         }
 
+        registerShieldBaseModuleItemModel(ModItems.SHIELD_BASE_MODULE);
+
+        for (ModItems.TierShieldBaseModule tier : ModItems.TierShieldBaseModule.values()) {
+            registerShieldBaseModuleItemModel(tier.getItem());
+        }
+
+        registerShieldRangeModuleItemModel(ModItems.SHIELD_RANGE_MODULE);
+
+        for (ModItems.TierShieldRangeModule tier : ModItems.TierShieldRangeModule.values()) {
+            registerShieldRangeModuleItemModel(tier.getItem());
+        }
+
+        registerShieldRateModuleItemModel(ModItems.SHIELD_RATE_MODULE);
+
+        for (ModItems.TierShieldRateModule tier : ModItems.TierShieldRateModule.values()) {
+            registerShieldRateModuleItemModel(tier.getItem());
+        }
+
+        registerShieldCapacityModuleItemModel(ModItems.SHIELD_CAPACITY_MODULE);
+
+        for (ModItems.TierShieldCapacityModule tier : ModItems.TierShieldCapacityModule.values()) {
+            registerShieldCapacityModuleItemModel(tier.getItem());
+        }
+
         registerFluidBucketItemModel(ModFluids.MOLTEN_COMPRESSED_COBBLESTONE.getBucketItem());
         for (ModFluids.TierMoltenCompressedCobblestone tier : ModFluids.TierMoltenCompressedCobblestone.values()) {
             registerFluidBucketItemModel(tier.getFluidEntry().getBucketItem());
@@ -296,6 +320,22 @@ public class ModItemModelProvider extends ItemModelProvider {
 
     private void registerCobblestoneParallelChipItemModel(DeferredItem<Item> item) {
         registerGeneratedItemModel(item, "cobblestone_parallel_module");
+    }
+
+    private void registerShieldRangeModuleItemModel(DeferredItem<Item> item) {
+        registerGeneratedItemModel(item, "shiled_module/range");
+    }
+
+    private void registerShieldRateModuleItemModel(DeferredItem<Item> item) {
+        registerGeneratedItemModel(item, "shiled_module/rate");
+    }
+
+    private void registerShieldCapacityModuleItemModel(DeferredItem<Item> item) {
+        registerGeneratedItemModel(item, "shiled_module/capacity");
+    }
+
+    private void registerShieldBaseModuleItemModel(DeferredItem<Item> item) {
+        registerGeneratedItemModel(item, "shiled_module/base");
     }
 
     private void registerFluidBucketItemModel(DeferredItem<? extends Item> item) {

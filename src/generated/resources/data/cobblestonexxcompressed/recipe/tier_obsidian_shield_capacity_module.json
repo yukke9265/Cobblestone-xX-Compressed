@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "cobblestonexxcompressed:tier_obsidian_shield_base_module"
+    },
+    {
+      "item": "cobblestonexxcompressed:tier_obsidian_cobblestone_energized_cube"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "cobblestonexxcompressed:tier_obsidian_shield_capacity_module"
+  }
+}

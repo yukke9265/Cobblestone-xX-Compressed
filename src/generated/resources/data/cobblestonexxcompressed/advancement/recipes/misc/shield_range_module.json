@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_cobblestone_acceleration_chip": {
+      "conditions": {
+        "items": [
+          {
+            "items": "cobblestonexxcompressed:cobblestone_acceleration_chip"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "cobblestonexxcompressed:shield_range_module"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_cobblestone_acceleration_chip"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "cobblestonexxcompressed:shield_range_module"
+    ]
+  }
+}

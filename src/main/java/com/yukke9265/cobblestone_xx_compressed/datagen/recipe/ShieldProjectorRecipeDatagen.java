@@ -14,7 +14,7 @@ public final class ShieldProjectorRecipeDatagen {
             output,
             "basic_shield_generation",
             200L,
-            10L,
+            1L,
             10L
         );
     }

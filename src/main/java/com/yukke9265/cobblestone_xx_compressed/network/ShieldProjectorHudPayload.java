@@ -17,10 +17,11 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 public record ShieldProjectorHudPayload(
     BlockPos projectorPos,
     long storedShield,
-    long maxShield
+    long maxShield,
+    long shieldGenerationRate
 ) implements CustomPacketPayload {
     public static final Type<ShieldProjectorHudPayload> TYPE = new Type<>(
-        ResourceLocation.fromNamespaceAndPath(CobblestonexXCompressed.MODID, "shield_projector_hud")
+        ResourceLocation.fromNamespaceAndPath(CobblestonexXCompressed.MODID, "cobblestone_shield_projector_hud")
     );
 
     public static final StreamCodec<RegistryFriendlyByteBuf, ShieldProjectorHudPayload> STREAM_CODEC = StreamCodec.composite(
@@ -30,6 +31,8 @@ public record ShieldProjectorHudPayload(
         ShieldProjectorHudPayload::storedShield,
         ByteBufCodecs.VAR_LONG,
         ShieldProjectorHudPayload::maxShield,
+        ByteBufCodecs.VAR_LONG,
+        ShieldProjectorHudPayload::shieldGenerationRate,
         ShieldProjectorHudPayload::new
     );
 
@@ -42,7 +45,8 @@ public record ShieldProjectorHudPayload(
         context.enqueueWork(() -> ShieldProjectorClientState.update(
             payload.projectorPos(),
             payload.storedShield(),
-            payload.maxShield()
+            payload.maxShield(),
+            payload.shieldGenerationRate()
         ));
     }
 }

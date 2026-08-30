@@ -74,12 +74,12 @@ public class ModBlockEntities {
             ).build(null)
         );
 
-    public static final Supplier<BlockEntityType<ShieldProjectorBlockEntity>> SHIELD_PROJECTOR_BLOCK_ENTITY =
+    public static final Supplier<BlockEntityType<ShieldProjectorBlockEntity>> COBBLESTONE_SHIELD_PROJECTOR_BLOCK_ENTITY =
         BLOCK_ENTITY_TYPES.register(
-            "shield_projector",
+            "cobblestone_shield_projector",
             () -> BlockEntityType.Builder.of(
                 ShieldProjectorBlockEntity::new,
-                ModBlocks.SHIELD_PROJECTOR.get()
+                ModBlocks.COBBLESTONE_SHIELD_PROJECTOR.get()
             ).build(null)
         );
 

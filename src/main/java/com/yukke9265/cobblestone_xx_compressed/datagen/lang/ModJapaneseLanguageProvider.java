@@ -31,7 +31,7 @@ public class ModJapaneseLanguageProvider extends LanguageProvider {
         addBlock(ModBlocks.COBBLESTONE_POWERED_FURNACE, "丸石動力かまど");
         addBlock(ModBlocks.COBBLESTONE_EXTREME_COMPRESSOR, "丸石エクストリームコンプレッサー");
         addBlock(ModBlocks.COBBLESTONE_CRUSHER, "丸石クラッシャー");
-        addBlock(ModBlocks.SHIELD_PROJECTOR, "シールドプロジェクター");
+        addBlock(ModBlocks.COBBLESTONE_SHIELD_PROJECTOR, "丸石シールドプロジェクター");
         addBlock(ModBlocks.COBBLESTONE_CENTRIFUGE, "丸石遠心分離機");
         addBlock(ModBlocks.COBBLESTONE_LASER_DRILL, "丸石レーザードリル");
         addBlock(ModBlocks.COBBLESTONE_MELTER, "丸石溶解機");
@@ -82,7 +82,8 @@ public class ModJapaneseLanguageProvider extends LanguageProvider {
         add("gui.cobblestonexxcompressed.automation.right", "右");
         add("gui.cobblestonexxcompressed.cobblestone_power", "CP");
         add("gui.cobblestonexxcompressed.shield", "シールド");
-        add("gui.cobblestonexxcompressed.shield_rate", "シールド生成");
+        add("gui.cobblestonexxcompressed.shield_conversion", "合計 %s CP / %s CP/t");
+        add("gui.cobblestonexxcompressed.shield_generation", "生成: %s/t");
         add("gui.cobblestonexxcompressed.fe_energy", "FE エネルギー");
         add("gui.cobblestonexxcompressed.convert_fe_rate", "FE 変換量");
         add("gui.cobblestonexxcompressed.input_fe_rate", "FE 入力量");
@@ -129,6 +130,10 @@ public class ModJapaneseLanguageProvider extends LanguageProvider {
         add("tooltip.cobblestonexxcompressed.compressed_cobblestone.compression", "x%s 圧縮");
         add("tooltip.cobblestonexxcompressed.cobblestone_energized_cube.capacity", "x%s CP容量");
         add("tooltip.cobblestonexxcompressed.cobblestone_acceleration_chip.rate", "x%s CP/t");
+        add("tooltip.cobblestonexxcompressed.shield_range_module.bonus", "範囲 +%s");
+        add("tooltip.cobblestonexxcompressed.shield_rate_module.bonus", "変換量 +%s（総消費CPも増加）");
+        add("tooltip.cobblestonexxcompressed.shield_capacity_module.bonus", "シールド上限 +%s");
+        add("tooltip.cobblestonexxcompressed.shield_base_module.description", "他のシールドモジュールの材料です");
         add("tooltip.cobblestonexxcompressed.cobblestone_generator.catalyst_rate", "機械の丸石スロットに置くと、消費せず %s CP/t を供給します。");
         add("tooltip.cobblestonexxcompressed.cobblestone_parallel_chip.extra", "追加処理 +%s");
         add("tooltip.cobblestonexxcompressed.compressed_cobblestone_pickaxe.stone_break_simulator_bonus", "石破壊シミュレーター: 耐久相当 +%s");
@@ -152,6 +157,22 @@ public class ModJapaneseLanguageProvider extends LanguageProvider {
         }
 
         addItem(ModItems.FLYING_STONE, "飛行石");
+        addItem(ModItems.SHIELD_BASE_MODULE, "シールドベースモジュール");
+        for (ModItems.TierShieldBaseModule tier : ModItems.TierShieldBaseModule.values()) {
+            addItem(tier.getItem(), translateTierBlockName(tier.getEnglishDisplayName(), "Shield Base Module", "シールドベースモジュール"));
+        }
+        addItem(ModItems.SHIELD_RANGE_MODULE, "シールド範囲モジュール");
+        for (ModItems.TierShieldRangeModule tier : ModItems.TierShieldRangeModule.values()) {
+            addItem(tier.getItem(), translateTierBlockName(tier.getEnglishDisplayName(), "Shield Range Module", "シールド範囲モジュール"));
+        }
+        addItem(ModItems.SHIELD_RATE_MODULE, "シールド変換量モジュール");
+        for (ModItems.TierShieldRateModule tier : ModItems.TierShieldRateModule.values()) {
+            addItem(tier.getItem(), translateTierBlockName(tier.getEnglishDisplayName(), "Shield Conversion Module", "シールド変換量モジュール"));
+        }
+        addItem(ModItems.SHIELD_CAPACITY_MODULE, "シールド容量モジュール");
+        for (ModItems.TierShieldCapacityModule tier : ModItems.TierShieldCapacityModule.values()) {
+            addItem(tier.getItem(), translateTierBlockName(tier.getEnglishDisplayName(), "Shield Capacity Module", "シールド容量モジュール"));
+        }
         add("tooltip.cobblestonexxcompressed.flying_stone.description", "インベントリか装飾品スロットにあるあいだ、クリエイティブ飛行が使えます。バルス!!!!!!");
         add("tooltip.cobblestonexxcompressed.configuration_card.empty", "設定は保存されていません");
         add("tooltip.cobblestonexxcompressed.configuration_card.stored", "保存先: %s");

@@ -19,7 +19,7 @@ public final class TooltipTranslationEntries {
         new TooltipEntry(TooltipTranslationKeys.machineDescription("cobblestone_powered_furnace"), "CP を使って精錬を進める強化版のかまどです。", "An upgraded furnace that smelts items with Cobblestone Power."),
         new TooltipEntry(TooltipTranslationKeys.machineDescription("cobblestone_extreme_compressor"), "大量の素材を圧縮して、上位の丸石系素材を作ります。", "Compresses large amounts of material into higher tier cobblestone resources."),
         new TooltipEntry(TooltipTranslationKeys.machineDescription("cobblestone_crusher"), "素材を砕いて、ダストや副産物を作ります。", "Crushes materials into dusts and byproducts."),
-        new TooltipEntry(TooltipTranslationKeys.machineDescription("shield_projector"), "範囲内のプレイヤーを共有シールドで保護し、体力を最大に保ちます。", "Protects nearby players with a shared shield and keeps their health full."),
+        new TooltipEntry(TooltipTranslationKeys.machineDescription("cobblestone_shield_projector"), "範囲内のプレイヤーを共有シールドで保護し、体力を最大に保ちます。", "Protects nearby players with a shared shield and keeps their health full."),
         new TooltipEntry(TooltipTranslationKeys.machineDescription("cobblestone_fe_generator"), "CP を FE に変換して、外部の機械へ電力を送ります。", "Converts Cobblestone Power into FE for external machines."),
         new TooltipEntry(TooltipTranslationKeys.machineDescription("cobblestone_mixer"), "複数のアイテムを混ぜて、新しい素材を作ります。", "Mixes multiple items into new materials."),
         new TooltipEntry(TooltipTranslationKeys.machineDescription("cobblestone_powered_crafter"), "作業台と同じ 3x3 配置で、CP を使って自動クラフトします。", "Automatically crafts using a 3x3 crafting grid and Cobblestone Power."),

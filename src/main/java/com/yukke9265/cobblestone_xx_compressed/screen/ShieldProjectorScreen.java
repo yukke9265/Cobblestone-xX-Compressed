@@ -27,10 +27,6 @@ public class ShieldProjectorScreen extends PoweredMachineScreenBase<ShieldProjec
     private static final ResourceLocation PROGRESS_BAR_TEXTURE =
         ResourceLocation.fromNamespaceAndPath(CobblestonexXCompressed.MODID, "textures/gui/cobblestone_crusher_progress_bar.png");
 
-    private static final int SHIELD_LABEL_X = 56;
-    private static final int SHIELD_LABEL_Y = 38;
-    private static final int SHIELD_RATE_LABEL_Y = SHIELD_LABEL_Y + 10;
-
     public ShieldProjectorScreen(ShieldProjectorMenu menu, Inventory inventory, Component title) {
         super(menu, inventory, title);
     }
@@ -46,13 +42,11 @@ public class ShieldProjectorScreen extends PoweredMachineScreenBase<ShieldProjec
         this.renderNormalSlotPart(guiGraphics, x + this.getEnergizedCubeSlotX(), y + this.getEnergizedCubeSlotY());
         this.renderNormalSlotPart(guiGraphics, x + this.getParallelSlotX(), y + this.getParallelSlotY());
 
-        for (int index = 0; index < 4; index++) {
-            int slotX = ShieldProjectorBlockEntity.GuiSlots.CUSTOM_UPGRADE_START_X
-                + index * ShieldProjectorBlockEntity.GuiSlots.CUSTOM_UPGRADE_SPACING;
+        for (int index = 0; index < ShieldProjectorBlockEntity.CUSTOM_UPGRADE_SLOT_COUNT; index++) {
             this.renderNormalSlotPart(
                 guiGraphics,
-                x + slotX,
-                y + ShieldProjectorBlockEntity.GuiSlots.CUSTOM_UPGRADE_Y
+                x + ShieldProjectorBlockEntity.GuiSlots.getCustomUpgradeSlotX(index),
+                y + ShieldProjectorBlockEntity.GuiSlots.getCustomUpgradeSlotY(index)
             );
         }
 
@@ -93,13 +87,28 @@ public class ShieldProjectorScreen extends PoweredMachineScreenBase<ShieldProjec
         Component shieldLabel = Component.translatable("gui.cobblestonexxcompressed.shield")
             .append(": ")
             .append(NumberDisplayHelper.formatCpRange(this.menu.getStoredShield(), this.menu.getMaxShield()));
-        guiGraphics.drawString(this.font, shieldLabel, SHIELD_LABEL_X, SHIELD_LABEL_Y, 0x404040, false);
+        guiGraphics.drawString(
+            this.font,
+            shieldLabel,
+            ShieldProjectorBlockEntity.GuiSlots.SHIELD_LABEL_X,
+            ShieldProjectorBlockEntity.GuiSlots.SHIELD_LABEL_Y,
+            0x404040,
+            false
+        );
 
-        Component rateLabel = Component.translatable("gui.cobblestonexxcompressed.shield_rate")
-            .append(": ")
-            .append(NumberDisplayHelper.format(this.menu.getShieldGenerationRate()))
-            .append("/t");
-        guiGraphics.drawString(this.font, rateLabel, SHIELD_LABEL_X, SHIELD_RATE_LABEL_Y, 0x404040, false);
+        Component conversionLabel = Component.translatable(
+            "gui.cobblestonexxcompressed.shield_conversion",
+            NumberDisplayHelper.format(this.menu.getPreviewTotalCobblestonePower()),
+            NumberDisplayHelper.format(this.menu.getPreviewCobblestonePowerPerTick())
+        );
+        guiGraphics.drawString(
+            this.font,
+            conversionLabel,
+            ShieldProjectorBlockEntity.GuiSlots.SHIELD_LABEL_X,
+            ShieldProjectorBlockEntity.GuiSlots.SHIELD_RATE_LABEL_Y,
+            0x404040,
+            false
+        );
     }
 
     @Override
@@ -139,22 +148,22 @@ public class ShieldProjectorScreen extends PoweredMachineScreenBase<ShieldProjec
 
     @Override
     protected int getProgressBarX() {
-        return MachineGuiLayouts.PoweredMachine.PROGRESS_BAR_X;
+        return ShieldProjectorBlockEntity.GuiSlots.PROGRESS_BAR_X;
     }
 
     @Override
     protected int getProgressBarY() {
-        return 48;
+        return ShieldProjectorBlockEntity.GuiSlots.PROGRESS_BAR_Y;
     }
 
     @Override
     protected int getProgressBarWidth() {
-        return MachineGuiLayouts.PoweredMachine.PROGRESS_BAR_WIDTH;
+        return ShieldProjectorBlockEntity.GuiSlots.PROGRESS_BAR_WIDTH;
     }
 
     @Override
     protected int getProgressBarHeight() {
-        return MachineGuiLayouts.PoweredMachine.PROGRESS_BAR_HEIGHT;
+        return ShieldProjectorBlockEntity.GuiSlots.PROGRESS_BAR_HEIGHT;
     }
 
     @Override
@@ -229,6 +238,6 @@ public class ShieldProjectorScreen extends PoweredMachineScreenBase<ShieldProjec
 
     @Override
     protected ResourceLocation getJeiRecipeCategoryId() {
-        return ResourceLocation.fromNamespaceAndPath(CobblestonexXCompressed.MODID, "shield_projector");
+        return ResourceLocation.fromNamespaceAndPath(CobblestonexXCompressed.MODID, "cobblestone_shield_projector");
     }
 }

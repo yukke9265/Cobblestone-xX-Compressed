@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "cobblestonexxcompressed:tier_gold_shield_range_module"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "has_tier_gold_shield_range_module": {
+      "conditions": {
+        "items": [
+          {
+            "items": "cobblestonexxcompressed:tier_gold_cobblestone_circuit"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_tier_gold_shield_range_module"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "cobblestonexxcompressed:tier_gold_shield_range_module"
+    ]
+  }
+}

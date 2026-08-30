@@ -83,7 +83,7 @@ public class CobblestonexXCompressedClient {
         event.register(ModMenuType.COBBLESTONE_POWERED_FURNACE_MENU.get(), CobblestonePoweredFurnaceScreen::new);
         event.register(ModMenuType.COBBLESTONE_EXTREME_COMPRESSOR_MENU.get(), CobblestoneExtremeCompressorScreen::new);
         event.register(ModMenuType.COBBLESTONE_CRUSHER_MENU.get(), CobblestoneCrusherScreen::new);
-        event.register(ModMenuType.SHIELD_PROJECTOR_MENU.get(), ShieldProjectorScreen::new);
+        event.register(ModMenuType.COBBLESTONE_SHIELD_PROJECTOR_MENU.get(), ShieldProjectorScreen::new);
         event.register(ModMenuType.COBBLESTONE_FE_GENERATOR_MENU.get(), CobblestoneFEGeneratorScreen::new);
         event.register(ModMenuType.COBBLESTONE_FE_CUBE_MENU.get(), CobblestoneFeCubeScreen::new);
         event.register(ModMenuType.COBBLESTONE_CENTRIFUGE_MENU.get(), CobblestoneCentrifugeScreen::new);

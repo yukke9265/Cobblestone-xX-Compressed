@@ -9,7 +9,7 @@ import com.yukke9265.cobblestone_xx_compressed.registry.ModArmorMaterials.Cobble
 public final class CompressedCobblestoneArmorProtectionRules {
     /** 4 部位そろい時の軽減率（DIAMOND / OBSIDIAN）。 */
     private static final float FULL_SET_REDUCTION_BASE = 0.9f;
-    private static final float FULL_SET_REDUCTION_CAP = 0.99f;
+    private static final float FULL_SET_REDUCTION_CAP = 1.0f;
 
     /** 1 部位あたりの寄与率（4 部位で 100%）。 */
     private static final float PIECE_CONTRIBUTION_RATIO = 0.25f;

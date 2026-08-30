@@ -26,7 +26,7 @@ public class ShieldProjectorBlock extends OnOffBlock {
 
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
-        if (blockEntityType == ModBlockEntities.SHIELD_PROJECTOR_BLOCK_ENTITY.get()) {
+        if (blockEntityType == ModBlockEntities.COBBLESTONE_SHIELD_PROJECTOR_BLOCK_ENTITY.get()) {
             return (currentLevel, currentPos, currentState, blockEntity) -> {
                 if (blockEntity instanceof ShieldProjectorBlockEntity shieldProjectorBlockEntity) {
                     shieldProjectorBlockEntity.tick();

@@ -339,6 +339,10 @@ public abstract class PoweredMachineBlockEntityBase<R> extends BaseBlockEntity {
         return multiplier;
     }
 
+    protected final int getUpgradeAccelerationMultiplier() {
+        return this.getAccelerationMultiplier();
+    }
+
     /**
      * 1 回の progress 完了で行うクラフト回数です。
      *

@@ -15,7 +15,7 @@ public final class ShieldProjectorRecipeHelper {
     }
 
     public static Optional<ShieldProjectorRecipe> findRecipe(Level level) {
-        for (RecipeHolder<ShieldProjectorRecipe> recipeHolder : level.getRecipeManager().getAllRecipesFor(ModRecipeTypes.SHIELD_PROJECTOR.get())) {
+        for (RecipeHolder<ShieldProjectorRecipe> recipeHolder : level.getRecipeManager().getAllRecipesFor(ModRecipeTypes.COBBLESTONE_SHIELD_PROJECTOR.get())) {
             return Optional.of(recipeHolder.value());
         }
 

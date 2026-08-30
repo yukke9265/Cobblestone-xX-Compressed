@@ -11,6 +11,10 @@ import com.yukke9265.cobblestone_xx_compressed.item.FlyingStoneItem;
 import com.yukke9265.cobblestone_xx_compressed.item.CobblestoneAccelerationChipItem;
 import com.yukke9265.cobblestone_xx_compressed.item.CobblestoneEnergizedCubeItem;
 import com.yukke9265.cobblestone_xx_compressed.item.CobblestoneParallelChipItem;
+import com.yukke9265.cobblestone_xx_compressed.item.ShieldBaseModuleItem;
+import com.yukke9265.cobblestone_xx_compressed.item.ShieldCapacityModuleItem;
+import com.yukke9265.cobblestone_xx_compressed.item.ShieldRangeModuleItem;
+import com.yukke9265.cobblestone_xx_compressed.item.ShieldRateModuleItem;
 import com.yukke9265.cobblestone_xx_compressed.item.CompressedCobblestoneAdvancedArmorItem;
 import com.yukke9265.cobblestone_xx_compressed.item.CompressedCobblestoneArmorItem;
 import com.yukke9265.cobblestone_xx_compressed.item.CompressedCobblestonePickaxeItem;
@@ -503,6 +507,22 @@ public class ModItems {
         return ITEMS.register(name, () -> new CobblestoneParallelChipItem(createCobblestoneComponentProperties()));
     }
 
+    private static DeferredItem<Item> registerTierShieldRangeModule(String name) {
+        return ITEMS.register(name, () -> new ShieldRangeModuleItem(createCobblestoneComponentProperties()));
+    }
+
+    private static DeferredItem<Item> registerTierShieldRateModule(String name) {
+        return ITEMS.register(name, () -> new ShieldRateModuleItem(createCobblestoneComponentProperties()));
+    }
+
+    private static DeferredItem<Item> registerTierShieldCapacityModule(String name) {
+        return ITEMS.register(name, () -> new ShieldCapacityModuleItem(createCobblestoneComponentProperties()));
+    }
+
+    private static DeferredItem<Item> registerTierShieldBaseModule(String name) {
+        return ITEMS.register(name, () -> new ShieldBaseModuleItem(createCobblestoneComponentProperties()));
+    }
+
     private static DeferredItem<BlockItem> registerCompressedCobblestoneBlockItem(String name, DeferredBlock<Block> block) {
         return ITEMS.registerSimpleBlockItem(name, block);
     }
@@ -748,6 +768,18 @@ public class ModItems {
 
     public static final DeferredItem<Item> COBBLESTONE_PARALLEL_CHIP =
         ITEMS.register("cobblestone_parallel_chip", () -> new CobblestoneParallelChipItem(createCobblestoneComponentProperties()));
+
+    public static final DeferredItem<Item> SHIELD_BASE_MODULE =
+        ITEMS.register("shield_base_module", () -> new ShieldBaseModuleItem(createCobblestoneComponentProperties()));
+
+    public static final DeferredItem<Item> SHIELD_RANGE_MODULE =
+        ITEMS.register("shield_range_module", () -> new ShieldRangeModuleItem(createCobblestoneComponentProperties()));
+
+    public static final DeferredItem<Item> SHIELD_RATE_MODULE =
+        ITEMS.register("shield_rate_module", () -> new ShieldRateModuleItem(createCobblestoneComponentProperties()));
+
+    public static final DeferredItem<Item> SHIELD_CAPACITY_MODULE =
+        ITEMS.register("shield_capacity_module", () -> new ShieldCapacityModuleItem(createCobblestoneComponentProperties()));
 
     // 丸石ワイヤー系は tier ごとに登録名と英語名の規則がそろっているため、
     // enum にまとめておくと lang・model・creative tab 側で同じ順番を再利用できます。
@@ -1282,6 +1314,166 @@ public class ModItems {
         }
     }
 
+    public enum TierShieldRangeModule {
+        COPPER("tier_copper_shield_range_module", "Copper Shield Range Module"),
+        IRON("tier_iron_shield_range_module", "Iron Shield Range Module"),
+        GOLD("tier_gold_shield_range_module", "Gold Shield Range Module"),
+        AMETHYST("tier_amethyst_shield_range_module", "Amethyst Shield Range Module"),
+        AQUAMARINE("tier_aquamarine_shield_range_module", "Aquamarine Shield Range Module"),
+        TOPAZ("tier_topaz_shield_range_module", "Topaz Shield Range Module"),
+        RUBY("tier_ruby_shield_range_module", "Ruby Shield Range Module"),
+        SAPPHIRE("tier_sapphire_shield_range_module", "Sapphire Shield Range Module"),
+        DIAMOND("tier_diamond_shield_range_module", "Diamond Shield Range Module"),
+        EMERALD("tier_emerald_shield_range_module", "Emerald Shield Range Module"),
+        NETHERITE("tier_netherite_shield_range_module", "Netherite Shield Range Module"),
+        OBSIDIAN("tier_obsidian_shield_range_module", "Obsidian Shield Range Module");
+
+        private final String registryName;
+        private final String englishDisplayName;
+        private DeferredItem<Item> item;
+
+        TierShieldRangeModule(String registryName, String englishDisplayName) {
+            this.registryName = registryName;
+            this.englishDisplayName = englishDisplayName;
+        }
+
+        public String getRegistryName() {
+            return this.registryName;
+        }
+
+        public String getEnglishDisplayName() {
+            return this.englishDisplayName;
+        }
+
+        public DeferredItem<Item> getItem() {
+            return this.item;
+        }
+
+        private void setItem(DeferredItem<Item> item) {
+            this.item = item;
+        }
+    }
+
+    public enum TierShieldRateModule {
+        COPPER("tier_copper_shield_rate_module", "Copper Shield Conversion Module"),
+        IRON("tier_iron_shield_rate_module", "Iron Shield Conversion Module"),
+        GOLD("tier_gold_shield_rate_module", "Gold Shield Conversion Module"),
+        AMETHYST("tier_amethyst_shield_rate_module", "Amethyst Shield Conversion Module"),
+        AQUAMARINE("tier_aquamarine_shield_rate_module", "Aquamarine Shield Conversion Module"),
+        TOPAZ("tier_topaz_shield_rate_module", "Topaz Shield Conversion Module"),
+        RUBY("tier_ruby_shield_rate_module", "Ruby Shield Conversion Module"),
+        SAPPHIRE("tier_sapphire_shield_rate_module", "Sapphire Shield Conversion Module"),
+        DIAMOND("tier_diamond_shield_rate_module", "Diamond Shield Conversion Module"),
+        EMERALD("tier_emerald_shield_rate_module", "Emerald Shield Conversion Module"),
+        NETHERITE("tier_netherite_shield_rate_module", "Netherite Shield Conversion Module"),
+        OBSIDIAN("tier_obsidian_shield_rate_module", "Obsidian Shield Conversion Module");
+
+        private final String registryName;
+        private final String englishDisplayName;
+        private DeferredItem<Item> item;
+
+        TierShieldRateModule(String registryName, String englishDisplayName) {
+            this.registryName = registryName;
+            this.englishDisplayName = englishDisplayName;
+        }
+
+        public String getRegistryName() {
+            return this.registryName;
+        }
+
+        public String getEnglishDisplayName() {
+            return this.englishDisplayName;
+        }
+
+        public DeferredItem<Item> getItem() {
+            return this.item;
+        }
+
+        private void setItem(DeferredItem<Item> item) {
+            this.item = item;
+        }
+    }
+
+    public enum TierShieldCapacityModule {
+        COPPER("tier_copper_shield_capacity_module", "Copper Shield Capacity Module"),
+        IRON("tier_iron_shield_capacity_module", "Iron Shield Capacity Module"),
+        GOLD("tier_gold_shield_capacity_module", "Gold Shield Capacity Module"),
+        AMETHYST("tier_amethyst_shield_capacity_module", "Amethyst Shield Capacity Module"),
+        AQUAMARINE("tier_aquamarine_shield_capacity_module", "Aquamarine Shield Capacity Module"),
+        TOPAZ("tier_topaz_shield_capacity_module", "Topaz Shield Capacity Module"),
+        RUBY("tier_ruby_shield_capacity_module", "Ruby Shield Capacity Module"),
+        SAPPHIRE("tier_sapphire_shield_capacity_module", "Sapphire Shield Capacity Module"),
+        DIAMOND("tier_diamond_shield_capacity_module", "Diamond Shield Capacity Module"),
+        EMERALD("tier_emerald_shield_capacity_module", "Emerald Shield Capacity Module"),
+        NETHERITE("tier_netherite_shield_capacity_module", "Netherite Shield Capacity Module"),
+        OBSIDIAN("tier_obsidian_shield_capacity_module", "Obsidian Shield Capacity Module");
+
+        private final String registryName;
+        private final String englishDisplayName;
+        private DeferredItem<Item> item;
+
+        TierShieldCapacityModule(String registryName, String englishDisplayName) {
+            this.registryName = registryName;
+            this.englishDisplayName = englishDisplayName;
+        }
+
+        public String getRegistryName() {
+            return this.registryName;
+        }
+
+        public String getEnglishDisplayName() {
+            return this.englishDisplayName;
+        }
+
+        public DeferredItem<Item> getItem() {
+            return this.item;
+        }
+
+        private void setItem(DeferredItem<Item> item) {
+            this.item = item;
+        }
+    }
+
+    public enum TierShieldBaseModule {
+        COPPER("tier_copper_shield_base_module", "Copper Shield Base Module"),
+        IRON("tier_iron_shield_base_module", "Iron Shield Base Module"),
+        GOLD("tier_gold_shield_base_module", "Gold Shield Base Module"),
+        AMETHYST("tier_amethyst_shield_base_module", "Amethyst Shield Base Module"),
+        AQUAMARINE("tier_aquamarine_shield_base_module", "Aquamarine Shield Base Module"),
+        TOPAZ("tier_topaz_shield_base_module", "Topaz Shield Base Module"),
+        RUBY("tier_ruby_shield_base_module", "Ruby Shield Base Module"),
+        SAPPHIRE("tier_sapphire_shield_base_module", "Sapphire Shield Base Module"),
+        DIAMOND("tier_diamond_shield_base_module", "Diamond Shield Base Module"),
+        EMERALD("tier_emerald_shield_base_module", "Emerald Shield Base Module"),
+        NETHERITE("tier_netherite_shield_base_module", "Netherite Shield Base Module"),
+        OBSIDIAN("tier_obsidian_shield_base_module", "Obsidian Shield Base Module");
+
+        private final String registryName;
+        private final String englishDisplayName;
+        private DeferredItem<Item> item;
+
+        TierShieldBaseModule(String registryName, String englishDisplayName) {
+            this.registryName = registryName;
+            this.englishDisplayName = englishDisplayName;
+        }
+
+        public String getRegistryName() {
+            return this.registryName;
+        }
+
+        public String getEnglishDisplayName() {
+            return this.englishDisplayName;
+        }
+
+        public DeferredItem<Item> getItem() {
+            return this.item;
+        }
+
+        private void setItem(DeferredItem<Item> item) {
+            this.item = item;
+        }
+    }
+
     public enum TierCobblestoneEnergizedCube {
         COPPER("tier_copper_cobblestone_energized_cube", "Copper Cobblestone Energized Cube"),
         IRON("tier_iron_cobblestone_energized_cube", "Iron Cobblestone Energized Cube"),
@@ -1648,6 +1840,30 @@ public class ModItems {
     static {
         for (TierCobblestoneParallelChip tier : TierCobblestoneParallelChip.values()) {
             tier.setItem(registerTierCobblestoneParallelChip(tier.getRegistryName()));
+        }
+    }
+
+    static {
+        for (TierShieldRangeModule tier : TierShieldRangeModule.values()) {
+            tier.setItem(registerTierShieldRangeModule(tier.getRegistryName()));
+        }
+    }
+
+    static {
+        for (TierShieldRateModule tier : TierShieldRateModule.values()) {
+            tier.setItem(registerTierShieldRateModule(tier.getRegistryName()));
+        }
+    }
+
+    static {
+        for (TierShieldCapacityModule tier : TierShieldCapacityModule.values()) {
+            tier.setItem(registerTierShieldCapacityModule(tier.getRegistryName()));
+        }
+    }
+
+    static {
+        for (TierShieldBaseModule tier : TierShieldBaseModule.values()) {
+            tier.setItem(registerTierShieldBaseModule(tier.getRegistryName()));
         }
     }
 
@@ -2259,11 +2475,11 @@ public class ModItems {
             ModBlocks.COBBLESTONE_CRUSHER,
             TooltipTranslationKeys.machineDescription("cobblestone_crusher"));
 
-    public static final DeferredItem<BlockItem> SHIELD_PROJECTOR_ITEM =
+    public static final DeferredItem<BlockItem> COBBLESTONE_SHIELD_PROJECTOR_ITEM =
         registerDescribedBlockItem(
-            "shield_projector",
-            ModBlocks.SHIELD_PROJECTOR,
-            TooltipTranslationKeys.machineDescription("shield_projector"));
+            "cobblestone_shield_projector",
+            ModBlocks.COBBLESTONE_SHIELD_PROJECTOR,
+            TooltipTranslationKeys.machineDescription("cobblestone_shield_projector"));
 
     public static final DeferredItem<BlockItem> COBBLESTONE_FE_GENERATOR_ITEM =
         registerDescribedBlockItem(

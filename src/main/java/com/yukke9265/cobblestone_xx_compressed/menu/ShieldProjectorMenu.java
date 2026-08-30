@@ -7,6 +7,7 @@ import com.yukke9265.cobblestone_xx_compressed.blockentity.AutomationSide;
 import com.yukke9265.cobblestone_xx_compressed.blockentity.BaseBlockEntity;
 import com.yukke9265.cobblestone_xx_compressed.blockentity.MachineUpgradeHelper;
 import com.yukke9265.cobblestone_xx_compressed.blockentity.ShieldProjectorBlockEntity;
+import com.yukke9265.cobblestone_xx_compressed.blockentity.ShieldProjectorUpgradeHelper;
 import com.yukke9265.cobblestone_xx_compressed.compat.jei.JeiRecipeTransferDefinition;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModBlocks;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModMenuType;
@@ -24,7 +25,7 @@ import net.neoforged.neoforge.items.SlotItemHandler;
 
 /**
  * シールドプロジェクター用メニュー。
- * CP スロット・通常 upgrade 3・独自 upgrade 4 を持ちます。
+ * CP スロット・通常 upgrade 3・独自 upgrade 8 を持ちます。
  */
 public class ShieldProjectorMenu extends PoweredMachineMenuBase<ShieldProjectorBlockEntity> {
     private static final AutomationMode[] PROJECTOR_AUTOMATION_MODES = new AutomationMode[] {
@@ -32,16 +33,14 @@ public class ShieldProjectorMenu extends PoweredMachineMenuBase<ShieldProjectorB
         AutomationMode.COBBLESTONE_INPUT
     };
 
-    private static final int MACHINE_SPECIFIC_DATA_COUNT = 6;
+    private static final int MACHINE_SPECIFIC_DATA_COUNT = 4;
     private static final int DATA_COUNT = 11 + MACHINE_SPECIFIC_DATA_COUNT + BaseBlockEntity.AUTOMATION_FACE_COUNT;
     private static final int DATA_INDEX_PROGRESS = 0;
     private static final int DATA_INDEX_MAX_PROGRESS = 1;
     private static final int DATA_INDEX_STORED_POWER = 2;
-    private static final int DATA_INDEX_MAX_STORED_POWER = 4;
     private static final int DATA_INDEX_STORED_SHIELD = 6;
-    private static final int DATA_INDEX_MAX_SHIELD = 8;
-    private static final int DATA_INDEX_SHIELD_RATE = 10;
-    private static final int DATA_INDEX_CURRENT_POWER_RATE = 6 + MACHINE_SPECIFIC_DATA_COUNT + BaseBlockEntity.AUTOMATION_FACE_COUNT;
+    private static final int DATA_INDEX_AUTOMATION_START = 6 + MACHINE_SPECIFIC_DATA_COUNT;
+    private static final int DATA_INDEX_CURRENT_POWER_RATE = DATA_INDEX_AUTOMATION_START + BaseBlockEntity.AUTOMATION_FACE_COUNT;
     private static final int DATA_INDEX_CURRENT_POWER_RATE_UPPER = DATA_INDEX_CURRENT_POWER_RATE + 1;
     private static final int DATA_INDEX_AUTO_EXPORT = DATA_INDEX_CURRENT_POWER_RATE_UPPER + 1;
     private static final int DATA_INDEX_AUTO_INSERT = DATA_INDEX_AUTO_EXPORT + 1;
@@ -57,7 +56,7 @@ public class ShieldProjectorMenu extends PoweredMachineMenuBase<ShieldProjectorB
         ShieldProjectorBlockEntity projectorBlockEntity,
         ContainerData projectorData
     ) {
-        super(ModMenuType.SHIELD_PROJECTOR_MENU.get(), containerId);
+        super(ModMenuType.COBBLESTONE_SHIELD_PROJECTOR_MENU.get(), containerId);
         this.projectorBlockEntity = projectorBlockEntity;
         this.projectorData = projectorData;
 
@@ -105,7 +104,7 @@ public class ShieldProjectorMenu extends PoweredMachineMenuBase<ShieldProjectorB
     }
 
     public long getMaxCobblestonePower() {
-        return this.getLongFromData(this.projectorData, DATA_INDEX_MAX_STORED_POWER);
+        return this.projectorBlockEntity.getMaxCobblestonePower();
     }
 
     public long getStoredShield() {
@@ -113,11 +112,15 @@ public class ShieldProjectorMenu extends PoweredMachineMenuBase<ShieldProjectorB
     }
 
     public long getMaxShield() {
-        return this.getLongFromData(this.projectorData, DATA_INDEX_MAX_SHIELD);
+        return this.projectorBlockEntity.getMaxShieldCapacity();
     }
 
-    public long getShieldGenerationRate() {
-        return this.getLongFromData(this.projectorData, DATA_INDEX_SHIELD_RATE);
+    public long getPreviewTotalCobblestonePower() {
+        return this.projectorBlockEntity.getPreviewTotalCobblestonePower();
+    }
+
+    public long getPreviewCobblestonePowerPerTick() {
+        return this.projectorBlockEntity.getPreviewCobblestonePowerPerTick();
     }
 
     @Override
@@ -130,7 +133,7 @@ public class ShieldProjectorMenu extends PoweredMachineMenuBase<ShieldProjectorB
     }
 
     public AutomationMode getAutomationMode(AutomationSide automationSide) {
-        int dataIndex = DATA_INDEX_SHIELD_RATE + 2 + automationSide.getIndex();
+        int dataIndex = DATA_INDEX_AUTOMATION_START + automationSide.getIndex();
         return AutomationMode.fromId(this.projectorData.get(dataIndex));
     }
 
@@ -166,7 +169,7 @@ public class ShieldProjectorMenu extends PoweredMachineMenuBase<ShieldProjectorB
 
     @Override
     protected net.minecraft.world.level.block.Block getMachineBlock() {
-        return ModBlocks.SHIELD_PROJECTOR.get();
+        return ModBlocks.COBBLESTONE_SHIELD_PROJECTOR.get();
     }
 
     @Override
@@ -196,6 +199,13 @@ public class ShieldProjectorMenu extends PoweredMachineMenuBase<ShieldProjectorB
                 sourceStack,
                 ShieldProjectorBlockEntity.PARALLEL_SLOT_INDEX,
                 ShieldProjectorBlockEntity.PARALLEL_SLOT_INDEX + 1,
+                false
+            );
+        } else if (ShieldProjectorUpgradeHelper.isValidCustomUpgrade(sourceStack)) {
+            movedToMachine = this.moveItemStackTo(
+                sourceStack,
+                ShieldProjectorBlockEntity.CUSTOM_UPGRADE_SLOT_0_INDEX,
+                ShieldProjectorBlockEntity.CUSTOM_UPGRADE_LAST_INDEX + 1,
                 false
             );
         }
@@ -289,19 +299,17 @@ public class ShieldProjectorMenu extends PoweredMachineMenuBase<ShieldProjectorB
             }
         });
 
-        for (int index = 0; index < 4; index++) {
+        for (int index = 0; index < ShieldProjectorBlockEntity.CUSTOM_UPGRADE_SLOT_COUNT; index++) {
             int slotIndex = ShieldProjectorBlockEntity.CUSTOM_UPGRADE_SLOT_0_INDEX + index;
-            int slotX = ShieldProjectorBlockEntity.GuiSlots.CUSTOM_UPGRADE_START_X
-                + index * ShieldProjectorBlockEntity.GuiSlots.CUSTOM_UPGRADE_SPACING;
             this.addSlot(new SlotItemHandler(
                 itemStackHandler,
                 slotIndex,
-                slotX,
-                ShieldProjectorBlockEntity.GuiSlots.CUSTOM_UPGRADE_Y
+                ShieldProjectorBlockEntity.GuiSlots.getCustomUpgradeSlotX(index),
+                ShieldProjectorBlockEntity.GuiSlots.getCustomUpgradeSlotY(index)
             ) {
                 @Override
                 public boolean mayPlace(ItemStack stack) {
-                    return false;
+                    return ShieldProjectorUpgradeHelper.isValidCustomUpgrade(stack);
                 }
             });
         }

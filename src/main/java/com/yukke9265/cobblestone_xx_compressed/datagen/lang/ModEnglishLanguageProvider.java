@@ -161,6 +161,26 @@ public class ModEnglishLanguageProvider extends LanguageProvider {
             addItem(tier.getItem(), tier.getEnglishDisplayName());
         }
 
+        addItem(ModItems.SHIELD_BASE_MODULE, "Shield Base Module");
+        for (ModItems.TierShieldBaseModule tier : ModItems.TierShieldBaseModule.values()) {
+            addItem(tier.getItem(), tier.getEnglishDisplayName());
+        }
+
+        addItem(ModItems.SHIELD_RANGE_MODULE, "Shield Range Module");
+        for (ModItems.TierShieldRangeModule tier : ModItems.TierShieldRangeModule.values()) {
+            addItem(tier.getItem(), tier.getEnglishDisplayName());
+        }
+
+        addItem(ModItems.SHIELD_RATE_MODULE, "Shield Conversion Module");
+        for (ModItems.TierShieldRateModule tier : ModItems.TierShieldRateModule.values()) {
+            addItem(tier.getItem(), tier.getEnglishDisplayName());
+        }
+
+        addItem(ModItems.SHIELD_CAPACITY_MODULE, "Shield Capacity Module");
+        for (ModItems.TierShieldCapacityModule tier : ModItems.TierShieldCapacityModule.values()) {
+            addItem(tier.getItem(), tier.getEnglishDisplayName());
+        }
+
         add("fluid_type.cobblestonexxcompressed.molten_compressed_cobblestone", "Molten Compressed Cobblestone");
         addBlock(ModFluids.MOLTEN_COMPRESSED_COBBLESTONE.getFluidBlock(), "Molten Compressed Cobblestone");
         addItem(ModFluids.MOLTEN_COMPRESSED_COBBLESTONE.getBucketItem(), "Molten Compressed Cobblestone Bucket");
@@ -223,7 +243,7 @@ public class ModEnglishLanguageProvider extends LanguageProvider {
         // 明示キーで追加して datagen の反映を確認しやすくします。
         add("block.cobblestonexxcompressed.cobblestone_extreme_compressor", "Cobblestone Extreme Compressor");
         addBlock(ModBlocks.COBBLESTONE_CRUSHER, "Cobblestone Crusher");
-        addBlock(ModBlocks.SHIELD_PROJECTOR, "Shield Projector");
+        addBlock(ModBlocks.COBBLESTONE_SHIELD_PROJECTOR, "Cobblestone Shield Projector");
         addBlock(ModBlocks.COBBLESTONE_CENTRIFUGE, "Cobblestone Centrifuge");
         addBlock(ModBlocks.COBBLESTONE_LASER_DRILL, "Cobblestone Laser Drill");
         addBlock(ModBlocks.COBBLESTONE_MELTER, "Cobblestone Melter");
@@ -278,7 +298,8 @@ public class ModEnglishLanguageProvider extends LanguageProvider {
         add("gui.cobblestonexxcompressed.automation.right", "Right");
         add("gui.cobblestonexxcompressed.cobblestone_power", "CP");
         add("gui.cobblestonexxcompressed.shield", "Shield");
-        add("gui.cobblestonexxcompressed.shield_rate", "Shield Rate");
+        add("gui.cobblestonexxcompressed.shield_conversion", "%s total CP / %s CP/t");
+        add("gui.cobblestonexxcompressed.shield_generation", "Gen: %s/t");
         add("gui.cobblestonexxcompressed.fe_energy", "FE Energy");
         add("gui.cobblestonexxcompressed.convert_fe_rate", "Convert FE");
         add("gui.cobblestonexxcompressed.input_fe_rate", "Input FE");
@@ -316,6 +337,10 @@ public class ModEnglishLanguageProvider extends LanguageProvider {
         add("tooltip.cobblestonexxcompressed.compressed_cobblestone.compression", "x%s compressed");
         add("tooltip.cobblestonexxcompressed.cobblestone_energized_cube.capacity", "x%s CP capacity");
         add("tooltip.cobblestonexxcompressed.cobblestone_acceleration_chip.rate", "x%s CP/t");
+        add("tooltip.cobblestonexxcompressed.shield_range_module.bonus", "Range +%s");
+        add("tooltip.cobblestonexxcompressed.shield_rate_module.bonus", "Shield conversion +%s (total CP also increases)");
+        add("tooltip.cobblestonexxcompressed.shield_capacity_module.bonus", "Max shield +%s");
+        add("tooltip.cobblestonexxcompressed.shield_base_module.description", "Used to craft other shield modules");
         add("tooltip.cobblestonexxcompressed.cobblestone_generator.catalyst_rate", "Place in a machine cobblestone slot to supply %s CP/t without being consumed.");
         add("tooltip.cobblestonexxcompressed.cobblestone_parallel_chip.extra", "+%s extra crafts");
         add("tooltip.cobblestonexxcompressed.compressed_cobblestone_pickaxe.stone_break_simulator_bonus", "Stone Break Simulator: +%s Unbreaking");

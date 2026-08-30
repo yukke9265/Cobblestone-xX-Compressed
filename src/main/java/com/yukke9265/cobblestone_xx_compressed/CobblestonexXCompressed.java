@@ -200,6 +200,22 @@ public class CobblestonexXCompressed {
                 for (ModItems.TierCobblestoneParallelChip tier : ModItems.TierCobblestoneParallelChip.values()) {
                     output.accept(tier.getItem().get());
                 }
+                output.accept(ModItems.SHIELD_BASE_MODULE.get());
+                for (ModItems.TierShieldBaseModule tier : ModItems.TierShieldBaseModule.values()) {
+                    output.accept(tier.getItem().get());
+                }
+                output.accept(ModItems.SHIELD_RANGE_MODULE.get());
+                for (ModItems.TierShieldRangeModule tier : ModItems.TierShieldRangeModule.values()) {
+                    output.accept(tier.getItem().get());
+                }
+                output.accept(ModItems.SHIELD_RATE_MODULE.get());
+                for (ModItems.TierShieldRateModule tier : ModItems.TierShieldRateModule.values()) {
+                    output.accept(tier.getItem().get());
+                }
+                output.accept(ModItems.SHIELD_CAPACITY_MODULE.get());
+                for (ModItems.TierShieldCapacityModule tier : ModItems.TierShieldCapacityModule.values()) {
+                    output.accept(tier.getItem().get());
+                }
                 output.accept(ModItems.COBBLESTONE_BREAD.get());
                 for (ModItems.TierCobblestoneBread tier : ModItems.TierCobblestoneBread.values()) {
                     output.accept(tier.getItem().get());
@@ -208,7 +224,7 @@ public class CobblestonexXCompressed {
                 output.accept(ModItems.COBBLESTONE_POWERED_FURNACE_ITEM.get());
                 output.accept(ModItems.COBBLESTONE_EXTREME_COMPRESSOR_ITEM.get());
                 output.accept(ModItems.COBBLESTONE_CRUSHER_ITEM.get());
-                output.accept(ModItems.SHIELD_PROJECTOR_ITEM.get());
+                output.accept(ModItems.COBBLESTONE_SHIELD_PROJECTOR_ITEM.get());
                 output.accept(ModItems.COBBLESTONE_FE_GENERATOR_ITEM.get());
                 output.accept(ModItems.COBBLESTONE_CENTRIFUGE_ITEM.get());
                 output.accept(ModItems.COBBLESTONE_LASER_DRILL_ITEM.get());
@@ -384,7 +400,7 @@ public class CobblestonexXCompressed {
 
         event.registerBlockEntity(
             Capabilities.ItemHandler.BLOCK,
-            ModBlockEntities.SHIELD_PROJECTOR_BLOCK_ENTITY.get(),
+            ModBlockEntities.COBBLESTONE_SHIELD_PROJECTOR_BLOCK_ENTITY.get(),
             (blockEntity, side) -> blockEntity.getAutomationItemHandler(side)
         );
 

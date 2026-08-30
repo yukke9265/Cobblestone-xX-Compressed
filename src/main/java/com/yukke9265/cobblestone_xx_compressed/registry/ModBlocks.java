@@ -660,9 +660,9 @@ public class ModBlocks {
             )
         );
 
-    public static final DeferredBlock<Block> SHIELD_PROJECTOR =
+    public static final DeferredBlock<Block> COBBLESTONE_SHIELD_PROJECTOR =
         BLOCKS.register(
-            "shield_projector",
+            "cobblestone_shield_projector",
             () -> new ShieldProjectorBlock(
                 createCobblestoneMachineProperties()
             )

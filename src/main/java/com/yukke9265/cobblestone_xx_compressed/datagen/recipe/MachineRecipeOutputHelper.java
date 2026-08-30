@@ -519,7 +519,7 @@ final class MachineRecipeOutputHelper {
             shieldOutput
         );
 
-        output.accept(modRecipeId("shield_projector/" + recipeName), recipe, null);
+        output.accept(modRecipeId("cobblestone_shield_projector/" + recipeName), recipe, null);
     }
 
     private static ResourceLocation modRecipeId(String path) {

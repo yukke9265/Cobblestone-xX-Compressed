@@ -173,12 +173,12 @@ public class ModRecipeProvider extends RecipeProvider {
             ModBlocks.COBBLESTONE_CRUSHER.get()
         ),
         new MachineBlockRecipeDefinition(
-            "shield_projector",
+            "cobblestone_shield_projector",
             ModBlocks.TierCompressedCobblestone.IRON.getBlock().get(),
             ModItems.TIER_IRON_COBBLESTONE_MOTOR.get(),
             ModBlocks.TierCobblestoneMachineCasing.IRON.getBlock().get(),
             ModItems.TierCobblestoneProcessor.IRON.getItem().get(),
-            ModBlocks.SHIELD_PROJECTOR.get()
+            ModBlocks.COBBLESTONE_SHIELD_PROJECTOR.get()
         ),
         new MachineBlockRecipeDefinition(
             "cobblestone_mixer",
@@ -318,6 +318,7 @@ public class ModRecipeProvider extends RecipeProvider {
         buildCobblestoneAccelerationChipRecipes(output);
         buildCobblestoneEnergizedCubeRecipes(output);
         buildCobblestoneParallelChipRecipes(output);
+        buildShieldProjectorModuleRecipes(output);
         buildCobblestoneMachineBlockRecipes(output);
         buildCustomMachineRecipes(output);
         buildConfigurationCardRecipe(output);
@@ -967,6 +968,112 @@ public class ModRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_" + tier.getRegistryName(), has(singularityFragment))
                 .save(output, modRecipeId(tier.getRegistryName()));
         }
+    }
+
+    private void buildShieldProjectorModuleRecipes(RecipeOutput output) {
+        // ベースは外周を圧縮丸石、中央を回路にします。
+        // 加速チップ（motor）や Energized Cube（processor）と同じ材料にならないようにします。
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.SHIELD_BASE_MODULE.get())
+            .pattern("AAA")
+            .pattern("ABA")
+            .pattern("AAA")
+            .define('A', ModItems.COMPRESSED_COBBLESTONE_ITEM.get())
+            .define('B', ModItems.COBBLESTONE_CIRCUIT.get())
+            .unlockedBy("has_cobblestone_circuit", has(ModItems.COBBLESTONE_CIRCUIT.get()))
+            .save(output, modRecipeId("shield_base_module"));
+
+        for (ModItems.TierShieldBaseModule tier : ModItems.TierShieldBaseModule.values()) {
+            ItemLike compressedCobblestone = ModItems.TierCompressedCobblestoneItem.valueOf(tier.name()).getItem().get();
+            ItemLike cobblestoneCircuit = ModItems.TierCobblestoneCircuit.valueOf(tier.name()).getItem().get();
+
+            ShapedRecipeBuilder.shaped(RecipeCategory.MISC, tier.getItem().get())
+                .pattern("AAA")
+                .pattern("ABA")
+                .pattern("AAA")
+                .define('A', compressedCobblestone)
+                .define('B', cobblestoneCircuit)
+                .unlockedBy("has_" + tier.getRegistryName(), has(cobblestoneCircuit))
+                .save(output, modRecipeId(tier.getRegistryName()));
+        }
+
+        // 範囲・変換量・容量は、同じ tier のベースへ専用部品を足します。
+        buildShieldModuleFromBaseRecipes(
+            output,
+            ModItems.SHIELD_RANGE_MODULE.get(),
+            ModItems.SHIELD_BASE_MODULE.get(),
+            ModItems.COBBLESTONE_ACCELERATION_CHIP.get(),
+            "shield_range_module",
+            "cobblestone_acceleration_chip"
+        );
+        for (ModItems.TierShieldRangeModule tier : ModItems.TierShieldRangeModule.values()) {
+            ItemLike baseModule = ModItems.TierShieldBaseModule.valueOf(tier.name()).getItem().get();
+            ItemLike cobblestoneCircuit = ModItems.TierCobblestoneCircuit.valueOf(tier.name()).getItem().get();
+            buildShieldModuleFromBaseRecipes(
+                output,
+                tier.getItem().get(),
+                baseModule,
+                cobblestoneCircuit,
+                tier.getRegistryName(),
+                tier.getRegistryName()
+            );
+        }
+
+        buildShieldModuleFromBaseRecipes(
+            output,
+            ModItems.SHIELD_RATE_MODULE.get(),
+            ModItems.SHIELD_BASE_MODULE.get(),
+            ModItems.COBBLESTONE_PARALLEL_CHIP.get(),
+            "shield_rate_module",
+            "cobblestone_parallel_chip"
+        );
+        for (ModItems.TierShieldRateModule tier : ModItems.TierShieldRateModule.values()) {
+            ItemLike baseModule = ModItems.TierShieldBaseModule.valueOf(tier.name()).getItem().get();
+            ItemLike cobblestoneProcessor = ModItems.TierCobblestoneProcessor.valueOf(tier.name()).getItem().get();
+            buildShieldModuleFromBaseRecipes(
+                output,
+                tier.getItem().get(),
+                baseModule,
+                cobblestoneProcessor,
+                tier.getRegistryName(),
+                tier.getRegistryName()
+            );
+        }
+
+        buildShieldModuleFromBaseRecipes(
+            output,
+            ModItems.SHIELD_CAPACITY_MODULE.get(),
+            ModItems.SHIELD_BASE_MODULE.get(),
+            ModItems.COBBLESTONE_ENERGIZED_CUBE.get(),
+            "shield_capacity_module",
+            "cobblestone_energized_cube"
+        );
+        for (ModItems.TierShieldCapacityModule tier : ModItems.TierShieldCapacityModule.values()) {
+            ItemLike baseModule = ModItems.TierShieldBaseModule.valueOf(tier.name()).getItem().get();
+            ItemLike energizedCube = ModItems.TierCobblestoneEnergizedCube.valueOf(tier.name()).getItem().get();
+            buildShieldModuleFromBaseRecipes(
+                output,
+                tier.getItem().get(),
+                baseModule,
+                energizedCube,
+                tier.getRegistryName(),
+                tier.getRegistryName()
+            );
+        }
+    }
+
+    private void buildShieldModuleFromBaseRecipes(
+        RecipeOutput output,
+        ItemLike result,
+        ItemLike baseModule,
+        ItemLike extraIngredient,
+        String recipeId,
+        String unlockName
+    ) {
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, result)
+            .requires(baseModule)
+            .requires(extraIngredient)
+            .unlockedBy("has_" + unlockName, has(extraIngredient))
+            .save(output, modRecipeId(recipeId));
     }
 
     private void buildCobblestoneGeneratorRecipes(RecipeOutput output) {

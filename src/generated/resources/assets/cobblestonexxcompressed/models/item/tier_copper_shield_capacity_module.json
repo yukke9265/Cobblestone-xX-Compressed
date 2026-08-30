@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "cobblestonexxcompressed:item/shiled_module/capacity/tier_copper_shield_capacity_module"
+  }
+}

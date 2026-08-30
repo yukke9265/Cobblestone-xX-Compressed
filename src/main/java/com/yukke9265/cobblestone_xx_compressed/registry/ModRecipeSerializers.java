@@ -96,9 +96,9 @@ public class ModRecipeSerializers {
             }
         );
 
-    public static final Supplier<RecipeSerializer<ShieldProjectorRecipe>> SHIELD_PROJECTOR =
+    public static final Supplier<RecipeSerializer<ShieldProjectorRecipe>> COBBLESTONE_SHIELD_PROJECTOR =
         RECIPE_SERIALIZERS.register(
-            "shield_projector",
+            "cobblestone_shield_projector",
             () -> new RecipeSerializer<ShieldProjectorRecipe>() {
                 @Override
                 public MapCodec<ShieldProjectorRecipe> codec() {

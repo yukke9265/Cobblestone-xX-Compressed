@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "cobblestonexxcompressed:tier_copper_shield_base_module"
+    },
+    {
+      "item": "cobblestonexxcompressed:tier_copper_cobblestone_circuit"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "cobblestonexxcompressed:tier_copper_shield_range_module"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "cobblestonexxcompressed:tier_iron_shield_base_module"
+    },
+    {
+      "item": "cobblestonexxcompressed:tier_iron_cobblestone_processor"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "cobblestonexxcompressed:tier_iron_shield_rate_module"
+  }
+}

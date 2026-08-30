@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "cobblestonexxcompressed:shield_base_module"
+    },
+    {
+      "item": "cobblestonexxcompressed:cobblestone_acceleration_chip"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "cobblestonexxcompressed:shield_range_module"
+  }
+}

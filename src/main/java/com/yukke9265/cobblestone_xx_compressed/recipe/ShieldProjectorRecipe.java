@@ -88,11 +88,11 @@ public class ShieldProjectorRecipe implements Recipe<SingleRecipeInput> {
 
     @Override
     public RecipeSerializer<? extends Recipe<SingleRecipeInput>> getSerializer() {
-        return ModRecipeSerializers.SHIELD_PROJECTOR.get();
+        return ModRecipeSerializers.COBBLESTONE_SHIELD_PROJECTOR.get();
     }
 
     @Override
     public RecipeType<? extends Recipe<SingleRecipeInput>> getType() {
-        return ModRecipeTypes.SHIELD_PROJECTOR.get();
+        return ModRecipeTypes.COBBLESTONE_SHIELD_PROJECTOR.get();
     }
 }

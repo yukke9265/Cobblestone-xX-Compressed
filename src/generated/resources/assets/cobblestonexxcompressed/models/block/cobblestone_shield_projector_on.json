@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "down": "cobblestonexxcompressed:block/cobblestone_shield_projector/cobblestone_shield_projector_top",
+    "east": "cobblestonexxcompressed:block/cobblestone_shield_projector/cobblestone_shield_projector_side",
+    "north": "cobblestonexxcompressed:block/cobblestone_shield_projector/cobblestone_shield_projector_front_on",
+    "particle": "cobblestonexxcompressed:block/cobblestone_shield_projector/cobblestone_shield_projector_top",
+    "south": "cobblestonexxcompressed:block/cobblestone_shield_projector/cobblestone_shield_projector_side",
+    "up": "cobblestonexxcompressed:block/cobblestone_shield_projector/cobblestone_shield_projector_top",
+    "west": "cobblestonexxcompressed:block/cobblestone_shield_projector/cobblestone_shield_projector_side"
+  }
+}

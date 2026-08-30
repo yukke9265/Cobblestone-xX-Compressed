@@ -9,15 +9,17 @@ public final class ShieldProjectorClientState {
     private static BlockPos projectorPos;
     private static long storedShield;
     private static long maxShield;
+    private static long shieldGenerationRate;
     private static long lastUpdateGameTime;
 
     private ShieldProjectorClientState() {
     }
 
-    public static void update(BlockPos pos, long stored, long max) {
+    public static void update(BlockPos pos, long stored, long max, long generationRate) {
         projectorPos = pos.immutable();
         storedShield = stored;
         maxShield = max;
+        shieldGenerationRate = generationRate;
         lastUpdateGameTime = System.currentTimeMillis();
     }
 
@@ -41,10 +43,15 @@ public final class ShieldProjectorClientState {
         return maxShield;
     }
 
+    public static long getShieldGenerationRate() {
+        return shieldGenerationRate;
+    }
+
     public static void clear() {
         projectorPos = null;
         storedShield = 0L;
         maxShield = 0L;
+        shieldGenerationRate = 0L;
         lastUpdateGameTime = 0L;
     }
 }

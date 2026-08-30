@@ -46,27 +46,23 @@ public class ShieldProjectorBlockEntity extends PoweredMachineBlockEntityBase<Sh
     public static final int ENERGIZED_CUBE_SLOT_INDEX = 2;
     public static final int PARALLEL_SLOT_INDEX = 3;
     public static final int CUSTOM_UPGRADE_SLOT_0_INDEX = 4;
-    public static final int CUSTOM_UPGRADE_SLOT_1_INDEX = 5;
-    public static final int CUSTOM_UPGRADE_SLOT_2_INDEX = 6;
-    public static final int CUSTOM_UPGRADE_SLOT_3_INDEX = 7;
-    public static final int INVENTORY_SLOT_COUNT = 8;
+    public static final int CUSTOM_UPGRADE_SLOT_COUNT = 8;
+    public static final int CUSTOM_UPGRADE_LAST_INDEX = CUSTOM_UPGRADE_SLOT_0_INDEX + CUSTOM_UPGRADE_SLOT_COUNT - 1;
+    public static final int INVENTORY_SLOT_COUNT = CUSTOM_UPGRADE_LAST_INDEX + 1;
 
     public static final long MAX_COBBLESTONE_POWER = 4000L;
-    public static final long BASE_MAX_SHIELD = 1000L;
+    public static final long BASE_MAX_SHIELD = 100L;
     public static final double BASE_RANGE = 16.0D;
 
-    private static final int MACHINE_SPECIFIC_DATA_COUNT = 6;
+    private static final int MACHINE_SPECIFIC_DATA_COUNT = 4;
     private static final int DATA_INDEX_STORED_SHIELD = DATA_INDEX_MACHINE_SPECIFIC_START;
     private static final int DATA_INDEX_STORED_SHIELD_UPPER = DATA_INDEX_MACHINE_SPECIFIC_START + 1;
     private static final int DATA_INDEX_MAX_SHIELD = DATA_INDEX_MACHINE_SPECIFIC_START + 2;
     private static final int DATA_INDEX_MAX_SHIELD_UPPER = DATA_INDEX_MACHINE_SPECIFIC_START + 3;
-    private static final int DATA_INDEX_SHIELD_RATE = DATA_INDEX_MACHINE_SPECIFIC_START + 4;
-    private static final int DATA_INDEX_SHIELD_RATE_UPPER = DATA_INDEX_MACHINE_SPECIFIC_START + 5;
 
     private static final int CLIENT_SYNC_INTERVAL_TICKS = 10;
 
     private long storedShield;
-    private long lastShieldGenerationRate;
     private int clientSyncCooldown;
     private boolean trackedAsActive;
 
@@ -89,7 +85,7 @@ public class ShieldProjectorBlockEntity extends PoweredMachineBlockEntityBase<Sh
                 return MachineUpgradeHelper.isParallelChip(stack);
             }
 
-            // 独自アップグレードは経路だけ先行し、当面は投入不可にします。
+            // 独自アップグレードは範囲・変換量・容量モジュールを8枠へ入れます。
             if (isCustomUpgradeSlot(slot)) {
                 return ShieldProjectorUpgradeHelper.isValidCustomUpgrade(slot, stack);
             }
@@ -121,11 +117,11 @@ public class ShieldProjectorBlockEntity extends PoweredMachineBlockEntityBase<Sh
     );
 
     public ShieldProjectorBlockEntity(BlockPos pos, BlockState state) {
-        super(ModBlockEntities.SHIELD_PROJECTOR_BLOCK_ENTITY.get(), pos, state);
+        super(ModBlockEntities.COBBLESTONE_SHIELD_PROJECTOR_BLOCK_ENTITY.get(), pos, state);
     }
 
     public static boolean isCustomUpgradeSlot(int slot) {
-        return slot >= CUSTOM_UPGRADE_SLOT_0_INDEX && slot <= CUSTOM_UPGRADE_SLOT_3_INDEX;
+        return slot >= CUSTOM_UPGRADE_SLOT_0_INDEX && slot <= CUSTOM_UPGRADE_LAST_INDEX;
     }
 
     @Override
@@ -141,6 +137,50 @@ public class ShieldProjectorBlockEntity extends PoweredMachineBlockEntityBase<Sh
             EmptyItemHandler.INSTANCE,
             this.cobblestoneInputAutomationHandler
         );
+    }
+
+    @Override
+    public boolean canInstallUpgradeItem(ItemStack stack) {
+        if (super.canInstallUpgradeItem(stack)) {
+            return true;
+        }
+
+        return this.findCustomUpgradeInstallSlot(stack) >= 0;
+    }
+
+    @Override
+    public ItemStack installUpgradeItem(ItemStack stack, boolean simulate) {
+        if (super.canInstallUpgradeItem(stack)) {
+            return super.installUpgradeItem(stack, simulate);
+        }
+
+        int slot = this.findCustomUpgradeInstallSlot(stack);
+        if (slot < 0) {
+            return null;
+        }
+
+        ItemStack replacedStack = this.itemStackHandler.getStackInSlot(slot).copy();
+        if (simulate) {
+            return replacedStack;
+        }
+
+        this.itemStackHandler.setStackInSlot(slot, stack.copyWithCount(1));
+        this.setChanged();
+        return replacedStack;
+    }
+
+    private int findCustomUpgradeInstallSlot(ItemStack stack) {
+        if (!ShieldProjectorUpgradeHelper.isValidCustomUpgrade(stack)) {
+            return -1;
+        }
+
+        for (int slot = CUSTOM_UPGRADE_SLOT_0_INDEX; slot <= CUSTOM_UPGRADE_LAST_INDEX; slot++) {
+            if (this.itemStackHandler.getStackInSlot(slot).isEmpty()) {
+                return slot;
+            }
+        }
+
+        return -1;
     }
 
     @Override
@@ -186,7 +226,14 @@ public class ShieldProjectorBlockEntity extends PoweredMachineBlockEntityBase<Sh
 
     @Override
     protected int getRecipeProcessingTime(ShieldProjectorRecipe recipe) {
-        return recipe.getProcessingTime();
+        long totalCobblestonePower = ShieldProjectorUpgradeHelper.getEffectiveTotalCobblestonePower(
+            this.itemStackHandler,
+            recipe.getTotalCobblestonePower(),
+            recipe.getShieldOutput()
+        );
+        long cobblestonePowerPerTick = recipe.getCobblestonePowerPerTick();
+        long processingTime = (totalCobblestonePower + cobblestonePowerPerTick - 1L) / cobblestonePowerPerTick;
+        return Math.max(1, (int) Math.min(Integer.MAX_VALUE, processingTime));
     }
 
     @Override
@@ -196,16 +243,75 @@ public class ShieldProjectorBlockEntity extends PoweredMachineBlockEntityBase<Sh
 
     @Override
     protected void finishProcessing(ShieldProjectorRecipe recipe) {
-        this.addShield(recipe.getShieldOutput());
-        this.refreshShieldGenerationRate(recipe);
+        long shieldOutput = ShieldProjectorUpgradeHelper.getEffectiveShieldOutput(
+            this.itemStackHandler,
+            recipe.getShieldOutput()
+        );
+        this.addShield(shieldOutput);
     }
 
-    private void refreshShieldGenerationRate(ShieldProjectorRecipe recipe) {
+    /**
+     * 今のレシピと upgrade から、1 回完了あたりの総消費 CP を返します。
+     * GUI はスロット変更直後にこの値を見ます。
+     */
+    public long getPreviewTotalCobblestonePower() {
+        Optional<ShieldProjectorRecipe> recipeOptional = this.findMatchingRecipe();
+        if (recipeOptional.isEmpty()) {
+            return 0L;
+        }
+
+        ShieldProjectorRecipe recipe = recipeOptional.get();
+        return ShieldProjectorUpgradeHelper.getEffectiveTotalCobblestonePower(
+            this.itemStackHandler,
+            recipe.getTotalCobblestonePower(),
+            recipe.getShieldOutput()
+        );
+    }
+
+    /**
+     * 今のレシピと加速チップから、想定 CP/t を返します。
+     * 稼働中でなくても、upgrade を置いた時点の値を出します。
+     */
+    public long getPreviewCobblestonePowerPerTick() {
+        Optional<ShieldProjectorRecipe> recipeOptional = this.findMatchingRecipe();
+        if (recipeOptional.isEmpty()) {
+            return 0L;
+        }
+
+        long cobblestonePowerPerTick = this.getRecipeCobblestonePowerPerTick(recipeOptional.get());
+        return cobblestonePowerPerTick * this.getUpgradeAccelerationMultiplier();
+    }
+
+    /**
+     * 今のレシピと upgrade から、1 tick あたりの目安シールド生成量を返します。
+     * 処理が止まっていても、HUD 用に設定値を出します。
+     */
+    public long getPreviewShieldGenerationRate() {
+        Optional<ShieldProjectorRecipe> recipeOptional = this.findMatchingRecipe();
+        if (recipeOptional.isEmpty()) {
+            return 0L;
+        }
+
+        ShieldProjectorRecipe recipe = recipeOptional.get();
+        long shieldOutput = ShieldProjectorUpgradeHelper.getEffectiveShieldOutput(
+            this.itemStackHandler,
+            recipe.getShieldOutput()
+        );
         long craftsPerCompletion = Math.max(1L, this.getCraftsPerCompletion());
-        long processingTime = Math.max(1L, recipe.getProcessingTime());
-        long progressStep = Math.max(1L, this.getProgressStep(recipe.getCobblestonePowerPerTick()));
-        // 1 tick あたりの目安生成量（加速込み）。GUI 表示用です。
-        this.lastShieldGenerationRate = Math.max(1L, (recipe.getShieldOutput() * craftsPerCompletion * progressStep) / processingTime);
+        long accelerationMultiplier = Math.max(1L, this.getUpgradeAccelerationMultiplier());
+        long processingTime = Math.max(1L, this.getRecipeProcessingTime(recipe));
+        long generatedPerCycle = shieldOutput * craftsPerCompletion * accelerationMultiplier;
+        if (generatedPerCycle <= 0L) {
+            return 0L;
+        }
+
+        long rate = generatedPerCycle / processingTime;
+        if (rate > 0L) {
+            return rate;
+        }
+
+        // 1 tick 未満の生成でも、HUD では 0 に潰さないようにします。
+        return 1L;
     }
 
     public void addShield(long amount) {
@@ -242,16 +348,11 @@ public class ShieldProjectorBlockEntity extends PoweredMachineBlockEntityBase<Sh
     }
 
     public long getMaxShieldCapacity() {
-        // 独自アップグレード未実装中は基本値だけを返します。
         return ShieldProjectorUpgradeHelper.getMaxShieldCapacity(this.itemStackHandler, BASE_MAX_SHIELD);
     }
 
     public double getEffectiveRange() {
         return ShieldProjectorUpgradeHelper.getEffectiveRange(this.itemStackHandler, BASE_RANGE);
-    }
-
-    public long getLastShieldGenerationRate() {
-        return this.lastShieldGenerationRate;
     }
 
     public boolean canProtectPlayers() {
@@ -371,7 +472,8 @@ public class ShieldProjectorBlockEntity extends PoweredMachineBlockEntityBase<Sh
                 player,
                 this.worldPosition,
                 this.storedShield,
-                this.getMaxShieldCapacity()
+                this.getMaxShieldCapacity(),
+                this.getPreviewShieldGenerationRate()
             );
         }
     }
@@ -397,13 +499,11 @@ public class ShieldProjectorBlockEntity extends PoweredMachineBlockEntityBase<Sh
     @Override
     protected void saveAdditionalPoweredMachineData(CompoundTag tag, HolderLookup.Provider registries) {
         tag.putLong("storedShield", this.storedShield);
-        tag.putLong("lastShieldGenerationRate", this.lastShieldGenerationRate);
     }
 
     @Override
     protected void loadAdditionalPoweredMachineData(CompoundTag tag, HolderLookup.Provider registries) {
         this.storedShield = tag.getLong("storedShield");
-        this.lastShieldGenerationRate = tag.getLong("lastShieldGenerationRate");
     }
 
     @Nullable
@@ -428,7 +528,7 @@ public class ShieldProjectorBlockEntity extends PoweredMachineBlockEntityBase<Sh
 
     @Override
     public Component getDisplayName() {
-        return Component.translatable("block.cobblestonexxcompressed.shield_projector");
+        return Component.translatable("block.cobblestonexxcompressed.cobblestone_shield_projector");
     }
 
     @Override
@@ -452,14 +552,6 @@ public class ShieldProjectorBlockEntity extends PoweredMachineBlockEntityBase<Sh
                     return LongDataHelper.upperInt(ShieldProjectorBlockEntity.this.getMaxShieldCapacity());
                 }
 
-                if (index == DATA_INDEX_SHIELD_RATE) {
-                    return LongDataHelper.lowerInt(ShieldProjectorBlockEntity.this.lastShieldGenerationRate);
-                }
-
-                if (index == DATA_INDEX_SHIELD_RATE_UPPER) {
-                    return LongDataHelper.upperInt(ShieldProjectorBlockEntity.this.lastShieldGenerationRate);
-                }
-
                 return ShieldProjectorBlockEntity.this.getPoweredMachineCommonData(index, MACHINE_SPECIFIC_DATA_COUNT);
             }
 
@@ -481,22 +573,6 @@ public class ShieldProjectorBlockEntity extends PoweredMachineBlockEntityBase<Sh
                     return;
                 }
 
-                if (index == DATA_INDEX_SHIELD_RATE) {
-                    ShieldProjectorBlockEntity.this.lastShieldGenerationRate = LongDataHelper.toLong(
-                        value,
-                        LongDataHelper.upperInt(ShieldProjectorBlockEntity.this.lastShieldGenerationRate)
-                    );
-                    return;
-                }
-
-                if (index == DATA_INDEX_SHIELD_RATE_UPPER) {
-                    ShieldProjectorBlockEntity.this.lastShieldGenerationRate = LongDataHelper.toLong(
-                        LongDataHelper.lowerInt(ShieldProjectorBlockEntity.this.lastShieldGenerationRate),
-                        value
-                    );
-                    return;
-                }
-
                 ShieldProjectorBlockEntity.this.setPoweredMachineCommonData(index, value, MACHINE_SPECIFIC_DATA_COUNT);
             }
 
@@ -509,13 +585,34 @@ public class ShieldProjectorBlockEntity extends PoweredMachineBlockEntityBase<Sh
         return new ShieldProjectorMenu(containerId, playerInventory, this, projectorData);
     }
 
-    // Menu から参照するレイアウト定数の置き場所を明示します。
+    // Menu / Screen 共通の GUI 座標です。
+    // 進捗と独自 upgrade はタイトル直下に置き、Shield / Total・CP/t / CP 文字と被らないようにします。
     public static final class GuiSlots {
-        public static final int CUSTOM_UPGRADE_START_X = MachineGuiLayouts.PoweredMachine.INPUT_SLOT_X - 9;
-        public static final int CUSTOM_UPGRADE_Y = 17;
+        public static final int PROGRESS_BAR_X = MachineGuiLayouts.PLAYER_INVENTORY_START_X;
+        public static final int PROGRESS_BAR_Y = 16;
+        public static final int PROGRESS_BAR_WIDTH = MachineGuiLayouts.PoweredMachine.PROGRESS_BAR_WIDTH;
+        public static final int PROGRESS_BAR_HEIGHT = MachineGuiLayouts.PoweredMachine.PROGRESS_BAR_HEIGHT;
+        public static final int CUSTOM_UPGRADE_Y = PROGRESS_BAR_Y;
+        public static final int CUSTOM_UPGRADE_START_X = PROGRESS_BAR_X + PROGRESS_BAR_WIDTH + 4;
         public static final int CUSTOM_UPGRADE_SPACING = MachineGuiLayouts.SLOT_SIZE;
+        // 8枠を進捗の右へ1段で並べます。幅は 8+16+4 + 8*18 = 172 で GUI 内に収まります。
+        public static final int CUSTOM_UPGRADE_COLUMNS = 8;
+        public static final int SHIELD_LABEL_X = MachineGuiLayouts.PoweredMachine.POWER_BAR_X;
+        // スロット下端（Y+18）の下から、CP ラベルまでの間に Shield / Total・CP/t を置きます。
+        public static final int SHIELD_LABEL_Y = 36;
+        public static final int SHIELD_RATE_LABEL_Y = 45;
 
         private GuiSlots() {
+        }
+
+        public static int getCustomUpgradeSlotX(int index) {
+            int column = index % CUSTOM_UPGRADE_COLUMNS;
+            return CUSTOM_UPGRADE_START_X + column * CUSTOM_UPGRADE_SPACING;
+        }
+
+        public static int getCustomUpgradeSlotY(int index) {
+            int row = index / CUSTOM_UPGRADE_COLUMNS;
+            return CUSTOM_UPGRADE_Y + row * CUSTOM_UPGRADE_SPACING;
         }
     }
 }

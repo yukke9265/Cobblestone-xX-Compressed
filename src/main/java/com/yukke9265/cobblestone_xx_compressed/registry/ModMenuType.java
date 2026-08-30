@@ -60,9 +60,9 @@ public class ModMenuType {
             () -> IMenuTypeExtension.create(CobblestoneCrusherMenu::new)
         );
 
-    public static final Supplier<MenuType<ShieldProjectorMenu>> SHIELD_PROJECTOR_MENU =
+    public static final Supplier<MenuType<ShieldProjectorMenu>> COBBLESTONE_SHIELD_PROJECTOR_MENU =
         MENU_TYPES.register(
-            "shield_projector_menu",
+            "cobblestone_shield_projector_menu",
             () -> IMenuTypeExtension.create(ShieldProjectorMenu::new)
         );
 

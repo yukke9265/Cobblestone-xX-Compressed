@@ -1,0 +1,6 @@
+{
+  "type": "cobblestonexxcompressed:cobblestone_shield_projector",
+  "cobblestone_power_per_tick": 1,
+  "shield_output": 10,
+  "total_cobblestone_power": 200
+}

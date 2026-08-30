@@ -31,7 +31,7 @@ public class ModBlockTagProvider extends BlockTagsProvider {
             .add(ModBlocks.COBBLESTONE_POWERED_FURNACE.get())
             .add(ModBlocks.COBBLESTONE_EXTREME_COMPRESSOR.get())
             .add(ModBlocks.COBBLESTONE_CRUSHER.get())
-            .add(ModBlocks.SHIELD_PROJECTOR.get())
+            .add(ModBlocks.COBBLESTONE_SHIELD_PROJECTOR.get())
             .add(ModBlocks.COBBLESTONE_CENTRIFUGE.get())
             .add(ModBlocks.COBBLESTONE_LASER_DRILL.get())
             .add(ModBlocks.COBBLESTONE_MELTER.get())
