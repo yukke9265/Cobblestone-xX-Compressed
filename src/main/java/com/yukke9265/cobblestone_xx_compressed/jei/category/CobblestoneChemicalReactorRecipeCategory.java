@@ -20,7 +20,6 @@ import mezz.jei.api.neoforge.NeoForgeTypes;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
-import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
@@ -32,7 +31,7 @@ import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import net.neoforged.neoforge.fluids.FluidType;
 
 @SuppressWarnings("null")
-public class CobblestoneChemicalReactorRecipeCategory implements IRecipeCategory<RecipeHolder<CobblestoneChemicalReactorRecipe>> {
+public class CobblestoneChemicalReactorRecipeCategory extends JeiRecipeCategoryWithCpPowerSlot<RecipeHolder<CobblestoneChemicalReactorRecipe>> {
     private static final ResourceLocation BACKGROUND_TEXTURE =
         ResourceLocation.fromNamespaceAndPath(CobblestonexXCompressed.MODID, "textures/gui/cobblestone_chemical_reactor.png");
 
@@ -45,6 +44,8 @@ public class CobblestoneChemicalReactorRecipeCategory implements IRecipeCategory
     private static final int CPPT_LABEL_Y = 50;//スロットと被らないように、下部に移動
     private static final int TOTAL_CP_LABEL_X = 36;
     private static final int TOTAL_CP_LABEL_Y = CPPT_LABEL_Y + 10;
+    private static final int POWER_SLOT_X = MachineGuiLayouts.ChemicalReactor.POWER_SLOT_X - BACKGROUND_U;
+    private static final int POWER_SLOT_Y = MachineGuiLayouts.ChemicalReactor.POWER_SLOT_Y - BACKGROUND_V;
 
     private final IDrawable background;
     private final IDrawable icon;
@@ -77,11 +78,6 @@ public class CobblestoneChemicalReactorRecipeCategory implements IRecipeCategory
     @Override
     public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, @Nonnull RecipeHolder<CobblestoneChemicalReactorRecipe> recipeHolder, @Nonnull IFocusGroup focuses) {
         CobblestoneChemicalReactorRecipe recipe = recipeHolder.value();
-        JeiCobblestonePowerItems.addPowerSlot(
-            builder,
-            MachineGuiLayouts.ChemicalReactor.POWER_SLOT_X - BACKGROUND_U,
-            MachineGuiLayouts.ChemicalReactor.POWER_SLOT_Y - BACKGROUND_V
-        );
 
         if (recipe.hasFirstItemInput()) {
             builder.addSlot(RecipeIngredientRole.INPUT, MachineGuiLayouts.ChemicalReactor.INPUT_ITEM_1_SLOT_X - BACKGROUND_U, MachineGuiLayouts.ChemicalReactor.INPUT_ITEM_1_SLOT_Y - BACKGROUND_V)
@@ -132,7 +128,7 @@ public class CobblestoneChemicalReactorRecipeCategory implements IRecipeCategory
         GuiPartRenderer.renderNormalSlot(guiGraphics, MachineGuiLayouts.ChemicalReactor.OUTPUT_ITEM_2_SLOT_X - BACKGROUND_U, MachineGuiLayouts.ChemicalReactor.OUTPUT_ITEM_2_SLOT_Y - BACKGROUND_V);
         GuiPartRenderer.renderNormalSlot(guiGraphics, MachineGuiLayouts.ChemicalReactor.OUTPUT_FLUID_1_SLOT_X - BACKGROUND_U, MachineGuiLayouts.ChemicalReactor.OUTPUT_FLUID_1_SLOT_Y - BACKGROUND_V);
         GuiPartRenderer.renderNormalSlot(guiGraphics, MachineGuiLayouts.ChemicalReactor.OUTPUT_FLUID_2_SLOT_X - BACKGROUND_U, MachineGuiLayouts.ChemicalReactor.OUTPUT_FLUID_2_SLOT_Y - BACKGROUND_V);
-        GuiPartRenderer.renderCobblestoneSlot(guiGraphics, MachineGuiLayouts.ChemicalReactor.POWER_SLOT_X - BACKGROUND_U, MachineGuiLayouts.ChemicalReactor.POWER_SLOT_Y - BACKGROUND_V);
+        GuiPartRenderer.renderCobblestoneSlot(guiGraphics, POWER_SLOT_X, POWER_SLOT_Y);
         GuiPartRenderer.renderProgressFrame(guiGraphics, MachineGuiLayouts.ChemicalReactor.PROGRESS_BAR_X - BACKGROUND_U, MachineGuiLayouts.ChemicalReactor.PROGRESS_BAR_Y - BACKGROUND_V);
         guiGraphics.drawString(Minecraft.getInstance().font, recipe.getCobblestonePowerPerTick() + " CP/t", CPPT_LABEL_X, CPPT_LABEL_Y, 0x404040, false);
         guiGraphics.drawString(Minecraft.getInstance().font, recipe.getTotalCobblestonePower() + " total CP", TOTAL_CP_LABEL_X, TOTAL_CP_LABEL_Y, 0x404040, false);
@@ -142,5 +138,15 @@ public class CobblestoneChemicalReactorRecipeCategory implements IRecipeCategory
         return Arrays.stream(ingredient.getItems())
             .map(stack -> stack.copyWithCount(ingredient.count()))
             .toList();
+    }
+
+    @Override
+    protected int getCpPowerSlotX() {
+        return POWER_SLOT_X;
+    }
+
+    @Override
+    protected int getCpPowerSlotY() {
+        return POWER_SLOT_Y;
     }
 }

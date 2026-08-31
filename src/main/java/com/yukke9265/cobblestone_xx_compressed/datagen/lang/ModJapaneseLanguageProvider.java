@@ -56,13 +56,39 @@ public class ModJapaneseLanguageProvider extends LanguageProvider {
         addBlock(ModBlocks.MULTIBLOCK_ENERGIZED_UPGRADE, "マルチブロック蓄電アップグレード");
         addBlock(ModBlocks.MULTIBLOCK_PARALLEL_UPGRADE, "マルチブロック並列アップグレード");
         for (ModBlocks.TierMultiblockAccelerationUpgrade tier : ModBlocks.TierMultiblockAccelerationUpgrade.values()) {
-            addBlock(tier.getBlock(), tier.getEnglishDisplayName().replace("Multiblock Acceleration Upgrade", "マルチブロック加速アップグレード").replace("Copper ", "銅").replace("Iron ", "鉄").replace("Gold ", "金").replace("Amethyst ", "アメジスト").replace("Aquamarine ", "アクアマリン").replace("Topaz ", "トパーズ").replace("Ruby ", "ルビー").replace("Sapphire ", "サファイア").replace("Diamond ", "ダイヤモンド").replace("Emerald ", "エメラルド").replace("Netherite ", "ネザライト").replace("Obsidian ", "黒曜石"));
+            addBlock(tier.getBlock(), translateMultiblockAccelerationUpgradeName(tier.getEnglishDisplayName()));
         }
         for (ModBlocks.TierMultiblockEnergizedUpgrade tier : ModBlocks.TierMultiblockEnergizedUpgrade.values()) {
-            addBlock(tier.getBlock(), tier.getEnglishDisplayName().replace("Multiblock Energized Upgrade", "マルチブロック蓄電アップグレード").replace("Copper ", "銅").replace("Iron ", "鉄").replace("Gold ", "金").replace("Amethyst ", "アメジスト").replace("Aquamarine ", "アクアマリン").replace("Topaz ", "トパーズ").replace("Ruby ", "ルビー").replace("Sapphire ", "サファイア").replace("Diamond ", "ダイヤモンド").replace("Emerald ", "エメラルド").replace("Netherite ", "ネザライト").replace("Obsidian ", "黒曜石"));
+            addBlock(tier.getBlock(), translateMultiblockEnergizedUpgradeName(tier.getEnglishDisplayName()));
         }
         for (ModBlocks.TierMultiblockParallelUpgrade tier : ModBlocks.TierMultiblockParallelUpgrade.values()) {
-            addBlock(tier.getBlock(), tier.getEnglishDisplayName().replace("Multiblock Parallel Upgrade", "マルチブロック並列アップグレード").replace("Copper ", "銅").replace("Iron ", "鉄").replace("Gold ", "金").replace("Amethyst ", "アメジスト").replace("Aquamarine ", "アクアマリン").replace("Topaz ", "トパーズ").replace("Ruby ", "ルビー").replace("Sapphire ", "サファイア").replace("Diamond ", "ダイヤモンド").replace("Emerald ", "エメラルド").replace("Netherite ", "ネザライト").replace("Obsidian ", "黒曜石"));
+            addBlock(tier.getBlock(), translateMultiblockParallelUpgradeName(tier.getEnglishDisplayName()));
+        }
+
+        addBlock(ModBlocks.COBBLESTONE_MACHINE_CASING, "丸石機械筐体");
+        for (ModBlocks.TierCobblestoneMachineCasing tier : ModBlocks.TierCobblestoneMachineCasing.values()) {
+            addBlock(
+                tier.getBlock(),
+                translateTierBlockName(tier.getEnglishDisplayName(), "Cobblestone Machine Casing", "丸石機械筐体")
+            );
+        }
+
+        for (ModBlocks.TierCobblestoneGenerator generatorVariant : ModBlocks.TierCobblestoneGenerator.values()) {
+            if (generatorVariant.hasTier()) {
+                addBlock(
+                    generatorVariant.getBlock(),
+                    translateTierBlockName(
+                        generatorVariant.getEnglishDisplayName(),
+                        "Cobblestone Generator " + generatorVariant.getSize().getDisplayName(),
+                        "丸石ジェネレーター " + generatorVariant.getSize().getDisplayName()
+                    )
+                );
+            } else {
+                addBlock(
+                    generatorVariant.getBlock(),
+                    "丸石ジェネレーター " + generatorVariant.getSize().getDisplayName()
+                );
+            }
         }
 
         add("automation_mode.cobblestonexxcompressed.disabled", "OFF");
@@ -127,7 +153,10 @@ public class ModJapaneseLanguageProvider extends LanguageProvider {
         add("jei.cobblestonexxcompressed.no_silk_touch", "シルクタッチなし");
         add("jei.cobblestonexxcompressed.chance", "確率: %s");
         add("jei.cobblestonexxcompressed.count_range_fortune", "個数: %s-%s (幸運)");
+        add("jei.cobblestonexxcompressed.cp_supply.fuel", "丸石・圧縮丸石: 1丸石/t → CP");
+        add("jei.cobblestonexxcompressed.cp_supply.catalyst", "丸石ジェネレータ: 消費なしでCP供給");
         add("tooltip.cobblestonexxcompressed.compressed_cobblestone.compression", "x%s 圧縮");
+        add("tooltip.cobblestonexxcompressed.tier", "Tier %s");
         add("tooltip.cobblestonexxcompressed.cobblestone_energized_cube.capacity", "x%s CP容量");
         add("tooltip.cobblestonexxcompressed.cobblestone_acceleration_chip.rate", "x%s CP/t");
         add("tooltip.cobblestonexxcompressed.shield_range_module.bonus", "範囲 +%s");
@@ -191,6 +220,18 @@ public class ModJapaneseLanguageProvider extends LanguageProvider {
     // tier 付きブロック名は英語表示名から機械名と素材名を分けて置換します。
     private static String translateTierBlockName(String englishDisplayName, String englishSuffix, String japaneseSuffix) {
         return translateTierMaterialPrefix(englishDisplayName.replace(englishSuffix, japaneseSuffix));
+    }
+
+    private static String translateMultiblockAccelerationUpgradeName(String englishDisplayName) {
+        return translateTierMaterialPrefix(englishDisplayName.replace("Multiblock Acceleration Upgrade", "マルチブロック加速アップグレード"));
+    }
+
+    private static String translateMultiblockEnergizedUpgradeName(String englishDisplayName) {
+        return translateTierMaterialPrefix(englishDisplayName.replace("Multiblock Energized Upgrade", "マルチブロック蓄電アップグレード"));
+    }
+
+    private static String translateMultiblockParallelUpgradeName(String englishDisplayName) {
+        return translateTierMaterialPrefix(englishDisplayName.replace("Multiblock Parallel Upgrade", "マルチブロック並列アップグレード"));
     }
 
     private static String translateTierMaterialPrefix(String name) {

@@ -31,6 +31,9 @@ public final class ModItemTags {
     public static final TagKey<Item> AE2_PRINTED_ENGINEERING_PROCESSOR = modTag("ae2_printed_engineering_processor");
     public static final TagKey<Item> AE2_PRINTED_SILICON = modTag("ae2_printed_silicon");
 
+    // Advanced AE 未導入でも datagen できるよう、optional タグ経由で参照します。
+    public static final TagKey<Item> ADVANCED_AE_QUANTUM_INFUSED_DUST = modTag("advanced_ae_quantum_infused_dust");
+
     private ModItemTags() {
     }
 

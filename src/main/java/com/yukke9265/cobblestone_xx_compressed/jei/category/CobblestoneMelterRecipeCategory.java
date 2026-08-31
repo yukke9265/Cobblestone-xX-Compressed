@@ -17,7 +17,6 @@ import mezz.jei.api.neoforge.NeoForgeTypes;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
-import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
@@ -27,7 +26,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.neoforged.neoforge.fluids.FluidType;
 
-public class CobblestoneMelterRecipeCategory implements IRecipeCategory<RecipeHolder<CobblestoneMelterRecipe>> {
+public class CobblestoneMelterRecipeCategory extends JeiRecipeCategoryWithCpPowerSlot<RecipeHolder<CobblestoneMelterRecipe>> {
     private static final ResourceLocation BACKGROUND_TEXTURE =
         ResourceLocation.fromNamespaceAndPath(CobblestonexXCompressed.MODID, "textures/gui/cobblestone_melter.png");
 
@@ -82,8 +81,6 @@ public class CobblestoneMelterRecipeCategory implements IRecipeCategory<RecipeHo
         builder.addSlot(RecipeIngredientRole.INPUT, INPUT_SLOT_X, INPUT_SLOT_Y)
             .addIngredients(recipe.getIngredient());
 
-        JeiCobblestonePowerItems.addPowerSlot(builder, POWER_SLOT_X, POWER_SLOT_Y);
-
         builder.addSlot(RecipeIngredientRole.OUTPUT, FLUID_SLOT_X, FLUID_SLOT_Y)
             .addIngredients(NeoForgeTypes.FLUID_STACK, List.of(recipe.getFluidResult()))
             .setFluidRenderer(Math.max(recipe.getFluidResult().getAmount(), FluidType.BUCKET_VOLUME), false, 16, 16);
@@ -98,5 +95,15 @@ public class CobblestoneMelterRecipeCategory implements IRecipeCategory<RecipeHo
         GuiPartRenderer.renderProgressFrame(guiGraphics, PROGRESS_FRAME_X, PROGRESS_FRAME_Y);
         guiGraphics.drawString(Minecraft.getInstance().font, recipe.getCobblestonePowerPerTick() + " CP/t", CPPT_LABEL_X, CPPT_LABEL_Y, 0x404040, false);
         guiGraphics.drawString(Minecraft.getInstance().font, recipe.getTotalCobblestonePower() + " total CP", TOTAL_CP_LABEL_X, TOTAL_CP_LABEL_Y, 0x404040, false);
+    }
+
+    @Override
+    protected int getCpPowerSlotX() {
+        return POWER_SLOT_X;
+    }
+
+    @Override
+    protected int getCpPowerSlotY() {
+        return POWER_SLOT_Y;
     }
 }

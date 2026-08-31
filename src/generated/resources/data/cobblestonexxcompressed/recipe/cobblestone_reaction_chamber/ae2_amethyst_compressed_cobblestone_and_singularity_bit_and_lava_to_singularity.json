@@ -1,0 +1,26 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "ae2"
+    }
+  ],
+  "type": "cobblestonexxcompressed:cobblestone_reaction_chamber",
+  "cobblestone_power_per_tick": 1024,
+  "fluid_input": {
+    "amount": 1000,
+    "id": "minecraft:lava"
+  },
+  "ingredient_1": {
+    "count": 16,
+    "item": "cobblestonexxcompressed:tier_amethyst_compressed_cobblestone"
+  },
+  "ingredient_2": {
+    "count": 1,
+    "item": "cobblestonexxcompressed:tier_amethyst_compressed_cobblestone_singularity_bit"
+  },
+  "result": {
+    "id": "ae2:singularity"
+  },
+  "total_cobblestone_power": 3276800
+}

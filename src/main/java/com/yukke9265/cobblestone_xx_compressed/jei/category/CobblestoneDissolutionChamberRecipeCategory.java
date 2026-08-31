@@ -18,7 +18,6 @@ import mezz.jei.api.neoforge.NeoForgeTypes;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
-import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
@@ -29,7 +28,7 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
 
-public class CobblestoneDissolutionChamberRecipeCategory implements IRecipeCategory<RecipeHolder<CobblestoneDissolutionChamberRecipe>> {
+public class CobblestoneDissolutionChamberRecipeCategory extends JeiRecipeCategoryWithCpPowerSlot<RecipeHolder<CobblestoneDissolutionChamberRecipe>> {
     private static final ResourceLocation BACKGROUND_TEXTURE =
         ResourceLocation.fromNamespaceAndPath(CobblestonexXCompressed.MODID, "textures/gui/cobblestone_dissolution_chamber.png");
 
@@ -86,8 +85,6 @@ public class CobblestoneDissolutionChamberRecipeCategory implements IRecipeCateg
         builder.addSlot(RecipeIngredientRole.INPUT, INPUT_SLOT_X, INPUT_SLOT_Y)
             .addItemStacks(getDisplayStacks(recipe.getItemInput()));
 
-        JeiCobblestonePowerItems.addPowerSlot(builder, POWER_SLOT_X, POWER_SLOT_Y);
-
         builder.addSlot(RecipeIngredientRole.INPUT, INPUT_FLUID_SLOT_X, INPUT_FLUID_SLOT_Y)
             .addIngredients(NeoForgeTypes.FLUID_STACK, List.of(recipe.getFluidInput()))
             .setFluidRenderer(Math.max(recipe.getFluidInput().getAmount(), FluidType.BUCKET_VOLUME), false, 16, 16);
@@ -113,5 +110,15 @@ public class CobblestoneDissolutionChamberRecipeCategory implements IRecipeCateg
         return Arrays.stream(ingredient.getItems())
             .map(stack -> stack.copyWithCount(ingredient.count()))
             .toList();
+    }
+
+    @Override
+    protected int getCpPowerSlotX() {
+        return POWER_SLOT_X;
+    }
+
+    @Override
+    protected int getCpPowerSlotY() {
+        return POWER_SLOT_Y;
     }
 }

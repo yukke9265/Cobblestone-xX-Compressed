@@ -16,7 +16,6 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
-import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
@@ -25,7 +24,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
-public class CobblestoneLaserDrillRecipeCategory implements IRecipeCategory<RecipeHolder<CobblestoneLaserDrillRecipe>> {
+public class CobblestoneLaserDrillRecipeCategory extends JeiRecipeCategoryWithCpPowerSlot<RecipeHolder<CobblestoneLaserDrillRecipe>> {
     private static final ResourceLocation BACKGROUND_TEXTURE =
         ResourceLocation.fromNamespaceAndPath(CobblestonexXCompressed.MODID, "textures/gui/cobblestone_centrifuge.png");
 
@@ -83,8 +82,6 @@ public class CobblestoneLaserDrillRecipeCategory implements IRecipeCategory<Reci
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, RecipeHolder<CobblestoneLaserDrillRecipe> recipeHolder, IFocusGroup focuses) {
         CobblestoneLaserDrillRecipe recipe = recipeHolder.value();
-        JeiCobblestonePowerItems.addPowerSlot(builder, POWER_SLOT_X, POWER_SLOT_Y);
-
         builder.addSlot(RecipeIngredientRole.INPUT, INPUT_SLOT_X, INPUT_SLOT_Y)
             .addIngredients(recipe.getIngredient());
 
@@ -112,5 +109,15 @@ public class CobblestoneLaserDrillRecipeCategory implements IRecipeCategory<Reci
 
     private static String toPercentLabel(float chance) {
         return Math.round(chance * 100.0F) + "%";
+    }
+
+    @Override
+    protected int getCpPowerSlotX() {
+        return POWER_SLOT_X;
+    }
+
+    @Override
+    protected int getCpPowerSlotY() {
+        return POWER_SLOT_Y;
     }
 }

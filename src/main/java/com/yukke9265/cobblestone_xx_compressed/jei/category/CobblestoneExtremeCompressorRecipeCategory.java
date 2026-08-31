@@ -16,7 +16,6 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
-import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
@@ -25,7 +24,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
-public class CobblestoneExtremeCompressorRecipeCategory implements IRecipeCategory<RecipeHolder<CobblestoneExtremeCompressorRecipe>> {
+public class CobblestoneExtremeCompressorRecipeCategory extends JeiRecipeCategoryWithCpPowerSlot<RecipeHolder<CobblestoneExtremeCompressorRecipe>> {
     private static final ResourceLocation BACKGROUND_TEXTURE =
         ResourceLocation.fromNamespaceAndPath(CobblestonexXCompressed.MODID, "textures/gui/cobblestone_extreme_compressor.png");
 
@@ -82,8 +81,6 @@ public class CobblestoneExtremeCompressorRecipeCategory implements IRecipeCatego
         builder.addSlot(RecipeIngredientRole.INPUT, INPUT_SLOT_X, INPUT_SLOT_Y)
             .addIngredients(recipe.getIngredient());
 
-        JeiCobblestonePowerItems.addPowerSlot(builder, POWER_SLOT_X, POWER_SLOT_Y);
-
         builder.addSlot(RecipeIngredientRole.OUTPUT, OUTPUT_SLOT_X, OUTPUT_SLOT_Y)
             .addItemStack(recipe.getResult().copy());
     }
@@ -98,5 +95,15 @@ public class CobblestoneExtremeCompressorRecipeCategory implements IRecipeCatego
         guiGraphics.drawString(Minecraft.getInstance().font, recipe.getRequiredItemCount() + " items", COUNT_LABEL_X, COUNT_LABEL_Y, 0x000000, false);
         guiGraphics.drawString(Minecraft.getInstance().font, recipe.getCobblestonePowerPerTick() + " CP/t", CPPT_LABEL_X, CPPT_LABEL_Y, 0x000000, false);
         guiGraphics.drawString(Minecraft.getInstance().font, recipe.getTotalCobblestonePower() + " total CP", TOTAL_CP_LABEL_X, TOTAL_CP_LABEL_Y, 0x000000, false);
+    }
+
+    @Override
+    protected int getCpPowerSlotX() {
+        return POWER_SLOT_X;
+    }
+
+    @Override
+    protected int getCpPowerSlotY() {
+        return POWER_SLOT_Y;
     }
 }

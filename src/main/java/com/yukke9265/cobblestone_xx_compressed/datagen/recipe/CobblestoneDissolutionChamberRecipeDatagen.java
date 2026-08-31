@@ -2,18 +2,26 @@ package com.yukke9265.cobblestone_xx_compressed.datagen.recipe;
 
 import com.yukke9265.cobblestone_xx_compressed.registry.ModBlocks;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModFluids;
+import com.yukke9265.cobblestone_xx_compressed.registry.ModItemTags;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModItems;
 
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.material.Fluids;
+import net.neoforged.neoforge.common.conditions.ModLoadedCondition;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import net.neoforged.neoforge.fluids.FluidStack;
 
 public final class CobblestoneDissolutionChamberRecipeDatagen {
+    private static final String ADVANCED_AE_MOD_ID = "advanced_ae";
+    private static final long ADVANCED_AE_QUANTUM_INFUSION_TOTAL_CP = 209715200L;
+    private static final long ADVANCED_AE_QUANTUM_INFUSION_CP_PER_TICK = 16384L;
+    private static final int ADVANCED_AE_QUANTUM_INFUSION_WATER_AMOUNT = 4_000;
+    private static final int ADVANCED_AE_QUANTUM_INFUSION_OUTPUT_AMOUNT = 1_000;
     private static final DissolutionChamberRecipeDefinition[] RECIPES = new DissolutionChamberRecipeDefinition[] {
         new DissolutionChamberRecipeDefinition(
             "tier_ruby_compressed_cobblestone_and_redruby_to_molten_tier_ruby_dirty_compressed_cobblestone",
@@ -96,6 +104,23 @@ public final class CobblestoneDissolutionChamberRecipeDatagen {
         for (DissolutionChamberRecipeDefinition recipe : RECIPES) {
             MachineRecipeOutputHelper.saveCobblestoneDissolutionChamberRecipe(output, recipe.recipeName, recipe.ingredient, recipe.fluidInput, recipe.fluidOutput, recipe.totalCobblestonePower, recipe.cobblestonePowerPerTick);
         }
+
+        registerAdvancedAeRecipes(output);
+    }
+
+    private static void registerAdvancedAeRecipes(RecipeOutput output) {
+        RecipeOutput advancedAeOutput = output.withConditions(new ModLoadedCondition(ADVANCED_AE_MOD_ID));
+
+        MachineRecipeOutputHelper.saveCobblestoneDissolutionChamberRecipe(
+            advancedAeOutput,
+            "advanced_ae_quantum_infused_dust_and_water_to_quantum_infusion",
+            sizedTag(ModItemTags.ADVANCED_AE_QUANTUM_INFUSED_DUST, 1),
+            new FluidStack(Fluids.WATER, ADVANCED_AE_QUANTUM_INFUSION_WATER_AMOUNT),
+            ResourceLocation.fromNamespaceAndPath(ADVANCED_AE_MOD_ID, "quantum_infusion_source"),
+            ADVANCED_AE_QUANTUM_INFUSION_OUTPUT_AMOUNT,
+            ADVANCED_AE_QUANTUM_INFUSION_TOTAL_CP,
+            ADVANCED_AE_QUANTUM_INFUSION_CP_PER_TICK
+        );
     }
 
     private static SizedIngredient sizedItem(ItemLike item) {
@@ -104,6 +129,10 @@ public final class CobblestoneDissolutionChamberRecipeDatagen {
 
     private static SizedIngredient sizedItem(ItemLike item, int count) {
         return new SizedIngredient(Ingredient.of(item), count);
+    }
+
+    private static SizedIngredient sizedTag(net.minecraft.tags.TagKey<net.minecraft.world.item.Item> tag, int count) {
+        return new SizedIngredient(Ingredient.of(tag), count);
     }
 
     private static class DissolutionChamberRecipeDefinition {

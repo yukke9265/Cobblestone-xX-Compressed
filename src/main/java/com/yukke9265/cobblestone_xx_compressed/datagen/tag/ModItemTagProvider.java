@@ -78,11 +78,19 @@ public class ModItemTagProvider extends ItemTagsProvider {
         this.addOptionalAe2ItemTag("ae2_printed_calculation_processor", "printed_calculation_processor");
         this.addOptionalAe2ItemTag("ae2_printed_engineering_processor", "printed_engineering_processor");
         this.addOptionalAe2ItemTag("ae2_printed_silicon", "printed_silicon");
+
+        // Advanced AE 未導入でも datagen できるよう、optional タグ経由で参照します。
+        this.addOptionalAdvancedAeItemTag("advanced_ae_quantum_infused_dust", "quantum_infused_dust");
     }
 
     private void addOptionalAe2ItemTag(String tagPath, String ae2ItemPath) {
         this.tag(this.createItemTag(CobblestonexXCompressed.MODID, tagPath))
             .addOptional(ResourceLocation.fromNamespaceAndPath("ae2", ae2ItemPath));
+    }
+
+    private void addOptionalAdvancedAeItemTag(String tagPath, String advancedAeItemPath) {
+        this.tag(this.createItemTag(CobblestonexXCompressed.MODID, tagPath))
+            .addOptional(ResourceLocation.fromNamespaceAndPath("advanced_ae", advancedAeItemPath));
     }
 
     @SuppressWarnings("null")

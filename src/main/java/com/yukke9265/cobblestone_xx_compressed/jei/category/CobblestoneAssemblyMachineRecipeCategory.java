@@ -19,7 +19,6 @@ import mezz.jei.api.neoforge.NeoForgeTypes;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
-import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
@@ -30,7 +29,7 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import net.neoforged.neoforge.fluids.FluidType;
 
 @SuppressWarnings("null")
-public class CobblestoneAssemblyMachineRecipeCategory implements IRecipeCategory<RecipeHolder<CobblestoneAssemblyMachineRecipe>> {
+public class CobblestoneAssemblyMachineRecipeCategory extends JeiRecipeCategoryWithCpPowerSlot<RecipeHolder<CobblestoneAssemblyMachineRecipe>> {
     private static final ResourceLocation BACKGROUND_TEXTURE =
         ResourceLocation.fromNamespaceAndPath(CobblestonexXCompressed.MODID, "textures/gui/cobblestone_assembly_machine.png");
 
@@ -42,6 +41,8 @@ public class CobblestoneAssemblyMachineRecipeCategory implements IRecipeCategory
     private static final int CPPT_LABEL_Y = 50;//スロットと被らないように、下部に移動
     private static final int TOTAL_CP_LABEL_X = 36;
     private static final int TOTAL_CP_LABEL_Y = CPPT_LABEL_Y + 10;
+    private static final int POWER_SLOT_X = MachineGuiLayouts.AssemblyMachine.POWER_SLOT_X - BACKGROUND_U;
+    private static final int POWER_SLOT_Y = MachineGuiLayouts.AssemblyMachine.POWER_SLOT_Y - BACKGROUND_V;
 
     private final IDrawable background;
     private final IDrawable icon;
@@ -74,11 +75,6 @@ public class CobblestoneAssemblyMachineRecipeCategory implements IRecipeCategory
     @Override
     public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, @Nonnull RecipeHolder<CobblestoneAssemblyMachineRecipe> recipeHolder, @Nonnull IFocusGroup focuses) {
         CobblestoneAssemblyMachineRecipe recipe = recipeHolder.value();
-        JeiCobblestonePowerItems.addPowerSlot(
-            builder,
-            MachineGuiLayouts.AssemblyMachine.POWER_SLOT_X - BACKGROUND_U,
-            MachineGuiLayouts.AssemblyMachine.POWER_SLOT_Y - BACKGROUND_V
-        );
 
         this.addInputItemSlot(builder, recipe.getFirstItemInput(), MachineGuiLayouts.AssemblyMachine.INPUT_ITEM_1_SLOT_X, MachineGuiLayouts.AssemblyMachine.INPUT_ITEM_1_SLOT_Y);
         this.addInputItemSlot(builder, recipe.getSecondItemInput(), MachineGuiLayouts.AssemblyMachine.INPUT_ITEM_2_SLOT_X, MachineGuiLayouts.AssemblyMachine.INPUT_ITEM_2_SLOT_Y);
@@ -107,7 +103,7 @@ public class CobblestoneAssemblyMachineRecipeCategory implements IRecipeCategory
         GuiPartRenderer.renderNormalSlot(guiGraphics, MachineGuiLayouts.AssemblyMachine.INPUT_ITEM_5_SLOT_X - BACKGROUND_U, MachineGuiLayouts.AssemblyMachine.INPUT_ITEM_5_SLOT_Y - BACKGROUND_V);
         GuiPartRenderer.renderNormalSlot(guiGraphics, MachineGuiLayouts.AssemblyMachine.INPUT_ITEM_6_SLOT_X - BACKGROUND_U, MachineGuiLayouts.AssemblyMachine.INPUT_ITEM_6_SLOT_Y - BACKGROUND_V);
         GuiPartRenderer.renderNormalSlot(guiGraphics, MachineGuiLayouts.AssemblyMachine.INPUT_FLUID_SLOT_X - BACKGROUND_U, MachineGuiLayouts.AssemblyMachine.INPUT_FLUID_SLOT_Y - BACKGROUND_V);
-        GuiPartRenderer.renderCobblestoneSlot(guiGraphics, MachineGuiLayouts.AssemblyMachine.POWER_SLOT_X - BACKGROUND_U, MachineGuiLayouts.AssemblyMachine.POWER_SLOT_Y - BACKGROUND_V);
+        GuiPartRenderer.renderCobblestoneSlot(guiGraphics, POWER_SLOT_X, POWER_SLOT_Y);
         GuiPartRenderer.renderNormalSlot(guiGraphics, MachineGuiLayouts.AssemblyMachine.OUTPUT_SLOT_X - BACKGROUND_U, MachineGuiLayouts.AssemblyMachine.OUTPUT_SLOT_Y - BACKGROUND_V);
         GuiPartRenderer.renderProgressFrame(guiGraphics, MachineGuiLayouts.AssemblyMachine.PROGRESS_BAR_X - BACKGROUND_U, MachineGuiLayouts.AssemblyMachine.PROGRESS_BAR_Y - BACKGROUND_V);
         guiGraphics.drawString(Minecraft.getInstance().font, recipe.getCobblestonePowerPerTick() + " CP/t", CPPT_LABEL_X, CPPT_LABEL_Y, 0x404040, false);
@@ -121,5 +117,15 @@ public class CobblestoneAssemblyMachineRecipeCategory implements IRecipeCategory
 
         builder.addSlot(RecipeIngredientRole.INPUT, x - BACKGROUND_U, y - BACKGROUND_V)
             .addItemStack(stack);
+    }
+
+    @Override
+    protected int getCpPowerSlotX() {
+        return POWER_SLOT_X;
+    }
+
+    @Override
+    protected int getCpPowerSlotY() {
+        return POWER_SLOT_Y;
     }
 }

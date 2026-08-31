@@ -40,7 +40,9 @@ import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsE
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
+import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModFluids;
+import com.yukke9265.cobblestone_xx_compressed.util.CobblestoneTierResolver;
 
 // このクラスは専用サーバーでは読み込まれません。ここからクライアント側コードへアクセスしても安全です。
 @Mod(value = CobblestonexXCompressed.MODID, dist = Dist.CLIENT)
@@ -74,6 +76,13 @@ public class CobblestonexXCompressedClient {
         // Mekanism と同じく RegisterClientExtensionsEvent で FluidType ごとの描画情報を明示登録します。
         // bucket の液体色もこの経路を使うため、ここで tier ごとの tint を確実に分けます。
         ModFluidTypes.registerClientExtensions(event);
+    }
+
+    @SubscribeEvent
+    static void onItemTooltip(ItemTooltipEvent event) {
+        CobblestoneTierResolver.findTier(event.getItemStack()).ifPresent(tier ->
+            CobblestoneTierResolver.appendTierTooltip(event.getToolTip(), tier)
+        );
     }
 
     @SubscribeEvent

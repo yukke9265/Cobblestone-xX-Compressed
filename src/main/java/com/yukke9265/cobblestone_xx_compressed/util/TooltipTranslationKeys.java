@@ -24,4 +24,8 @@ public final class TooltipTranslationKeys {
     public static String cobblestoneGeneratorCatalystRate() {
         return TOOLTIP_PREFIX + "cobblestone_generator.catalyst_rate";
     }
+
+    public static String tier() {
+        return TOOLTIP_PREFIX + "tier";
+    }
 }

@@ -21,6 +21,7 @@ import com.yukke9265.cobblestone_xx_compressed.recipe.CobblestoneReactionChamber
 import com.yukke9265.cobblestone_xx_compressed.recipe.ShieldProjectorRecipe;
 import com.yukke9265.cobblestone_xx_compressed.recipe.StoneBreakSimulatorRecipe;
 
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -437,10 +438,33 @@ final class MachineRecipeOutputHelper {
         long totalCobblestonePower,
         long cobblestonePowerPerTick
     ) {
+        saveCobblestoneDissolutionChamberRecipe(
+            output,
+            recipeName,
+            ingredient,
+            fluidInput,
+            BuiltInRegistries.FLUID.getKey(fluidOutput.getFluid()),
+            fluidOutput.getAmount(),
+            totalCobblestonePower,
+            cobblestonePowerPerTick
+        );
+    }
+
+    public static void saveCobblestoneDissolutionChamberRecipe(
+        RecipeOutput output,
+        String recipeName,
+        SizedIngredient ingredient,
+        FluidStack fluidInput,
+        ResourceLocation fluidOutputId,
+        int fluidOutputAmount,
+        long totalCobblestonePower,
+        long cobblestonePowerPerTick
+    ) {
         CobblestoneDissolutionChamberRecipe recipe = new CobblestoneDissolutionChamberRecipe(
             ingredient,
             fluidInput,
-            fluidOutput,
+            fluidOutputId,
+            fluidOutputAmount,
             totalCobblestonePower,
             cobblestonePowerPerTick
         );

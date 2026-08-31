@@ -195,6 +195,15 @@ public final class CobblestoneReactionChamberRecipeDatagen {
             printedSilicon,
             "engineering_processor"
         );
+        saveAe2ReactionChamberRecipe(
+            ae2Output,
+            "ae2_amethyst_compressed_cobblestone_and_singularity_bit_and_lava_to_singularity",
+            new FluidStack(net.minecraft.world.level.material.Fluids.LAVA, AE2_FLUID_AMOUNT),
+            sizedItem(ModBlocks.TierCompressedCobblestone.AMETHYST.getBlock().get(), 16),
+            sizedItem(ModItems.TierCompressedCobblestoneSingularityBit.AMETHYST.getItem().get(), 1),
+            "singularity",
+            1
+        );
     }
 
     private static void saveAe2ReactionChamberRecipe(
@@ -205,6 +214,26 @@ public final class CobblestoneReactionChamberRecipeDatagen {
         SizedIngredient secondIngredient,
         String resultItemPath
     ) {
+        saveAe2ReactionChamberRecipe(
+            output,
+            recipeName,
+            fluidInput,
+            firstIngredient,
+            secondIngredient,
+            resultItemPath,
+            AE2_RESULT_COUNT
+        );
+    }
+
+    private static void saveAe2ReactionChamberRecipe(
+        RecipeOutput output,
+        String recipeName,
+        FluidStack fluidInput,
+        SizedIngredient firstIngredient,
+        SizedIngredient secondIngredient,
+        String resultItemPath,
+        int resultCount
+    ) {
         MachineRecipeOutputHelper.saveCobblestoneReactionChamberRecipe(
             output,
             recipeName,
@@ -212,7 +241,7 @@ public final class CobblestoneReactionChamberRecipeDatagen {
             firstIngredient,
             secondIngredient,
             ResourceLocation.fromNamespaceAndPath(AE2_MOD_ID, resultItemPath),
-            AE2_RESULT_COUNT,
+            resultCount,
             REACTION_CHAMBER_TOTAL_CP,
             REACTION_CHAMBER_CP_PER_TICK
         );

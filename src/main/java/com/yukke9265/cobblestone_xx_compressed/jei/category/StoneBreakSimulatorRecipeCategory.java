@@ -14,7 +14,6 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
-import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
@@ -23,7 +22,7 @@ import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
 @SuppressWarnings("null")
-public class StoneBreakSimulatorRecipeCategory implements IRecipeCategory<StoneBreakSimulatorJeiRecipe> {
+public class StoneBreakSimulatorRecipeCategory extends JeiRecipeCategoryWithCpPowerSlot<StoneBreakSimulatorJeiRecipe> {
     private static final ResourceLocation BACKGROUND_TEXTURE =
         ResourceLocation.fromNamespaceAndPath(CobblestonexXCompressed.MODID, "textures/gui/cobblestone_assembly_machine.png");
 
@@ -35,6 +34,8 @@ public class StoneBreakSimulatorRecipeCategory implements IRecipeCategory<StoneB
     private static final int CPPT_LABEL_Y = 50;
     private static final int TOTAL_CP_LABEL_X = 36;
     private static final int TOTAL_CP_LABEL_Y = 60;
+    private static final int POWER_SLOT_X = MachineGuiLayouts.StoneBreakSimulator.POWER_SLOT_X - BACKGROUND_U;
+    private static final int POWER_SLOT_Y = MachineGuiLayouts.StoneBreakSimulator.POWER_SLOT_Y - BACKGROUND_V;
 
     private final IDrawable background;
     private final IDrawable icon;
@@ -72,12 +73,6 @@ public class StoneBreakSimulatorRecipeCategory implements IRecipeCategory<StoneB
 
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, StoneBreakSimulatorJeiRecipe recipe, IFocusGroup focuses) {
-        JeiCobblestonePowerItems.addPowerSlot(
-            builder,
-            MachineGuiLayouts.StoneBreakSimulator.POWER_SLOT_X - BACKGROUND_U,
-            MachineGuiLayouts.StoneBreakSimulator.POWER_SLOT_Y - BACKGROUND_V
-        );
-
         builder.addSlot(RecipeIngredientRole.INPUT, MachineGuiLayouts.StoneBreakSimulator.INPUT_SLOT_1_X - BACKGROUND_U, MachineGuiLayouts.StoneBreakSimulator.INPUT_SLOT_1_Y - BACKGROUND_V)
             .addItemStack(recipe.getInput());
 
@@ -104,7 +99,7 @@ public class StoneBreakSimulatorRecipeCategory implements IRecipeCategory<StoneB
 
     @Override
     public void draw(StoneBreakSimulatorJeiRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
-        GuiPartRenderer.renderCobblestoneSlot(guiGraphics, MachineGuiLayouts.StoneBreakSimulator.POWER_SLOT_X - BACKGROUND_U, MachineGuiLayouts.StoneBreakSimulator.POWER_SLOT_Y - BACKGROUND_V);
+        GuiPartRenderer.renderCobblestoneSlot(guiGraphics, POWER_SLOT_X, POWER_SLOT_Y);
         GuiPartRenderer.renderNormalSlot(guiGraphics, MachineGuiLayouts.StoneBreakSimulator.INPUT_SLOT_1_X - BACKGROUND_U, MachineGuiLayouts.StoneBreakSimulator.INPUT_SLOT_1_Y - BACKGROUND_V);
         GuiPartRenderer.renderNormalSlot(guiGraphics, MachineGuiLayouts.StoneBreakSimulator.INPUT_SLOT_2_X - BACKGROUND_U, MachineGuiLayouts.StoneBreakSimulator.INPUT_SLOT_2_Y - BACKGROUND_V);
         GuiPartRenderer.renderProgressFrame(guiGraphics, MachineGuiLayouts.StoneBreakSimulator.PROGRESS_BAR_X - BACKGROUND_U, MachineGuiLayouts.StoneBreakSimulator.PROGRESS_BAR_Y - BACKGROUND_V);
@@ -133,5 +128,15 @@ public class StoneBreakSimulatorRecipeCategory implements IRecipeCategory<StoneB
         }
 
         return false;
+    }
+
+    @Override
+    protected int getCpPowerSlotX() {
+        return POWER_SLOT_X;
+    }
+
+    @Override
+    protected int getCpPowerSlotY() {
+        return POWER_SLOT_Y;
     }
 }

@@ -17,7 +17,6 @@ import mezz.jei.api.neoforge.NeoForgeTypes;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
-import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
@@ -27,7 +26,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.neoforged.neoforge.fluids.FluidType;
 
-public class CobblestoneFluidMixerRecipeCategory implements IRecipeCategory<RecipeHolder<CobblestoneFluidMixerRecipe>> {
+public class CobblestoneFluidMixerRecipeCategory extends JeiRecipeCategoryWithCpPowerSlot<RecipeHolder<CobblestoneFluidMixerRecipe>> {
     private static final ResourceLocation BACKGROUND_TEXTURE =
         ResourceLocation.fromNamespaceAndPath(CobblestonexXCompressed.MODID, "textures/gui/cobblestone_fluid_mixer.png");
 
@@ -81,7 +80,6 @@ public class CobblestoneFluidMixerRecipeCategory implements IRecipeCategory<Reci
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, RecipeHolder<CobblestoneFluidMixerRecipe> recipeHolder, IFocusGroup focuses) {
         CobblestoneFluidMixerRecipe recipe = recipeHolder.value();
-        JeiCobblestonePowerItems.addPowerSlot(builder, POWER_SLOT_X, POWER_SLOT_Y);
         builder.addSlot(RecipeIngredientRole.INPUT, INPUT_FLUID_1_SLOT_X, INPUT_FLUID_1_SLOT_Y)
             .addIngredients(NeoForgeTypes.FLUID_STACK, List.of(recipe.getFirstFluidInput()))
             .setFluidRenderer(Math.max(recipe.getFirstFluidInput().getAmount(), FluidType.BUCKET_VOLUME), false, 16, 16);
@@ -105,5 +103,15 @@ public class CobblestoneFluidMixerRecipeCategory implements IRecipeCategory<Reci
         GuiPartRenderer.renderProgressFrame(guiGraphics, PROGRESS_FRAME_X, PROGRESS_FRAME_Y);
         guiGraphics.drawString(Minecraft.getInstance().font, recipe.getCobblestonePowerPerTick() + " CP/t", CPPT_LABEL_X, CPPT_LABEL_Y, 0x404040, false);
         guiGraphics.drawString(Minecraft.getInstance().font, recipe.getTotalCobblestonePower() + " total CP", TOTAL_CP_LABEL_X, TOTAL_CP_LABEL_Y, 0x404040, false);
+    }
+
+    @Override
+    protected int getCpPowerSlotX() {
+        return POWER_SLOT_X;
+    }
+
+    @Override
+    protected int getCpPowerSlotY() {
+        return POWER_SLOT_Y;
     }
 }

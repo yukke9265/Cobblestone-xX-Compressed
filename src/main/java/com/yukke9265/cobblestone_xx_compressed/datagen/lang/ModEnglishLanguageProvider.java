@@ -239,9 +239,7 @@ public class ModEnglishLanguageProvider extends LanguageProvider {
         addBlock(ModBlocks.COBBLESTONE_FURNACE, "Cobblestone Furnace");
         addBlock(ModBlocks.COBBLESTONE_FE_GENERATOR, "Cobblestone FE Generator");
         addBlock(ModBlocks.COBBLESTONE_POWERED_FURNACE, "Cobblestone Powered Furnace");
-        // Extreme Compressor だけは generated en_us へ確実に出したいので、
-        // 明示キーで追加して datagen の反映を確認しやすくします。
-        add("block.cobblestonexxcompressed.cobblestone_extreme_compressor", "Cobblestone Extreme Compressor");
+        addBlock(ModBlocks.COBBLESTONE_EXTREME_COMPRESSOR, "Cobblestone Extreme Compressor");
         addBlock(ModBlocks.COBBLESTONE_CRUSHER, "Cobblestone Crusher");
         addBlock(ModBlocks.COBBLESTONE_SHIELD_PROJECTOR, "Cobblestone Shield Projector");
         addBlock(ModBlocks.COBBLESTONE_CENTRIFUGE, "Cobblestone Centrifuge");
@@ -278,7 +276,11 @@ public class ModEnglishLanguageProvider extends LanguageProvider {
         }
 
         for (ModBlocks.TierCobblestoneGenerator generatorVariant : ModBlocks.TierCobblestoneGenerator.values()) {
-            addBlock(generatorVariant.getBlock(), generatorVariant.getEnglishDisplayName());
+            if (generatorVariant.hasTier()) {
+                addBlock(generatorVariant.getBlock(), generatorVariant.getEnglishDisplayName());
+            } else {
+                addBlock(generatorVariant.getBlock(), generatorVariant.getEnglishDisplayName());
+            }
         }
 
         add("automation_mode.cobblestonexxcompressed.disabled", "Off");
@@ -335,6 +337,7 @@ public class ModEnglishLanguageProvider extends LanguageProvider {
         add("multiblock_cell.cobblestonexxcompressed.cobble_in", "Cobble Input");
         add("multiblock_cell.cobblestonexxcompressed.upgrade", "Upgrade");
         add("tooltip.cobblestonexxcompressed.compressed_cobblestone.compression", "x%s compressed");
+        add("tooltip.cobblestonexxcompressed.tier", "Tier %s");
         add("tooltip.cobblestonexxcompressed.cobblestone_energized_cube.capacity", "x%s CP capacity");
         add("tooltip.cobblestonexxcompressed.cobblestone_acceleration_chip.rate", "x%s CP/t");
         add("tooltip.cobblestonexxcompressed.shield_range_module.bonus", "Range +%s");
@@ -368,5 +371,7 @@ public class ModEnglishLanguageProvider extends LanguageProvider {
         add("jei.cobblestonexxcompressed.no_silk_touch", "No Silk Touch");
         add("jei.cobblestonexxcompressed.chance", "Chance: %s");
         add("jei.cobblestonexxcompressed.count_range_fortune", "Count: %s-%s (Fortune)");
+        add("jei.cobblestonexxcompressed.cp_supply.fuel", "Cobblestone / Compressed Cobblestone: 1 cobblestone/tick → CP");
+        add("jei.cobblestonexxcompressed.cp_supply.catalyst", "Cobblestone Generator: CP supply without consumption");
     }
 }

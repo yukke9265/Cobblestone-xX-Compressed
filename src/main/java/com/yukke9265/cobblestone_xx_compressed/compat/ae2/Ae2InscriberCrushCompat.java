@@ -20,7 +20,7 @@ import net.minecraft.world.level.Level;
 import net.neoforged.fml.ModList;
 
 /**
- * AE2 刻印機のうち「上下スロット無しの INSCRIBE（粉砕相当）」を
+ * AE2 刻印機のうち「上下スロット無しの middle のみ（粉砕相当）」を
  * 丸石クラッシャー用レシピへ変換します。
  * AE2 未導入でも起動できるよう、クラス参照はすべて反射経由です。
  */
@@ -28,8 +28,6 @@ public final class Ae2InscriberCrushCompat {
     private static final String AE2_MOD_ID = "ae2";
     private static final String RECIPE_TYPE_CLASS = "appeng.recipes.AERecipeTypes";
     private static final String INSCRIBER_RECIPE_CLASS = "appeng.recipes.handlers.InscriberRecipe";
-    private static final String PROCESS_TYPE_CLASS = "appeng.recipes.handlers.InscriberProcessType";
-
     // 既存の手動 AE2 レシピと同じ CP です。
     private static final long CRUSHER_TOTAL_CP = 800L;
     private static final long CRUSHER_CP_PER_TICK = 4L;
@@ -126,7 +124,7 @@ public final class Ae2InscriberCrushCompat {
             return null;
         }
 
-        // 上下スロットが空で、mode が INSCRIBE のものだけが粉砕相当です。
+        // 上下スロットが空の middle のみが粉砕相当です（mode は inscribe / press どちらでも同じ）。
         if (!isCrushLikeInscriber(recipe)) {
             return null;
         }
@@ -164,28 +162,7 @@ public final class Ae2InscriberCrushCompat {
         }
 
         // 1.21.1 では空 Ingredient、新しい AE2 では Optional.empty 相当もあり得ます。
-        if (!top.isEmpty() || !bottom.isEmpty()) {
-            return false;
-        }
-
-        Object processType = invoke(recipe, "getProcessType");
-        if (processType == null) {
-            return false;
-        }
-
-        return isInscribeMode(processType);
-    }
-
-    private static boolean isInscribeMode(Object processType) {
-        try {
-            Class<?> processTypeClass = Class.forName(PROCESS_TYPE_CLASS);
-            @SuppressWarnings({"unchecked", "rawtypes"})
-            Object inscribeConstant = Enum.valueOf((Class) processTypeClass, "INSCRIBE");
-            return processType == inscribeConstant || processType.equals(inscribeConstant);
-        } catch (ReflectiveOperationException | ClassCastException | IllegalArgumentException exception) {
-            // 名前比較にフォールバックします。
-            return "INSCRIBE".equals(String.valueOf(processType));
-        }
+        return top.isEmpty() && bottom.isEmpty();
     }
 
     private static boolean isInscriberRecipe(Object recipe) {

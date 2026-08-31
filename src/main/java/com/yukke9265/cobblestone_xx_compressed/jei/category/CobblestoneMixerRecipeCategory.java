@@ -19,7 +19,6 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
-import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
@@ -30,7 +29,7 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
 
 @SuppressWarnings("null")
-public class CobblestoneMixerRecipeCategory implements IRecipeCategory<RecipeHolder<CobblestoneMixerRecipe>> {
+public class CobblestoneMixerRecipeCategory extends JeiRecipeCategoryWithCpPowerSlot<RecipeHolder<CobblestoneMixerRecipe>> {
     private static final ResourceLocation BACKGROUND_TEXTURE =
         ResourceLocation.fromNamespaceAndPath(CobblestonexXCompressed.MODID, "textures/gui/cobblestone_mixer.png");
 
@@ -87,8 +86,6 @@ public class CobblestoneMixerRecipeCategory implements IRecipeCategory<RecipeHol
     @Override
     public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, @Nonnull RecipeHolder<CobblestoneMixerRecipe> recipeHolder, @Nonnull IFocusGroup focuses) {
         CobblestoneMixerRecipe recipe = recipeHolder.value();
-        JeiCobblestonePowerItems.addPowerSlot(builder, POWER_SLOT_X, POWER_SLOT_Y);
-
         builder.addSlot(RecipeIngredientRole.INPUT, INPUT_SLOT_1_X, INPUT_SLOT_1_Y)
             .addItemStacks(getDisplayStacks(recipe.getFirstInput()));
 
@@ -115,5 +112,15 @@ public class CobblestoneMixerRecipeCategory implements IRecipeCategory<RecipeHol
         return Arrays.stream(ingredient.getItems())
             .map(stack -> stack.copyWithCount(ingredient.count()))
             .toList();
+    }
+
+    @Override
+    protected int getCpPowerSlotX() {
+        return POWER_SLOT_X;
+    }
+
+    @Override
+    protected int getCpPowerSlotY() {
+        return POWER_SLOT_Y;
     }
 }

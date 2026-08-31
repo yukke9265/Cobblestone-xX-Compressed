@@ -1,41 +1,35 @@
 package com.yukke9265.cobblestone_xx_compressed.jei.category;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.yukke9265.cobblestone_xx_compressed.registry.ModBlocks;
-
-import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
-import mezz.jei.api.recipe.RecipeIngredientRole;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
+import mezz.jei.api.gui.builder.ITooltipBuilder;
+import net.minecraft.network.chat.Component;
 
 @SuppressWarnings("null")
 public final class JeiCobblestonePowerItems {
+    public static final int SLOT_SIZE = 18;
+
+    private static final String TOOLTIP_FUEL_KEY = "jei.cobblestonexxcompressed.cp_supply.fuel";
+    private static final String TOOLTIP_CATALYST_KEY = "jei.cobblestonexxcompressed.cp_supply.catalyst";
+
     private JeiCobblestonePowerItems() {
     }
 
-    public static List<ItemStack> getCatalystItems() {
-        List<ItemStack> stacks = new ArrayList<>();
-        stacks.add(new ItemStack(Items.COBBLESTONE));
-        stacks.add(new ItemStack(ModBlocks.COMPRESSED_COBBLESTONE.get()));
-
-        for (ModBlocks.TierCompressedCobblestone tier : ModBlocks.TierCompressedCobblestone.values()) {
-            stacks.add(new ItemStack(tier.getBlock().get()));
+    public static void addTooltipIfHovered(ITooltipBuilder tooltip, double mouseX, double mouseY, int slotX, int slotY) {
+        if (!isMouseOverSlot(mouseX, mouseY, slotX, slotY)) {
+            return;
         }
 
-        for (ModBlocks.TierCobblestoneGenerator generatorVariant : ModBlocks.TierCobblestoneGenerator.values()) {
-            stacks.add(new ItemStack(generatorVariant.getBlock().get()));
-        }
-
-        return List.copyOf(stacks);
+        addCpSupplyTooltip(tooltip);
     }
 
-    // CP 燃料はレシピ画面には出すが、JEI の検索対象にはしない。
-    // CATALYST だと圧縮丸石の使用レシピに全機械が並んでしまう。
-    // 丸石ジェネレータは消費しない触媒なので、燃料の後ろへ並べます。
-    public static void addPowerSlot(IRecipeLayoutBuilder builder, int x, int y) {
-        builder.addSlot(RecipeIngredientRole.RENDER_ONLY, x, y)
-            .addItemStacks(getCatalystItems());
+    public static void addCpSupplyTooltip(ITooltipBuilder tooltip) {
+        tooltip.add(Component.translatable(TOOLTIP_FUEL_KEY));
+        tooltip.add(Component.translatable(TOOLTIP_CATALYST_KEY));
+    }
+
+    private static boolean isMouseOverSlot(double mouseX, double mouseY, int slotX, int slotY) {
+        return mouseX >= slotX
+            && mouseX < slotX + SLOT_SIZE
+            && mouseY >= slotY
+            && mouseY < slotY + SLOT_SIZE;
     }
 }

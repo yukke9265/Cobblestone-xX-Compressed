@@ -1,0 +1,23 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "advanced_ae"
+    }
+  ],
+  "type": "cobblestonexxcompressed:cobblestone_dissolution_chamber",
+  "cobblestone_power_per_tick": 16384,
+  "fluid_input": {
+    "amount": 4000,
+    "id": "minecraft:water"
+  },
+  "fluid_output": {
+    "amount": 1000,
+    "id": "advanced_ae:quantum_infusion_source"
+  },
+  "ingredient": {
+    "count": 1,
+    "tag": "cobblestonexxcompressed:advanced_ae_quantum_infused_dust"
+  },
+  "total_cobblestone_power": 209715200
+}

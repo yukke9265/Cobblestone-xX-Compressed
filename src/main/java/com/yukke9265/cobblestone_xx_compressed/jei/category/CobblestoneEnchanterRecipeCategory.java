@@ -16,7 +16,6 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
-import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
@@ -25,7 +24,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
 @SuppressWarnings("null")
-public class CobblestoneEnchanterRecipeCategory implements IRecipeCategory<RecipeHolder<CobblestoneEnchanterRecipe>> {
+public class CobblestoneEnchanterRecipeCategory extends JeiRecipeCategoryWithCpPowerSlot<RecipeHolder<CobblestoneEnchanterRecipe>> {
     private static final ResourceLocation BACKGROUND_TEXTURE =
         ResourceLocation.fromNamespaceAndPath(CobblestonexXCompressed.MODID, "textures/gui/cobblestone_mixer.png");
 
@@ -37,6 +36,8 @@ public class CobblestoneEnchanterRecipeCategory implements IRecipeCategory<Recip
     private static final int INFO_LABEL_Y = 2;
     private static final int FORMULA_LABEL_X = 8;
     private static final int FORMULA_LABEL_Y = 12;
+    private static final int POWER_SLOT_X = MachineGuiLayouts.Enchanter.POWER_SLOT_X - BACKGROUND_U;
+    private static final int POWER_SLOT_Y = MachineGuiLayouts.Enchanter.POWER_SLOT_Y - BACKGROUND_V;
 
     private final IDrawable background;
     private final IDrawable icon;
@@ -69,11 +70,6 @@ public class CobblestoneEnchanterRecipeCategory implements IRecipeCategory<Recip
     @Override
     public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, @Nonnull RecipeHolder<CobblestoneEnchanterRecipe> recipeHolder, @Nonnull IFocusGroup focuses) {
         CobblestoneEnchanterRecipe recipe = recipeHolder.value();
-        JeiCobblestonePowerItems.addPowerSlot(
-            builder,
-            MachineGuiLayouts.Enchanter.POWER_SLOT_X - BACKGROUND_U,
-            MachineGuiLayouts.Enchanter.POWER_SLOT_Y - BACKGROUND_V
-        );
 
         builder.addSlot(RecipeIngredientRole.INPUT, MachineGuiLayouts.Enchanter.TOOL_SLOT_X - BACKGROUND_U, MachineGuiLayouts.Enchanter.TOOL_SLOT_Y - BACKGROUND_V)
             .addItemStack(recipe.getJeiPreviewTool());
@@ -87,12 +83,22 @@ public class CobblestoneEnchanterRecipeCategory implements IRecipeCategory<Recip
 
     @Override
     public void draw(@Nonnull RecipeHolder<CobblestoneEnchanterRecipe> recipeHolder, @Nonnull IRecipeSlotsView recipeSlotsView, @Nonnull GuiGraphics guiGraphics, double mouseX, double mouseY) {
-        GuiPartRenderer.renderCobblestoneSlot(guiGraphics, MachineGuiLayouts.Enchanter.POWER_SLOT_X - BACKGROUND_U, MachineGuiLayouts.Enchanter.POWER_SLOT_Y - BACKGROUND_V);
+        GuiPartRenderer.renderCobblestoneSlot(guiGraphics, POWER_SLOT_X, POWER_SLOT_Y);
         GuiPartRenderer.renderNormalSlot(guiGraphics, MachineGuiLayouts.Enchanter.TOOL_SLOT_X - BACKGROUND_U, MachineGuiLayouts.Enchanter.TOOL_SLOT_Y - BACKGROUND_V);
         GuiPartRenderer.renderNormalSlot(guiGraphics, MachineGuiLayouts.Enchanter.BOOK_SLOT_X - BACKGROUND_U, MachineGuiLayouts.Enchanter.BOOK_SLOT_Y - BACKGROUND_V);
         GuiPartRenderer.renderNormalSlot(guiGraphics, MachineGuiLayouts.Enchanter.OUTPUT_SLOT_X - BACKGROUND_U, MachineGuiLayouts.Enchanter.OUTPUT_SLOT_Y - BACKGROUND_V);
         GuiPartRenderer.renderProgressFrame(guiGraphics, MachineGuiLayouts.Enchanter.PROGRESS_BAR_X - BACKGROUND_U, MachineGuiLayouts.Enchanter.PROGRESS_BAR_Y - BACKGROUND_V);
         guiGraphics.drawString(Minecraft.getInstance().font, "Result follows tool + book", INFO_LABEL_X, INFO_LABEL_Y, 0x404040, false);
         guiGraphics.drawString(Minecraft.getInstance().font, "CP/t: 1, 8, 8^2...", FORMULA_LABEL_X, FORMULA_LABEL_Y, 0x404040, false);
+    }
+
+    @Override
+    protected int getCpPowerSlotX() {
+        return POWER_SLOT_X;
+    }
+
+    @Override
+    protected int getCpPowerSlotY() {
+        return POWER_SLOT_Y;
     }
 }
