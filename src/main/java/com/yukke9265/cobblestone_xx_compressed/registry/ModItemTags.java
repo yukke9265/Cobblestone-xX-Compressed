@@ -13,6 +13,8 @@ public final class ModItemTags {
     public static final TagKey<Item> DUSTS_DIAMOND = commonTag("dusts/diamond");
     public static final TagKey<Item> DUSTS_EMERALD = commonTag("dusts/emerald");
     public static final TagKey<Item> DUSTS_ENDER = commonTag("dusts/ender");
+    // AE2 などが ender pearl dust として参照する共通タグ
+    public static final TagKey<Item> DUSTS_ENDER_PEARL = commonTag("dusts/ender_pearl");
     public static final TagKey<Item> DUSTS_GOLD = commonTag("dusts/gold");
     public static final TagKey<Item> DUSTS_LAPIS = commonTag("dusts/lapis");
     public static final TagKey<Item> DUSTS_OBSIDIAN = commonTag("dusts/obsidian");

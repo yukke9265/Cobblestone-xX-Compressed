@@ -40,6 +40,7 @@ public class ModItemTagProvider extends ItemTagsProvider {
         this.addDustTags("diamond", ModItems.DIAMOND_DUST);
         this.addDustTags("emerald", ModItems.EMERALD_DUST);
         this.addDustTags("ender", ModItems.ENDER_DUST);
+        this.addEnderPearlDustCompatibility();
         this.addDustTags("gold", ModItems.GOLD_DUST);
         this.addDustTags("iron", ModItems.IRON_DUST);
         this.addDustTags("lapis", ModItems.LAPIS_DUST);
@@ -130,6 +131,21 @@ public class ModItemTagProvider extends ItemTagsProvider {
         this.tag(ItemTags.MINING_ENCHANTABLE).add(item);
         this.tag(ItemTags.MINING_LOOT_ENCHANTABLE).add(item);
         this.tag(ItemTags.DURABILITY_ENCHANTABLE).add(item);
+    }
+
+    @SuppressWarnings("null")
+    private void addEnderPearlDustCompatibility() {
+        Item enderDust = Objects.requireNonNull(ModItems.ENDER_DUST.get());
+        TagKey<Item> enderPearlDust = this.createItemTag("c", "dusts/ender_pearl");
+
+        // AE2 は ender pearl dust を c:dusts/ender_pearl で参照するため、
+        // 本 mod の ender_dust も同タグへ入れて他 mod レシピと相互利用できるようにする。
+        this.tag(enderPearlDust).add(enderDust);
+
+        // 本 mod レシピは c:dusts/ender も使うため、AE2 の ender_dust も optional で受け入れる。
+        ResourceLocation ae2EnderDust = ResourceLocation.fromNamespaceAndPath("ae2", "ender_dust");
+        this.tag(this.createItemTag("c", "dusts/ender")).addOptional(ae2EnderDust);
+        this.tag(this.createItemTag("forge", "dusts/ender")).addOptional(ae2EnderDust);
     }
 
     @SuppressWarnings("null")

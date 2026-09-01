@@ -1,5 +1,9 @@
 {
   "values": [
-    "cobblestonexxcompressed:ender_dust"
+    "cobblestonexxcompressed:ender_dust",
+    {
+      "id": "ae2:ender_dust",
+      "required": false
+    }
   ]
 }
