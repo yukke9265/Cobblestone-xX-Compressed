@@ -141,6 +141,7 @@ public class ModItemTagProvider extends ItemTagsProvider {
         // AE2 は ender pearl dust を c:dusts/ender_pearl で参照するため、
         // 本 mod の ender_dust も同タグへ入れて他 mod レシピと相互利用できるようにする。
         this.tag(enderPearlDust).add(enderDust);
+        this.tag(this.createItemTag("c", "dusts")).addTag(enderPearlDust);
 
         // 本 mod レシピは c:dusts/ender も使うため、AE2 の ender_dust も optional で受け入れる。
         ResourceLocation ae2EnderDust = ResourceLocation.fromNamespaceAndPath("ae2", "ender_dust");
