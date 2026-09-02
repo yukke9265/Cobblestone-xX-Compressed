@@ -5,6 +5,8 @@ import com.yukke9265.cobblestone_xx_compressed.registry.ModBlocks;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModFluids;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModItems;
 
+import com.yukke9265.cobblestone_xx_compressed.util.TooltipTranslationKeys;
+
 import net.minecraft.data.PackOutput;
 import net.neoforged.neoforge.common.data.LanguageProvider;
 
@@ -38,6 +40,7 @@ public class ModEnglishLanguageProvider extends LanguageProvider {
         for (ModItems.TierCobblestoneBread tier : ModItems.TierCobblestoneBread.values()) {
             addItem(tier.getItem(), tier.getEnglishDisplayName());
         }
+        addCobblestoneBreadFlavorTooltips();
 
         addItem(ModItems.COBBLESTONE_GEM, "Cobblestone Gem");
         for (ModItems.TierCobblestoneGem tier : ModItems.TierCobblestoneGem.values()) {
@@ -373,5 +376,60 @@ public class ModEnglishLanguageProvider extends LanguageProvider {
         add("jei.cobblestonexxcompressed.count_range_fortune", "Count: %s-%s (Fortune)");
         add("jei.cobblestonexxcompressed.cp_supply.fuel", "Cobblestone / Compressed Cobblestone: 1 cobblestone/tick → CP");
         add("jei.cobblestonexxcompressed.cp_supply.catalyst", "Cobblestone Generator: CP supply without consumption");
+    }
+
+    private void addCobblestoneBreadFlavorTooltips() {
+        add(
+            TooltipTranslationKeys.cobblestoneBreadDescription("cobblestone_bread"),
+            "Crude industrial bread baked straight from cobblestone."
+        );
+        add(
+            TooltipTranslationKeys.cobblestoneBreadDescription("tier_copper_cobblestone_bread"),
+            "Your first taste of factory food. A bit tough."
+        );
+        add(
+            TooltipTranslationKeys.cobblestoneBreadDescription("tier_iron_cobblestone_bread"),
+            "Each bite makes your body feel as hard as stone."
+        );
+        add(
+            TooltipTranslationKeys.cobblestoneBreadDescription("tier_gold_cobblestone_bread"),
+            "Golden bread with the scent of good fortune."
+        );
+        add(
+            TooltipTranslationKeys.cobblestoneBreadDescription("tier_amethyst_cobblestone_bread"),
+            "Cave amethyst baked into every crumb."
+        );
+        add(
+            TooltipTranslationKeys.cobblestoneBreadDescription("tier_aquamarine_cobblestone_bread"),
+            "Sea-tempered cobblestone kneaded into dough."
+        );
+        add(
+            TooltipTranslationKeys.cobblestoneBreadDescription("tier_topaz_cobblestone_bread"),
+            "Golden bread that makes every step lighter."
+        );
+        add(
+            TooltipTranslationKeys.cobblestoneBreadDescription("tier_ruby_cobblestone_bread"),
+            "A red loaf that surges with power as you chew."
+        );
+        add(
+            TooltipTranslationKeys.cobblestoneBreadDescription("tier_sapphire_cobblestone_bread"),
+            "Blue bread built for moving like the wind."
+        );
+        add(
+            TooltipTranslationKeys.cobblestoneBreadDescription("tier_diamond_cobblestone_bread"),
+            "Tough, dense, and unapologetically hard."
+        );
+        add(
+            TooltipTranslationKeys.cobblestoneBreadDescription("tier_emerald_cobblestone_bread"),
+            "A crystalline loaf that merchants can't resist."
+        );
+        add(
+            TooltipTranslationKeys.cobblestoneBreadDescription("tier_netherite_cobblestone_bread"),
+            "Survives hellfire and keeps you standing."
+        );
+        add(
+            TooltipTranslationKeys.cobblestoneBreadDescription("tier_obsidian_cobblestone_bread"),
+            "The ultimate stone bread. The world trembles with every bite."
+        );
     }
 }

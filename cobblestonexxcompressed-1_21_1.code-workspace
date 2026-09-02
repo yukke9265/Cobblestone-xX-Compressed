@@ -39,7 +39,16 @@
 			".git",
 			".cache"
 		],
-		"java.configuration.updateBuildConfiguration": "interactive"
+		"java.configuration.updateBuildConfiguration": "automatic",
+		"java.jdt.ls.java.home": "C:\\Program Files\\Eclipse Adoptium\\jdk-21.0.11.10-hotspot",
+		"java.import.gradle.enabled": true,
+		"java.import.gradle.wrapper.enabled": true,
+		"java.import.gradle.java.home": "C:\\Program Files\\Eclipse Adoptium\\jdk-21.0.11.10-hotspot",
+		"java.import.gradle.jvmArguments": "-Dorg.gradle.parallel=false",
+		"java.gradle.buildServer.enabled": "off",
+		"gradle.autoDetect": "on",
+		"gradle.reuseTerminals": "task",
+		"java.jdt.ls.vmargs": "-XX:+UseParallelGC -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90 -Dsun.zip.disableMemoryMapping=true -Xmx4G -Xms100m -Xlog:disable"
 	},
 	"tasks": {
 		"version": "2.0.0",

@@ -43,3 +43,6 @@ alwaysApply: true
 | 機械 / BE / GUI / JEI | `add-machine-workflow` |
 
 該当作業では実装前にその `SKILL.md`（と必要なら `reference/`）を読む。
+
+## powershell notification
+- PowerShellでは&&ではなく;を使う必要がある

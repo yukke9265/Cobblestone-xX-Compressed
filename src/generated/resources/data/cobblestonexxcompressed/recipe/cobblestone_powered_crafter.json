@@ -3,7 +3,7 @@
   "category": "building",
   "key": {
     "A": {
-      "item": "cobblestonexxcompressed:tier_iron_cobblestone_machine_casing"
+      "item": "minecraft:crafting_table"
     },
     "C": {
       "item": "cobblestonexxcompressed:tier_iron_compressed_cobblestone"

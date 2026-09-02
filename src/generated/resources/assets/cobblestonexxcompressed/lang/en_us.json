@@ -760,6 +760,7 @@
   "multiblock_cell.cobblestonexxcompressed.upgrade": "Upgrade",
   "tooltip.cobblestonexxcompressed.cobblestone_acceleration_chip.rate": "x%s CP/t",
   "tooltip.cobblestonexxcompressed.cobblestone_assembly_machine.description": "Assembles components into machine-related items.",
+  "tooltip.cobblestonexxcompressed.cobblestone_bread.description": "Crude industrial bread baked straight from cobblestone.",
   "tooltip.cobblestonexxcompressed.cobblestone_centrifuge.description": "Separates materials into multiple outputs with centrifuging.",
   "tooltip.cobblestonexxcompressed.cobblestone_chemical_reactor.description": "Reacts items and fluids to create chemical materials.",
   "tooltip.cobblestonexxcompressed.cobblestone_crusher.description": "Crushes materials into dusts and byproducts.",
@@ -801,5 +802,17 @@
   "tooltip.cobblestonexxcompressed.shield_range_module.bonus": "Range +%s",
   "tooltip.cobblestonexxcompressed.shield_rate_module.bonus": "Shield conversion +%s (total CP also increases)",
   "tooltip.cobblestonexxcompressed.stone_break_simulator.description": "Simulates breaking compressed stone and generates drops with the inserted pickaxe enchants.",
-  "tooltip.cobblestonexxcompressed.tier": "Tier %s"
+  "tooltip.cobblestonexxcompressed.tier": "Tier %s",
+  "tooltip.cobblestonexxcompressed.tier_amethyst_cobblestone_bread.description": "Cave amethyst baked into every crumb.",
+  "tooltip.cobblestonexxcompressed.tier_aquamarine_cobblestone_bread.description": "Sea-tempered cobblestone kneaded into dough.",
+  "tooltip.cobblestonexxcompressed.tier_copper_cobblestone_bread.description": "Your first taste of factory food. A bit tough.",
+  "tooltip.cobblestonexxcompressed.tier_diamond_cobblestone_bread.description": "Tough, dense, and unapologetically hard.",
+  "tooltip.cobblestonexxcompressed.tier_emerald_cobblestone_bread.description": "A crystalline loaf that merchants can't resist.",
+  "tooltip.cobblestonexxcompressed.tier_gold_cobblestone_bread.description": "Golden bread with the scent of good fortune.",
+  "tooltip.cobblestonexxcompressed.tier_iron_cobblestone_bread.description": "Each bite makes your body feel as hard as stone.",
+  "tooltip.cobblestonexxcompressed.tier_netherite_cobblestone_bread.description": "Survives hellfire and keeps you standing.",
+  "tooltip.cobblestonexxcompressed.tier_obsidian_cobblestone_bread.description": "The ultimate stone bread. The world trembles with every bite.",
+  "tooltip.cobblestonexxcompressed.tier_ruby_cobblestone_bread.description": "A red loaf that surges with power as you chew.",
+  "tooltip.cobblestonexxcompressed.tier_sapphire_cobblestone_bread.description": "Blue bread built for moving like the wind.",
+  "tooltip.cobblestonexxcompressed.tier_topaz_cobblestone_bread.description": "Golden bread that makes every step lighter."
 }

@@ -22,6 +22,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.common.crafting.DataComponentIngredient;
 
 @SuppressWarnings("null")
@@ -184,7 +185,7 @@ public class ModRecipeProvider extends RecipeProvider {
             "cobblestone_powered_crafter",
             ModBlocks.TierCompressedCobblestone.IRON.getBlock().get(),
             ModItems.TIER_IRON_COBBLESTONE_MOTOR.get(),
-            ModBlocks.TierCobblestoneMachineCasing.IRON.getBlock().get(),
+            Blocks.CRAFTING_TABLE,
             ModItems.TierCobblestoneProcessor.IRON.getItem().get(),
             ModBlocks.COBBLESTONE_POWERED_CRAFTER.get()
         ),
@@ -341,6 +342,7 @@ public class ModRecipeProvider extends RecipeProvider {
     }
 
     private void buildCobblestoneBreadRecipe(RecipeOutput output) {
+        // 通常版はバニラの丸石 3 個と石 3 個を、tier 版は同じ tier の圧縮丸石と圧縮石で作ります。
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.COBBLESTONE_BREAD.get())
             .pattern("   ")
             .pattern("CCC")
@@ -349,6 +351,24 @@ public class ModRecipeProvider extends RecipeProvider {
             .define('S', Items.STONE)
             .unlockedBy("has_cobblestone", has(Items.COBBLESTONE))
             .save(output, modRecipeId("cobblestone_bread"));
+
+        for (ModItems.TierCobblestoneBread tier : ModItems.TierCobblestoneBread.values()) {
+            ModBlocks.TierCompressedCobblestone compressedCobblestoneTier =
+                ModBlocks.TierCompressedCobblestone.valueOf(tier.name());
+            ModBlocks.TierCompressedStone compressedStoneTier =
+                ModBlocks.TierCompressedStone.valueOf(tier.name());
+            ItemLike compressedCobblestone = compressedCobblestoneTier.getBlock().get();
+            ItemLike compressedStone = compressedStoneTier.getBlock().get();
+
+            ShapedRecipeBuilder.shaped(RecipeCategory.MISC, tier.getItem().get())
+                .pattern("   ")
+                .pattern("CCC")
+                .pattern("SSS")
+                .define('C', compressedCobblestone)
+                .define('S', compressedStone)
+                .unlockedBy("has_" + compressedCobblestoneTier.getRegistryName(), has(compressedCobblestone))
+                .save(output, modRecipeId(tier.getRegistryName()));
+        }
     }
 
     private void buildFortuneEnchantedBookRecipes(RecipeOutput output) {

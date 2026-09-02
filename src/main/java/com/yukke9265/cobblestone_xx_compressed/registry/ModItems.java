@@ -6,6 +6,7 @@ import com.yukke9265.cobblestone_xx_compressed.CobblestonexXCompressed;
 import com.yukke9265.cobblestone_xx_compressed.blockitem.CobblestoneGeneratorBlockItem;
 import com.yukke9265.cobblestone_xx_compressed.blockitem.CompressedCobblestoneBlockItem;
 import com.yukke9265.cobblestone_xx_compressed.blockitem.DescribedBlockItem;
+import com.yukke9265.cobblestone_xx_compressed.item.CobblestoneBreadItem;
 import com.yukke9265.cobblestone_xx_compressed.item.ConfigurationCardItem;
 import com.yukke9265.cobblestone_xx_compressed.item.FlyingStoneItem;
 import com.yukke9265.cobblestone_xx_compressed.item.CobblestoneAccelerationChipItem;
@@ -20,9 +21,6 @@ import com.yukke9265.cobblestone_xx_compressed.item.CompressedCobblestoneArmorIt
 import com.yukke9265.cobblestone_xx_compressed.item.CompressedCobblestonePickaxeItem;
 import com.yukke9265.cobblestone_xx_compressed.util.TooltipTranslationKeys;
 
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -38,13 +36,6 @@ public class ModItems {
         DeferredRegister.createItems(CobblestonexXCompressed.MODID);
 
     private static final int DEFAULT_STACK_SIZE = 64;
-    private static final int COBBLESTONE_BREAD_STACK_SIZE = 64;
-    private static final int COBBLESTONE_BREAD_NUTRITION = 4;
-    private static final float COBBLESTONE_BREAD_SATURATION = 0.3f;
-    private static final int COBBLESTONE_BREAD_CONFUSION_DURATION = 200;
-    private static final int COBBLESTONE_BREAD_CONFUSION_AMPLIFIER = 100;
-    private static final int COBBLESTONE_BREAD_RESISTANCE_DURATION = 1200;
-    private static final int COBBLESTONE_BREAD_RESISTANCE_AMPLIFIER = 1;
 
     // tier 一覧は今後増える可能性が高いため、
     // 1 か所に集約して「登録名」「英語表示名」「登録された Item」をまとめて持たせます。
@@ -379,10 +370,22 @@ public class ModItems {
         }
     }
 
-    // tier 違いの丸石パンは、見た目だけでなく登録名も規則的なので、
-    // 共通の Item.Properties を使う小さな補助メソッドを用意しておくと追加手順が追いやすくなります。
-    private static DeferredItem<Item> registerTierCobblestoneBread(String name) {
-        return ITEMS.registerSimpleItem(name, createCobblestoneBreadProperties());
+    // tier 違いの丸石パンは、食べ物効果とフレーバーテキストを tier ごとに分けます。
+    private static DeferredItem<Item> registerCobblestoneBread(String registryName, Item.Properties properties) {
+        return ITEMS.register(
+            registryName,
+            () -> new CobblestoneBreadItem(
+                properties,
+                TooltipTranslationKeys.cobblestoneBreadDescription(registryName)
+            )
+        );
+    }
+
+    private static DeferredItem<Item> registerTierCobblestoneBread(TierCobblestoneBread tier) {
+        return registerCobblestoneBread(
+            tier.getRegistryName(),
+            CobblestoneBreadFoodProperties.createTier(tier)
+        );
     }
 
     private static DeferredItem<Item> registerTierCobblestoneGem(String name) {
@@ -543,35 +546,6 @@ public class ModItems {
         return ITEMS.register(name, () -> new CobblestoneGeneratorBlockItem(block.get(), new Item.Properties(), tooltipTranslationKeys));
     }
 
-    // 丸石パン系は、今の段階では通常版も tier 版も同じ食べ物設定を使います。
-    // 後から栄養値や効果を調整したくなったとき、この 1 か所を直せば全 tier に反映されます。
-    private static Item.Properties createCobblestoneBreadProperties() {
-        return new Item.Properties()
-            .stacksTo(COBBLESTONE_BREAD_STACK_SIZE)
-            .food(new FoodProperties.Builder()
-                .nutrition(COBBLESTONE_BREAD_NUTRITION)
-                .saturationModifier(COBBLESTONE_BREAD_SATURATION)
-                .alwaysEdible()
-                // 食べた直後に少し酔い、その代わり一定時間だけ耐性が付く共通設定です。
-                .effect(
-                    () -> new MobEffectInstance(
-                        MobEffects.CONFUSION,
-                        COBBLESTONE_BREAD_CONFUSION_DURATION,
-                        COBBLESTONE_BREAD_CONFUSION_AMPLIFIER
-                    ),
-                    1.0f
-                )
-                .effect(
-                    () -> new MobEffectInstance(
-                        MobEffects.DAMAGE_RESISTANCE,
-                        COBBLESTONE_BREAD_RESISTANCE_DURATION,
-                        COBBLESTONE_BREAD_RESISTANCE_AMPLIFIER
-                    ),
-                    1.0f
-                )
-                .build());
-    }
-
     // 丸石ジェムは今の段階では特殊効果のない通常アイテムとして扱います。
     // 後から耐火や希少素材向けの設定を加えたい場合も、この 1 か所を直せば済みます。
     private static Item.Properties createCobblestoneGemProperties() {
@@ -607,8 +581,8 @@ public class ModItems {
     }
 
     // cobblestone_bread アイテムを登録します。
-    public static final DeferredItem<Item> COBBLESTONE_BREAD = 
-        ITEMS.registerSimpleItem("cobblestone_bread", createCobblestoneBreadProperties());
+    public static final DeferredItem<Item> COBBLESTONE_BREAD =
+        registerCobblestoneBread("cobblestone_bread", CobblestoneBreadFoodProperties.createBase());
 
     public static final DeferredItem<Item> COBBLESTONE_GEM =
         ITEMS.registerSimpleItem("cobblestone_gem", createCobblestoneGemProperties());
@@ -1644,7 +1618,7 @@ public class ModItems {
         // enum に並んだ順番で登録しておくと、
         // creative tab や datagen でも同じ順番をそのまま再利用できます。
         for (TierCobblestoneBread tier : TierCobblestoneBread.values()) {
-            tier.setItem(registerTierCobblestoneBread(tier.getRegistryName()));
+            tier.setItem(registerTierCobblestoneBread(tier));
         }
     }
 

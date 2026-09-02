@@ -41,9 +41,9 @@ public final class CobblestoneCrystallizationChamberRecipeDatagen {
         ),
         new CrystallizationChamberRecipeDefinition(
             "water_to_blueice",
-            new FluidStack(Fluids.WATER, 64000),
+            new FluidStack(Fluids.WATER, 4000),
             Items.BLUE_ICE,
-            13421772800L,
+            838860800L,
             262144
         )
     };

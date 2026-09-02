@@ -4,6 +4,8 @@ import com.yukke9265.cobblestone_xx_compressed.CobblestonexXCompressed;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModBlocks;
 import com.yukke9265.cobblestone_xx_compressed.registry.ModItems;
 
+import com.yukke9265.cobblestone_xx_compressed.util.TooltipTranslationKeys;
+
 import net.minecraft.data.PackOutput;
 import net.neoforged.neoforge.common.data.LanguageProvider;
 
@@ -214,7 +216,63 @@ public class ModJapaneseLanguageProvider extends LanguageProvider {
         add("commands.cobblestonexxcompressed.sethp.success.single", "%s の体力を setHealth で %s にしました");
         add("commands.cobblestonexxcompressed.sethp.success.multiple", "%s 人の体力を setHealth で %s にしました");
 
+        addCobblestoneBreadFlavorTooltips();
         TooltipTranslationEntries.addJapanese(this);
+    }
+
+    private void addCobblestoneBreadFlavorTooltips() {
+        add(
+            TooltipTranslationKeys.cobblestoneBreadDescription("cobblestone_bread"),
+            "丸石をそのまま焼いたような、いびつな工業食。"
+        );
+        add(
+            TooltipTranslationKeys.cobblestoneBreadDescription("tier_copper_cobblestone_bread"),
+            "初めての工業食。ちょっと硬い。"
+        );
+        add(
+            TooltipTranslationKeys.cobblestoneBreadDescription("tier_iron_cobblestone_bread"),
+            "体が石みたいに固くなる。"
+        );
+        add(
+            TooltipTranslationKeys.cobblestoneBreadDescription("tier_gold_cobblestone_bread"),
+            "幸運の香りがする黄金色のパン。"
+        );
+        add(
+            TooltipTranslationKeys.cobblestoneBreadDescription("tier_amethyst_cobblestone_bread"),
+            "洞窟の紫水晶を閉じ込めた。"
+        );
+        add(
+            TooltipTranslationKeys.cobblestoneBreadDescription("tier_aquamarine_cobblestone_bread"),
+            "海の丸石を練り込んだ。"
+        );
+        add(
+            TooltipTranslationKeys.cobblestoneBreadDescription("tier_topaz_cobblestone_bread"),
+            "軽く跳べる黄金色のパン。"
+        );
+        add(
+            TooltipTranslationKeys.cobblestoneBreadDescription("tier_ruby_cobblestone_bread"),
+            "かじるたびに力がみなぎる赤いパン。"
+        );
+        add(
+            TooltipTranslationKeys.cobblestoneBreadDescription("tier_sapphire_cobblestone_bread"),
+            "風のように走れる青いパン。"
+        );
+        add(
+            TooltipTranslationKeys.cobblestoneBreadDescription("tier_diamond_cobblestone_bread"),
+            "硬くて、とにかく硬い。"
+        );
+        add(
+            TooltipTranslationKeys.cobblestoneBreadDescription("tier_emerald_cobblestone_bread"),
+            "商人も喜ぶ幸運の結晶パン。"
+        );
+        add(
+            TooltipTranslationKeys.cobblestoneBreadDescription("tier_netherite_cobblestone_bread"),
+            "地獄の炎でも焼け残る。"
+        );
+        add(
+            TooltipTranslationKeys.cobblestoneBreadDescription("tier_obsidian_cobblestone_bread"),
+            "究極の石パン。噛むたびに世界が揺れる。"
+        );
     }
 
     // tier 付きブロック名は英語表示名から機械名と素材名を分けて置換します。

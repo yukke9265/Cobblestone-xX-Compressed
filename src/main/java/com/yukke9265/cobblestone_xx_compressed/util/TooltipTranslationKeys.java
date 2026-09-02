@@ -28,4 +28,8 @@ public final class TooltipTranslationKeys {
     public static String tier() {
         return TOOLTIP_PREFIX + "tier";
     }
+
+    public static String cobblestoneBreadDescription(String registryName) {
+        return TOOLTIP_PREFIX + registryName + DESCRIPTION_SUFFIX;
+    }
 }

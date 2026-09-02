@@ -332,6 +332,7 @@
   "multiblock_cell.cobblestonexxcompressed.upgrade": "アップグレード",
   "tooltip.cobblestonexxcompressed.cobblestone_acceleration_chip.rate": "x%s CP/t",
   "tooltip.cobblestonexxcompressed.cobblestone_assembly_machine.description": "部品を組み合わせて、機械用のアイテムを作ります。",
+  "tooltip.cobblestonexxcompressed.cobblestone_bread.description": "丸石をそのまま焼いたような、いびつな工業食。",
   "tooltip.cobblestonexxcompressed.cobblestone_centrifuge.description": "材料を遠心分離して、複数の生成物に分けます。",
   "tooltip.cobblestonexxcompressed.cobblestone_chemical_reactor.description": "アイテムと液体を反応させて、化学系素材を作ります。",
   "tooltip.cobblestonexxcompressed.cobblestone_crusher.description": "素材を砕いて、ダストや副産物を作ります。",
@@ -373,5 +374,17 @@
   "tooltip.cobblestonexxcompressed.shield_range_module.bonus": "範囲 +%s",
   "tooltip.cobblestonexxcompressed.shield_rate_module.bonus": "変換量 +%s（総消費CPも増加）",
   "tooltip.cobblestonexxcompressed.stone_break_simulator.description": "圧縮石を疑似的に破壊して、エンチャントの効果付きでドロップを生成します。",
-  "tooltip.cobblestonexxcompressed.tier": "Tier %s"
+  "tooltip.cobblestonexxcompressed.tier": "Tier %s",
+  "tooltip.cobblestonexxcompressed.tier_amethyst_cobblestone_bread.description": "洞窟の紫水晶を閉じ込めた。",
+  "tooltip.cobblestonexxcompressed.tier_aquamarine_cobblestone_bread.description": "海の丸石を練り込んだ。",
+  "tooltip.cobblestonexxcompressed.tier_copper_cobblestone_bread.description": "初めての工業食。ちょっと硬い。",
+  "tooltip.cobblestonexxcompressed.tier_diamond_cobblestone_bread.description": "硬くて、とにかく硬い。",
+  "tooltip.cobblestonexxcompressed.tier_emerald_cobblestone_bread.description": "商人も喜ぶ幸運の結晶パン。",
+  "tooltip.cobblestonexxcompressed.tier_gold_cobblestone_bread.description": "幸運の香りがする黄金色のパン。",
+  "tooltip.cobblestonexxcompressed.tier_iron_cobblestone_bread.description": "体が石みたいに固くなる。",
+  "tooltip.cobblestonexxcompressed.tier_netherite_cobblestone_bread.description": "地獄の炎でも焼け残る。",
+  "tooltip.cobblestonexxcompressed.tier_obsidian_cobblestone_bread.description": "究極の石パン。噛むたびに世界が揺れる。",
+  "tooltip.cobblestonexxcompressed.tier_ruby_cobblestone_bread.description": "かじるたびに力がみなぎる赤いパン。",
+  "tooltip.cobblestonexxcompressed.tier_sapphire_cobblestone_bread.description": "風のように走れる青いパン。",
+  "tooltip.cobblestonexxcompressed.tier_topaz_cobblestone_bread.description": "軽く跳べる黄金色のパン。"
 }
