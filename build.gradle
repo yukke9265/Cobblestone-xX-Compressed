@@ -33,6 +33,14 @@ repositories {
     maven {
         url = 'https://maven.blamejared.com'
     }
+    // Jade は Modrinth Maven から取得します。
+    maven {
+        name = 'Modrinth'
+        url = 'https://api.modrinth.com/maven'
+        content {
+            includeGroup 'maven.modrinth'
+        }
+    }
 }
 
 base {
@@ -134,6 +142,13 @@ dependencies {
     compileOnly "mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}"
     // 依存関係として公開しないため、完全版は runtimeOnly ではなく localRuntime に追加します
     localRuntime "mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}"
+
+    // AE2 / Jade は任意依存です。未導入でも起動できるよう API は compileOnly、
+    // 開発時の動作確認だけ localRuntime で本体を載せます。
+    compileOnly "org.appliedenergistics:appliedenergistics2:${ae2_version}:api"
+    localRuntime "org.appliedenergistics:appliedenergistics2:${ae2_version}"
+    compileOnly "maven.modrinth:jade:${jade_version}"
+    localRuntime "maven.modrinth:jade:${jade_version}"
 
     // flat dir リポジトリを使って ./libs の mod jar を参照する依存関係の例です
     // これは ./libs/coolmod-${mc_version}-${coolmod_version}.jar に対応します

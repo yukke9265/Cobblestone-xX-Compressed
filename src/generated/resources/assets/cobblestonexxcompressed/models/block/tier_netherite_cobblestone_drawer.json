@@ -1,6 +1,12 @@
 {
-  "parent": "minecraft:block/cube_all",
+  "parent": "minecraft:block/cube",
   "textures": {
-    "all": "cobblestonexxcompressed:block/cobblestone_drawer/tier_netherite_cobblestone_drawer"
+    "down": "cobblestonexxcompressed:block/cobblestone_drawer/tier_netherite_cobblestone_drawer",
+    "east": "cobblestonexxcompressed:block/cobblestone_drawer/tier_netherite_cobblestone_drawer",
+    "north": "cobblestonexxcompressed:block/cobblestone_drawer/tier_netherite_cobblestone_drawer_front",
+    "particle": "cobblestonexxcompressed:block/cobblestone_drawer/tier_netherite_cobblestone_drawer",
+    "south": "cobblestonexxcompressed:block/cobblestone_drawer/tier_netherite_cobblestone_drawer",
+    "up": "cobblestonexxcompressed:block/cobblestone_drawer/tier_netherite_cobblestone_drawer",
+    "west": "cobblestonexxcompressed:block/cobblestone_drawer/tier_netherite_cobblestone_drawer"
   }
 }

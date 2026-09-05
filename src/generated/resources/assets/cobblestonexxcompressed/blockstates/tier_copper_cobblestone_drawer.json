@@ -1,7 +1,19 @@
 {
   "variants": {
-    "": {
+    "facing=east": {
+      "model": "cobblestonexxcompressed:block/tier_copper_cobblestone_drawer",
+      "y": 90
+    },
+    "facing=north": {
       "model": "cobblestonexxcompressed:block/tier_copper_cobblestone_drawer"
+    },
+    "facing=south": {
+      "model": "cobblestonexxcompressed:block/tier_copper_cobblestone_drawer",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "cobblestonexxcompressed:block/tier_copper_cobblestone_drawer",
+      "y": 270
     }
   }
 }

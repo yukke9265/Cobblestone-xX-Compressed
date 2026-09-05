@@ -49,6 +49,7 @@ public enum AutomationSide {
         }
 
         Direction facing = blockState.getValue(RotatingBlock.FACING);
+        // FACING は正面。GUI の「前」と、モデルの正面テクスチャがこの方向です。
         if (worldSide == facing) {
             return FRONT;
         }

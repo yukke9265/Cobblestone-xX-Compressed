@@ -366,6 +366,8 @@
   "tooltip.cobblestonexxcompressed.compressed_cobblestone_pickaxe.stone_break_simulator_bonus": "石破壊シミュレーター: 耐久相当 +%s",
   "tooltip.cobblestonexxcompressed.configuration_card.empty": "設定は保存されていません",
   "tooltip.cobblestonexxcompressed.configuration_card.power": "CP入力: %s",
+  "config.jade.plugin_cobblestonexxcompressed.cobblestone_drawer_storage": "丸石ドロワーの収納",
+  "jade.cobblestonexxcompressed.cobblestone_drawer.capacity": "%s / %s",
   "tooltip.cobblestonexxcompressed.configuration_card.stored": "保存先: %s",
   "tooltip.cobblestonexxcompressed.configuration_card.upgrade": "アップグレード: %s",
   "tooltip.cobblestonexxcompressed.flying_stone.description": "インベントリか装飾品スロットにあるあいだ、クリエイティブ飛行が使えます。バルス!!!!!!",

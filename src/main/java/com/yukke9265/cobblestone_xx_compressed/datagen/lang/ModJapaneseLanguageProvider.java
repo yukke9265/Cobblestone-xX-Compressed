@@ -209,6 +209,8 @@ public class ModJapaneseLanguageProvider extends LanguageProvider {
         add("tooltip.cobblestonexxcompressed.configuration_card.stored", "保存先: %s");
         add("tooltip.cobblestonexxcompressed.configuration_card.upgrade", "アップグレード: %s");
         add("tooltip.cobblestonexxcompressed.configuration_card.power", "CP入力: %s");
+        add("config.jade.plugin_cobblestonexxcompressed.cobblestone_drawer_storage", "丸石ドロワーの収納");
+        add("jade.cobblestonexxcompressed.cobblestone_drawer.capacity", "%s / %s");
         add("message.cobblestonexxcompressed.configuration_card.copied", "%s の設定をコピーしました");
         add("message.cobblestonexxcompressed.configuration_card.pasted", "%s に設定を貼り付けました");
         add("message.cobblestonexxcompressed.configuration_card.cleared", "保存した設定を消去しました");

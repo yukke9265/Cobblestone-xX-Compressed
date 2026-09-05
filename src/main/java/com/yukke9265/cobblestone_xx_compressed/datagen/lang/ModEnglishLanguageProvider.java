@@ -358,6 +358,8 @@ public class ModEnglishLanguageProvider extends LanguageProvider {
         add("tooltip.cobblestonexxcompressed.configuration_card.stored", "Stored: %s");
         add("tooltip.cobblestonexxcompressed.configuration_card.upgrade", "Upgrade: %s");
         add("tooltip.cobblestonexxcompressed.configuration_card.power", "CP Input: %s");
+        add("config.jade.plugin_cobblestonexxcompressed.cobblestone_drawer_storage", "Cobblestone Drawer Storage");
+        add("jade.cobblestonexxcompressed.cobblestone_drawer.capacity", "%s / %s");
         add("message.cobblestonexxcompressed.configuration_card.copied", "Copied configuration from %s");
         add("message.cobblestonexxcompressed.configuration_card.pasted", "Pasted configuration to %s");
         add("message.cobblestonexxcompressed.configuration_card.cleared", "Cleared stored configuration");

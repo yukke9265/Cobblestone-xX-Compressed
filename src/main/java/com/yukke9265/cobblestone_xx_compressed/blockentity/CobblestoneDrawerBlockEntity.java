@@ -115,7 +115,28 @@ public class CobblestoneDrawerBlockEntity extends BaseBlockEntity implements Men
     }
 
     private int getExternalSlotCount() {
-        return Config.DRAWER_EXTERNAL_SLOT_COUNT.get();
+        int configuredSlots = Config.DRAWER_EXTERNAL_SLOT_COUNT.get();
+        // Integer.MAX_VALUE 単位で容量を見せるのに必要なスロット数。
+        // AE2 が毎 tick 走査するため上限を設け、極端なティアでは切り捨てます。
+        long neededSlots = (this.maxStoredAmount + (long) Integer.MAX_VALUE - 1L) / (long) Integer.MAX_VALUE;
+        if (neededSlots < 1L) {
+            neededSlots = 1L;
+        }
+
+        long cappedNeededSlots = Math.min(neededSlots, 512L);
+        return (int) Math.max(configuredSlots, cappedNeededSlots);
+    }
+
+    /**
+     * AE2 の IItemHandler 経路向けに、1 スロットあたり Integer.MAX_VALUE 個まで見せます。
+     * パイプの同時処理用スロット数は従来どおり config を使い、報告単位だけ広げます。
+     */
+    private int getExternalReportUnit() {
+        return Integer.MAX_VALUE;
+    }
+
+    private int getPipeTransferUnit() {
+        return this.getMaxStackSize();
     }
 
     public ItemStack getDisplayedStoredStack() {
@@ -123,7 +144,81 @@ public class CobblestoneDrawerBlockEntity extends BaseBlockEntity implements Men
             return ItemStack.EMPTY;
         }
 
-        return this.storedItem.copyWithCount(this.getAmountInExternalSlot(0));
+        return this.storedItem.copyWithCount(this.getReportedAmountInExternalSlot(0));
+    }
+
+    /**
+     * AE2 / Jade 向けに、仮想スロット制限を無視して内部ストレージへ直接入れます。
+     * 戻り値は実際に消費した個数です。void overflow 有効時は容量超過分も消費扱いにします。
+     */
+    public long insertStoredItems(ItemStack template, long amount, boolean simulate) {
+        if (template.isEmpty() || amount <= 0L) {
+            return 0L;
+        }
+
+        if (!this.canAcceptItem(template)) {
+            return 0L;
+        }
+
+        long remainingCapacity = this.maxStoredAmount - this.storedAmount;
+        long storedNow = 0L;
+        if (remainingCapacity > 0L) {
+            storedNow = Math.min(remainingCapacity, amount);
+        }
+
+        if (storedNow <= 0L && !this.voidOverflowEnabled) {
+            return 0L;
+        }
+
+        long consumedAmount = this.voidOverflowEnabled ? amount : storedNow;
+        if (consumedAmount <= 0L) {
+            return 0L;
+        }
+
+        if (!simulate) {
+            if (this.storedItem.isEmpty()) {
+                this.storedItem = template.copyWithCount(1);
+            }
+
+            if (storedNow > 0L) {
+                this.storedAmount += storedNow;
+            }
+
+            this.syncToClient();
+        }
+
+        return consumedAmount;
+    }
+
+    /**
+     * AE2 / Jade 向けに、仮想スロット制限を無視して内部ストレージから直接取り出します。
+     * filter が空でなければ、同じ item / components のときだけ取り出します。
+     */
+    public long extractStoredItems(ItemStack filter, long amount, boolean simulate) {
+        if (this.storedItem.isEmpty() || this.storedAmount <= 0L || amount <= 0L) {
+            return 0L;
+        }
+
+        if (!filter.isEmpty() && !ItemStack.isSameItemSameComponents(this.storedItem, filter)) {
+            return 0L;
+        }
+
+        long drainedAmount = Math.min(this.storedAmount, amount);
+        if (drainedAmount <= 0L) {
+            return 0L;
+        }
+
+        if (!simulate) {
+            this.storedAmount -= drainedAmount;
+            if (this.storedAmount <= 0L) {
+                this.storedAmount = 0L;
+                this.storedItem = ItemStack.EMPTY;
+            }
+
+            this.syncToClient();
+        }
+
+        return drainedAmount;
     }
 
     private int getMaxStackSize() {
@@ -134,18 +229,22 @@ public class CobblestoneDrawerBlockEntity extends BaseBlockEntity implements Men
         return this.storedItem.getMaxStackSize();
     }
 
-    private int getAmountInExternalSlot(int slot) {
+    /**
+     * AE2 / Jade 以外の IItemHandler 経路で見える個数です。
+     * Integer.MAX_VALUE 単位で分割し、仮想スロット数の範囲でできるだけ全量を見せます。
+     */
+    private int getReportedAmountInExternalSlot(int slot) {
         if (slot < 0 || slot >= this.getExternalSlotCount() || this.storedItem.isEmpty() || this.storedAmount <= 0L) {
             return 0;
         }
 
-        int maxStackSize = this.getMaxStackSize();
-        long slotOffset = (long) slot * maxStackSize;
+        int reportUnit = this.getExternalReportUnit();
+        long slotOffset = (long) slot * reportUnit;
         if (slotOffset >= this.storedAmount) {
             return 0;
         }
 
-        return (int) Math.min(maxStackSize, this.storedAmount - slotOffset);
+        return (int) Math.min(reportUnit, this.storedAmount - slotOffset);
     }
 
     private int getInsertableAmountInExternalSlot(int slot) {
@@ -156,19 +255,19 @@ public class CobblestoneDrawerBlockEntity extends BaseBlockEntity implements Men
         long remainingCapacity = this.maxStoredAmount - this.storedAmount;
         if (remainingCapacity <= 0L) {
             if (this.voidOverflowEnabled) {
-                return this.getMaxStackSize();
+                return this.getExternalReportUnit();
             }
 
             return 0;
         }
 
-        int maxStackSize = this.getMaxStackSize();
-        long slotOffset = (long) slot * maxStackSize;
+        int reportUnit = this.getExternalReportUnit();
+        long slotOffset = (long) slot * reportUnit;
         if (slotOffset >= this.maxStoredAmount) {
             return 0;
         }
 
-        long slotCapacity = Math.min(maxStackSize, this.maxStoredAmount - slotOffset);
+        long slotCapacity = Math.min(reportUnit, this.maxStoredAmount - slotOffset);
         long occupiedInSlot = Math.max(0L, this.storedAmount - slotOffset);
         long freeInSlot = slotCapacity - Math.min(occupiedInSlot, slotCapacity);
         return (int) Math.min(remainingCapacity, freeInSlot);
@@ -292,22 +391,21 @@ public class CobblestoneDrawerBlockEntity extends BaseBlockEntity implements Men
             return;
         }
 
-        for (int slotIndex = 0; slotIndex < this.getExternalSlotCount(); slotIndex++) {
-            int exportCount = this.getAmountInExternalSlot(slotIndex);
-            if (exportCount <= 0) {
-                break;
-            }
-
-            ItemStack exportStack = this.storedItem.copyWithCount(exportCount);
-            int originalCount = exportStack.getCount();
-            ItemStack remainingStack = this.pushItemStackToConfiguredSides(exportStack, AutomationMode.OUTPUT, AutomationMode.IN_OUT);
-            int exportedCount = originalCount - remainingStack.getCount();
-            if (exportedCount <= 0) {
-                break;
-            }
-
-            this.drainInternal(exportedCount, false);
+        // 自動搬出はパイプ向けに 1 スタックずつ押し出します。
+        int exportCount = (int) Math.min(this.getPipeTransferUnit(), this.storedAmount);
+        if (exportCount <= 0) {
+            return;
         }
+
+        ItemStack exportStack = this.storedItem.copyWithCount(exportCount);
+        int originalCount = exportStack.getCount();
+        ItemStack remainingStack = this.pushItemStackToConfiguredSides(exportStack, AutomationMode.OUTPUT, AutomationMode.IN_OUT);
+        int exportedCount = originalCount - remainingStack.getCount();
+        if (exportedCount <= 0) {
+            return;
+        }
+
+        this.drainInternal(exportedCount, false);
     }
 
     private int fillInternal(ItemStack stack, boolean simulate) {
@@ -315,39 +413,7 @@ public class CobblestoneDrawerBlockEntity extends BaseBlockEntity implements Men
             return 0;
         }
 
-        if (!this.canAcceptItem(stack)) {
-            return 0;
-        }
-
-        int stackCount = stack.getCount();
-        long remainingCapacity = this.maxStoredAmount - this.storedAmount;
-        int storedAmount = 0;
-        if (remainingCapacity > 0L) {
-            storedAmount = (int) Math.min(remainingCapacity, stackCount);
-        }
-
-        if (storedAmount <= 0 && !this.voidOverflowEnabled) {
-            return 0;
-        }
-
-        int consumedAmount = this.voidOverflowEnabled ? stackCount : storedAmount;
-        if (consumedAmount <= 0) {
-            return 0;
-        }
-
-        if (!simulate) {
-            if (this.storedItem.isEmpty()) {
-                this.storedItem = stack.copyWithCount(1);
-            }
-
-            if (storedAmount > 0) {
-                this.storedAmount += storedAmount;
-            }
-
-            this.syncToClient();
-        }
-
-        return consumedAmount;
+        return (int) Math.min(Integer.MAX_VALUE, this.insertStoredItems(stack, stack.getCount(), simulate));
     }
 
     private ItemStack drainInternal(int amount, boolean simulate) {
@@ -355,17 +421,15 @@ public class CobblestoneDrawerBlockEntity extends BaseBlockEntity implements Men
             return ItemStack.EMPTY;
         }
 
-        int drainedAmount = (int) Math.min(this.storedAmount, amount);
-        ItemStack drainedStack = this.storedItem.copyWithCount(drainedAmount);
+        long drainedAmount = this.extractStoredItems(ItemStack.EMPTY, amount, true);
+        if (drainedAmount <= 0L) {
+            return ItemStack.EMPTY;
+        }
 
+        int visibleAmount = (int) Math.min(Integer.MAX_VALUE, drainedAmount);
+        ItemStack drainedStack = this.storedItem.copyWithCount(visibleAmount);
         if (!simulate) {
-            this.storedAmount -= drainedAmount;
-            if (this.storedAmount <= 0L) {
-                this.storedAmount = 0L;
-                this.storedItem = ItemStack.EMPTY;
-            }
-
-            this.syncToClient();
+            this.extractStoredItems(ItemStack.EMPTY, visibleAmount, false);
         }
 
         return drainedStack;
@@ -377,6 +441,10 @@ public class CobblestoneDrawerBlockEntity extends BaseBlockEntity implements Men
         Level currentLevel = this.level;
         if (currentLevel != null) {
             BlockState currentState = this.getBlockState();
+            // タンクと同じくブロック更新だけ送る。
+            // 中身変更のたびに invalidateCapabilities すると、毎tickの出力スロット充填と組み合わさり
+            // AE2 Storage Bus が NullInventory へ落ち続けて何も見えなくなる。
+            // 面設定変更時の invalidate は BaseBlockEntity#setAutomationMode 側で行う。
             currentLevel.sendBlockUpdated(this.worldPosition, currentState, currentState, 3);
         }
     }
@@ -567,7 +635,7 @@ public class CobblestoneDrawerBlockEntity extends BaseBlockEntity implements Men
                 this.includeGuiOutput
             );
             if (slotKind == AutomationSlotKind.BULK) {
-                int amountInSlot = CobblestoneDrawerBlockEntity.this.getAmountInExternalSlot(slot);
+                int amountInSlot = CobblestoneDrawerBlockEntity.this.getReportedAmountInExternalSlot(slot);
                 if (amountInSlot <= 0) {
                     return ItemStack.EMPTY;
                 }
@@ -635,14 +703,9 @@ public class CobblestoneDrawerBlockEntity extends BaseBlockEntity implements Men
                     return ItemStack.EMPTY;
                 }
 
-                // 仮想区画は先頭から順に埋まるため、前の区画が空くまで後ろは取り出し不可。
-                for (int priorSlot = 0; priorSlot < slot; priorSlot++) {
-                    if (CobblestoneDrawerBlockEntity.this.getAmountInExternalSlot(priorSlot) > 0) {
-                        return ItemStack.EMPTY;
-                    }
-                }
-
-                int availableAmount = CobblestoneDrawerBlockEntity.this.getAmountInExternalSlot(slot);
+                // AE2 の EXTRACTABLE_ONLY は extractItem(simulate) が成功するスロットしか数えないため、
+                // 先頭以外でも取り出せるようにします。実体は共通の内部ストレージです。
+                int availableAmount = CobblestoneDrawerBlockEntity.this.getReportedAmountInExternalSlot(slot);
                 int extractAmount = Math.min(amount, availableAmount);
                 if (extractAmount <= 0) {
                     return ItemStack.EMPTY;
@@ -670,7 +733,7 @@ public class CobblestoneDrawerBlockEntity extends BaseBlockEntity implements Men
                     return CobblestoneDrawerBlockEntity.this.getInsertableAmountInExternalSlot(slot);
                 }
 
-                return CobblestoneDrawerBlockEntity.this.getMaxStackSize();
+                return CobblestoneDrawerBlockEntity.this.getExternalReportUnit();
             }
 
             if (slotKind == AutomationSlotKind.GUI_INPUT) {

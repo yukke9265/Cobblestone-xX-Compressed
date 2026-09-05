@@ -227,12 +227,27 @@ public class ModBlockStateProvider extends BlockStateProvider {
         registerCubeAllBlock(block, "cobblestone_tank", modelName, textureName);
     }
 
+    @SuppressWarnings("null")
     private void registerCobblestoneDrawerBlock(
         net.minecraft.world.level.block.Block block,
         String modelName,
         String textureName
     ) {
-        registerCubeAllBlock(block, "cobblestone_drawer", modelName, textureName);
+        // cube_all だと正面が分からず、GUI の前/後/左/右と実面が食い違って見える。
+        // 他機械と同じく north=正面テクスチャ + FACING 回転で揃えます。
+        String textureFolder = "cobblestone_drawer";
+        ModelFile model = this.models()
+            .withExistingParent(modelName, this.mcLoc("block/cube"))
+            .texture("particle", this.modLoc("block/" + textureFolder + "/" + textureName))
+            .texture("down", this.modLoc("block/" + textureFolder + "/" + textureName))
+            .texture("up", this.modLoc("block/" + textureFolder + "/" + textureName))
+            .texture("north", this.modLoc("block/" + textureFolder + "/" + textureName + "_front"))
+            .texture("south", this.modLoc("block/" + textureFolder + "/" + textureName))
+            .texture("west", this.modLoc("block/" + textureFolder + "/" + textureName))
+            .texture("east", this.modLoc("block/" + textureFolder + "/" + textureName));
+
+        this.horizontalBlock(block, model);
+        this.simpleBlockItem(block, model);
     }
 
     private void registerCobblestoneGeneratorBlock(ModBlocks.TierCobblestoneGenerator generatorVariant) {

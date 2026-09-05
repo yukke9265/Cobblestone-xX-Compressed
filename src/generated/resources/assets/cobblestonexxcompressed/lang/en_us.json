@@ -794,6 +794,8 @@
   "tooltip.cobblestonexxcompressed.compressed_cobblestone_pickaxe.stone_break_simulator_bonus": "Stone Break Simulator: +%s Unbreaking",
   "tooltip.cobblestonexxcompressed.configuration_card.empty": "No configuration stored",
   "tooltip.cobblestonexxcompressed.configuration_card.power": "CP Input: %s",
+  "config.jade.plugin_cobblestonexxcompressed.cobblestone_drawer_storage": "Cobblestone Drawer Storage",
+  "jade.cobblestonexxcompressed.cobblestone_drawer.capacity": "%s / %s",
   "tooltip.cobblestonexxcompressed.configuration_card.stored": "Stored: %s",
   "tooltip.cobblestonexxcompressed.configuration_card.upgrade": "Upgrade: %s",
   "tooltip.cobblestonexxcompressed.flying_stone.description": "Grants creative flight while in your inventory or an accessory slot. Balse!!!!!!",

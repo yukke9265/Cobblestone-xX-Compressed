@@ -3,6 +3,7 @@ package com.yukke9265.cobblestone_xx_compressed;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
+import com.yukke9265.cobblestone_xx_compressed.compat.ae2.Ae2DrawerCompat;
 import com.yukke9265.cobblestone_xx_compressed.compat.flux.FluxNetworkCompat;
 import com.yukke9265.cobblestone_xx_compressed.datagen.ModDatagen;
 import com.yukke9265.cobblestone_xx_compressed.multiblock.MultiblockCellType;
@@ -583,6 +584,9 @@ public class CobblestonexXCompressed {
             ModBlockEntities.COBBLESTONE_DRAWER_BLOCK_ENTITY.get(),
             (blockEntity, side) -> blockEntity.getAutomationItemHandler(side)
         );
+
+        // AE2 導入時は ME_STORAGE でドロワー全量を公開します。
+        Ae2DrawerCompat.registerCapabilities(event);
 
         event.registerBlockEntity(
             Capabilities.ItemHandler.BLOCK,

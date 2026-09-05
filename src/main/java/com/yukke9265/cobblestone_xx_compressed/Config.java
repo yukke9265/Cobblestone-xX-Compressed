@@ -35,8 +35,12 @@ public class Config {
             .defineListAllowEmpty("items", List.of("minecraft:iron_ingot"), () -> "", Config::validateItemName);
 
     public static final ModConfigSpec.IntValue DRAWER_EXTERNAL_SLOT_COUNT = BUILDER
-            .comment("Cobblestone Drawer がパイプへ同時公開する仮想スロット数。1 スロット = 最大 1 スタック分。")
-            .defineInRange("cobblestoneDrawerExternalSlotCount", 18, 1, 128);
+            .comment(
+                "Cobblestone Drawer が外部へ公開する仮想スロット数の下限。"
+                    + " AE2 / パイプ向けに、実際のスロット数は容量に応じて自動で増えます"
+                    + "（1 スロット最大 Integer.MAX_VALUE 個）。"
+            )
+            .defineInRange("cobblestoneDrawerExternalSlotCount", 18, 1, 512);
 
     static final ModConfigSpec SPEC = BUILDER.build();
 
