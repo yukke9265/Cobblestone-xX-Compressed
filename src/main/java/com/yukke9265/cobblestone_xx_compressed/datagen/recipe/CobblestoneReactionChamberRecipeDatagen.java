@@ -31,8 +31,8 @@ public final class CobblestoneReactionChamberRecipeDatagen {
         new ReactionChamberRecipeDefinition(
             "water_and_aquamarine_mixture_and_aquamarine_cobblestone_to_aquamarine_cobblestone_dust",
             new FluidStack(net.minecraft.world.level.material.Fluids.WATER, 1000),
-            ingredientOf(ModBlocks.TierCompressedCobblestone.AQUAMARINE.getBlock().get()),
-            ingredientOf(ModItems.AQUAMARINE_MIXTURE.get()),
+            sizedItem(ModBlocks.TierCompressedCobblestone.AQUAMARINE.getBlock().get(), 1),
+            sizedItem(ModItems.AQUAMARINE_MIXTURE.get(), 1),
             new ItemStack(ModItems.TIER_AQUAMARINE_COBBLESTONE_DUST.get()),
             REACTION_CHAMBER_TOTAL_CP,
             REACTION_CHAMBER_CP_PER_TICK
@@ -40,8 +40,8 @@ public final class CobblestoneReactionChamberRecipeDatagen {
         new ReactionChamberRecipeDefinition(
             "glowtopaz_and_topaz_cobblestone_and_amethyst_dust_to_topaz_cobblestone_dust",
             new FluidStack(ModFluids.WaterBasedFluid.GLOW_TOPAZ.getFluidEntry().getStillFluid(), 1000),
-            ingredientOf(ModBlocks.TierCompressedCobblestone.TOPAZ.getBlock().get()),
-            ingredientOf(ModItemTags.DUSTS_AMETHYST),
+            sizedItem(ModBlocks.TierCompressedCobblestone.TOPAZ.getBlock().get(), 1),
+            sizedTag(ModItemTags.DUSTS_AMETHYST, 1),
             new ItemStack(ModItems.TIER_TOPAZ_COBBLESTONE_DUST.get()),
             REACTION_CHAMBER_TOTAL_CP,
             REACTION_CHAMBER_CP_PER_TICK
@@ -49,8 +49,8 @@ public final class CobblestoneReactionChamberRecipeDatagen {
         new ReactionChamberRecipeDefinition(
             "molten_dirty_ruby_cobblestone_and_obsidian_dust_and_amethyst_dust_to_ruby_cobblestone_dust",
             new FluidStack(ModFluids.TierMoltenDirtyCompressedCobblestone.RUBY.getFluidEntry().getStillFluid(), 1000),
-            ingredientOf(ModItemTags.DUSTS_OBSIDIAN),
-            ingredientOf(ModItemTags.DUSTS_AMETHYST),
+            sizedTag(ModItemTags.DUSTS_OBSIDIAN, 1),
+            sizedTag(ModItemTags.DUSTS_AMETHYST, 1),
             new ItemStack(ModItems.TIER_RUBY_COBBLESTONE_DUST.get()),
             REACTION_CHAMBER_TOTAL_CP,
             REACTION_CHAMBER_CP_PER_TICK
@@ -58,8 +58,8 @@ public final class CobblestoneReactionChamberRecipeDatagen {
         new ReactionChamberRecipeDefinition(
             "molten_dirty_sapphire_cobblestone_and_obsidian_dust_and_amethyst_dust_to_sapphire_cobblestone_dust",
             new FluidStack(ModFluids.TierMoltenDirtyCompressedCobblestone.SAPPHIRE.getFluidEntry().getStillFluid(), 1000),
-            ingredientOf(ModItemTags.DUSTS_OBSIDIAN),
-            ingredientOf(ModItemTags.DUSTS_AMETHYST),
+            sizedTag(ModItemTags.DUSTS_OBSIDIAN, 1),
+            sizedTag(ModItemTags.DUSTS_AMETHYST, 1),
             new ItemStack(ModItems.TIER_SAPPHIRE_COBBLESTONE_DUST.get()),
             REACTION_CHAMBER_TOTAL_CP,
             REACTION_CHAMBER_CP_PER_TICK
@@ -67,8 +67,8 @@ public final class CobblestoneReactionChamberRecipeDatagen {
         new ReactionChamberRecipeDefinition(
             "shiny_water_and_dirty_diamond_cobblestone_and_redstone_to_diamond_cobblestone_dust",
             new FluidStack(ModFluids.WaterBasedFluid.SHINY_WATER.getFluidEntry().getStillFluid(), 1000),
-            ingredientOf(ModItems.TIER_DIAMOND_COBBLESTONE_DIRTY_DUST.get()),
-            ingredientOf(Items.REDSTONE),
+            sizedItem(ModItems.TIER_DIAMOND_COBBLESTONE_DIRTY_DUST.get(), 1),
+            sizedItem(Items.REDSTONE, 1),
             new ItemStack(ModItems.TIER_DIAMOND_COBBLESTONE_DUST.get()),
             REACTION_CHAMBER_TOTAL_CP,
             REACTION_CHAMBER_CP_PER_TICK
@@ -76,8 +76,8 @@ public final class CobblestoneReactionChamberRecipeDatagen {
         new ReactionChamberRecipeDefinition(
             "shiny_water_and_dirty_emerald_cobblestone_and_redstone_to_emerald_cobblestone_dust",
             new FluidStack(ModFluids.WaterBasedFluid.SHINY_WATER.getFluidEntry().getStillFluid(), 1000),
-            ingredientOf(ModItems.TIER_EMERALD_COBBLESTONE_DIRTY_DUST.get()),
-            ingredientOf(Items.REDSTONE),
+            sizedItem(ModItems.TIER_EMERALD_COBBLESTONE_DIRTY_DUST.get(), 1),
+            sizedItem(Items.REDSTONE, 1),
             new ItemStack(ModItems.TIER_EMERALD_COBBLESTONE_DUST.get()),
             REACTION_CHAMBER_TOTAL_CP,
             REACTION_CHAMBER_CP_PER_TICK
@@ -85,8 +85,8 @@ public final class CobblestoneReactionChamberRecipeDatagen {
         new ReactionChamberRecipeDefinition(
             "shiny_water_and_dirty_netherite_cobblestone_and_redstone_to_netherite_cobblestone_dust",
             new FluidStack(ModFluids.WaterBasedFluid.SHINY_WATER.getFluidEntry().getStillFluid(), 1000),
-            ingredientOf(ModItems.TIER_NETHERITE_COBBLESTONE_DIRTY_DUST.get()),
-            ingredientOf(Items.REDSTONE),
+            sizedItem(ModItems.TIER_NETHERITE_COBBLESTONE_DIRTY_DUST.get(), 1),
+            sizedItem(Items.REDSTONE, 1),
             new ItemStack(ModItems.TIER_NETHERITE_COBBLESTONE_DUST.get()),
             REACTION_CHAMBER_TOTAL_CP,
             REACTION_CHAMBER_CP_PER_TICK
@@ -94,8 +94,8 @@ public final class CobblestoneReactionChamberRecipeDatagen {
         new ReactionChamberRecipeDefinition(
             "shiny_water_and_dirty_obsidian_cobblestone_and_redstone_to_obsidian_cobblestone_dust",
             new FluidStack(ModFluids.WaterBasedFluid.SHINY_WATER.getFluidEntry().getStillFluid(), 1000),
-            ingredientOf(ModItems.TIER_OBSIDIAN_COBBLESTONE_DIRTY_DUST.get()),
-            ingredientOf(Items.REDSTONE),
+            sizedItem(ModItems.TIER_OBSIDIAN_COBBLESTONE_DIRTY_DUST.get(), 1),
+            sizedItem(Items.REDSTONE, 1),
             new ItemStack(ModItems.TIER_OBSIDIAN_COBBLESTONE_DUST.get()),
             REACTION_CHAMBER_TOTAL_CP,
             REACTION_CHAMBER_CP_PER_TICK
@@ -103,9 +103,19 @@ public final class CobblestoneReactionChamberRecipeDatagen {
         new ReactionChamberRecipeDefinition(
             "lava_amd_lapis_dust_and_redstone_to_obsidian",
             new FluidStack(net.minecraft.world.level.material.Fluids.LAVA, 4000),
-            ingredientOf(ModItemTags.DUSTS_LAPIS),
-            ingredientOf(Items.REDSTONE),
-            new ItemStack(Items.OBSIDIAN,16),
+            sizedTag(ModItemTags.DUSTS_LAPIS, 1),
+            sizedItem(Items.REDSTONE, 1),
+            new ItemStack(Items.OBSIDIAN, 16),
+            REACTION_CHAMBER_TOTAL_CP,
+            REACTION_CHAMBER_CP_PER_TICK
+        ),
+        // 金インゴット1 + 古代混合物4 + 溶岩1000mB → ネザライトインゴット
+        new ReactionChamberRecipeDefinition(
+            "gold_and_ancient_mixture_and_lava_to_nethrite_ingot",
+            new FluidStack(net.minecraft.world.level.material.Fluids.LAVA, 1000),
+            sizedItem(Items.GOLD_INGOT, 1),
+            sizedItem(ModItems.ANCIENT_MIXTURES.get(), 4),
+            new ItemStack(Items.NETHERITE_INGOT),
             REACTION_CHAMBER_TOTAL_CP,
             REACTION_CHAMBER_CP_PER_TICK
         )
@@ -247,14 +257,6 @@ public final class CobblestoneReactionChamberRecipeDatagen {
         );
     }
 
-    private static Ingredient ingredientOf(ItemLike item) {
-        return Ingredient.of(item);
-    }
-
-    private static Ingredient ingredientOf(TagKey<Item> tag) {
-        return Ingredient.of(tag);
-    }
-
     private static SizedIngredient sizedItem(ItemLike item, int count) {
         return new SizedIngredient(Ingredient.of(item), count);
     }
@@ -266,13 +268,21 @@ public final class CobblestoneReactionChamberRecipeDatagen {
     private static class ReactionChamberRecipeDefinition {
         private final String recipeName;
         private final FluidStack fluidInput;
-        private final Ingredient firstIngredient;
-        private final Ingredient secondIngredient;
+        private final SizedIngredient firstIngredient;
+        private final SizedIngredient secondIngredient;
         private final ItemStack result;
         private final long totalCobblestonePower;
         private final long cobblestonePowerPerTick;
 
-        private ReactionChamberRecipeDefinition(String recipeName, FluidStack fluidInput, Ingredient firstIngredient, Ingredient secondIngredient, ItemStack result, long totalCobblestonePower, long cobblestonePowerPerTick) {
+        private ReactionChamberRecipeDefinition(
+            String recipeName,
+            FluidStack fluidInput,
+            SizedIngredient firstIngredient,
+            SizedIngredient secondIngredient,
+            ItemStack result,
+            long totalCobblestonePower,
+            long cobblestonePowerPerTick
+        ) {
             this.recipeName = recipeName;
             this.fluidInput = fluidInput.copy();
             this.firstIngredient = firstIngredient;

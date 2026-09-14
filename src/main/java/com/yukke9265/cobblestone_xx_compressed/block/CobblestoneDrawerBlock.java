@@ -6,13 +6,11 @@ import com.yukke9265.cobblestone_xx_compressed.registry.ModBlockEntities;
 import java.util.List;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.component.BlockItemStateProperties;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -77,7 +75,8 @@ public class CobblestoneDrawerBlock extends RotatingBlock implements EntityBlock
     }
 
     // copy_components だけのルートテーブルだと BlockItem が落ちないことがあるため、
-    // 通常ドロップ後に BlockEntity データと向きを ItemStack へ載せます。
+    // 通常ドロップ後に BlockEntity データを ItemStack へ載せます。
+    // 向きはアイテムへ残さず、再設置時にプレイヤー正面へ合わせます。
     @Override
     public List<ItemStack> getDrops(BlockState state, LootParams.Builder params) {
         List<ItemStack> drops = super.getDrops(state, params);
@@ -88,7 +87,6 @@ public class CobblestoneDrawerBlock extends RotatingBlock implements EntityBlock
 
         Item blockItem = this.asItem();
         var registries = params.getLevel().registryAccess();
-        BlockItemStateProperties blockStateProperties = BlockItemStateProperties.EMPTY.with(FACING, state.getValue(FACING));
 
         for (int index = 0; index < drops.size(); index++) {
             ItemStack drop = drops.get(index);
@@ -96,8 +94,8 @@ public class CobblestoneDrawerBlock extends RotatingBlock implements EntityBlock
                 continue;
             }
 
+            // 中身は保持するが、向きは置いたときのプレイヤー正面に合わせる。
             blockEntity.saveToItem(drop, registries);
-            drop.set(DataComponents.BLOCK_STATE, blockStateProperties);
             drops.set(index, drop);
         }
 

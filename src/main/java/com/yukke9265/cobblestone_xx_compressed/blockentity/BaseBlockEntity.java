@@ -376,8 +376,8 @@ public class BaseBlockEntity extends BlockEntity implements ISlotFilterHost {
         this.saveUpgradeSlotCopy(tag, itemStackHandler, registries, this.getAccelerationUpgradeSlotIndex(), ACCELERATION_UPGRADE_COPY_TAG);
         this.saveUpgradeSlotCopy(tag, itemStackHandler, registries, this.getEnergizedCubeUpgradeSlotIndex(), ENERGIZED_CUBE_UPGRADE_COPY_TAG);
         this.saveUpgradeSlotCopy(tag, itemStackHandler, registries, this.getParallelUpgradeSlotIndex(), PARALLEL_UPGRADE_COPY_TAG);
-        // CP 入力スロットも同じカードへ保存し、貼り付け時に所持していれば入れ替えます。
-        this.saveUpgradeSlotCopy(tag, itemStackHandler, registries, this.getPowerCopySlotIndex(), POWER_SLOT_COPY_TAG);
+        // CP 入力は触媒ジェネレータ想定のため、種類だけ保存し個数は常に 1 にします。
+        this.savePowerSlotCopy(tag, itemStackHandler, registries);
     }
 
     private void saveUpgradeSlotCopy(
@@ -397,6 +397,24 @@ public class BaseBlockEntity extends BlockEntity implements ISlotFilterHost {
         }
 
         tag.put(key, existingStack.save(registries));
+    }
+
+    private void savePowerSlotCopy(
+        CompoundTag tag,
+        ItemStackHandler itemStackHandler,
+        HolderLookup.Provider registries
+    ) {
+        int powerSlot = this.getPowerCopySlotIndex();
+        if (powerSlot < 0 || powerSlot >= itemStackHandler.getSlots()) {
+            return;
+        }
+
+        ItemStack existingStack = itemStackHandler.getStackInSlot(powerSlot);
+        if (existingStack.isEmpty()) {
+            return;
+        }
+
+        tag.put(POWER_SLOT_COPY_TAG, existingStack.copyWithCount(1).save(registries));
     }
 
     private void applyUpgradeCopyData(CompoundTag tag, Player player) {
@@ -444,7 +462,8 @@ public class BaseBlockEntity extends BlockEntity implements ISlotFilterHost {
             return;
         }
 
-        this.installPowerItemFromPlayer(player, storedStack);
+        // 旧データでスタック数が残っていても、貼り付けは常に 1 個だけに揃えます。
+        this.installPowerItemFromPlayer(player, storedStack.copyWithCount(1));
     }
 
     // インベントリにあれば 1 個消費して入れます。既にあれば入れ替え、入らなければドロップします。
@@ -473,32 +492,58 @@ public class BaseBlockEntity extends BlockEntity implements ISlotFilterHost {
         this.giveItemToPlayerOrDrop(player, replacedStack);
     }
 
-    // CP 入力もアップグレードと同じく、所持していれば 1 個入れて入れ替えます。
+    // CP 入力は触媒 1 個想定。所持していれば 1 個だけ入れて入れ替えます。
     private void installPowerItemFromPlayer(Player player, ItemStack desiredStack) {
         ItemStackHandler itemStackHandler = this.getItemStackHandler();
         int powerSlot = this.getPowerCopySlotIndex();
-        if (itemStackHandler == null || !this.canInstallUpgradeItemInSlot(itemStackHandler, desiredStack, powerSlot)) {
+        ItemStack singleDesiredStack = desiredStack.copyWithCount(1);
+        if (itemStackHandler == null || !this.canInstallPowerItemInSlot(itemStackHandler, singleDesiredStack, powerSlot)) {
+            return;
+        }
+
+        ItemStack existingStack = itemStackHandler.getStackInSlot(powerSlot);
+        // 同じ触媒が既にあり個数だけ多い場合は、新規消費せず 1 個に減らします。
+        if (!existingStack.isEmpty() && ItemStack.isSameItemSameComponents(existingStack, singleDesiredStack)) {
+            if (existingStack.getCount() <= 1) {
+                return;
+            }
+
+            int excessCount = existingStack.getCount() - 1;
+            itemStackHandler.setStackInSlot(powerSlot, singleDesiredStack);
+            this.setChanged();
+            this.giveItemToPlayerOrDrop(player, existingStack.copyWithCount(excessCount));
             return;
         }
 
         boolean creative = player.getAbilities().instabuild;
         ItemStack inventoryStack = ItemStack.EMPTY;
         if (!creative) {
-            inventoryStack = this.findMatchingUpgradeInPlayerInventory(player, desiredStack);
+            inventoryStack = this.findMatchingUpgradeInPlayerInventory(player, singleDesiredStack);
             if (inventoryStack.isEmpty()) {
                 return;
             }
         }
 
-        ItemStack replacedStack = this.tryInstallUpgradeItemInSlot(itemStackHandler, desiredStack, powerSlot, false);
-        if (replacedStack == null) {
-            return;
-        }
+        ItemStack replacedStack = existingStack.copy();
+        itemStackHandler.setStackInSlot(powerSlot, singleDesiredStack);
+        this.setChanged();
 
         if (!creative) {
             inventoryStack.shrink(1);
         }
         this.giveItemToPlayerOrDrop(player, replacedStack);
+    }
+
+    private boolean canInstallPowerItemInSlot(ItemStackHandler itemStackHandler, ItemStack stack, int slot) {
+        if (slot < 0 || slot >= itemStackHandler.getSlots()) {
+            return false;
+        }
+
+        if (!itemStackHandler.isItemValid(slot, stack)) {
+            return false;
+        }
+
+        return itemStackHandler.getSlotLimit(slot) > 0;
     }
 
     private ItemStack findMatchingUpgradeInPlayerInventory(Player player, ItemStack targetStack) {

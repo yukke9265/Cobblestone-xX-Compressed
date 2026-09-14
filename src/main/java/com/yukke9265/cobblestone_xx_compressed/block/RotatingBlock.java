@@ -6,6 +6,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -36,10 +37,24 @@ public class RotatingBlock extends Block {
         builder.add(FACING);
     }
 
-    // ブロックが配置されたときの状態を決定します。プレイヤーの向きに基づいてブロックの向きを設定します。
+    // ブロックが配置されたときの状態を決定します。正面がプレイヤー側を向くようにします。
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
         return this.defaultBlockState().setValue(FACING, context.getHorizontalDirection().getOpposite());
+    }
+
+    // アイテムに残った旧 FACING があっても、置いた瞬間に正面をプレイヤー側へ揃えます。
+    @Override
+    public void setPlacedBy(Level level, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
+        super.setPlacedBy(level, pos, state, placer, stack);
+        if (placer == null) {
+            return;
+        }
+
+        BlockState facingState = state.setValue(FACING, placer.getDirection().getOpposite());
+        if (facingState != state) {
+            level.setBlock(pos, facingState, 3);
+        }
     }
 
     // 構造物の回転でも FACING を追従させ、前面と入出力面がずれないようにします。

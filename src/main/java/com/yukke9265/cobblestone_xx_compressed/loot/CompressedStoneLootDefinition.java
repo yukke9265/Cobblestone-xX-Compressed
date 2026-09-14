@@ -100,19 +100,19 @@ public class CompressedStoneLootDefinition {
         new CompressedStoneLootDefinition(
             ModBlocks.TierCompressedStone.EMERALD.getBlock(),
             ModBlocks.TierCompressedCobblestone.EMERALD.getBlock(),
-            bonusDrop(ModItems.TierCobblestoneGem.EMERALD.getItem(), 0.01d),
+            bonusDrop(ModItems.TierCobblestoneGem.EMERALD.getItem(), 0.02d),
             bonusDrop(() -> Items.EMERALD_ORE, 0.10d)
         ),
         new CompressedStoneLootDefinition(
             ModBlocks.TierCompressedStone.NETHERITE.getBlock(),
             ModBlocks.TierCompressedCobblestone.NETHERITE.getBlock(),
-            bonusDrop(ModItems.TierCobblestoneGem.NETHERITE.getItem(), 0.01d),
+            bonusDrop(ModItems.TierCobblestoneGem.NETHERITE.getItem(), 0.02d),
             bonusDrop(() -> Items.ANCIENT_DEBRIS, 0.10d)
         ),
         new CompressedStoneLootDefinition(
             ModBlocks.TierCompressedStone.OBSIDIAN.getBlock(),
             ModBlocks.TierCompressedCobblestone.OBSIDIAN.getBlock(),
-            bonusDrop(ModItems.TierCobblestoneGem.OBSIDIAN.getItem(), 0.01d),
+            bonusDrop(ModItems.TierCobblestoneGem.OBSIDIAN.getItem(), 0.02d),
             bonusDrop(() -> Items.NETHER_STAR, 0.10d)
         )
     );

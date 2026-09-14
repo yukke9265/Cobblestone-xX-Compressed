@@ -68,7 +68,7 @@ public final class CobblestoneChemicalReactorRecipeDatagen {
             ItemStack.EMPTY,
             new FluidStack(ModFluids.WaterBasedFluid.HOT_LAVA.getFluidEntry().getStillFluid().get(), 16000),
             new FluidStack(ModFluids.TierMoltenDirtyCompressedCobblestone.DIAMOND.getFluidEntry().getStillFluid().get(), 1000),
-            107374182400L,
+            107374182400L/4,//短縮の意味がないので緩和
             1048576
         )
     };
